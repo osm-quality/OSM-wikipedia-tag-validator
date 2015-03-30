@@ -123,11 +123,11 @@ def get_form_of_link_usable_as_filename(link):
 
 
 def get_filename_with_article(language_code, article_link):
-    return "cache\\" + language_code + "\\" + get_form_of_link_usable_as_filename(article_link) + ".txt"
+    return os.path.join('cache', language_code, get_form_of_link_usable_as_filename(article_link) + ".txt")
 
 
 def get_filename_with_code(language_code, article_link):
-    return "cache\\" + language_code + "\\" + get_form_of_link_usable_as_filename(article_link) + ".code.txt"
+    return os.path.join('cache', language_code, get_form_of_link_usable_as_filename(article_link) + ".code.txt")
 
 
 class UrlResponse:
@@ -150,7 +150,7 @@ def fetch(url):
 
 
 def fetch_data_from_wikipedia(language_code, article_link):
-    path = "cache\\" + language_code
+    path = os.path.join('cache', language_code)
     try:
         os.makedirs(path)
     except OSError:
