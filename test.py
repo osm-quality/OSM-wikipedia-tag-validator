@@ -100,6 +100,8 @@ def output_element(element, message):
         print lon
         if language_code == "it":
             print "{{coord|" + lat + "|" + lon + "|display=title}}"
+        elif language_code == "pl":
+            print "{{koordynaty|" + lat + "|" + lon + "}}"
         else:
             print "{{coord|" + lat + "|" + lon + "}}"
         if language_code == "pl":
