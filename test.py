@@ -105,10 +105,14 @@ def output_element(element, message):
         else:
             print "{{coord|" + lat + "|" + lon + "}}"
         if language_code == "pl":
-            pl_format = "|współrzędne = "
-            pl_format += lat_d + "°" + lat_m + "'" + lat_s + '"' + lat_sign_character
-            pl_format += " "
-            pl_format += lon_d + "°" + lon_m + "'" + lon_s + '"' + lon_sign_character
+            pl_format = "|stopni" + lat_sign_character + " = " + lat_d
+            pl_format += " |minut" + lat_sign_character + " = " + lat_m
+            pl_format += " |sekund" + lat_sign_character + " = " + lat_s
+            pl_format += "\n"
+            pl_format += "|stopni" + lon_sign_character + " = " + lon_d
+            pl_format += " |minut" + lon_sign_character + " = " + lon_m
+            pl_format += " |sekund" + lon_sign_character + " = " + lon_s
+            pl_format += "\n"
             print pl_format
 
 
