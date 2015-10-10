@@ -41,6 +41,36 @@ def get_article_name_from_link(link):
         return None
     return parsed_link.group(2)
 
+def print_additional_pl_wikipedia_coordinates(lat, lon):
+    lat_sign_character = "N"
+    if lat < 0:
+        lat *= -1
+        lat_sign_character = "S"
+    lon_sign_character = "E"
+    if lon < 0:
+        lon *= -1
+        lon_sign_character = "W"
+    lat_d = int(float(lat))
+    lat_m = int((float(lat) * 60) - (lat_d * 60))
+    lat_s = int((float(lat) * 60 * 60) - (lat_d * 60 * 60) - (lat_m * 60))
+    lat_d = str(lat_d)
+    lat_m = str(lat_m)
+    lat_s = str(lat_s)
+    lon_d = int(float(lon))
+    lon_m = int((float(lon) * 60) - (lon_d * 60))
+    lon_s = int((float(lon) * 60 * 60) - (lon_d * 60 * 60) - (lon_m * 60))
+    lon_d = str(lon_d)
+    lon_m = str(lon_m)
+    lon_s = str(lon_s)
+    pl_format = "|stopni" + lat_sign_character + " = " + lat_d
+    pl_format += " |minut" + lat_sign_character + " = " + lat_m
+    pl_format += " |sekund" + lat_sign_character + " = " + lat_s
+    pl_format += "\n"
+    pl_format += "|stopni" + lon_sign_character + " = " + lon_d
+    pl_format += " |minut" + lon_sign_character + " = " + lon_m
+    pl_format += " |sekund" + lon_sign_character + " = " + lon_s
+    pl_format += "\n"
+    print pl_format
 
 def output_element(element, message):
     name = get_tag_value(element, "name")
@@ -72,27 +102,6 @@ def output_element(element, message):
     if out_of_bounds:
         print "Out of bounds"
     else:
-        lat_sign_character = "N"
-        if lat < 0:
-            lat *= -1
-            lat_sign_character = "S"
-        lon_sign_character = "E"
-        if lon < 0:
-            lon *= -1
-            lon_sign_character = "W"
-        lat_d = int(float(lat))
-        lat_m = int((float(lat) * 60) - (lat_d * 60))
-        lat_s = int((float(lat) * 60 * 60) - (lat_d * 60 * 60) - (lat_m * 60))
-        lat_d = str(lat_d)
-        lat_m = str(lat_m)
-        lat_s = str(lat_s)
-        lon_d = int(float(lon))
-        lon_m = int((float(lon) * 60) - (lon_d * 60))
-        lon_s = int((float(lon) * 60 * 60) - (lon_d * 60 * 60) - (lon_m * 60))
-        lon_d = str(lon_d)
-        lon_m = str(lon_m)
-        lon_s = str(lon_s)
-
         lat = "%.4f" % lat  # drop overprecision
         lon = "%.4f" % lon  # drop overprecision
 
@@ -102,18 +111,9 @@ def output_element(element, message):
             print "{{coord|" + lat + "|" + lon + "|display=title}}"
         elif language_code == "pl":
             print "{{koordynaty|" + lat + "|" + lon + "}}"
+            print_additional_pl_wikipedia_coordinates(lat, lon)
         else:
             print "{{coord|" + lat + "|" + lon + "}}"
-        if language_code == "pl":
-            pl_format = "|stopni" + lat_sign_character + " = " + lat_d
-            pl_format += " |minut" + lat_sign_character + " = " + lat_m
-            pl_format += " |sekund" + lat_sign_character + " = " + lat_s
-            pl_format += "\n"
-            pl_format += "|stopni" + lon_sign_character + " = " + lon_d
-            pl_format += " |minut" + lon_sign_character + " = " + lon_m
-            pl_format += " |sekund" + lon_sign_character + " = " + lon_s
-            pl_format += "\n"
-            print pl_format
 
 
 def get_form_of_link_usable_as_filename(link):
@@ -187,51 +187,62 @@ def it_is_necessary_to_reload_files(language_code, article_link):
         code_file.close()
     return files_need_reloading
 
+def get_wikipedia_page(language_code, article_name, forced_refresh):
+    if it_is_necessary_to_reload_files(language_code, article_name) or forced_refresh:
+        fetch_data_from_wikipedia(language_code, article_name)
+    article_file = open(get_filename_with_article(language_code, article_name), 'r')
+    page = article_file.read()
+    article_file.close()
+    code_file = open(get_filename_with_code(language_code, article_name), 'r')
+    code = int(code_file.read())
+    code_file.close()
+    if code != 200:
+        return None
+    return page
+
+def is_wikipedia_page_geotagged(page):
+    # <span class="latitude">50°04'02”N</span>&#160;<span class="longitude">19°55'03”E</span>
+    index = string.find(page, "<span class=\"latitude\">")
+    inline = string.find(page, "coordinates inline plainlinks")
+    if index > inline != -1:
+        index = -1  #inline coordinates are not real ones
+    if index == -1:
+        kml_data_str = "><span id=\"coordinates\"><b>Route map</b>: <a rel=\"nofollow\" class=\"external text\""
+        if string.find(page, kml_data_str) == -1:  #enwiki article links to area, not point (see 'Central Park')
+            return False
+    return True
+
+def is_geotagging_mismatched(page, element):
+    if is_wikipedia_page_geotagged(page):
+        if not_a_coordinable_element(element):
+            output_element(element, "coordinates at uncoordinable element:")
+            return True
+    else:
+        if not not_a_coordinable_element(element):
+            output_element(element, "missing coordinates at wiki:")
+            return True
+    return False
 
 def process_element(element, forced_refresh=False):
     link = get_tag_value(element, "wikipedia")
     if link == "":
         return False
-    elif string.find(link, "#") != -1:
+    if string.find(link, "#") != -1:
         output_element(element, "link to section:")
         return True
-    else:
-        language_code = get_language_code_from_link(link)
-        article_name = get_article_name_from_link(link)
-        if args.expected_language_code is not None and args.expected_language_code != language_code:
-            output_element(element, "missing " + args.expected_language_code + ":")
-            return True
-        if language_code is None or language_code.__len__() > 2:
-            output_element(element, "malformed wikipedia tag (" + link + ")")
-            return True
-        if it_is_necessary_to_reload_files(language_code, article_name) or forced_refresh:
-            fetch_data_from_wikipedia(language_code, article_name)
-        article_file = open(get_filename_with_article(language_code, article_name), 'r')
-        page = article_file.read()
-        article_file.close()
-        code_file = open(get_filename_with_code(language_code, article_name), 'r')
-        code = int(code_file.read())
-        code_file.close()
-        # <span class="latitude">50°04'02”N</span>&#160;<span class="longitude">19°55'03”E</span>
-        index = string.find(page, "<span class=\"latitude\">")
-        inline = string.find(page, "coordinates inline plainlinks")
-        if index > inline != -1:
-            index = -1  #inline coordinates are not real ones
-        if index == -1:
-            if code != 200:
-                output_element(element, "missing article at wiki:")
-                return True
-            else:
-                kml_data_str = "><span id=\"coordinates\"><b>Route map</b>: <a rel=\"nofollow\" class=\"external text\""
-                if string.find(page, kml_data_str) == -1:  #enwiki article links to area, not point (see 'Central Park')
-                    if not not_a_coordinable_element(element):
-                        output_element(element, "missing coordinates at " + language_code + "wiki:")
-                        return True
-        else:
-            if not_a_coordinable_element(element):
-                output_element(element, "coordinates at uncoordinable element:")
-                return True
-    return False
+    language_code = get_language_code_from_link(link)
+    article_name = get_article_name_from_link(link)
+    if language_code is None or language_code.__len__() > 3:
+        output_element(element, "malformed wikipedia tag (" + link + ")")
+        return True
+    if args.expected_language_code is not None and args.expected_language_code != language_code:
+        output_element(element, "missing " + args.expected_language_code + ":")
+        return True
+    page = get_wikipedia_page(language_code, article_name, forced_refresh)
+    if page == None:
+        output_element(element, "missing article at wiki:")
+        return True
+    return is_geotagging_mismatched(page, element)
 
 
 def parsed_args():
