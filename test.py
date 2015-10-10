@@ -248,13 +248,7 @@ def process_element(element, forced_refresh=False):
 def parsed_args():
     parser = argparse.ArgumentParser(description='Validation of wikipedia tag in osm data.')
     parser.add_argument('-expected_language_code', '-l', dest='expected_language_code', type=str, help='expected language code')
-    parser.add_argument('-file', '-f', dest='file', type=str, help='location of osm file')
-    parser.add_argument('-lat', '-latitude', dest='lat', type=float,
-                        help='location of area, OSM data will be fetched (in deegres)')
-    parser.add_argument('-lon', '-longitude', dest='lon', type=float,
-                        help='location of area, OSM data will be fetched (in deegres)')
-    parser.add_argument('-delta', '-d', dest='delta', type=float,
-                        help='size of area, OSM data will be fetched (in deegres)')
+    parser.add_argument('-file', '-f', dest='file', type=str, help='location of .osm file')
     parser.add_argument('-flush_cache', dest='flush_cache', help='adding this parameter will trigger flushing cache',
                         action='store_true')
     parser.add_argument('-flush_cache_for_reported_situations', dest='flush_cache_for_reported_situations',
@@ -262,21 +256,9 @@ def parsed_args():
                         action='store_true')
 
     args = parser.parse_args()
-    if not (args.file or (args.lat and args.lon)):
-        parser.error('Provide file with OSM data or location')
-    if args.file and (args.lat and args.lon):
-        parser.error('Provide file with OSM data or location, not both. For programmers and lawyers: data XOR location')
+    if not (args.file):
+        parser.error('Provide .osm file')
     return args
-
-
-def fetch_osm_data(lat, lon, delta, filename):
-    osm_file = open(filename, 'w')
-    url = "http://overpass-api.de/api/interpreter?data=(node("
-    url += str(lat - delta) + "," + str(lon - delta) + "," + str(lat + delta) + "," + str(lon + delta)
-    url += ");<;);out%20meta;"
-    response = fetch(url)
-    osm_file.write(response.content)
-    osm_file.close()
 
 
 def get_coords_of_complex_object(element, node_database, way_database):
@@ -321,13 +303,6 @@ class Coord:
 
 
 args = parsed_args()
-if args.lat and args.lon:
-    delta = 0.02
-    if args.delta is not None:
-        delta = args.delta
-    args.file = str(args.lat) + "-" + str(args.lon) + "#" + str(delta) + ".osm"
-    if not os.path.isfile(args.file) or args.flush_cache or args.flush_cache_for_reported_situations:
-        fetch_osm_data(args.lat, args.lon, delta, args.file)
 data = etree.parse(args.file)
 node_database = {}
 way_database = {}
