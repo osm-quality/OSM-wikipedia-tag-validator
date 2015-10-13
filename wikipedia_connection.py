@@ -2,6 +2,158 @@
 
 import os.path
 import re
+import json
+import urllib2
+from lxml import etree
+
+
+class UrlResponse:
+    def __init__(self, content, code):
+        self.content = content
+        self.code = code
+
+
+def fetch(url):
+    while True:
+        try:
+            f = urllib2.urlopen(url)
+            return UrlResponse(f.read(), f.getcode())
+        except urllib2.HTTPError as e:
+            return UrlResponse("", e.getcode())
+        except urllib2.URLError as e:
+            print "no response from server for url " + url
+            print e
+            continue
+
+def turn_title_into_url_form(filename):
+    return "File:"+urllib2.quote(filename[5:])
+    return title.replace(" ", "%20") #TODO DELETE - most likely too limoted
+
+def get_something_from_wikipedia_api(language_code, what, article_link):
+    url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib2.quote(article_link)
+    parsed_json = json.loads(fetch(url).content)
+    id = list(parsed_json['query']['pages'])[0]
+    data = parsed_json['query']['pages'][id]
+    return data
+
+def get_intro_from_wikipedia(language_code, article_link, requested_length=None):
+    request = "&prop=extracts&exintro=&explaintext"
+    if requested_length != None:
+        request += "&exchars=" + str(requested_length)
+
+    data = get_something_from_wikipedia_api(language_code, request, article_link)
+    try:
+        return data['extract'].encode('utf-8')
+    except KeyError:
+        print "Failed extract extraction for " + article_link + " on " + language_code 
+        return None
+    raise("unexpected")
+
+def get_url_from_commons_image(filename, max_size=None):
+    url = "https://tools.wmflabs.org/magnus-toolserver/commonsapi.php?image=" + turn_title_into_url_form(filename)
+    tag_match = "file"
+    if max_size != None:
+        width, height = max_size
+        url += "&thumbwidth=" + str(width) + "&thumbheight=" + str(height)
+        tag_match = "thumbnail"
+    data_about_image = fetch(url).content
+    data = etree.ElementTree(etree.fromstring(data_about_image))
+    for element in data.getiterator():
+        if element.tag == tag_match and element.text != None:
+            return element.text
+    return None
+
+def get_pageprops(language_code, article_link):
+    data = get_something_from_wikipedia_api(language_code, "&prop=pageprops", article_link)
+    try:
+        return data['pageprops']
+    except KeyError:
+        print "Failed pageprops extraction for " + article_link + " on " + language_code 
+        return None
+    raise("unexpected")
+
+def get_image_from_wikipedia_article(language_code, article_link):
+    page = get_pageprops(language_code, article_link)
+    if page == None:
+        return None
+    filename_via_page_image =  None
+    try:
+        filename_via_page_image = "File:" + page['page_image'].encode('utf-8')
+    except KeyError:
+        print "Failed image extraction via page image for " + article_link + " on " + language_code 
+        return None
+    return filename_via_page_image
+
+def get_wikidata_id(language_code, article_link):
+    page = get_pageprops(language_code, article_link)
+    if page == None:
+        return None
+    wikidata_id = None
+    try:
+        wikidata_id = page['wikibase_item'].encode('utf-8')
+    except KeyError:
+        print "Failed wikidata id extraction " + article_link + " on " + language_code
+        return None
+    if wikidata_id == None:
+        raise ValueError("wat")
+    return wikidata_id
+
+def get_data_from_wikidata(wikidata_id):
+    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids="+wikidata_id+"&format=json"
+    return json.loads(fetch(url).content)
+
+def get_property_from_wikidata(wikidata_id, property):
+    wikidata = get_data_from_wikidata(wikidata_id)
+    try:
+        return wikidata['entities'][wikidata_id]['claims'][property]
+    except KeyError:
+        return None
+
+def get_interwiki_link(language_code, article_link, target_language_code):
+    wikidata_id = get_wikidata_id(language_code, article_link)
+    if wikidata_id == None:
+        return None
+    wikidata = get_data_from_wikidata(wikidata_id)
+    try:
+        return wikidata['entities'][wikidata_id]['sitelinks'][target_language_code+"wiki"]['title'].encode('utf-8')
+    except KeyError:
+        return None
+
+def get_image_from_wikidata(wikidata_id):
+    data = get_property_from_wikidata(wikidata_id, 'P18')
+    if data == None:
+        return None
+    data = data[0]['mainsnak']
+    if data['datatype'] != 'commonsMedia':
+        print "unexpected datatype for " + wikidata_id + " - " + datatype
+        return None
+    return "File:"+data['datavalue']['value'].encode('utf-8').replace(" ", "_")
+
+def get_location_from_wikidata(wikidata_id):
+    data = get_property_from_wikidata(wikidata_id, 'P625')
+    if data == None:
+        return (None, None)
+    data = data[0]['mainsnak']
+    if data == None:
+        return (None, None)
+    data = data['datavalue']['value']
+    return data['latitude'], data['longitude']
+
+def get_page_image(link, max_size=None):
+    language_code = get_language_code_from_link(link)
+    article_link = get_article_name_from_link(link)
+    filename_via_page_image = get_image_from_wikipedia_article(language_code, article_link)
+    wikidata_id = get_wikidata_id(language_code, article_link)
+    filename_via_wikidata = None 
+    if wikidata_id != None:
+        filename_via_wikidata = get_image_from_wikidata(wikidata_id)
+
+    filename = filename_via_wikidata
+    if filename == None:
+        filename = filename_via_page_image
+    if filename == None:
+        return None
+    return get_url_from_commons_image(filename, max_size)
 
 def get_language_code_from_link(link):
     parsed_link = re.match('([^:]*):(.*)', link)
@@ -35,24 +187,6 @@ def get_filename_with_article(language_code, article_link):
 
 def get_filename_with_code(language_code, article_link):
     return os.path.join('cache', language_code, get_form_of_link_usable_as_filename(article_link) + ".code.txt")
-
-class UrlResponse:
-    def __init__(self, content, code):
-        self.content = content
-        self.code = code
-
-
-def fetch(url):
-    while True:
-        try:
-            f = urllib2.urlopen(url)
-            return UrlResponse(f.read(), f.getcode())
-        except urllib2.HTTPError as e:
-            return UrlResponse("", e.getcode())
-        except urllib2.URLError as e:
-            print "no response from server for url " + url
-            print e
-            continue
 
 def write_to_file(filename, content):
     specified_file = open(filename, 'w')
