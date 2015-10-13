@@ -9,7 +9,7 @@ from osm_iterator import Data
 
 def get_problem_for_given_element(element, forced_refresh):
     link = element.get_tag_value("wikipedia")
-    if link == "":
+    if link == None:
         return None
     if string.find(link, "#") != -1:
         return "link to section:"
@@ -91,7 +91,7 @@ def output_element(element, message):
     print
     print message
     print name
-    print ("http://www.openstreetmap.org/" + element.get_element().tag + "/" + element.get_element().attrib['id']).encode('utf-8')
+    print element.get_link()
     if language_code is not None and article_name is not None:
         print "https://" + language_code + ".wikipedia.org/wiki/" + urllib2.quote(article_name)
     if out_of_bounds:
