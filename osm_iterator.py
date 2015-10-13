@@ -20,14 +20,25 @@ class Element(etree._Element):
         for tag in self.element:
             if tag.tag != "tag":
                 continue
-            if tag.attrib['k'] == querried_tag:
+            if tag.attrib['k'].encode('utf-8') == querried_tag:
                 return tag.attrib['v'].encode('utf-8')
-        return ""
+        return None
+
+    def get_keys(self):
+        returned = []
+        for tag in self.element:
+            if tag.tag != "tag":
+                continue
+            returned += [tag.attrib['k'].encode('utf-8')]
+        return returned
 
     def get_coords(self):
         #if self.element.tag == "nd":
         #    return data.get_coords_of_node()
         return self.data.get_coords_of_complex_object(self.element)
+
+    def get_link(self):
+        return ("http://www.openstreetmap.org/" + self.element.tag + "/" + self.element.attrib['id']).encode('utf-8')
 
 class Data(object):
     def __init__(self, filename_with_osm_data):
