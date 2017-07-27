@@ -214,18 +214,25 @@ def it_is_necessary_to_reload_files(language_code, article_link):
     code_filename = get_filename_with_code(language_code, article_link)
 
     if not os.path.isfile(article_filename) or not os.path.isfile(code_filename):
-        files_need_reloading = True
+        return True
     else:
+        files_need_reloading = False
         code_file = open(code_filename, 'r')
         if code_file.read() == "":
             files_need_reloading = True
         code_file.close()
+        return files_need_reloading
     return False
 
 def get_wikipedia_page(language_code, article_name, forced_refresh):
     if it_is_necessary_to_reload_files(language_code, article_name) or forced_refresh:
         fetch_data_from_wikipedia(language_code, article_name)
-    article_file = open(get_filename_with_article(language_code, article_name), 'r')
+    wikipedia_article_cache_filepath = get_filename_with_article(language_code, article_name)
+    if not os.path.isfile(wikipedia_article_cache_filepath):
+        print(it_is_necessary_to_reload_files(language_code, article_name))
+        print(wikipedia_article_cache_filepath)
+        assert False
+    article_file = open(wikipedia_article_cache_filepath, 'r')
     page = article_file.read()
     article_file.close()
     code_file = open(get_filename_with_code(language_code, article_name), 'r')
