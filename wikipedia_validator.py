@@ -24,14 +24,14 @@ def get_problem_for_given_element(element, forced_refresh):
     return get_geotagging_problem(page, element)
 
 
-def not_a_coordinable_element(element):
+def element_can_be_reduced_to_position_at_single_location(element):
     if element.get_element().tag == "relation":
         relation_type = element.get_tag_value("type")
         if relation_type == "person" or relation_type == "route":
-            return True
+            return False
     if element.get_tag_value("waterway") == "river":
-        return True
-    return False
+        return False
+    return True
 
 
 def print_pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
@@ -127,10 +127,10 @@ def is_wikipedia_page_geotagged(page):
 
 def get_geotagging_problem(page, element):
     if is_wikipedia_page_geotagged(page):
-        if not_a_coordinable_element(element):
+        if not element_can_be_reduced_to_position_at_single_location(element):
             return "coordinates at uncoordinable element:"
     else:
-        if not not_a_coordinable_element(element):
+        if element_can_be_reduced_to_position_at_single_location(element):
             return "missing coordinates at wiki:"
     return None
 
