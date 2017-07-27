@@ -21,7 +21,9 @@ def get_problem_for_given_element(element, forced_refresh):
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
     if page == None:
         return "missing article at wiki:"
-    return get_geotagging_problem(page, element)
+    if args.only_osm_edits == False:
+        return get_geotagging_problem(page, element)
+    return None
 
 
 def element_can_be_reduced_to_position_at_single_location(element):
@@ -33,6 +35,23 @@ def element_can_be_reduced_to_position_at_single_location(element):
         return False
     return True
 
+
+def print_wikipedia_location_data(lat, lon, language_code):
+    lat = "%.4f" % lat  # drop overprecision
+    lon = "%.4f" % lon  # drop overprecision
+
+    print(lat)
+    print(lon)
+    if language_code == "it":
+        print("{{coord|" + lat + "|" + lon + "|display=title}}")
+    elif language_code == "pl":
+        print("{{współrzędne|" + lat + " " + lon + "|umieść=na górze}}")
+        print("")
+        print(lat + " " + lon)
+        print("")
+        print_pl_wikipedia_coordinates_for_infobox_old_style(float(lat), float(lon))
+    else:
+        print("{{coord|" + lat + "|" + lon + "}}")
 
 def print_pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
     lat_sign_character = "N"
@@ -96,22 +115,8 @@ def output_element(element, message):
     if out_of_bounds:
         print("Out of bounds")
     else:
-        lat = "%.4f" % lat  # drop overprecision
-        lon = "%.4f" % lon  # drop overprecision
-
-        print(lat)
-        print(lon)
-        if language_code == "it":
-            print("{{coord|" + lat + "|" + lon + "|display=title}}")
-        elif language_code == "pl":
-            print("{{współrzędne|" + lat + " " + lon + "|umieść=na górze}}")
-            print("")
-            print(lat + " " + lon)
-            print("")
-            print_pl_wikipedia_coordinates_for_infobox_old_style(float(lat), float(lon))
-        else:
-            print("{{coord|" + lat + "|" + lon + "}}")
-
+        if args.only_osm_edits == False:
+            print_wikipedia_location_data(lat, lon, language_code)
 
 def is_wikipedia_page_geotagged(page):
     # <span class="latitude">50°04'02”N</span>&#160;<span class="longitude">19°55'03”E</span>
@@ -157,7 +162,8 @@ def parsed_args():
                         (redownloads wikipedia data for cases where errors are reported, \
                         so removes false positives where wikipedia is already fixed)',
                         action='store_true')
-
+    parser.add_argument('-only_osm_edits', dest='only_osm_edits', help='adding this parameter will remove reporting of problems that may require editing wikipedia',
+                        action='store_true')
     args = parser.parse_args()
     if not (args.file):
         parser.error('Provide .osm file')
