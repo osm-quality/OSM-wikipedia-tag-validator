@@ -153,7 +153,9 @@ def parsed_args():
     parser.add_argument('-flush_cache', dest='flush_cache', help='adding this parameter will trigger flushing cache',
                         action='store_true')
     parser.add_argument('-flush_cache_for_reported_situations', dest='flush_cache_for_reported_situations',
-                        help='adding this parameter will trigger flushing cache only forreported situations',
+                        help='adding this parameter will trigger flushing cache only for reported situations \
+                        (redownloads wikipedia data for cases where errors are reported, \
+                        so removes false positives where wikipedia is already fixed)',
                         action='store_true')
 
     args = parser.parse_args()
