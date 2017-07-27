@@ -112,6 +112,13 @@ def output_element(element, message):
     print(element.get_link())
     if language_code is not None and article_name is not None:
         print("https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name))
+        print(article_name)
+        try:
+            wikidata_entry = wikipedia_connection.get_something_from_wikidata_api(language_code, article_name)['entities']
+            id = list(wikidata_entry)[0]
+            print("pl:" + wikidata_entry[id]['sitelinks']['plwiki']['title'])
+        except KeyError:
+            print("no article in plwiki")
     if out_of_bounds:
         print("Out of bounds")
     else:

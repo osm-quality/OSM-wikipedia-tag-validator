@@ -36,6 +36,11 @@ def get_something_from_wikipedia_api(language_code, what, article_link):
     data = parsed_json['query']['pages'][id]
     return data
 
+def get_something_from_wikidata_api(language_code, article_link):
+    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=" + language_code + "wiki&titles=" + urllib.parse.quote(article_link) + "&format=json"
+    parsed_json = json.loads(str(fetch(url).content.decode()))
+    return parsed_json
+
 def get_intro_from_wikipedia(language_code, article_link, requested_length=None):
     request = "&prop=extracts&exintro=&explaintext"
     if requested_length != None:
