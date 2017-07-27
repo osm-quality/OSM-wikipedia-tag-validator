@@ -34,7 +34,7 @@ def not_a_coordinable_element(element):
     return False
 
 
-def print_additional_pl_wikipedia_coordinates(lat, lon):
+def print_pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
     lat_sign_character = "N"
     if lat < 0:
         lat *= -1
@@ -104,8 +104,11 @@ def output_element(element, message):
         if language_code == "it":
             print("{{coord|" + lat + "|" + lon + "|display=title}}")
         elif language_code == "pl":
-            print("{{koordynaty|" + lat + "|" + lon + "}}")
-            print_additional_pl_wikipedia_coordinates(float(lat), float(lon))
+            print("{{współrzędne|" + lat + " " + lon + "|umieść=na górze}}")
+            print("")
+            print(lat + " " + lon)
+            print("")
+            print_pl_wikipedia_coordinates_for_infobox_old_style(float(lat), float(lon))
         else:
             print("{{coord|" + lat + "|" + lon + "}}")
 
