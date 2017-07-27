@@ -20,8 +20,8 @@ class Element(etree._Element):
         for tag in self.element:
             if tag.tag != "tag":
                 continue
-            if tag.attrib['k'].encode('utf-8') == querried_tag:
-                return tag.attrib['v'].encode('utf-8')
+            if tag.attrib['k'] == querried_tag:
+                return tag.attrib['v']
         return None
 
     def get_keys(self):
@@ -29,7 +29,7 @@ class Element(etree._Element):
         for tag in self.element:
             if tag.tag != "tag":
                 continue
-            returned += [tag.attrib['k'].encode('utf-8')]
+            returned += [tag.attrib['k']]
         return returned
 
     def get_coords(self):
@@ -38,7 +38,7 @@ class Element(etree._Element):
         return self.data.get_coords_of_complex_object(self.element)
 
     def get_link(self):
-        return ("http://www.openstreetmap.org/" + self.element.tag + "/" + self.element.attrib['id']).encode('utf-8')
+        return ("http://www.openstreetmap.org/" + self.element.tag + "/" + self.element.attrib['id'])
 
 class Data(object):
     def __init__(self, filename_with_osm_data):
@@ -88,8 +88,8 @@ class Data(object):
             if element.tag != "node" and element.tag != "way" and element.tag != "relation":
                 continue
             if element.tag == "node":
-                lat = decimal.Decimal(element.attrib['lat'].encode('utf-8'))
-                lon = decimal.Decimal(element.attrib['lon'].encode('utf-8'))
+                lat = decimal.Decimal(element.attrib['lat'])
+                lon = decimal.Decimal(element.attrib['lon'])
                 osm_id = int(element.attrib['id'])
                 self.node_database[osm_id] = Coord(lat, lon)
             if element.tag == "way":

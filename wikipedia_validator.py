@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import string
 import urllib.request, urllib.error, urllib.parse
 import argparse
 
@@ -11,7 +10,7 @@ def get_problem_for_given_element(element, forced_refresh):
     link = element.get_tag_value("wikipedia")
     if link == None:
         return None
-    if string.find(link, "#") != -1:
+    if link.find("#") != -1:
         return "link to section:"
     language_code = wikipedia_connection.get_language_code_from_link(link)
     article_name = wikipedia_connection.get_article_name_from_link(link)
@@ -113,13 +112,13 @@ def output_element(element, message):
 
 def is_wikipedia_page_geotagged(page):
     # <span class="latitude">50°04'02”N</span>&#160;<span class="longitude">19°55'03”E</span>
-    index = string.find(page, "<span class=\"latitude\">")
-    inline = string.find(page, "coordinates inline plainlinks")
+    index = page.find("<span class=\"latitude\">")
+    inline = page.find("coordinates inline plainlinks")
     if index > inline != -1:
         index = -1  #inline coordinates are not real ones
     if index == -1:
         kml_data_str = "><span id=\"coordinates\"><b>Route map</b>: <a rel=\"nofollow\" class=\"external text\""
-        if string.find(page, kml_data_str) == -1:  #enwiki article links to area, not point (see 'Central Park')
+        if page.find(kml_data_str) == -1:  #enwiki article links to area, not point (see 'Central Park')
             return False
     return True
 
