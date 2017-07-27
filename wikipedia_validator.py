@@ -105,7 +105,7 @@ def output_element(element, message):
             print("{{coord|" + lat + "|" + lon + "|display=title}}")
         elif language_code == "pl":
             print("{{koordynaty|" + lat + "|" + lon + "}}")
-            print_additional_pl_wikipedia_coordinates(lat, lon)
+            print_additional_pl_wikipedia_coordinates(float(lat), float(lon))
         else:
             print("{{coord|" + lat + "|" + lon + "}}")
 
