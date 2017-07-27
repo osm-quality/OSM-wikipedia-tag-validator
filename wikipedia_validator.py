@@ -1,7 +1,7 @@
 # coding=utf-8
 
 import string
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import argparse
 
 import wikipedia_connection
@@ -64,7 +64,7 @@ def print_additional_pl_wikipedia_coordinates(lat, lon):
     pl_format += " |minut" + lon_sign_character + " = " + lon_m
     pl_format += " |sekund" + lon_sign_character + " = " + lon_s
     pl_format += "\n"
-    print pl_format
+    print(pl_format)
 
 
 def output_element(element, message):
@@ -88,27 +88,27 @@ def output_element(element, message):
         else:
             lat = float(coord.lat)
             lon = float(coord.lon)
-    print
-    print message
-    print name
-    print element.get_link()
+    print()
+    print(message)
+    print(name)
+    print(element.get_link())
     if language_code is not None and article_name is not None:
-        print "https://" + language_code + ".wikipedia.org/wiki/" + urllib2.quote(article_name)
+        print("https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name))
     if out_of_bounds:
-        print "Out of bounds"
+        print("Out of bounds")
     else:
         lat = "%.4f" % lat  # drop overprecision
         lon = "%.4f" % lon  # drop overprecision
 
-        print lat
-        print lon
+        print(lat)
+        print(lon)
         if language_code == "it":
-            print "{{coord|" + lat + "|" + lon + "|display=title}}"
+            print("{{coord|" + lat + "|" + lon + "|display=title}}")
         elif language_code == "pl":
-            print "{{koordynaty|" + lat + "|" + lon + "}}"
+            print("{{koordynaty|" + lat + "|" + lon + "}}")
             print_additional_pl_wikipedia_coordinates(lat, lon)
         else:
-            print "{{coord|" + lat + "|" + lon + "}}"
+            print("{{coord|" + lat + "|" + lon + "}}")
 
 
 def is_wikipedia_page_geotagged(page):

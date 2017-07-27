@@ -3,7 +3,7 @@
 import os.path
 import re
 import json
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from lxml import etree
 
 
@@ -16,21 +16,21 @@ class UrlResponse:
 def fetch(url):
     while True:
         try:
-            f = urllib2.urlopen(url)
+            f = urllib.request.urlopen(url)
             return UrlResponse(f.read(), f.getcode())
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             return UrlResponse("", e.getcode())
-        except urllib2.URLError as e:
-            print "no response from server for url " + url
-            print e
+        except urllib.error.URLError as e:
+            print(("no response from server for url " + url))
+            print(e)
             continue
 
 def turn_title_into_url_form(filename):
-    return "File:"+urllib2.quote(filename[5:])
+    return "File:"+urllib.parse.quote(filename[5:])
     return title.replace(" ", "%20") #TODO DELETE - most likely too limoted
 
 def get_something_from_wikipedia_api(language_code, what, article_link):
-    url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib2.quote(article_link)
+    url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib.parse.quote(article_link)
     parsed_json = json.loads(fetch(url).content)
     id = list(parsed_json['query']['pages'])[0]
     data = parsed_json['query']['pages'][id]
@@ -45,7 +45,7 @@ def get_intro_from_wikipedia(language_code, article_link, requested_length=None)
     try:
         return data['extract'].encode('utf-8')
     except KeyError:
-        print "Failed extract extraction for " + article_link + " on " + language_code 
+        print(("Failed extract extraction for " + article_link + " on " + language_code)) 
         return None
     raise("unexpected")
 
@@ -68,7 +68,7 @@ def get_pageprops(language_code, article_link):
     try:
         return data['pageprops']
     except KeyError:
-        print "Failed pageprops extraction for " + article_link + " on " + language_code 
+        print(("Failed pageprops extraction for " + article_link + " on " + language_code)) 
         return None
     raise("unexpected")
 
@@ -80,7 +80,7 @@ def get_image_from_wikipedia_article(language_code, article_link):
     try:
         filename_via_page_image = "File:" + page['page_image'].encode('utf-8')
     except KeyError:
-        print "Failed image extraction via page image for " + article_link + " on " + language_code 
+        print(("Failed image extraction via page image for " + article_link + " on " + language_code)) 
         return None
     return filename_via_page_image
 
@@ -92,7 +92,7 @@ def get_wikidata_id(language_code, article_link):
     try:
         wikidata_id = page['wikibase_item'].encode('utf-8')
     except KeyError:
-        print "Failed wikidata id extraction " + article_link + " on " + language_code
+        print(("Failed wikidata id extraction " + article_link + " on " + language_code))
         return None
     if wikidata_id == None:
         raise ValueError("wat")
@@ -125,7 +125,7 @@ def get_image_from_wikidata(wikidata_id):
         return None
     data = data[0]['mainsnak']
     if data['datatype'] != 'commonsMedia':
-        print "unexpected datatype for " + wikidata_id + " - " + datatype
+        print(("unexpected datatype for " + wikidata_id + " - " + datatype))
         return None
     return "File:"+data['datavalue']['value'].encode('utf-8').replace(" ", "_")
 
@@ -200,10 +200,10 @@ def fetch_data_from_wikipedia(language_code, article_link):
     except OSError:
         if not os.path.isdir(path):
             raise
-    print "fetching from " + language_code + "wiki: " + article_link
+    print(("fetching from " + language_code + "wiki: " + article_link))
     article_filename = get_filename_with_article(language_code, article_link)
     code_filename = get_filename_with_code(language_code, article_link)
-    url = "https://" + language_code + ".wikipedia.org/wiki/" + urllib2.quote(article_link)
+    url = "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_link)
     result = fetch(url)
     write_to_file(article_filename, str(result.content))
     write_to_file(code_filename, str(result.code))
