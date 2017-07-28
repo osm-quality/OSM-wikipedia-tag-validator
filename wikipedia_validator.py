@@ -85,6 +85,17 @@ def print_pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
     print(pl_format)
 
 
+def wikipedia_url(language_code, article_name):
+    return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
+
+def get_interwiki(source_language_code, source_article_name, target_language):
+    try:
+        wikidata_entry = wikipedia_connection.get_something_from_wikidata_api(source_language_code, source_article_name)['entities']
+        id = list(wikidata_entry)[0]
+        return wikidata_entry[id]['sitelinks'][target_language+'wiki']['title']
+    except KeyError:
+        return None
+
 def output_element(element, message):
     name = element.get_tag_value("name")
     link = element.get_tag_value("wikipedia")
@@ -110,20 +121,22 @@ def output_element(element, message):
     print(message)
     print(name)
     print(element.get_link())
-    if language_code is not None and article_name is not None:
-        print("https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name))
-        print(article_name)
-        try:
-            wikidata_entry = wikipedia_connection.get_something_from_wikidata_api(language_code, article_name)['entities']
-            id = list(wikidata_entry)[0]
-            print("pl:" + wikidata_entry[id]['sitelinks']['plwiki']['title'])
-        except KeyError:
-            print("no article in plwiki")
+    print_interwiki_situation_if_relevant(language_code, article_name)
     if out_of_bounds:
         print("Out of bounds")
     else:
         if args.only_osm_edits == False:
             print_wikipedia_location_data(lat, lon, language_code)
+
+def print_interwiki_situation_if_relevant(language_code, article_name):
+    if language_code is not None and article_name is not None:
+        print(wikipedia_url(language_code, article_name))
+        print(article_name)
+        article_name_in_intended = get_interwiki(language_code, article_name, args.expected_language_code)
+        if article_name_in_intended == None:
+            print("no article in " + args.expected_language_code + "wiki")
+        else:
+            print(args.expected_language_code + ":" + article_name_in_intended)
 
 def is_wikipedia_page_geotagged(page):
     # <span class="latitude">50°04'02”N</span>&#160;<span class="longitude">19°55'03”E</span>
