@@ -1,10 +1,11 @@
 # coding=utf-8
+# download prefix in functions means that the function will inevitably attempt to download
+# get prefix means that it will try to use cache before downloading
 
 import os.path
 import re
 import json
 import urllib.request, urllib.error, urllib.parse
-from lxml import etree
 
 
 class UrlResponse:
@@ -26,96 +27,68 @@ def download(url):
             print(e)
             continue
 
-def download_from_wikipedia_api(language_code, what, article_link):
-    url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib.parse.quote(article_link)
+def download_from_wikipedia_api(language_code, what, article_name):
+    url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib.parse.quote(article_name)
     parsed_json = json.loads(download(url).content.decode())
     id = list(parsed_json['query']['pages'])[0]
     data = parsed_json['query']['pages'][id]
     return data
 
-def download_from_wikidata_api(language_code, article_link):
-    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=" + language_code + "wiki&titles=" + urllib.parse.quote(article_link) + "&format=json"
-    parsed_json = json.loads(str(download(url).content.decode()))
-    return parsed_json
-
-def download_from_wikidata_api_by_id(wikidata_id):
-    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + wikidata_id + "&format=json"
-    parsed_json = json.loads(str(download(url).content.decode()))
-    return parsed_json
-
-def get_intro_from_wikipedia(language_code, article_link, requested_length=None):
+def get_intro_from_wikipedia(language_code, article_name, requested_length=None):
     request = "&prop=extracts&exintro=&explaintext"
     if requested_length != None:
         request += "&exchars=" + str(requested_length)
 
-    data = download_from_wikipedia_api(language_code, request, article_link)
+    data = download_from_wikipedia_api(language_code, request, article_name)
     try:
-        return data['extract'].encode('utf-8')
+        return data['extract']
     except KeyError:
-        print(("Failed extract extraction for " + article_link + " on " + language_code))
+        print(("Failed extract extraction for " + article_name + " on " + language_code))
         return None
     raise("unexpected")
 
-def turn_title_into_url_form(filename):
-    return "File:"+urllib.parse.quote(filename[5:])
-    return title.replace(" ", "%20") #TODO DELETE - most likely too limoted
-
-def get_url_from_commons_image(filename, max_size=None):
-    url = "https://tools.wmflabs.org/magnus-toolserver/commonsapi.php?image=" + turn_title_into_url_form(filename)
-    tag_match = "file"
-    if max_size != None:
-        width, height = max_size
-        url += "&thumbwidth=" + str(width) + "&thumbheight=" + str(height)
-        tag_match = "thumbnail"
-    data_about_image = download(url).content
-    data = etree.ElementTree(etree.fromstring(data_about_image))
-    for element in data.getiterator():
-        if element.tag == tag_match and element.text != None:
-            return element.text
-    return None
-
-def download_pageprops(language_code, article_link):
-    data = download_from_wikipedia_api(language_code, "&prop=pageprops", article_link)
+def download_pageprops(language_code, article_name):
+    data = download_from_wikipedia_api(language_code, "&prop=pageprops", article_name)
     try:
         return data['pageprops']
     except KeyError:
-        print(("Failed pageprops extraction for " + article_link + " on " + language_code)) 
+        print(("Failed pageprops extraction for " + article_name + " on " + language_code))
         return None
     raise("unexpected")
 
-def get_image_from_wikipedia_article(language_code, article_link):
-    page = download_pageprops(language_code, article_link)
+def get_image_from_wikipedia_article(language_code, article_name):
+    page = download_pageprops(language_code, article_name)
     if page == None:
         return None
     filename_via_page_image =  None
     try:
-        filename_via_page_image = "File:" + page['page_image'].encode('utf-8')
+        filename_via_page_image = "File:" + page['page_image']
     except KeyError:
-        print(("Failed image extraction via page image for " + article_link + " on " + language_code)) 
+        print(("Failed image extraction via page image for " + article_name + " on " + language_code))
         return None
     return filename_via_page_image
 
-def get_wikidata_object_id_from_article(language_code, article_name):
+def get_wikidata_object_id_from_article(language_code, article_name, forced_refresh = False):
     try:
-        wikidata_entry = download_from_wikidata_api(language_code, article_name)['entities']
+        wikidata_entry = get_data_from_wikidata(language_code, article_name, forced_refresh)['entities']
         return list(wikidata_entry)[0]
     except KeyError:
         return None
 
-def get_property_from_wikidata(wikidata_id, property):
-    wikidata = download_from_wikidata_api_by_id(wikidata_id)
+def get_property_from_wikidata(wikidata_id, property, forced_refresh = False):
+    wikidata = get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
     try:
         return wikidata['entities'][wikidata_id]['claims'][property]
     except KeyError:
         return None
 
-def get_interwiki_link(language_code, article_link, target_language_code):
-    wikidata_id = get_wikidata_object_id_from_article(language_code, article_link)
+def get_interwiki_link(language_code, article_name, target_language_code, forced_refresh = False):
+    wikidata_id = get_wikidata_object_id_from_article(language_code, article_name)
     if wikidata_id == None:
         return None
-    wikidata = download_from_wikidata_api_by_id(wikidata_id)
+    wikidata = get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
     try:
-        return wikidata['entities'][wikidata_id]['sitelinks'][target_language_code+"wiki"]['title'].encode('utf-8')
+        return wikidata['entities'][wikidata_id]['sitelinks'][target_language_code+"wiki"]['title']
     except KeyError:
         return None
 
@@ -127,7 +100,7 @@ def get_image_from_wikidata(wikidata_id):
     if data['datatype'] != 'commonsMedia':
         print(("unexpected datatype for " + wikidata_id + " - " + datatype))
         return None
-    return "File:"+data['datavalue']['value'].encode('utf-8').replace(" ", "_")
+    return "File:"+data['datavalue']['value'].replace(" ", "_")
 
 def get_location_from_wikidata(wikidata_id):
     data = get_property_from_wikidata(wikidata_id, 'P625')
@@ -138,22 +111,6 @@ def get_location_from_wikidata(wikidata_id):
         return (None, None)
     data = data['datavalue']['value']
     return data['latitude'], data['longitude']
-
-def get_page_image(link, max_size=None):
-    language_code = get_language_code_from_link(link)
-    article_link = get_article_name_from_link(link)
-    filename_via_page_image = get_image_from_wikipedia_article(language_code, article_link)
-    wikidata_id = get_wikidata_object_id_from_article(language_code, article_link)
-    filename_via_wikidata = None 
-    if wikidata_id != None:
-        filename_via_wikidata = get_image_from_wikidata(wikidata_id)
-
-    filename = filename_via_wikidata
-    if filename == None:
-        filename = filename_via_page_image
-    if filename == None:
-        return None
-    return get_url_from_commons_image(filename, max_size)
 
 def get_language_code_from_link(link):
     parsed_link = re.match('([^:]*):(.*)', link)
@@ -180,76 +137,160 @@ def get_form_of_link_usable_as_filename(link):
     link = link.replace("|", "")
     return link
 
+def set_cache_location(path):
+    global cache_location_store
+    cache_location_store = path
 
-def get_filename_with_wikidata_entity(language_code, article_link):
-    return os.path.join('cache', language_code, get_form_of_link_usable_as_filename(article_link) + ".wikidata_entity.txt")
+def cache_location():
+    assert(cache_location_store != None)
+    return cache_location_store
 
-def get_filename_with_article(language_code, article_link):
-    return os.path.join('cache', language_code, get_form_of_link_usable_as_filename(article_link) + ".txt")
+def wikidata_language_placeholder():
+    return 'wikidata_by_id'
 
-def get_filename_with_code(language_code, article_link):
-    return os.path.join('cache', language_code, get_form_of_link_usable_as_filename(article_link) + ".code.txt")
+def get_filename_with_wikidata_entity_by_id(id):
+    return os.path.join(cache_location(), 'cache', wikidata_language_placeholder(), get_form_of_link_usable_as_filename(id) + ".wikidata_entity.txt")
+
+def get_filename_with_wikidata_by_id_response_code(id):
+    return os.path.join(cache_location(), 'cache', wikidata_language_placeholder(), get_form_of_link_usable_as_filename(id) + ".wikidata_entity.code.txt")
+
+def get_filename_with_wikidata_entity(language_code, article_name):
+    return os.path.join(cache_location(), 'cache', language_code, get_form_of_link_usable_as_filename(article_name) + ".wikidata_entity.txt")
+
+def get_filename_with_wikidata_response_code(language_code, article_name):
+    return os.path.join(cache_location(), 'cache', language_code, get_form_of_link_usable_as_filename(article_name) + ".wikidata_entity.code.txt")
+
+def get_filename_with_article(language_code, article_name):
+    return os.path.join(cache_location(), 'cache', language_code, get_form_of_link_usable_as_filename(article_name) + ".txt")
+
+def get_filename_with_wikipedia_response_code(language_code, article_name):
+    return os.path.join(cache_location(), 'cache', language_code, get_form_of_link_usable_as_filename(article_name) + ".code.txt")
 
 def write_to_file(filename, content):
     specified_file = open(filename, 'w')
     specified_file.write(content)
     specified_file.close()
 
-def download_data_from_wikipedia(language_code, article_link):
-    path = os.path.join('cache', language_code)
+def write_to_binary_file(filename, content):
+    specified_file = open(filename, 'wb')
+    specified_file.write(content)
+    specified_file.close()
+
+def ensure_that_cache_folder_exists(language_code):
+    path = os.path.join(cache_location(), 'cache', language_code)
     try:
         os.makedirs(path)
     except OSError:
         if not os.path.isdir(path):
             raise
-    print(("downloading from " + language_code + "wiki: " + article_link))
-    article_filename = get_filename_with_article(language_code, article_link)
-    code_filename = get_filename_with_code(language_code, article_link)
-    url = "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_link)
-    result = download(url)
-    write_to_file(article_filename, str(result.content))
-    write_to_file(code_filename, str(result.code))
 
-def get_data_from_wikidata(language_code, article_link):
-    path = os.path.join('wikidata_cache', language_code)
-    try:
-        os.makedirs(path)
-    except OSError:
-        if not os.path.isdir(path):
-            raise
-    article_filename = get_filename_with_wikidata_entity(language_code, article_link)
-    result = download_from_wikidata_api(language_code, article_link)
-    write_to_file(article_filename, str(result.content))
-
-def it_is_necessary_to_reload_files(language_code, article_link):
-    article_filename = get_filename_with_article(language_code, article_link)
-    code_filename = get_filename_with_code(language_code, article_link)
-
-    if not os.path.isfile(article_filename) or not os.path.isfile(code_filename):
+def is_it_necessary_to_reload_files(content_filename, response_code_filename):
+    if not os.path.isfile(content_filename) or not os.path.isfile(response_code_filename):
         return True
     else:
         files_need_reloading = False
-        code_file = open(code_filename, 'r')
+        code_file = open(response_code_filename, 'r')
         if code_file.read() == "":
             files_need_reloading = True
         code_file.close()
         return files_need_reloading
     return False
 
-def get_wikipedia_page(language_code, article_name, forced_refresh):
-    if it_is_necessary_to_reload_files(language_code, article_name) or forced_refresh:
-        download_data_from_wikipedia(language_code, article_name)
-    wikipedia_article_cache_filepath = get_filename_with_article(language_code, article_name)
-    if not os.path.isfile(wikipedia_article_cache_filepath):
-        print(it_is_necessary_to_reload_files(language_code, article_name))
-        print(wikipedia_article_cache_filepath)
-        assert False
-    article_file = open(wikipedia_article_cache_filepath, 'r')
-    page = article_file.read()
-    article_file.close()
-    code_file = open(get_filename_with_code(language_code, article_name), 'r')
+def get_data_from_cache_files(response_filename, response_code_filename):
+    response_file = open(response_filename, 'r')
+    response = response_file.read()
+    response_file.close()
+    code_file = open(response_code_filename, 'r')
     code = int(code_file.read())
     code_file.close()
     if code != 200:
         return None
-    return page
+    return response
+
+def download_data_from_wikipedia(language_code, article_name):
+    ensure_that_cache_folder_exists(language_code)
+    print(("downloading from " + language_code + "wiki: " + article_name))
+    response_filename = get_filename_with_article(language_code, article_name)
+    code_filename = get_filename_with_wikipedia_response_code(language_code, article_name)
+    url = "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
+    result = download(url)
+    write_to_file(response_filename, str(result.content))
+    write_to_file(code_filename, str(result.code))
+
+def download_data_from_wikidata_by_id(wikidata_id):
+    ensure_that_cache_folder_exists(wikidata_language_placeholder())
+    response_filename = get_filename_with_wikidata_entity_by_id(wikidata_id)
+    code_filename = get_filename_with_wikidata_by_id_response_code(wikidata_id)
+
+    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + wikidata_id + "&format=json"
+    result = download(url)
+    content = str(result.content.decode())
+    write_to_file(response_filename, content)
+    write_to_file(code_filename, str(result.code))
+
+def get_data_from_wikidata_by_id(wikidata_id, forced_refresh=False):
+    if it_is_necessary_to_reload_wikidata_by_id_files(wikidata_id) or forced_refresh:
+        download_data_from_wikidata_by_id(wikidata_id)
+    response_filename = get_filename_with_wikidata_entity_by_id(wikidata_id)
+    response_code_filename = get_filename_with_wikidata_by_id_response_code(wikidata_id)
+    if not os.path.isfile(response_filename):
+        print(it_is_necessary_to_reload_wikidata_by_id_files(wikidata_id))
+        print(response_filename)
+        assert False
+    response = get_data_from_cache_files(response_filename, response_code_filename)
+    if response == None:
+        return response
+    return json.loads(response)
+
+def it_is_necessary_to_reload_wikidata_by_id_files(wikidata_id):
+    content_filename = get_filename_with_wikidata_entity_by_id(wikidata_id)
+    response_code_filename = get_filename_with_wikidata_by_id_response_code(wikidata_id)
+    return is_it_necessary_to_reload_files(content_filename, response_code_filename)
+
+def download_data_from_wikidata(language_code, article_name):
+    ensure_that_cache_folder_exists(language_code)
+    response_filename = get_filename_with_wikidata_entity(language_code, article_name)
+    code_filename = get_filename_with_wikidata_response_code(language_code, article_name)
+
+    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=" + language_code + "wiki&titles=" + urllib.parse.quote(article_name) + "&format=json"
+    result = download(url)
+    content = str(result.content.decode())
+    write_to_file(response_filename, content)
+    write_to_file(code_filename, str(result.code))
+
+def get_data_from_wikidata(language_code, article_name, forced_refresh):
+    if it_is_necessary_to_reload_wikidata_files(language_code, article_name) or forced_refresh:
+        download_data_from_wikidata(language_code, article_name)
+    response_filename = get_filename_with_wikidata_entity(language_code, article_name)
+    response_code_filename = get_filename_with_wikidata_response_code(language_code, article_name)
+    if not os.path.isfile(response_filename):
+        print(it_is_necessary_to_reload_wikidata_files(language_code, article_name))
+        print(response_filename)
+        assert False
+    response = get_data_from_cache_files(response_filename, response_code_filename)
+    if response == None:
+        return response
+    return json.loads(response)
+
+
+def it_is_necessary_to_reload_wikidata_files(language_code, article_name):
+    content_filename = get_filename_with_wikidata_entity(language_code, article_name)
+    response_code_filename = get_filename_with_wikidata_response_code(language_code, article_name)
+    return is_it_necessary_to_reload_files(content_filename, response_code_filename)
+
+def it_is_necessary_to_reload_wikipedia_files(language_code, article_name):
+    content_filename = get_filename_with_article(language_code, article_name)
+    response_code_filename = get_filename_with_wikipedia_response_code(language_code, article_name)
+    return is_it_necessary_to_reload_files(content_filename, response_code_filename)
+
+def get_wikipedia_page(language_code, article_name, forced_refresh):
+    if it_is_necessary_to_reload_wikipedia_files(language_code, article_name) or forced_refresh:
+        download_data_from_wikipedia(language_code, article_name)
+    response_filename = get_filename_with_article(language_code, article_name)
+    response_code_filename = get_filename_with_wikipedia_response_code(language_code, article_name)
+    if not os.path.isfile(response_filename):
+        print(it_is_necessary_to_reload_wikipedia_files(language_code, article_name))
+        print(response_filename)
+        assert False
+    response = get_data_from_cache_files(response_filename, response_code_filename)
+    return response

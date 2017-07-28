@@ -26,7 +26,7 @@ def get_problem_for_given_element(element, forced_refresh):
         return "missing article at wiki:"
 
     if args.expected_language_code is not None and args.expected_language_code != language_code:
-        correct_article = get_interwiki(language_code, article_name, args.expected_language_code)
+        correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
         if correct_article != None:
             return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
         if correct_article == None and args.only_osm_edits == False:
@@ -100,9 +100,10 @@ def wikidata_url(language_code, article_name):
 def wikipedia_url(language_code, article_name):
     return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
 
-def get_interwiki(source_language_code, source_article_name, target_language):
+def get_interwiki(source_language_code, source_article_name, target_language, forced_refresh):
     try:
-        wikidata_entry = wikipedia_connection.download_from_wikidata_api(source_language_code, source_article_name)['entities']
+        wikidata_entry = wikipedia_connection.get_data_from_wikidata(source_language_code, source_article_name, forced_refresh)
+        wikidata_entry = wikidata_entry['entities']
         id = list(wikidata_entry)[0]
         return wikidata_entry[id]['sitelinks'][target_language+'wiki']['title']
     except KeyError:
@@ -141,7 +142,7 @@ def print_interwiki_situation_if_relevant(language_code, article_name):
     if language_code is not None and article_name is not None:
         print(wikipedia_url(language_code, article_name))
         print(article_name)
-        article_name_in_intended = get_interwiki(language_code, article_name, args.expected_language_code)
+        article_name_in_intended = get_interwiki(language_code, article_name, args.expected_language_code, False)
         if article_name_in_intended == None:
             print("no article in " + args.expected_language_code + "wiki")
         else:
@@ -196,6 +197,11 @@ def parsed_args():
     if not (args.file):
         parser.error('Provide .osm file')
     return args
+
+cache_location_config_filepath = 'cache_location.config'
+cache_location_file = open(cache_location_config_filepath, 'r')
+wikipedia_connection.set_cache_location(cache_location_file.read())
+cache_location_file.close()
 
 args = parsed_args()
 osm = Data(args.file)

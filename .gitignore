@@ -2,3 +2,4 @@
 *.osm
 *.pyc
 **/
+cache_location.config
