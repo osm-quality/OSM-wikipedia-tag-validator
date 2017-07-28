@@ -36,7 +36,7 @@ def get_problem_for_given_element(element, forced_refresh):
         if correct_article == None and args.only_osm_edits == False and args.allow_false_positives:
             return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected, no page in that language was found:"
     if args.only_osm_edits == False:
-        return get_geotagging_problem(page, element)
+        return get_geotagging_problem(page, element, wikidata_id)
     return None
 
 def is_object_outside_language_area(wikidata_id):
@@ -184,13 +184,11 @@ def is_wikipedia_page_geotagged(page):
             return False
     return True
 
-def get_geotagging_problem(page, element):
-    if is_wikipedia_page_geotagged(page):
-        if not element_can_be_reduced_to_position_at_single_location(element):
-            return "coordinates in wikipedia article at uncoordinable element:"
-    else:
-        if element_can_be_reduced_to_position_at_single_location(element):
-            return "missing coordinates at wiki or wikipedia tag should be replaced by something like operator:wikipedia=en:McDonald's or subject:wikipedia=*:"
+def get_geotagging_problem(page, element, wikidata_id):
+    if is_wikipedia_page_geotagged(page) or wikipedia_connection.get_location_from_wikidata(wikidata_id) != (None, None):
+        return None
+    if element_can_be_reduced_to_position_at_single_location(element):
+        return "missing coordinates at wiki or wikipedia tag should be replaced by something like operator:wikipedia=en:McDonald's or subject:wikipedia=*:"
     return None
 
 def validate_wikipedia_link_on_element_and_print_problems(element):
