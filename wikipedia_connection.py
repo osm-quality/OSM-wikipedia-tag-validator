@@ -192,6 +192,9 @@ def get_form_of_link_usable_as_filename(link):
     return link
 
 
+def get_filename_with_wikidata_entity(language_code, article_link):
+    return os.path.join('cache', language_code, get_form_of_link_usable_as_filename(article_link) + ".wikidata_entitytxt")
+
 def get_filename_with_article(language_code, article_link):
     return os.path.join('cache', language_code, get_form_of_link_usable_as_filename(article_link) + ".txt")
 
