@@ -7,6 +7,8 @@ import wikipedia_connection
 from osm_iterator import Data
 
 def get_problem_for_given_element(element, forced_refresh):
+    if args.flush_cache:
+        forced_refresh = True
     link = element.get_tag_value("wikipedia")
     if link == None:
         return None
