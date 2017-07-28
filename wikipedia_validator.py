@@ -162,10 +162,10 @@ def is_wikipedia_page_geotagged(page):
 def get_geotagging_problem(page, element):
     if is_wikipedia_page_geotagged(page):
         if not element_can_be_reduced_to_position_at_single_location(element):
-            return "coordinates at uncoordinable element:"
+            return "coordinates in wikipedia article at uncoordinable element:"
     else:
         if element_can_be_reduced_to_position_at_single_location(element):
-            return "missing coordinates at wiki:"
+            return "missing coordinates at wiki or wikipedia tag should be replaced by something like operator:wikipedia=en:McDonald's or subject:wikipedia=*:"
     return None
 
 def validate_wikipedia_link_on_element_and_print_problems(element):
