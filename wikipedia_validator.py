@@ -33,7 +33,7 @@ def get_problem_for_given_element(element, forced_refresh):
         correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
         if correct_article != None:
             return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
-        if correct_article == None and args.only_osm_edits == False:
+        if correct_article == None and args.only_osm_edits == False and args.allow_false_positives:
             return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected, no page in that language was found:"
     if args.only_osm_edits == False:
         return get_geotagging_problem(page, element)
@@ -217,6 +217,7 @@ def parsed_args():
                         action='store_true')
     parser.add_argument('-only_osm_edits', dest='only_osm_edits', help='adding this parameter will remove reporting of problems that may require editing wikipedia',
                         action='store_true')
+    parser.add_argument('-allow_false_positives', dest='allow_false_positives', help='enables validator rules that may report false positives')
     args = parser.parse_args()
     if not (args.file):
         parser.error('Provide .osm file')
