@@ -16,13 +16,21 @@ def get_problem_for_given_element(element, forced_refresh):
         return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
     language_code = wikipedia_connection.get_language_code_from_link(link)
     article_name = wikipedia_connection.get_article_name_from_link(link)
+
     if language_code is None or language_code.__len__() > 3:
         return "malformed wikipedia tag (" + link + ")"
-    if args.expected_language_code is not None and args.expected_language_code != language_code:
-        return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
+
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
+
     if page == None:
         return "missing article at wiki:"
+
+    if args.expected_language_code is not None and args.expected_language_code != language_code:
+        correct_article = get_interwiki(language_code, article_name, args.expected_language_code)
+        if correct_article != None:
+            return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
+        if correct_article == None and args.only_osm_edits == False:
+            return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected, no page in that language was found:"
     if args.only_osm_edits == False:
         return get_geotagging_problem(page, element)
     return None
