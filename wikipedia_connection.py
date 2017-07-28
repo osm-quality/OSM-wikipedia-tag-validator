@@ -16,6 +16,7 @@ class UrlResponse:
 def fetch(url):
     while True:
         try:
+            print("fetching " + url)
             f = urllib.request.urlopen(url)
             return UrlResponse(f.read(), f.getcode())
         except urllib.error.HTTPError as e:
