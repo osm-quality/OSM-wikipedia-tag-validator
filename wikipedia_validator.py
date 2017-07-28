@@ -16,9 +16,13 @@ def get_problem_for_given_element(element, forced_refresh):
         return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
     language_code = wikipedia_connection.get_language_code_from_link(link)
     article_name = wikipedia_connection.get_article_name_from_link(link)
+    wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
 
     if language_code is None or language_code.__len__() > 3:
         return "malformed wikipedia tag (" + link + ")"
+
+    if is_object_outside_language_area(wikidata_id):
+        return None
 
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
 
@@ -34,6 +38,26 @@ def get_problem_for_given_element(element, forced_refresh):
     if args.only_osm_edits == False:
         return get_geotagging_problem(page, element)
     return None
+
+def is_object_outside_language_area(wikidata_id):
+    if args.expected_language_code != None:
+        return False
+
+    if args.expected_language_code == "pl":
+        target = 'Q36' #TODO, make it more general
+    else:
+        assert(False)
+
+    countries = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P17')
+    if countries == None:
+        return False
+    for country in countries:
+        country = country['mainsnak']['datavalue']['value']['id']
+        if country == target:
+            return False
+    if not matched:
+        #not in the wanted country
+        return True
 
 def element_can_be_reduced_to_position_at_single_location(element):
     if element.get_element().tag == "relation":
