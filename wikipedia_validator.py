@@ -35,13 +35,6 @@ def get_problem_for_given_element(element, forced_refresh):
         return get_geotagging_problem(page, element)
     return None
 
-def get_wikidata_object_id_from_article(language_code, article_name):
-    try:
-        wikidata_entry = wikipedia_connection.fetch_from_wikidata_api(language_code, article_name)['entities']
-        return list(wikidata_entry)[0]
-    except KeyError:
-        return None
-
 def element_can_be_reduced_to_position_at_single_location(element):
     if element.get_element().tag == "relation":
         relation_type = element.get_tag_value("type")
@@ -102,14 +95,14 @@ def print_pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
 
 
 def wikidata_url(language_code, article_name):
-    return "https://www.wikidata.org/wiki/" + get_wikidata_object_id_from_article(language_code, article_name)
+    return "https://www.wikidata.org/wiki/" + wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
 
 def wikipedia_url(language_code, article_name):
     return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
 
 def get_interwiki(source_language_code, source_article_name, target_language):
     try:
-        wikidata_entry = wikipedia_connection.fetch_from_wikidata_api(source_language_code, source_article_name)['entities']
+        wikidata_entry = wikipedia_connection.download_from_wikidata_api(source_language_code, source_article_name)['entities']
         id = list(wikidata_entry)[0]
         return wikidata_entry[id]['sitelinks'][target_language+'wiki']['title']
     except KeyError:
