@@ -115,7 +115,6 @@ def output_element(element, message):
     lat = None
     lon = None
     out_of_bounds = False
-    show_out_of_bounds_elements = False
     if element.get_element().tag == "node":
         lat = float(element.get_element().attrib['lat'])
         lon = float(element.get_element().attrib['lon'])
@@ -123,8 +122,6 @@ def output_element(element, message):
         coord = element.get_coords()
         if coord is None:
             out_of_bounds = True
-            if not show_out_of_bounds_elements:
-                return
         else:
             lat = float(coord.lat)
             lon = float(coord.lon)
@@ -134,7 +131,7 @@ def output_element(element, message):
     print(element.get_link())
     print_interwiki_situation_if_relevant(language_code, article_name)
     if out_of_bounds:
-        print("Out of bounds")
+        print("Location data missing")
     else:
         if args.only_osm_edits == False:
             print_wikipedia_location_data(lat, lon, language_code)
