@@ -173,10 +173,9 @@ def validate_wikipedia_link_on_element_and_print_problems(element):
     if (problem != None):
         output_element(element, problem)
 
-def validate_wikipedia_link_on_element_and_print_problems_refresh_cache(element):
-    forced_refresh = False
+def validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported(element):
     if(get_problem_for_given_element(element, False) != None):
-        forced_refresh = True
+        get_problem_for_given_element(element, True)
     validate_wikipedia_link_on_element_and_print_problems(element)
 
 
@@ -200,4 +199,7 @@ def parsed_args():
 
 args = parsed_args()
 osm = Data(args.file)
-osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
+if args.flush_cache_for_reported_situations:
+    osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
+else:
+    osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
