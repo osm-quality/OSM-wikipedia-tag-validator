@@ -26,23 +26,19 @@ def fetch(url):
             print(e)
             continue
 
-def turn_title_into_url_form(filename):
-    return "File:"+urllib.parse.quote(filename[5:])
-    return title.replace(" ", "%20") #TODO DELETE - most likely too limoted
-
-def get_something_from_wikipedia_api(language_code, what, article_link):
+def fetch_from_wikipedia_api(language_code, what, article_link):
     url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib.parse.quote(article_link)
     parsed_json = json.loads(fetch(url).content)
     id = list(parsed_json['query']['pages'])[0]
     data = parsed_json['query']['pages'][id]
     return data
 
-def get_something_from_wikidata_api(language_code, article_link):
+def fetch_from_wikidata_api(language_code, article_link):
     url = "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=" + language_code + "wiki&titles=" + urllib.parse.quote(article_link) + "&format=json"
     parsed_json = json.loads(str(fetch(url).content.decode()))
     return parsed_json
 
-def get_something_from_wikidata_api_by_id(wikidata_id):
+def fetch_from_wikidata_api_by_id(wikidata_id):
     url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + wikidata_id + "&format=json"
     parsed_json = json.loads(str(fetch(url).content.decode()))
     return parsed_json
@@ -52,13 +48,17 @@ def get_intro_from_wikipedia(language_code, article_link, requested_length=None)
     if requested_length != None:
         request += "&exchars=" + str(requested_length)
 
-    data = get_something_from_wikipedia_api(language_code, request, article_link)
+    data = fetch_from_wikipedia_api(language_code, request, article_link)
     try:
         return data['extract'].encode('utf-8')
     except KeyError:
         print(("Failed extract extraction for " + article_link + " on " + language_code)) 
         return None
     raise("unexpected")
+
+def turn_title_into_url_form(filename):
+    return "File:"+urllib.parse.quote(filename[5:])
+    return title.replace(" ", "%20") #TODO DELETE - most likely too limoted
 
 def get_url_from_commons_image(filename, max_size=None):
     url = "https://tools.wmflabs.org/magnus-toolserver/commonsapi.php?image=" + turn_title_into_url_form(filename)
@@ -75,7 +75,7 @@ def get_url_from_commons_image(filename, max_size=None):
     return None
 
 def get_pageprops(language_code, article_link):
-    data = get_something_from_wikipedia_api(language_code, "&prop=pageprops", article_link)
+    data = fetch_from_wikipedia_api(language_code, "&prop=pageprops", article_link)
     try:
         return data['pageprops']
     except KeyError:
@@ -204,7 +204,7 @@ def write_to_file(filename, content):
     specified_file.write(content)
     specified_file.close()
 
-def fetch_data_from_wikipedia(language_code, article_link):
+def get_data_from_wikipedia(language_code, article_link):
     path = os.path.join('cache', language_code)
     try:
         os.makedirs(path)
@@ -237,7 +237,7 @@ def it_is_necessary_to_reload_files(language_code, article_link):
 
 def get_wikipedia_page(language_code, article_name, forced_refresh):
     if it_is_necessary_to_reload_files(language_code, article_name) or forced_refresh:
-        fetch_data_from_wikipedia(language_code, article_name)
+        get_data_from_wikipedia(language_code, article_name)
     wikipedia_article_cache_filepath = get_filename_with_article(language_code, article_name)
     if not os.path.isfile(wikipedia_article_cache_filepath):
         print(it_is_necessary_to_reload_files(language_code, article_name))

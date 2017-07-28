@@ -99,7 +99,7 @@ def wikipedia_url(language_code, article_name):
 
 def get_interwiki(source_language_code, source_article_name, target_language):
     try:
-        wikidata_entry = wikipedia_connection.get_something_from_wikidata_api(source_language_code, source_article_name)['entities']
+        wikidata_entry = wikipedia_connection.fetch_from_wikidata_api(source_language_code, source_article_name)['entities']
         id = list(wikidata_entry)[0]
         return wikidata_entry[id]['sitelinks'][target_language+'wiki']['title']
     except KeyError:
