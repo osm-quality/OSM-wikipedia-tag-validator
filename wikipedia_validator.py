@@ -11,7 +11,7 @@ def get_problem_for_given_element(element, forced_refresh):
     if link == None:
         return None
     if link.find("#") != -1:
-        return "link to section:"
+        return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
     language_code = wikipedia_connection.get_language_code_from_link(link)
     article_name = wikipedia_connection.get_article_name_from_link(link)
     if language_code is None or language_code.__len__() > 3:
