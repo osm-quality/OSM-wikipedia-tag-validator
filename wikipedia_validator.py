@@ -2,6 +2,7 @@
 
 import urllib.request, urllib.error, urllib.parse
 import argparse
+import yaml
 
 import wikipedia_connection
 from osm_iterator import Data
@@ -22,28 +23,32 @@ def get_problem_for_given_element(element, forced_refresh):
     wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
 
     if language_code is None or language_code.__len__() > 3:
-        return "malformed wikipedia tag (" + link + ")"
-
-    if is_object_outside_language_area(wikidata_id):
-        return None
+        return ErrorReport(error_id = "malformed wikipedia tag", error_message = "malformed wikipedia tag (" + link + ")")
 
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
 
     if page == None:
-        return "missing article at wiki:"
+        return ErrorReport(error_id = "wikipedia tag links to 404", error_message = "missing article at wiki:")
 
     wikipedia_link_issues = get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id)
     if wikipedia_link_issues != None:
         return wikipedia_link_issues
 
-    if args.expected_language_code is not None and args.expected_language_code != language_code:
-        correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
-        if correct_article != None:
-            return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
-        if correct_article == None and args.only_osm_edits == False and args.allow_false_positives:
-            return "wikipedia page in unwanted language - " + args.expected_language_code + " was expected, no page in that language was found:"
+    reason = why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id)
+    if reason != None:
+        print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
+    else:
+        if args.expected_language_code is not None and args.expected_language_code != language_code:
+            correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
+            if correct_article != None:
+                error_message = "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
+                return ErrorReport(error_id = "wikipedia tag relinking necessary", error_message = error_message)
+            if correct_article == None and args.only_osm_edits == False and args.allow_false_positives:
+                error_message = "wikipedia page in unwanted language - " + args.expected_language_code + " was expected, no page in that language was found:"
+                return ErrorReport(error_id = "wikipedia tag relinking desirable, article missing", error_message = error_message)
     if args.only_osm_edits == False:
         return get_geotagging_problem(page, element, wikidata_id)
+
     return None
 
 def get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id):
@@ -51,52 +56,113 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
         return None
     if is_wikipedia_page_geotagged(page) or wikipedia_connection.get_location_from_wikidata(wikidata_id) != (None, None):
         return None
-    type_id = get_wikidata_type_id_from_article(language_code, article_name)
-    if type_id == None:
+    base_type_id = get_wikidata_type_id_from_article(language_code, article_name)
+    if base_type_id == None:
         if args.only_osm_edits:
             return None
-        return "instance data not present in wikidata for " + wikidata_url(language_code, article_name) + ". unable to verify type of object:"
-    if type_id == 'Q4167410':
-        return wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link"
-    if type_id == 'Q811979':
-        #"designed structure"
-        return None
-    if type_id == 'Q46831':
-        # mountain range - "geographic area containing numerous geologically related mountains"
-        return None
-    if type_id == 'Q11776944':
-        # Megaregion
-        return None
-    if type_id == 'Q31855':
-        #instytut badawczy
-        return None
-    if type_id == 'Q34442':
-        #road
-        return None
-    if type_id == 'Q5':
-        return "article linked in wikipedia tag is about human, so it is very unlikely to be correct (subject:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
-    if get_wikidata_entry_description(type_id, 'en') != None:
-        print("if type_id == '" + get_wikidata_entry_description(type_id, 'en'))
-    elif get_wikidata_entry_description(type_id, args.expected_language_code) != None:
-        print("if type_id == '" + get_wikidata_entry_description(type_id, args.expected_language_code))
-    else:
-        print("Unexpected type " + type_id + " undocumented format")
-    return None
+        error_message = "instance data not present in wikidata for " + wikidata_url(language_code, article_name) + ". unable to verify type of object:"
+        return ErrorReport(error_id = "wikidata data missing - instance", error_message = error_message)
+    all_types = recursive_all_subclass_of(base_type_id)
+    for type_id in all_types:
+        if type_id == 'Q4167410':
+            error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link"
+            return ErrorReport(error_id = "link to disambig", error_message = error_message)
+        if type_id == 'Q5':
+            error_message = "article linked in wikipedia tag is about human, so it is very unlikely to be correct (subject:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
+            return ErrorReport(error_id = "link to human", error_message = error_message)
+        if type_id == 'Q43229':
+            error_message = "article linked in wikipedia tag is about organization, so it is very unlikely to be correct (brand:wikipedia=* or operator:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
+            return ErrorReport(error_id = "link to organization", error_message = "")
+    for type_id in all_types:
+        if type_id == 'Q811979':
+            #"designed structure"
+            return None
+        if type_id == 'Q46831':
+            # mountain range - "geographic area containing numerous geologically related mountains"
+            return None
+        if type_id == 'Q11776944':
+            # Megaregion
+            return None
+        if type_id == 'Q31855':
+            #instytut badawczy
+            return None
+        if type_id == 'Q34442':
+            #road
+            return None
+        if type_id == 'Q2143825':
+            #walking path 'path for hiking in a natural environment'
+            return None
+        if type_id == 'Q11634':
+            #'art of sculpture'
+            return None
+        if type_id == 'Q56061':
+            #'administrative territorial entity' - 'territorial entity for administration purposes, with or without its own local government'
+            return None
+        if type_id == 'Q473972':
+            #'protected area'
+            return None
 
-def get_wikidata_entry_description(wikidata_id, language):
+    print("------------")
+    print("unexpected type " + base_type_id)
+    describe_unexpected_wikidata_type(base_type_id)
+
+def wikidata_entries_for_abstract_or_very_broad_concepts():
+    return ['Q1801244', 'Q28732711', 'Q223557', 'Q488383', 'Q16686448',
+    'Q151885', 'Q35120', 'Q37260', 'Q246672', 'Q5127848', 'Q16889133',
+    'Q386724', 'Q17008256', 'Q11348', 'Q11028', 'Q1260632', 'Q1209283']
+
+def recursive_all_subclass_of(wikidata_id):
+    processed = []
+    to_process = [wikidata_id]
+    while to_process != []:
+        process_id = to_process.pop()
+        processed.append(process_id)
+        to_process += get_useful_direct_parents(process_id, processed + to_process)
+    return processed
+
+def get_useful_direct_parents(wikidata_id, forbidden):
+    more_general_list = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P279') #subclass of
+    if more_general_list == None:
+        return []
+    returned = []
+    for more_general in more_general_list:
+        more_general_id = more_general['mainsnak']['datavalue']['value']['id']
+        if more_general_id not in forbidden:
+            if more_general_id not in wikidata_entries_for_abstract_or_very_broad_concepts():
+                returned.append(more_general_id)
+    return returned
+
+def describe_unexpected_wikidata_type(type_id):
+    # print entire inheritance set
+    for parent_category in recursive_all_subclass_of(type_id):
+        print("if type_id == '" + parent_category + "':")
+        show_wikidata_description(parent_category)
+
+def show_wikidata_description(wikidata_id):
+    en_docs = get_wikidata_description(wikidata_id, 'en')
+    local_docs = get_wikidata_description(wikidata_id, args.expected_language_code)
+    print(en_docs)
+    if(en_docs == (None, None)):
+        print(local_docs)
+        if(local_docs == (None, None)):
+            print("Unexpected type " + wikidata_id + " undocumented format")
+
+def get_wikidata_description(wikidata_id, language):
     docs = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)
     returned = ""
+    label = None
     try:
         label = docs['entities'][wikidata_id]['labels'][language]['value']
-        returned = wikidata_id + " described as " + label
     except KeyError:
-        return None
+        label = None
 
+    explanation = None
     try:
         explanation = docs['entities'][wikidata_id]['descriptions'][language]['value']
-        returned = returned + " \"" + explanation + "\""
     except KeyError:
-        return returned
+        explanation = None
+
+    return dict(label = label, explanation = explanation, language = language)
 
 def get_wikidata_type_id_from_article(language_code, article_name):
     try:
@@ -108,9 +174,11 @@ def get_wikidata_type_id_from_article(language_code, article_name):
     except KeyError:
         return None
 
-def is_object_outside_language_area(wikidata_id):
-    if args.expected_language_code != None:
-        return False
+# unknown data, known to be completely inside -> not allowed, returns None
+# known to be outside or on border -> allowed, returns reason
+def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
+    if args.expected_language_code == None:
+        return "no expected language is defined"
 
     if args.expected_language_code == "pl":
         target = 'Q36' #TODO, make it more general
@@ -119,14 +187,25 @@ def is_object_outside_language_area(wikidata_id):
 
     countries = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P17')
     if countries == None:
-        return False
+        # TODO locate based on coordinates...
+        return None
     for country in countries:
-        country = country['mainsnak']['datavalue']['value']['id']
-        if country == target:
-            return False
-    if not matched:
-        #not in the wanted country
-        return True
+        country_id = country['mainsnak']['datavalue']['value']['id']
+        if country_id != target:
+            # we need to check whatever locations till belongs to a given country
+            # it is necessary to avoid gems like
+            # "Płock is allowed to have foreign wikipedia link, because it is at least partially in Nazi Germany"
+            # P582 indicates the time an item ceases to exist or a statement stops being valid
+            try:
+                country['qualifiers']['P582']
+            except KeyError:
+                country_name = get_wikidata_description(country_id, 'en')['label']
+                #P582 is missing, therefore it is no longer valid
+                if country_id == 'Q7318':
+                    print(describe_osm_object(element) + " is tagged on wikidata as location in no longer existing " + country_name)
+                    return None
+                return "it is at least partially in " + country_name
+    return None
 
 def element_can_be_reduced_to_position_at_single_location(element):
     if element.get_element().tag == "relation":
@@ -138,24 +217,27 @@ def element_can_be_reduced_to_position_at_single_location(element):
     return True
 
 
-def print_wikipedia_location_data(lat, lon, language_code):
+def wikipedia_location_data(lat, lon, language_code):
     lat = "%.4f" % lat  # drop overprecision
     lon = "%.4f" % lon  # drop overprecision
 
-    print(lat)
-    print(lon)
-    if language_code == "it":
-        print("{{coord|" + lat + "|" + lon + "|display=title}}")
-    elif language_code == "pl":
-        print("{{współrzędne|" + lat + " " + lon + "|umieść=na górze}}")
-        print("")
-        print(lat + " " + lon)
-        print("")
-        print_pl_wikipedia_coordinates_for_infobox_old_style(float(lat), float(lon))
-    else:
-        print("{{coord|" + lat + "|" + lon + "}}")
+    returned = ""
 
-def print_pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
+    returned += lat + "\n"
+    returned += lon + "\n"
+    if language_code == "it":
+        returned += "{{coord|" + lat + "|" + lon + "|display=title}}\n"
+    elif language_code == "pl":
+        returned += "{{współrzędne|" + lat + " " + lon + "|umieść=na górze}}\n"
+        returned += "\n"
+        returned += lat + " " + lon + "\n"
+        returned += "\n"
+        returned += pl_wikipedia_coordinates_for_infobox_old_style(float(lat), float(lon))
+    else:
+        returned += "{{coord|" + lat + "|" + lon + "}}\n"
+    return returned
+
+def pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
     lat_sign_character = "N"
     if lat < 0:
         lat *= -1
@@ -184,7 +266,7 @@ def print_pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
     pl_format += " |minut" + lon_sign_character + " = " + lon_m
     pl_format += " |sekund" + lon_sign_character + " = " + lon_s
     pl_format += "\n"
-    print(pl_format)
+    return pl_format
 
 
 def wikidata_url(language_code, article_name):
@@ -202,44 +284,96 @@ def get_interwiki(source_language_code, source_article_name, target_language, fo
     except KeyError:
         return None
 
-def output_element(element, message):
+class ErrorReport:
+    def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, coords_for_wikipedia=None, debug_log=None,
+        error_id=None, fixable_by_pure_osm_edit=None, false_positive_chance=None):
+        self.error_id = error_id
+        self.error_message = error_message
+        self.debug_log = debug_log
+        self.element = element
+        self.false_positive_chance = false_positive_chance
+        self.fixable_by_pure_osm_edit = fixable_by_pure_osm_edit
+        self.desired_wikipedia_target = desired_wikipedia_target
+        self.coords_for_wikipedia = coords_for_wikipedia
+
+    def yaml_output(self, filepath):
+        data = dict(
+            error_id = self.error_id,
+            error_message = self.error_message,
+            debug_log = self.debug_log,
+            false_positive_chance = self.false_positive_chance,
+            fixable_by_pure_osm_edit = self.fixable_by_pure_osm_edit,
+            osm_object_description = describe_osm_object(self.element),
+            osm_object_url = self.element.get_link(),
+            current_wikipedia_target = self.element.get_tag_value("wikipedia"),
+            desired_wikipedia_target = self.desired_wikipedia_target,
+            coords_for_wikipedia = self.coords_for_wikipedia,
+        )
+        with open(filepath, 'a') as outfile:
+            yaml.dump([data], outfile, default_flow_style=False)
+
+    def stdout_output(self):
+        print()
+        print(self.error_message)
+        print(describe_osm_object(self.element))
+        print(self.element.get_link())
+        print(self.debug_log)
+        print(self.coords_for_wikipedia)
+        if self.desired_wikipedia_target != None:
+            print("wikipedia tag should probably be relinked to " + self.desired_wikipedia_target)
+        print(self.coords_for_wikipedia)
+
+def describe_osm_object(element):
     name = element.get_tag_value("name")
+    if name == None:
+        name = ""
+    return name + " " + element.get_link()
+
+def output_element(element, error_report):
+    error_report.element = element
     link = element.get_tag_value("wikipedia")
     language_code = wikipedia_connection.get_language_code_from_link(link)
     article_name = wikipedia_connection.get_article_name_from_link(link)
+    lat, lon = get_location_of_element(element)
+
+    debug_log = None
+    if language_code is not None and article_name is not None:
+        error_report.desired_wikipedia_target = find_desired_wikipedia_link(language_code, article_name)
+
+    if (lat, lon) == (None, None):
+        error_report.debug_log = "Location data missing"
+    else:
+        error_report.coords_for_wikipedia = wikipedia_location_data(lat, lon, language_code)
+
+    error_report.stdout_output()
+    error_report.yaml_output(yaml_report_filepath())
+
+def yaml_report_filepath():
+    return get_write_location()+"/reported.yaml"
+
+def get_location_of_element(element):
     lat = None
     lon = None
-    out_of_bounds = False
     if element.get_element().tag == "node":
         lat = float(element.get_element().attrib['lat'])
         lon = float(element.get_element().attrib['lon'])
+        return lat, lon
     elif element.get_element().tag == "way" or element.get_element().tag == "relation":
         coord = element.get_coords()
         if coord is None:
-            out_of_bounds = True
+            return None, None
         else:
-            lat = float(coord.lat)
-            lon = float(coord.lon)
-    print()
-    print(message)
-    print(name)
-    print(element.get_link())
-    print_interwiki_situation_if_relevant(language_code, article_name)
-    if out_of_bounds:
-        print("Location data missing")
-    else:
-        if args.only_osm_edits == False:
-            print_wikipedia_location_data(lat, lon, language_code)
+            return float(coord.lat), float(coord.lon)
+    assert(False)
 
-def print_interwiki_situation_if_relevant(language_code, article_name):
-    if language_code is not None and article_name is not None:
-        print(wikipedia_url(language_code, article_name))
-        print(article_name)
-        article_name_in_intended = get_interwiki(language_code, article_name, args.expected_language_code, False)
-        if article_name_in_intended == None:
-            print("no article in " + args.expected_language_code + "wiki")
-        else:
-            print(args.expected_language_code + ":" + article_name_in_intended)
+def find_desired_wikipedia_link(language_code, article_name):
+    if args.expected_language_code == None:
+        return language_code + ":" + article_name
+    article_name_in_intended = get_interwiki(language_code, article_name, args.expected_language_code, False)
+    if article_name_in_intended == None:
+        return None
+    else:
+        return args.expected_language_code + ":" + article_name_in_intended
 
 def is_wikipedia_page_geotagged(page):
     # <span class="latitude">50°04'02”N</span>&#160;<span class="longitude">19°55'03”E</span>
@@ -257,7 +391,8 @@ def get_geotagging_problem(page, element, wikidata_id):
     if is_wikipedia_page_geotagged(page) or wikipedia_connection.get_location_from_wikidata(wikidata_id) != (None, None):
         return None
     if element_can_be_reduced_to_position_at_single_location(element):
-        return "missing coordinates at wiki or wikipedia tag should be replaced by something like operator:wikipedia=en:McDonald's or subject:wikipedia=*:"
+        message = "missing coordinates at wiki or wikipedia tag should be replaced by something like operator:wikipedia=en:McDonald's or subject:wikipedia=*:"
+        return ErrorReport(error_id = "target of linking is without coordinates", error_message = message)
     return None
 
 def validate_wikipedia_link_on_element_and_print_problems(element):
