@@ -12,8 +12,11 @@ def get_problem_for_given_element(element, forced_refresh):
     link = element.get_tag_value("wikipedia")
     if link == None:
         return None
-    if link.find("#") != -1:
-        return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
+
+    #TODO - is it OK?
+    #if link.find("#") != -1:
+    #    return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
+
     language_code = wikipedia_connection.get_language_code_from_link(link)
     article_name = wikipedia_connection.get_article_name_from_link(link)
     wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
