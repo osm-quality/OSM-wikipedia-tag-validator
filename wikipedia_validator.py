@@ -29,6 +29,10 @@ def get_problem_for_given_element(element, forced_refresh):
     if page == None:
         return "missing article at wiki:"
 
+    wikipedia_link_issues = get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id)
+    if wikipedia_link_issues != None:
+        return wikipedia_link_issues
+
     if args.expected_language_code is not None and args.expected_language_code != language_code:
         correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
         if correct_article != None:
@@ -38,6 +42,65 @@ def get_problem_for_given_element(element, forced_refresh):
     if args.only_osm_edits == False:
         return get_geotagging_problem(page, element, wikidata_id)
     return None
+
+def get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id):
+    if not element_can_be_reduced_to_position_at_single_location(element):
+        return None
+    if is_wikipedia_page_geotagged(page) or wikipedia_connection.get_location_from_wikidata(wikidata_id) != (None, None):
+        return None
+    type_id = get_wikidata_type_id_from_article(language_code, article_name)
+    if type_id == None:
+        if args.only_osm_edits:
+            return None
+        return "instance data not present in wikidata for " + wikidata_url(language_code, article_name) + ". unable to verify type of object:"
+    if type_id == 'Q4167410':
+        return wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link"
+    if type_id == 'Q811979':
+        #"designed structure"
+        return None
+    if type_id == 'Q46831':
+        # mountain range - "geographic area containing numerous geologically related mountains"
+        return None
+    if type_id == 'Q11776944':
+        # Megaregion
+        return None
+    if type_id == 'Q31855':
+        #instytut badawczy
+        return None
+    if type_id == 'Q5':
+        return "article linked in wikipedia tag is about human, so it is very unlikely to be correct (subject:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
+    if get_wikidata_entry_description(type_id, 'en') != None:
+        print("if type_id == '" + get_wikidata_entry_description(type_id, 'en'))
+    elif get_wikidata_entry_description(type_id, args.expected_language_code) != None:
+        print("if type_id == '" + get_wikidata_entry_description(type_id, args.expected_language_code))
+    else:
+        print("Unexpected type " + type_id + " undocumented format")
+    return None
+
+def get_wikidata_entry_description(wikidata_id, language):
+    docs = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)
+    returned = ""
+    try:
+        label = docs['entities'][wikidata_id]['labels'][language]['value']
+        returned = wikidata_id + " described as " + label
+    except KeyError:
+        return None
+
+    try:
+        explanation = docs['entities'][wikidata_id]['descriptions'][language]['value']
+        returned = returned + " \"" + explanation + "\""
+    except KeyError:
+        return returned
+
+def get_wikidata_type_id_from_article(language_code, article_name):
+    try:
+        forced_refresh = False
+        wikidata_entry = wikipedia_connection.get_data_from_wikidata(language_code, article_name, forced_refresh)
+        wikidata_entry = wikidata_entry['entities']
+        object_id = list(wikidata_entry)[0]
+        return wikidata_entry[object_id]['claims']['P31'][0]['mainsnak']['datavalue']['value']['id']
+    except KeyError:
+        return None
 
 def is_object_outside_language_area(wikidata_id):
     if args.expected_language_code != None:
