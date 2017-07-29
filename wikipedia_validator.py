@@ -67,6 +67,9 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
     if type_id == 'Q31855':
         #instytut badawczy
         return None
+    if type_id == 'Q34442':
+        #road
+        return None
     if type_id == 'Q5':
         return "article linked in wikipedia tag is about human, so it is very unlikely to be correct (subject:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
     if get_wikidata_entry_description(type_id, 'en') != None:
