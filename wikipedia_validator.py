@@ -287,10 +287,14 @@ def parsed_args():
         parser.error('Provide .osm file')
     return args
 
-cache_location_config_filepath = 'cache_location.config'
-cache_location_file = open(cache_location_config_filepath, 'r')
-wikipedia_connection.set_cache_location(cache_location_file.read())
-cache_location_file.close()
+def get_write_location():
+    cache_location_config_filepath = 'cache_location.config'
+    cache_location_file = open(cache_location_config_filepath, 'r')
+    returned = cache_location_file.read()
+    cache_location_file.close()
+    return returned
+
+wikipedia_connection.set_cache_location(get_write_location())
 
 args = parsed_args()
 osm = Data(args.file)
