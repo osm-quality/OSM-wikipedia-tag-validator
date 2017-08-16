@@ -123,6 +123,7 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
 
 
     print("------------")
+    print(describe_osm_object(element))
     print("unexpected type " + base_type_id)
     describe_unexpected_wikidata_type(base_type_id)
 
