@@ -185,6 +185,8 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
 
     if args.expected_language_code == "pl":
         target = 'Q36' #TODO, make it more general
+    elif args.expected_language_code == "de":
+        target = 'Q183'
     else:
         assert(False)
 
