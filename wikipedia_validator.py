@@ -101,6 +101,9 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
         if type_id == 'Q473972':
             #'protected area'
             return None
+        if type_id == 'Q4022':
+            #river
+            return None
 
     print("------------")
     print("unexpected type " + base_type_id)
