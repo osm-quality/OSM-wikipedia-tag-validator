@@ -77,6 +77,9 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
             error_message = "article linked in wikipedia tag is about organization, so it is very unlikely to be correct (brand:wikipedia=* or operator:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
             return ErrorReport(error_id = "link to organization", error_message = "")
     for type_id in all_types:
+        if type_id == 'Q486972':
+            #"human settlement"
+            return None
         if type_id == 'Q811979':
             #"designed structure"
             return None
@@ -107,6 +110,17 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
         if type_id == 'Q4022':
             #river
             return None
+        if type_id == 'Q22698':
+            #park
+            return None
+        if type_id == 'Q11446':
+            #ship
+            return None
+        if type_id == 'Q57607':
+            #christmas market
+            return None
+
+
 
     print("------------")
     print("unexpected type " + base_type_id)
