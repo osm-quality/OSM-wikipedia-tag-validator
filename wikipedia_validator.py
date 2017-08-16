@@ -368,7 +368,6 @@ def output_element(element, error_report):
     else:
         error_report.coords_for_wikipedia = wikipedia_location_data(lat, lon, language_code)
 
-    error_report.stdout_output()
     error_report.yaml_output(yaml_report_filepath())
 
 def yaml_report_filepath():
