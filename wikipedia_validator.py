@@ -56,6 +56,9 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
         return None
     if is_wikipedia_page_geotagged(page) or wikipedia_connection.get_location_from_wikidata(wikidata_id) != (None, None):
         return None
+    if wikidata_id == -1:
+        return ErrorReport(error_id = "wikidata entry missing", error_message = describe_osm_object(element) + " has no matching wikidata entry")
+
     base_type_id = get_wikidata_type_id_from_article(language_code, article_name)
     if base_type_id == None:
         if args.only_osm_edits:
