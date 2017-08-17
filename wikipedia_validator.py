@@ -34,22 +34,37 @@ def get_problem_for_given_element(element, forced_refresh):
     if wikipedia_link_issues != None:
         return wikipedia_link_issues
 
-    reason = why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id)
-    if reason != None:
-        print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
-    else:
-        if args.expected_language_code is not None and args.expected_language_code != language_code:
-            correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
-            if correct_article != None:
-                error_message = "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
-                return ErrorReport(error_id = "wikipedia tag relinking necessary", error_message = error_message)
-            if correct_article == None and args.only_osm_edits == False and args.allow_false_positives:
-                error_message = "wikipedia page in unwanted language - " + args.expected_language_code + " was expected, no page in that language was found:"
-                return ErrorReport(error_id = "wikipedia tag relinking desirable, article missing", error_message = error_message)
+    wikipedia_language_issues = get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id)
+    if wikipedia_language_issues != None:
+        return wikipedia_language_issues
+
     if args.only_osm_edits == False:
         return get_geotagging_problem(page, element, wikidata_id)
 
     return None
+
+def get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id):
+    if args.expected_language_code is None:
+        return None
+    if args.expected_language_code == language_code:
+        return None
+    reason = why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id)
+    if reason != None:
+        print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
+        return None
+    correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
+    if correct_article != None:
+        error_message = "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
+        return ErrorReport(error_id = "wikipedia tag relinking necessary", error_message = error_message)
+    else:
+        if args.only_osm_edits:
+            return None
+        if args.allow_false_positives == False:
+            return None
+        error_message = "wikipedia page in unwanted language - " + args.expected_language_code + " was expected, no page in that language was found:"
+        return ErrorReport(error_id = "wikipedia tag relinking desirable, article missing", error_message = error_message)
+    assert(False)
+
 def should_use_subject_message(type):
     return "article linked in wikipedia tag is about " + type + ", so it is very unlikely to be correct (subject:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
 
