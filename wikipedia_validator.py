@@ -50,6 +50,11 @@ def get_problem_for_given_element(element, forced_refresh):
         return get_geotagging_problem(page, element, wikidata_id)
 
     return None
+def should_use_subject_message(type):
+    return "article linked in wikipedia tag is about " + type + ", so it is very unlikely to be correct (subject:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
+
+def get_should_use_subject_error(type):
+    return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type))
 
 def get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id):
     if not element_can_be_reduced_to_position_at_single_location(element):
@@ -71,11 +76,16 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
             error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link"
             return ErrorReport(error_id = "link to disambig", error_message = error_message)
         if type_id == 'Q5':
-            error_message = "article linked in wikipedia tag is about human, so it is very unlikely to be correct (subject:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
-            return ErrorReport(error_id = "link to human", error_message = error_message)
+            return get_should_use_subject_error('human')
+        if type_id == 'Q18786396' or type_id == 'Q16521':
+            return get_should_use_subject_error('animal')
         if type_id == 'Q43229':
-            error_message = "article linked in wikipedia tag is about organization, so it is very unlikely to be correct (brand:wikipedia=* or operator:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
-            return ErrorReport(error_id = "link to organization", error_message = "")
+            return get_should_use_subject_error('organization')
+        if type_id == 'Q1344':
+            return get_should_use_subject_error('opera')
+        if type_id == 'Q13406463':
+            error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
+            return ErrorReport(error_id = "link to list", error_message = "")
     for type_id in all_types:
         if type_id == 'Q486972':
             #"human settlement"
