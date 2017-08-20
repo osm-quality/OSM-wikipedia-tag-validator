@@ -27,9 +27,9 @@ def download(url):
             print(e)
             continue
 
-def download_from_wikipedia_api(language_code, what, article_name):
+def get_from_wikipedia_api(language_code, what, article_name):
     url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib.parse.quote(article_name)
-    parsed_json = json.loads(download(url).content.decode())
+    parsed_json = json.loads(get_from_generic_url(url))
     id = list(parsed_json['query']['pages'])[0]
     data = parsed_json['query']['pages'][id]
     return data
@@ -39,7 +39,7 @@ def get_intro_from_wikipedia(language_code, article_name, requested_length=None)
     if requested_length != None:
         request += "&exchars=" + str(requested_length)
 
-    data = download_from_wikipedia_api(language_code, request, article_name)
+    data = get_from_wikipedia_api(language_code, request, article_name)
     try:
         return data['extract']
     except KeyError:
@@ -48,7 +48,7 @@ def get_intro_from_wikipedia(language_code, article_name, requested_length=None)
     raise("unexpected")
 
 def download_pageprops(language_code, article_name):
-    data = download_from_wikipedia_api(language_code, "&prop=pageprops", article_name)
+    data = get_from_wikipedia_api(language_code, "&prop=pageprops", article_name)
     try:
         return data['pageprops']
     except KeyError:
@@ -135,6 +135,21 @@ def get_form_of_link_usable_as_filename(link):
     link = link.replace("<", "")
     link = link.replace(">", "")
     link = link.replace("|", "")
+    return link
+
+def get_form_of_link_usable_as_filename_without_data_loss(link):
+    #TODO - on cache purge replace get_form_of_link_usable_as_filename by this
+    #to ensure that extension (especially .code.txt) are going to work - othewise url ending on .code would cause problems
+    link = link.replace(".", ".d.")
+
+    link = link.replace("\"", ".q.")
+    link = link.replace("*", ".st.")
+    link = link.replace("\\", ".b.")
+    link = link.replace("/", ".s.")
+    link = link.replace("?", ".qe.")
+    link = link.replace("<", ".l.")
+    link = link.replace(">", ".g.")
+    link = link.replace("|", ".p.")
     return link
 
 def set_cache_location(path):
@@ -293,4 +308,36 @@ def get_wikipedia_page(language_code, article_name, forced_refresh):
         print(response_filename)
         assert False
     response = get_data_from_cache_files(response_filename, response_code_filename)
+    return response
+
+def get_filename_cache_for_url(url):
+    return os.path.join(cache_location(), 'cache', 'url', get_form_of_link_usable_as_filename_without_data_loss(url) + ".txt")
+
+def get_filename_cache_for_url_response_code(url):
+    return os.path.join(cache_location(), 'cache', 'url', get_form_of_link_usable_as_filename_without_data_loss(url) + ".code.txt")
+
+def it_is_necessary_to_reload_generic_url(url):
+    content_filename = get_filename_cache_for_url(url)
+    code_filename = get_filename_cache_for_url_response_code(url)
+    return is_it_necessary_to_reload_files(content_filename, code_filename)
+
+def download_data_from_generic_url(url):
+    ensure_that_cache_folder_exists('url')
+    print("downloading from " + url)
+    response_filename = get_filename_cache_for_url(url)
+    code_filename = get_filename_cache_for_url_response_code(url)
+    result = download(url)
+    write_to_file(response_filename, str(result.content.decode()))
+    write_to_file(code_filename, str(result.code))
+
+def get_from_generic_url(url, forced_refresh=False):
+    if it_is_necessary_to_reload_generic_url(url) or forced_refresh:
+        download_data_from_generic_url(url)
+    response_filename = get_filename_cache_for_url(url)
+    code_filename = get_filename_cache_for_url_response_code(url)
+    if not os.path.isfile(response_filename):
+        print(it_is_necessary_to_reload_generic_url(url))
+        print(response_filename)
+        assert False
+    response = get_data_from_cache_files(response_filename, code_filename)
     return response
