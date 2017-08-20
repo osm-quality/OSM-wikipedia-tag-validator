@@ -1,5 +1,4 @@
 require 'rest-client'
-puts "downloading: start"
 
 def query_text(name, nodes, ways, relations, expand, timeout)
   query = "[timeout:#{timeout}];(\n"
@@ -33,6 +32,7 @@ def download(name, nodes, ways, relations, expand)
   filename = produced_filename(name, nodes, ways, relations, expand)
 
   puts query
+  puts "downloading: start"
   url = "http://overpass-api.de/api/interpreter?data=#{query.gsub("\n", "")}"
   start = Time.now.to_i
   begin
