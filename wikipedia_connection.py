@@ -6,7 +6,7 @@ import os.path
 import re
 import json
 import urllib.request, urllib.error, urllib.parse
-
+import hashlib
 
 class UrlResponse:
     def __init__(self, content, code):
@@ -151,6 +151,9 @@ def get_form_of_link_usable_as_filename_without_data_loss(link):
     link = link.replace(">", ".g.")
     link = link.replace("|", ".p.")
     return link
+
+def url_to_hash(url):
+    return hashlib.sha256(url.encode('utf-8')).hexdigest()
 
 def set_cache_location(path):
     global cache_location_store
@@ -311,10 +314,11 @@ def get_wikipedia_page(language_code, article_name, forced_refresh):
     return response
 
 def get_filename_cache_for_url(url):
-    return os.path.join(cache_location(), 'cache', 'url', get_form_of_link_usable_as_filename_without_data_loss(url) + ".txt")
+    #HACK! but simply using get_form_of_link_usable_as_filename is not going to work as filename due to limit of filename length
+    return os.path.join(cache_location(), 'cache', 'url', url_to_hash(url) + ".txt")
 
 def get_filename_cache_for_url_response_code(url):
-    return os.path.join(cache_location(), 'cache', 'url', get_form_of_link_usable_as_filename_without_data_loss(url) + ".code.txt")
+    return os.path.join(cache_location(), 'cache', 'url', url_to_hash(url) + ".code.txt")
 
 def it_is_necessary_to_reload_generic_url(url):
     content_filename = get_filename_cache_for_url(url)
