@@ -163,12 +163,11 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
             #christmas market
             return None
 
-
-
-    print("------------")
-    print(describe_osm_object(element))
-    print("unexpected type " + base_type_id)
-    describe_unexpected_wikidata_type(base_type_id)
+    if args.show_unknown_wikidata_types:
+        print("------------")
+        print(describe_osm_object(element))
+        print("unexpected type " + base_type_id)
+        describe_unexpected_wikidata_type(base_type_id)
 
 def wikidata_entries_for_abstract_or_very_broad_concepts():
     return ['Q1801244', 'Q28732711', 'Q223557', 'Q488383', 'Q16686448',
@@ -483,6 +482,8 @@ def parsed_args():
                         so removes false positives where wikipedia is already fixed)',
                         action='store_true')
     parser.add_argument('-only_osm_edits', dest='only_osm_edits', help='adding this parameter will remove reporting of problems that may require editing wikipedia',
+                        action='store_true')
+    parser.add_argument('-show_unknown_wikidata_types', dest='show_unknown_wikidata_types', help='additional debug',
                         action='store_true')
     parser.add_argument('-allow_false_positives', dest='allow_false_positives', help='enables validator rules that may report false positives')
     args = parser.parse_args()
