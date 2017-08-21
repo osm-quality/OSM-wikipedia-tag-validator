@@ -3,6 +3,7 @@
 import urllib.request, urllib.error, urllib.parse
 import argparse
 import yaml
+import re
 
 import wikipedia_connection
 from osm_iterator import Data
@@ -22,7 +23,7 @@ def get_problem_for_given_element(element, forced_refresh):
     article_name = wikipedia_connection.get_article_name_from_link(link)
     wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
 
-    if language_code is None or language_code.__len__() > 3:
+    if is_wikipedia_tag_clearly_broken(link):
         return ErrorReport(error_id = "malformed wikipedia tag", error_message = "malformed wikipedia tag (" + link + ")")
 
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
@@ -42,6 +43,18 @@ def get_problem_for_given_element(element, forced_refresh):
         return get_geotagging_problem(page, element, wikidata_id)
 
     return None
+
+def is_wikipedia_tag_clearly_broken(link):
+    # detects missing language code
+    #         unusually long language code
+    #         broken language code "pl|"
+    language_code = wikipedia_connection.get_language_code_from_link(link)
+    if language_code is None:
+        return True
+    if language_code.__len__() > 3:
+        return True
+    if re.search("^[a-z]+\Z",language_code) == None:
+        return True
 
 def get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id):
     if args.expected_language_code is None:
