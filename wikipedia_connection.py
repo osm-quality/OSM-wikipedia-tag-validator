@@ -47,7 +47,7 @@ def get_intro_from_wikipedia(language_code, article_name, requested_length=None)
         return None
     raise("unexpected")
 
-def download_pageprops(language_code, article_name):
+def get_pageprops(language_code, article_name):
     data = get_from_wikipedia_api(language_code, "&prop=pageprops", article_name)
     try:
         return data['pageprops']
@@ -57,7 +57,7 @@ def download_pageprops(language_code, article_name):
     raise("unexpected")
 
 def get_image_from_wikipedia_article(language_code, article_name):
-    page = download_pageprops(language_code, article_name)
+    page = get_pageprops(language_code, article_name)
     if page == None:
         return None
     filename_via_page_image =  None
