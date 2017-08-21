@@ -23,15 +23,24 @@ def print_html_header():
     print("<table>")
 
 def link_to_osm_object(url):
-    return '<a href=' + url + '>OSM element with broken tag that should be fixed</a>'
+    return '<a href="' + url + '" target="_new">OSM element with broken tag that should be fixed</a>'
+
+def article_name_from_wikipedia_string(string):
+    return string[string.find(":")+1:]
+
+def language_code_from_wikipedia_string(string):
+    return string[0:string.find(":")]
+
+def escape_from_internal_python_string_to_html_ascii(string):
+    return str(string).encode('ascii', 'xmlcharrefreplace').decode()
 
 def format_wikipedia_link(string):
     if string == None:
         return "?"
-    language_code = string[0:string.find(":")]
-    article_name = string[string.find(":")+1:]
-    article_name = str(str(article_name).encode('ascii', 'xmlcharrefreplace'))[2:-1]
-    return '<a href="https://' + language_code + '.wikipedia.org/wiki/' + article_name + '">' + language_code+":"+article_name + '</a>'
+    language_code = language_code_from_wikipedia_string(string)
+    article_name = article_name_from_wikipedia_string(string)
+    article_name = escape_from_internal_python_string_to_html_ascii(article_name)
+    return '<a href="https://' + language_code + '.wikipedia.org/wiki/' + article_name + '" target="_new">' + language_code+":"+article_name + '</a>'
 
 def print_table_row(text):
     print("<tr>")
@@ -62,16 +71,20 @@ def main():
             if to == current:
                 to = "?"
             print_table_row( current + " -> " + to)
+            if to != "?":
+                print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
             print_table_row( '-------' )
     for e in reported_errors:
         if e['error_id'] == 'wikipedia tag relinking necessary':
-            print_table_row(e['error_message'] + ' expected ' + str(e['desired_wikipedia_target'].encode('ascii', 'xmlcharrefreplace')) )
+            print_table_row(e['error_message'])
             print_table_row(link_to_osm_object(e['osm_object_url']))
             current = format_wikipedia_link(e['current_wikipedia_target'])
             to = format_wikipedia_link(e['desired_wikipedia_target'])
             if to == current:
                 to = "?"
             print_table_row( current + " -> " + to)
+            if to != "?":
+                print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
             print_table_row( '-------' )
     for e in reported_errors:
         if e['error_id'] == 'link to disambig':
@@ -82,6 +95,8 @@ def main():
             if to == current:
                 to = "?"
             print_table_row( current + " -> " + to)
+            if to != "?":
+                print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
             print_table_row( '-------' )
     for e in reported_errors:
         if e['error_id'] == 'target of linking is without coordinates':
@@ -89,6 +104,7 @@ def main():
             print_table_row(link_to_osm_object(e['osm_object_url']))
             current = format_wikipedia_link(e['current_wikipedia_target'])
             print_table_row( current )
+            print_table_row( escape_from_internal_python_string_to_html_ascii(e['coords_for_wikipedia']).replace("\n", "<br />") )
             print_table_row( '-------' )
 
     print("</table>")

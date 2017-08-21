@@ -54,14 +54,14 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         return None
     correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
     if correct_article != None:
-        error_message = "wikipedia page in unwanted language - " + args.expected_language_code + " was expected:"
+        error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected:"
         return ErrorReport(error_id = "wikipedia tag relinking necessary", error_message = error_message)
     else:
         if args.only_osm_edits:
             return None
         if args.allow_false_positives == False:
             return None
-        error_message = "wikipedia page in unwanted language - " + args.expected_language_code + " was expected, no page in that language was found:"
+        error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected, no page in that language was found:"
         return ErrorReport(error_id = "wikipedia tag relinking desirable, article missing", error_message = error_message)
     assert(False)
 
