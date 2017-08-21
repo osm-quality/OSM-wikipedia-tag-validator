@@ -28,7 +28,7 @@ def download(url):
             continue
 
 def get_from_wikipedia_api(language_code, what, article_name):
-    url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib.parse.quote(article_name)
+    url = "https://" + urllib.parse.quote(language_code) + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib.parse.quote(article_name)
     parsed_json = json.loads(get_from_generic_url(url))
     id = list(parsed_json['query']['pages'])[0]
     data = parsed_json['query']['pages'][id]
@@ -230,7 +230,7 @@ def download_data_from_wikipedia(language_code, article_name):
     print(("downloading from " + language_code + "wiki: " + article_name))
     response_filename = get_filename_with_article(language_code, article_name)
     code_filename = get_filename_with_wikipedia_response_code(language_code, article_name)
-    url = "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
+    url = "https://" + urllib.parse.quote(language_code) + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
     result = download(url)
     write_to_file(response_filename, str(result.content))
     write_to_file(code_filename, str(result.code))
@@ -240,7 +240,7 @@ def download_data_from_wikidata_by_id(wikidata_id):
     response_filename = get_filename_with_wikidata_entity_by_id(wikidata_id)
     code_filename = get_filename_with_wikidata_by_id_response_code(wikidata_id)
 
-    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + wikidata_id + "&format=json"
+    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + urllib.parse.quote(wikidata_id) + "&format=json"
     result = download(url)
     content = str(result.content.decode())
     write_to_file(response_filename, content)
@@ -270,7 +270,7 @@ def download_data_from_wikidata(language_code, article_name):
     response_filename = get_filename_with_wikidata_entity(language_code, article_name)
     code_filename = get_filename_with_wikidata_response_code(language_code, article_name)
 
-    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=" + language_code + "wiki&titles=" + urllib.parse.quote(article_name) + "&format=json"
+    url = "https://www.wikidata.org/w/api.php?action=wbgetentities&sites=" + urllib.parse.quote(language_code) + "wiki&titles=" + urllib.parse.quote(article_name) + "&format=json"
     result = download(url)
     content = str(result.content.decode())
     write_to_file(response_filename, content)
