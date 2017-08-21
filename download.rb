@@ -1,6 +1,6 @@
 require 'rest-client'
 
-def query_text(name, nodes, ways, relations, expand, timeout)
+def query_text_by_name(name, nodes, ways, relations, expand, timeout)
   query = "[timeout:#{timeout}];(\n"
   query += "area[name='" + name + "']->.searchArea;\n"
   query += "node['wikipedia'](area.searchArea);\n" if nodes
@@ -15,7 +15,7 @@ def query_text(name, nodes, ways, relations, expand, timeout)
   return query
 end
 
-def produced_filename(name, nodes, ways, relations, expand)
+def produced_filename_by_name(name, nodes, ways, relations, expand)
   filename = name
   filename += "_nodes" if nodes
   filename += "_ways" if ways
@@ -26,11 +26,16 @@ def produced_filename(name, nodes, ways, relations, expand)
   return filename
 end
 
+def is_download_necessary_by_name(name, nodes, ways, relations, expand)
+  filename = produced_filename_by_name(name, nodes, ways, relations, expand)
+  return !File.exists?(filename)
+end
+
 def download(name, nodes, ways, relations, expand)
   timeout = 1550
-  query = query_text(name, nodes, ways, relations, expand, timeout)
-  filename = produced_filename(name, nodes, ways, relations, expand)
-
+  query = query_text_by_name(name, nodes, ways, relations, expand, timeout)
+  filename = produced_filename_by_name(name, nodes, ways, relations, expand)
+  return true if !is_download_necessary_by_name(name, nodes, ways, relations, expand)
   puts query
   puts "downloading: start"
   url = "http://overpass-api.de/api/interpreter?data=#{query.gsub("\n", "")}"
@@ -64,23 +69,32 @@ def download(name, nodes, ways, relations, expand)
   return true
 end
 
-#download("Stendal", true, true, true, true)
-#download("Bremen", true, true, true, true)
-#download("Kraków", true, true, true, true)
+download("Stendal", true, true, true, true)
+download("Bremen", true, true, true, true)
+download("Kraków", true, true, true, true)
 download("Berlin", true, false, false, false)
-download("Germany", true, false, false, false)
-download("Polska", true, false, false, false)
+download("Nigeria", true, true, true, true)
+download("Bolivia", true, true, true, true)
+download("Қазақстан", true, true, true, true)
+download("Magyarország", true, false, false, true)
+download("Magyarország", false, true, false, true)
+download("Magyarország", false, false, true, true)
 ["małopolskie", "podkarpackie", "lubelskie",
   "świętokrzyskie", "mazowieckie", "podlaskie",
   "warmińsko-mazurskie", "pomorskie", "kujawsko-pomorskie",
   "zachodniopomorskie", "lubuskie", "wielkopolskie", "dolnośląskie",
   "opolskie", "śląskie", "łódzkie"].each do |voivodeship|
   while true
-    break if download("województwo #{voivodeship}", true, true, true, true)
+    name = "województwo #{voivodeship}"
+    break if !is_download_necessary_by_name(name, true, true, true, true)
+    result = download(name, true, true, true, true)
+    puts "failed download" if !result
     sleep 600
+    break if result
   end
-  sleep 600
 end
 #download("Polska", true, false, false, false)
 #download("Polska", false, true, false, false)
 #download("Polska", false, false, true, false)
+download("Deutschland", true, false, false, false)
+download("Polska", true, false, false, false)
