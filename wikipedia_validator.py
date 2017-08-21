@@ -413,7 +413,7 @@ def output_element(element, error_report):
     error_report.yaml_output(yaml_report_filepath())
 
 def yaml_report_filepath():
-    return get_write_location()+"/reported.yaml"
+    return get_write_location()+"/" + args.file + ".yaml"
 
 def get_location_of_element(element):
     lat = None
