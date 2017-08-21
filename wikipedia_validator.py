@@ -506,3 +506,6 @@ if args.flush_cache_for_reported_situations:
     osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
 else:
     osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
+
+#TODO detect mismatched wikipedia and wikidata tags
+#TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
