@@ -111,6 +111,8 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
             return get_should_use_subject_error('organization')
         if type_id == 'Q1344':
             return get_should_use_subject_error('opera')
+        if type_id == 'Q35127':
+            return get_should_use_subject_error('website')
         if type_id == 'Q13406463':
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
             return ErrorReport(error_id = "link to list", error_message = "")
@@ -153,6 +155,9 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
             return None
         if type_id == 'Q11446':
             #ship
+            return None
+        if type_id == 'Q12876':
+            #tank
             return None
         if type_id == 'Q57607':
             #christmas market
