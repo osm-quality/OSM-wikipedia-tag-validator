@@ -72,16 +72,7 @@ def download(name, nodes, ways, relations, expand)
   return true
 end
 
-download("Stendal", true, true, true, true)
-download("Bremen", true, true, true, true)
 download("Kraków", true, true, true, true)
-download("Berlin", true, false, false, false)
-download("Nigeria", true, true, true, true)
-download("Bolivia", true, true, true, true)
-download("Қазақстан", true, true, true, true)
-download("Magyarország", true, false, false, true)
-download("Magyarország", false, true, false, true)
-download("Magyarország", false, false, true, true)
 ["małopolskie", "podkarpackie", "lubelskie",
   "świętokrzyskie", "mazowieckie", "podlaskie",
   "warmińsko-mazurskie", "pomorskie", "kujawsko-pomorskie",
@@ -101,3 +92,12 @@ end
 #download("Polska", false, false, true, false)
 download("Deutschland", true, false, false, false)
 download("Polska", true, false, false, false)
+#download("Stendal", true, true, true, true)
+download("Bremen", true, true, true, true)
+#download("Berlin", true, false, false, false)
+#download("Nigeria", true, true, true, true)
+#download("Bolivia", true, true, true, true)
+#download("Қазақстан", true, true, true, true)
+#download("Magyarország", true, false, false, true)
+#download("Magyarország", false, true, false, true)
+#download("Magyarország", false, false, true, true)
