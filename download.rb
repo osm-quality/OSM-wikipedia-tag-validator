@@ -6,6 +6,9 @@ def query_text_by_name(name, nodes, ways, relations, expand, timeout)
   query += "node['wikipedia'](area.searchArea);\n" if nodes
   query += "way['wikipedia'](area.searchArea);\n" if ways
   query += "relation['wikipedia'](area.searchArea);\n" if relations
+  query += "node['wikidata'](area.searchArea);\n" if nodes
+  query += "way['wikidata'](area.searchArea);\n" if ways
+  query += "relation['wikidata'](area.searchArea);\n" if relations
 
   query += ');
   '
