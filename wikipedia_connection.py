@@ -64,7 +64,6 @@ def get_image_from_wikipedia_article(language_code, article_name):
     try:
         filename_via_page_image = "File:" + page['page_image']
     except KeyError:
-        print(("Failed image extraction via page image for " + article_name + " on " + language_code))
         return None
     return filename_via_page_image
 
