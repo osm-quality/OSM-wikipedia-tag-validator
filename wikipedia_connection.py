@@ -28,7 +28,9 @@ def download(url):
             continue
 
 def get_from_wikipedia_api(language_code, what, article_name):
-    url = "https://" + urllib.parse.quote(language_code) + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + urllib.parse.quote(article_name)
+    language_code = urllib.parse.quote(language_code)
+    article_name = urllib.parse.quote(article_name)
+    url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + article_name
     parsed_json = json.loads(get_from_generic_url(url))
     id = list(parsed_json['query']['pages'])[0]
     data = parsed_json['query']['pages'][id]
