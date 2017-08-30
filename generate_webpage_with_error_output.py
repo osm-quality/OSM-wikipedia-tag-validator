@@ -98,14 +98,6 @@ def main():
             if to != "?":
                 print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
             print_table_row( '-------' )
-    for e in reported_errors:
-        if e['error_id'] == 'target of linking is without coordinates':
-            print_table_row(e['error_message'])
-            print_table_row(link_to_osm_object(e['osm_object_url']))
-            current = format_wikipedia_link(e['current_wikipedia_target'])
-            print_table_row( current )
-            print_table_row( escape_from_internal_python_string_to_html_ascii(e['coords_for_wikipedia']).replace("\n", "<br />") )
-            print_table_row( '-------' )
 
     print("</table>")
     print("</body>")

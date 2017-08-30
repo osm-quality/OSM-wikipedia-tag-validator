@@ -96,8 +96,10 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
     if base_type_id == None:
         if args.only_osm_edits:
             return None
-        error_message = "instance data not present in wikidata for " + wikidata_url(language_code, article_name) + ". unable to verify type of object:"
-        return ErrorReport(error_id = "wikidata data missing - instance", error_message = error_message)
+        # instance data not present in wikidata
+        # not reporting as error as import from OSM to Wikidata is not feasible
+        # also, this problem is easy to find on Wikidata itself so it is not useful to report it
+        return None
     all_types = recursive_all_subclass_of(base_type_id)
     for type_id in all_types:
         if type_id == 'Q4167410':
