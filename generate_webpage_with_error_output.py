@@ -77,7 +77,7 @@ def main():
             if to != "?":
                 print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
             print_table_row( '-------' )
-    for error_type_id in ['wikipedia tag relinking necessary', 'link to disambig']:
+    for error_type_id in ['wikipedia tag relinking necessary', 'link to disambig', 'wikipedia wikidata mismatch', 'wikipedia wikidata mismatch - follow redirect']:
         for e in reported_errors:
             if e['error_id'] == error_type_id:
                 print_table_row(htmlify(e['error_message']))

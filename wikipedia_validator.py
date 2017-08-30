@@ -13,6 +13,7 @@ def get_problem_for_given_element(element, forced_refresh):
     if args.flush_cache:
         forced_refresh = True
     link = element.get_tag_value("wikipedia")
+    present_wikidata_id = element.get_tag_value("wikidata")
     if link == None:
         return None
 
@@ -31,6 +32,16 @@ def get_problem_for_given_element(element, forced_refresh):
 
     if page == None:
         return ErrorReport(error_id = "wikipedia tag links to 404", error_message = "missing article at wiki:")
+
+    if present_wikidata_id != wikidata_id:
+        #early to ensure later that passing wikidata_id of article is not going to be confusing
+        #TODO: check whatever following redirects fixes problem
+        title_after_possible_redirects = wikipedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
+        if article_name != title_after_possible_redirects:
+            wikidata_id_from_redirect = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
+            if present_wikidata_id == wikidata_id_from_redirect:
+                return ErrorReport(error_id = "wikipedia wikidata mismatch - follow redirect", error_message = "wikidata and wikipedia tags link to a different objects, because wikipedia page points toward redirect that should be followed (" + present_wikidata_id + " vs " + wikidata_id +")")
+        return ErrorReport(error_id = "wikipedia wikidata mismatch", error_message = "wikidata and wikipedia tags link to a different objects (" + present_wikidata_id + " vs " + wikidata_id +")")
 
     wikipedia_link_issues = get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id)
     if wikipedia_link_issues != None:
