@@ -77,12 +77,13 @@ def download(name, nodes, ways, relations, expand)
   return true
 end
 
-download("Kraków", true, true, true, true)
-["małopolskie", "podkarpackie", "lubelskie",
+voivoddeships = ["małopolskie", "podkarpackie", "lubelskie",
   "świętokrzyskie", "mazowieckie", "podlaskie",
   "warmińsko-mazurskie", "pomorskie", "kujawsko-pomorskie",
   "zachodniopomorskie", "lubuskie", "wielkopolskie", "dolnośląskie",
-  "opolskie", "śląskie", "łódzkie"].each do |voivodeship|
+  "opolskie", "śląskie", "łódzkie"]
+download("Kraków", true, true, true, true)
+voivoddeships[0, 1].each do |voivodeship|
   while true
     name = "województwo #{voivodeship}"
     break if !is_download_necessary_by_name(name, true, true, true, true)
