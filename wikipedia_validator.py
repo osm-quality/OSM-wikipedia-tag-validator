@@ -232,6 +232,9 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         if type_id == 'Q57607':
             #christmas market
             return None
+        if type_id == 'Q8502':
+            #mountain
+            return None
 
     if args.show_unknown_wikidata_types:
         print("------------")
