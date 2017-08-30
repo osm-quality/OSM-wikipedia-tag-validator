@@ -40,7 +40,7 @@ def get_problem_for_given_element(element, forced_refresh):
 
     #do not pass language_code, article_name
     #aquire from wikidata within function if truly necessary
-    wikipedia_link_issues = get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id)
+    wikipedia_link_issues = get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id)
     if wikipedia_link_issues != None:
         return wikipedia_link_issues
 
@@ -151,12 +151,8 @@ def get_list_of_disambig_fixes(element, language_code, article_name):
         returned += title + distance_description + "\n"
     return returned
 
-def get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id):
-    if not element_can_be_reduced_to_position_at_single_location(element):
-        return None
-    if is_wikipedia_page_geotagged(page) or wikipedia_connection.get_location_from_wikidata(wikidata_id) != (None, None):
-        return None
-    if wikidata_id == -1:
+def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id):
+    if wikidata_id == None:
         return ErrorReport(error_id = "wikidata entry missing", error_message = describe_osm_object(element) + " has no matching wikidata entry")
 
     base_type_id = get_wikidata_type_id_of_entry(wikidata_id)
