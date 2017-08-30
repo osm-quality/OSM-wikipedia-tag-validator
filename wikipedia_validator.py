@@ -14,6 +14,8 @@ def get_problem_for_given_element(element, forced_refresh):
         forced_refresh = True
     link = element.get_tag_value("wikipedia")
     present_wikidata_id = element.get_tag_value("wikidata")
+
+    #TODO handle also cases without wikipedia but with wikidata
     if link == None:
         return None
 
@@ -577,3 +579,14 @@ else:
 
 #TODO detect mismatched wikipedia and wikidata tags
 #TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
+#TODO detect repeated links
+#TODO find links to no longer existing objects https://www.wikidata.org/wiki/Property:P576
+
+print("https://osm.wikidata.link/candidates/relation/2768922 (Kraków)")
+print("https://osm.wikidata.link/candidates/relation/2654452 (powiat krakowski)")
+print("https://osm.wikidata.link/candidates/relation/2907540 (Warszawa)")
+print("https://osm.wikidata.link/filtered/Poland")
+#https://osm.wikidata.link/candidates/relation/2675559 mazury
+#https://osm.wikidata.link/candidates/relation/2675566 mazury
+#https://osm.wikidata.link/candidates/relation/2675509 mazury
+#https://osm.wikidata.link/candidates/relation/2675563 mazury
