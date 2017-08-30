@@ -57,6 +57,9 @@ def parsed_args():
         parser.error('Provide .osm file')
     return args
 
+def htmlify(string):
+    return escape_from_internal_python_string_to_html_ascii(string).replace("\n", "<br />")
+
 def main():
     args = parsed_args()
     print_html_header()
@@ -64,7 +67,7 @@ def main():
     reported_errors = load_data(get_write_location()+"/"+filename)
     for e in reported_errors:
         if e['error_id'] == 'wikipedia tag links to 404':
-            print_table_row(e['error_message'])
+            print_table_row(htmlify(e['error_message']))
             print_table_row(link_to_osm_object(e['osm_object_url']))
             current = format_wikipedia_link(e['current_wikipedia_target'])
             to = format_wikipedia_link(e['desired_wikipedia_target'])
@@ -76,7 +79,7 @@ def main():
             print_table_row( '-------' )
     for e in reported_errors:
         if e['error_id'] == 'wikipedia tag relinking necessary':
-            print_table_row(e['error_message'])
+            print_table_row(htmlify(e['error_message']))
             print_table_row(link_to_osm_object(e['osm_object_url']))
             current = format_wikipedia_link(e['current_wikipedia_target'])
             to = format_wikipedia_link(e['desired_wikipedia_target'])
@@ -88,7 +91,7 @@ def main():
             print_table_row( '-------' )
     for e in reported_errors:
         if e['error_id'] == 'link to disambig':
-            print_table_row(e['error_message'])
+            print_table_row(htmlify(e['error_message']))
             print_table_row(link_to_osm_object(e['osm_object_url']))
             current = format_wikipedia_link(e['current_wikipedia_target'])
             to = format_wikipedia_link(e['desired_wikipedia_target'])
