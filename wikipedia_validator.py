@@ -372,8 +372,8 @@ def pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
     return pl_format
 
 
-def wikidata_url(language_code, article_name):
-    return "https://www.wikidata.org/wiki/" + wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+def wikidata_url(wikidata_id):
+    return "https://www.wikidata.org/wiki/" + wikidata_id
 
 def wikipedia_url(language_code, article_name):
     return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
