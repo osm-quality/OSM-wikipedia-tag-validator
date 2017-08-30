@@ -54,7 +54,7 @@ def get_problem_for_given_element(element, forced_refresh):
         return get_geotagging_problem(page, element, wikidata_id)
 
     if present_wikidata_id == None and wikidata_id != None:
-        return ErrorReport(error_id = "wikidata tag may be added", error_message = wikidata_id + "may be added as wikidata tag based on wikipedia tag")
+        return ErrorReport(error_id = "wikidata tag may be added", error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag")
 
     return None
 
