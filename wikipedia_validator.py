@@ -7,6 +7,7 @@ import re
 
 import wikipedia_connection
 from osm_iterator import Data
+import geopy.distance
 
 def get_problem_for_given_element(element, forced_refresh):
     if args.flush_cache:
@@ -84,6 +85,38 @@ def should_use_subject_message(type):
 def get_should_use_subject_error(type):
     return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type))
 
+def get_list_of_links_from_disambig(element, language_code, article_name):
+    returned = []
+    links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
+    for link in links_from_disambig_page:
+        if link['ns'] == 0:
+            returned.append(link['title'])
+    return returned
+
+def get_list_of_disambig_fixes(element, language_code, article_name):
+    returned = ""
+    links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
+    for title in get_list_of_links_from_disambig(element, language_code, article_name):
+        wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title)
+        location = wikipedia_connection.get_location_from_wikidata(wikidata_id)
+        distance_description = ""
+        if location == (None, None):
+            distance_description = " <no location data on wikidata>"
+        elif get_location_of_element(element) == (None, None):
+            distance_description = " <no location data for OSM element>"
+        else:
+            coords_1 = (location[0], location[1])
+            coords_2 = (get_location_of_element(element)[0], get_location_of_element(element)[1])
+            # recommended by https://stackoverflow.com/a/43211266/4130619
+            distance = geopy.distance.vincenty(coords_1, coords_2).km
+            if distance > 3:
+                distance = str(int(distance)) + " km"
+            else:
+                distance = str(int(distance*1000)) + " m"
+            distance_description = ' is ' + distance + " away"
+        returned += title + distance_description + "\n"
+    return returned
+
 def get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id):
     if not element_can_be_reduced_to_position_at_single_location(element):
         return None
@@ -103,7 +136,10 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
     all_types = recursive_all_subclass_of(base_type_id)
     for type_id in all_types:
         if type_id == 'Q4167410':
-            error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link"
+            #TODO note that pageprops may be a better source that should be used - it does not require wikidata entry
+            #https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
+            list = get_list_of_disambig_fixes(element, language_code, article_name)
+            error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link\n\n" + list
             return ErrorReport(error_id = "link to disambig", error_message = error_message)
         if type_id == 'Q5':
             return get_should_use_subject_error('human')
