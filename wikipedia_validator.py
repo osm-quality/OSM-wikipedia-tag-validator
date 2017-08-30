@@ -33,16 +33,13 @@ def get_problem_for_given_element(element, forced_refresh):
     if page == None:
         return ErrorReport(error_id = "wikipedia tag links to 404", error_message = "missing article at wiki:")
 
-    if present_wikidata_id != wikidata_id:
-        #early to ensure later that passing wikidata_id of article is not going to be confusing
-        #TODO: check whatever following redirects fixes problem
-        title_after_possible_redirects = wikipedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
-        if article_name != title_after_possible_redirects:
-            wikidata_id_from_redirect = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
-            if present_wikidata_id == wikidata_id_from_redirect:
-                return ErrorReport(error_id = "wikipedia wikidata mismatch - follow redirect", error_message = "wikidata and wikipedia tags link to a different objects, because wikipedia page points toward redirect that should be followed (" + present_wikidata_id + " vs " + wikidata_id +")")
-        return ErrorReport(error_id = "wikipedia wikidata mismatch", error_message = "wikidata and wikipedia tags link to a different objects (" + present_wikidata_id + " vs " + wikidata_id +")")
+    #early to ensure later that passing wikidata_id of article is not going to be confusing
+    collisions = check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh)
+    if collisions != None:
+        return collisions
 
+    #do not pass language_code, article_name
+    #aquire from wikidata within function if truly necessary
     wikipedia_link_issues = get_problem_based_on_wikidata(element, page, language_code, article_name, wikidata_id)
     if wikipedia_link_issues != None:
         return wikipedia_link_issues
@@ -54,7 +51,33 @@ def get_problem_for_given_element(element, forced_refresh):
     if args.only_osm_edits == False:
         return get_geotagging_problem(page, element, wikidata_id)
 
+    if present_wikidata_id == None and wikidata_id != None:
+        return ErrorReport(error_id = "wikidata tag may be added", error_message = wikidata_id + "may be added as wikidata tag based on wikipedia tag")
+
     return None
+
+def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh):
+    if present_wikidata_id == None:
+        return None
+
+    wikidata_id_from_article = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
+    if present_wikidata_id == wikidata_id_from_article:
+        return None
+    title_after_possible_redirects = wikipedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
+    if article_name != title_after_possible_redirects:
+        wikidata_id_from_redirect = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
+        if present_wikidata_id == wikidata_id_from_redirect:
+            message = "wikidata and wikipedia tags link to a different objects, because wikipedia page points toward redirect that should be followed (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
+            return ErrorReport(error_id = "wikipedia wikidata mismatch - follow redirect", error_message = message)
+    message = "wikidata and wikipedia tags link to a different objects (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
+    return ErrorReport(error_id = "wikipedia wikidata mismatch", error_message = message)
+
+def compare_wikidata_ids(id1, id2):
+    if id1 == None:
+        id1 = "(missing)"
+    if id2 == None:
+        id2 = "(missing)"
+    return id1 + " vs " + id2
 
 def is_wikipedia_tag_clearly_broken(link):
     # detects missing language code

@@ -72,7 +72,10 @@ def get_image_from_wikipedia_article(language_code, article_name):
 def get_wikidata_object_id_from_article(language_code, article_name, forced_refresh = False):
     try:
         wikidata_entry = get_data_from_wikidata(language_code, article_name, forced_refresh)['entities']
-        return list(wikidata_entry)[0]
+        id = list(wikidata_entry)[0]
+        if id == -1:
+            return None
+        return id
     except KeyError:
         return None
 
