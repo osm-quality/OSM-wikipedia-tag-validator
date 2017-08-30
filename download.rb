@@ -1,4 +1,9 @@
 require 'rest-client'
+require 'etc'
+
+def user_agent
+  "downloader of interesting places, operated by #{Etc.getlogin}, written by Mateusz Konieczny (matkoniecz@gmail.com)"
+end
 
 def query_text_by_name(name, nodes, ways, relations, expand, timeout)
   query = "[timeout:#{timeout}];(\n"
@@ -44,7 +49,7 @@ def download(name, nodes, ways, relations, expand)
   url = "http://overpass-api.de/api/interpreter?data=#{query.gsub("\n", "")}"
   start = Time.now.to_i
   begin
-    text = RestClient.get(URI.escape(url), :user_agent => ARGV[0], :timeout => timeout).to_str
+    text = RestClient::Request.execute(method: :get, url: URI.escape(url), timeout: timeout, user_agent: user_agent).to_str
   rescue RestClient::BadRequest => e
     puts url
     puts e
