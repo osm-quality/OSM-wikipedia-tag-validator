@@ -125,7 +125,7 @@ def get_problem_based_on_wikidata(element, page, language_code, article_name, wi
     if wikidata_id == -1:
         return ErrorReport(error_id = "wikidata entry missing", error_message = describe_osm_object(element) + " has no matching wikidata entry")
 
-    base_type_id = get_wikidata_type_id_from_article(language_code, article_name)
+    base_type_id = get_wikidata_type_id_of_entry(wikidata_id)
     if base_type_id == None:
         if args.only_osm_edits:
             return None
@@ -265,10 +265,10 @@ def get_wikidata_description(wikidata_id, language):
 
     return dict(label = label, explanation = explanation, language = language)
 
-def get_wikidata_type_id_from_article(language_code, article_name):
+def get_wikidata_type_id_of_entry(wikidata_id):
     try:
         forced_refresh = False
-        wikidata_entry = wikipedia_connection.get_data_from_wikidata(language_code, article_name, forced_refresh)
+        wikidata_entry = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
         wikidata_entry = wikidata_entry['entities']
         object_id = list(wikidata_entry)[0]
         return wikidata_entry[object_id]['claims']['P31'][0]['mainsnak']['datavalue']['value']['id']
