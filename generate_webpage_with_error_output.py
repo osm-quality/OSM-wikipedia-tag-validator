@@ -77,30 +77,19 @@ def main():
             if to != "?":
                 print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
             print_table_row( '-------' )
-    for e in reported_errors:
-        if e['error_id'] == 'wikipedia tag relinking necessary':
-            print_table_row(htmlify(e['error_message']))
-            print_table_row(link_to_osm_object(e['osm_object_url']))
-            current = format_wikipedia_link(e['current_wikipedia_target'])
-            to = format_wikipedia_link(e['desired_wikipedia_target'])
-            if to == current:
-                to = "?"
-            print_table_row( current + " -> " + to)
-            if to != "?":
-                print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
-            print_table_row( '-------' )
-    for e in reported_errors:
-        if e['error_id'] == 'link to disambig':
-            print_table_row(htmlify(e['error_message']))
-            print_table_row(link_to_osm_object(e['osm_object_url']))
-            current = format_wikipedia_link(e['current_wikipedia_target'])
-            to = format_wikipedia_link(e['desired_wikipedia_target'])
-            if to == current:
-                to = "?"
-            print_table_row( current + " -> " + to)
-            if to != "?":
-                print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
-            print_table_row( '-------' )
+    for error_type_id in ['wikipedia tag relinking necessary', 'link to disambig']:
+        for e in reported_errors:
+            if e['error_id'] == error_type_id:
+                print_table_row(htmlify(e['error_message']))
+                print_table_row(link_to_osm_object(e['osm_object_url']))
+                current = format_wikipedia_link(e['current_wikipedia_target'])
+                to = format_wikipedia_link(e['desired_wikipedia_target'])
+                if to == current:
+                    to = "?"
+                print_table_row( current + " -> " + to)
+                if to != "?":
+                    print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
+                print_table_row( '-------' )
 
     print("</table>")
     print("</body>")
