@@ -134,7 +134,9 @@ def get_list_of_disambig_fixes(element, language_code, article_name):
     links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
     for title in get_list_of_links_from_disambig(element, language_code, article_name):
         wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title)
-        location = wikipedia_connection.get_location_from_wikidata(wikidata_id)
+        location = (None, None)
+        if wikidata_id != None:
+            location = wikipedia_connection.get_location_from_wikidata(wikidata_id)
         distance_description = ""
         if location == (None, None):
             distance_description = " <no location data on wikidata>"
