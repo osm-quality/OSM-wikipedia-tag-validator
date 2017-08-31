@@ -63,7 +63,7 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
     if present_wikidata_id == wikidata_id_from_article:
         return None
     title_after_possible_redirects = wikipedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
-    if article_name != title_after_possible_redirects:
+    if article_name != title_after_possible_redirects and article_name.find("#") == -1:
         wikidata_id_from_redirect = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
         if present_wikidata_id == wikidata_id_from_redirect:
             message = "wikidata and wikipedia tags link to a different objects, because wikipedia page points toward redirect that should be followed (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
