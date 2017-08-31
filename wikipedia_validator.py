@@ -70,7 +70,8 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
         wikidata_id_from_redirect = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
         if present_wikidata_id == wikidata_id_from_redirect:
             message = "wikidata and wikipedia tags link to a different objects, because wikipedia page points toward redirect that should be followed (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
-            return ErrorReport(error_id = "wikipedia wikidata mismatch - follow redirect", error_message = message)
+            new_wikipedia_link = language_code+":"+title_after_possible_redirects
+            return ErrorReport(error_id = "wikipedia wikidata mismatch - follow redirect", error_message = message, desired_wikipedia_target = new_wikipedia_link)
     message = "wikidata and wikipedia tags link to a different objects (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
     return ErrorReport(error_id = "wikipedia wikidata mismatch", error_message = message)
 
@@ -105,7 +106,8 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
     correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
     if correct_article != None:
         error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected:"
-        return ErrorReport(error_id = "wikipedia tag relinking necessary", error_message = error_message)
+        good_link = args.expected_language_code + ":" + correct_article
+        return ErrorReport(error_id = "wikipedia tag relinking necessary", error_message = error_message, desired_wikipedia_target = good_link)
     else:
         if args.only_osm_edits:
             return None
@@ -512,8 +514,6 @@ def output_element(element, error_report):
     lat, lon = get_location_of_element(element)
 
     debug_log = None
-    if language_code is not None and article_name is not None:
-        error_report.desired_wikipedia_target = find_desired_wikipedia_link(language_code, article_name)
 
     if (lat, lon) == (None, None):
         error_report.debug_log = "Location data missing"
@@ -539,15 +539,6 @@ def get_location_of_element(element):
         else:
             return float(coord.lat), float(coord.lon)
     assert(False)
-
-def find_desired_wikipedia_link(language_code, article_name):
-    if args.expected_language_code == None:
-        return language_code + ":" + article_name
-    article_name_in_intended = get_interwiki(language_code, article_name, args.expected_language_code, False)
-    if article_name_in_intended == None:
-        return None
-    else:
-        return args.expected_language_code + ":" + article_name_in_intended
 
 def is_wikipedia_page_geotagged(page):
     # <span class="latitude">50°04'02”N</span>&#160;<span class="longitude">19°55'03”E</span>
