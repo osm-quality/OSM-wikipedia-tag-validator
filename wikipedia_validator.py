@@ -101,7 +101,8 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         return None
     reason = why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id)
     if reason != None:
-        print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
+        if args.additional_debug:
+            print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
         return None
     correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
     if correct_article != None:
@@ -275,7 +276,7 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
             #geographical object
             return None
 
-    if args.show_unknown_wikidata_types:
+    if args.additional_debug:
         print("------------")
         print(describe_osm_object(element))
         print("unexpected type " + base_type_id)
@@ -584,7 +585,7 @@ def parsed_args():
                         action='store_true')
     parser.add_argument('-only_osm_edits', dest='only_osm_edits', help='adding this parameter will remove reporting of problems that may require editing wikipedia',
                         action='store_true')
-    parser.add_argument('-show_unknown_wikidata_types', dest='show_unknown_wikidata_types', help='additional debug',
+    parser.add_argument('-additional_debug', dest='additional_debug', help='additional debug - shows when wikidata types are no recognized, list locations allowed to have a foreign language label',
                         action='store_true')
     parser.add_argument('-allow_false_positives', dest='allow_false_positives', help='enables validator rules that may report false positives')
     args = parser.parse_args()
