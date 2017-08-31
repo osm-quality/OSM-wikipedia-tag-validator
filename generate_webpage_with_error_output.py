@@ -1,5 +1,6 @@
 import argparse
 import yaml
+import os.path
 
 def get_write_location():
     cache_location_config_filepath = 'cache_location.config'
@@ -64,21 +65,13 @@ def htmlify(string):
 def main():
     args = parsed_args()
     print_html_header()
-    filename = args.file
-    reported_errors = load_data(get_write_location()+"/"+filename)
-    for e in reported_errors:
-        if e['error_id'] == 'wikipedia tag links to 404':
-            print_table_row(htmlify(e['error_message']))
-            print_table_row(link_to_osm_object(e['osm_object_url']))
-            current = format_wikipedia_link(e['current_wikipedia_target'])
-            to = format_wikipedia_link(e['desired_wikipedia_target'])
-            if to == current:
-                to = "?"
-            print_table_row( current + " -> " + to)
-            if to != "?":
-                print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
-            print_table_row( '-------' )
-    for error_type_id in ['wikipedia tag relinking necessary', 'link to disambig', 'wikipedia wikidata mismatch', 'wikipedia wikidata mismatch - follow redirect']:
+    filepath = get_write_location()+"/"+args.file
+    if not os.path.isfile(filepath):
+        print(filepath + " is not a file, provide an existing file")
+        return
+    reported_errors = load_data(filepath)
+    types = ['wikipedia tag links to 404', 'wikipedia tag relinking necessary', 'link to disambig', 'wikipedia wikidata mismatch', 'wikipedia wikidata mismatch - follow redirect']
+    for error_type_id in types:
         for e in reported_errors:
             if e['error_id'] == error_type_id:
                 print_table_row(htmlify(e['error_message']))
