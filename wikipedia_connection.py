@@ -73,7 +73,7 @@ def get_wikidata_object_id_from_article(language_code, article_name, forced_refr
     try:
         wikidata_entry = get_data_from_wikidata(language_code, article_name, forced_refresh)['entities']
         id = list(wikidata_entry)[0]
-        if id == -1:
+        if id == "-1":
             return None
         return id
     except KeyError:
