@@ -39,14 +39,12 @@ def main():
     reported_errors = load_data(get_write_location()+"/"+filename)
     for e in reported_errors:
         if e['error_id'] == 'wikipedia tag links to 404':
-            target = e['current_wikipedia_target']
-            ascii = target.encode('ascii', 'ignore').decode()
-            if target != ascii:
-                #due to https://github.com/maproulette/maproulette2/issues/310 only ascii may be used
+            type = e['osm_object_url'].split("/")[3]
+            id = e['osm_object_url'].split("/")[4]
+            if type == "relation":
+                #relations skipped due to https://github.com/maproulette/maproulette2/issues/259
                 continue
-            print('way["wikipedia"="'+target+'"];')
-            print('node["wikipedia"="'+target+'"];')
-            #relations skipped due to https://github.com/maproulette/maproulette2/issues/259
+            print(type+'('+id+');')
     print_query_footer()
 
 main()
