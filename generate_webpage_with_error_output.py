@@ -38,6 +38,7 @@ def format_wikipedia_link(string):
     if string == None:
         return "?"
     language_code = language_code_from_wikipedia_string(string)
+    language_code = escape_from_internal_python_string_to_html_ascii(language_code)
     article_name = article_name_from_wikipedia_string(string)
     article_name = escape_from_internal_python_string_to_html_ascii(article_name)
     return '<a href="https://' + language_code + '.wikipedia.org/wiki/' + article_name + '" target="_new">' + language_code+":"+article_name + '</a>'
