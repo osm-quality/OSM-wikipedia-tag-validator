@@ -50,9 +50,6 @@ def get_problem_for_given_element(element, forced_refresh):
     if wikipedia_language_issues != None:
         return wikipedia_language_issues
 
-    if args.only_osm_edits == False:
-        return get_geotagging_problem(page, element, wikidata_id)
-
     if present_wikidata_id == None and wikidata_id != None:
         return ErrorReport(error_id = "wikidata tag may be added", error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag")
 
@@ -394,59 +391,6 @@ def element_can_be_reduced_to_position_at_single_location(element):
         return False
     return True
 
-
-def wikipedia_location_data(lat, lon, language_code):
-    lat = "%.4f" % lat  # drop overprecision
-    lon = "%.4f" % lon  # drop overprecision
-
-    returned = ""
-
-    returned += lat + "\n"
-    returned += lon + "\n"
-    if language_code == "it":
-        returned += "{{coord|" + lat + "|" + lon + "|display=title}}\n"
-    elif language_code == "pl":
-        returned += "{{współrzędne|" + lat + " " + lon + "|umieść=na górze}}\n"
-        returned += "\n"
-        returned += lat + " " + lon + "\n"
-        returned += "\n"
-        returned += pl_wikipedia_coordinates_for_infobox_old_style(float(lat), float(lon))
-    else:
-        returned += "{{coord|" + lat + "|" + lon + "}}\n"
-    return returned
-
-def pl_wikipedia_coordinates_for_infobox_old_style(lat, lon):
-    lat_sign_character = "N"
-    if lat < 0:
-        lat *= -1
-        lat_sign_character = "S"
-    lon_sign_character = "E"
-    if lon < 0:
-        lon *= -1
-        lon_sign_character = "W"
-    lat_d = int(float(lat))
-    lat_m = int((float(lat) * 60) - (lat_d * 60))
-    lat_s = int((float(lat) * 60 * 60) - (lat_d * 60 * 60) - (lat_m * 60))
-    lat_d = str(lat_d)
-    lat_m = str(lat_m)
-    lat_s = str(lat_s)
-    lon_d = int(float(lon))
-    lon_m = int((float(lon) * 60) - (lon_d * 60))
-    lon_s = int((float(lon) * 60 * 60) - (lon_d * 60 * 60) - (lon_m * 60))
-    lon_d = str(lon_d)
-    lon_m = str(lon_m)
-    lon_s = str(lon_s)
-    pl_format = "|stopni" + lat_sign_character + " = " + lat_d
-    pl_format += " |minut" + lat_sign_character + " = " + lat_m
-    pl_format += " |sekund" + lat_sign_character + " = " + lat_s
-    pl_format += "\n"
-    pl_format += "|stopni" + lon_sign_character + " = " + lon_d
-    pl_format += " |minut" + lon_sign_character + " = " + lon_m
-    pl_format += " |sekund" + lon_sign_character + " = " + lon_s
-    pl_format += "\n"
-    return pl_format
-
-
 def wikidata_url(wikidata_id):
     return "https://www.wikidata.org/wiki/" + wikidata_id
 
@@ -463,7 +407,7 @@ def get_interwiki(source_language_code, source_article_name, target_language, fo
         return None
 
 class ErrorReport:
-    def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, coords_for_wikipedia=None, debug_log=None,
+    def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, debug_log=None,
         error_id=None, fixable_by_pure_osm_edit=None, false_positive_chance=None):
         self.error_id = error_id
         self.error_message = error_message
@@ -472,7 +416,6 @@ class ErrorReport:
         self.false_positive_chance = false_positive_chance
         self.fixable_by_pure_osm_edit = fixable_by_pure_osm_edit
         self.desired_wikipedia_target = desired_wikipedia_target
-        self.coords_for_wikipedia = coords_for_wikipedia
 
     def yaml_output(self, filepath):
         data = dict(
@@ -485,7 +428,6 @@ class ErrorReport:
             osm_object_url = self.element.get_link(),
             current_wikipedia_target = self.element.get_tag_value("wikipedia"),
             desired_wikipedia_target = self.desired_wikipedia_target,
-            coords_for_wikipedia = self.coords_for_wikipedia,
         )
         with open(filepath, 'a') as outfile:
             yaml.dump([data], outfile, default_flow_style=False)
@@ -496,10 +438,8 @@ class ErrorReport:
         print(describe_osm_object(self.element))
         print(self.element.get_link())
         print(self.debug_log)
-        print(self.coords_for_wikipedia)
         if self.desired_wikipedia_target != None:
             print("wikipedia tag should probably be relinked to " + self.desired_wikipedia_target)
-        print(self.coords_for_wikipedia)
 
 def describe_osm_object(element):
     name = element.get_tag_value("name")
@@ -518,8 +458,6 @@ def output_element(element, error_report):
 
     if (lat, lon) == (None, None):
         error_report.debug_log = "Location data missing"
-    else:
-        error_report.coords_for_wikipedia = wikipedia_location_data(lat, lon, language_code)
 
     error_report.yaml_output(yaml_report_filepath())
 
@@ -552,14 +490,6 @@ def is_wikipedia_page_geotagged(page):
         if page.find(kml_data_str) == -1:  #enwiki article links to area, not point (see 'Central Park')
             return False
     return True
-
-def get_geotagging_problem(page, element, wikidata_id):
-    if is_wikipedia_page_geotagged(page) or wikipedia_connection.get_location_from_wikidata(wikidata_id) != (None, None):
-        return None
-    if element_can_be_reduced_to_position_at_single_location(element):
-        message = "missing coordinates at wiki or wikipedia tag should be replaced by something like operator:wikipedia=en:McDonald's or subject:wikipedia=*:"
-        return ErrorReport(error_id = "target of linking is without coordinates", error_message = message)
-    return None
 
 def validate_wikipedia_link_on_element_and_print_problems(element):
     problem = get_problem_for_given_element(element, False)
