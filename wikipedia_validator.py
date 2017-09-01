@@ -171,7 +171,7 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         # not reporting as error as import from OSM to Wikidata is not feasible
         # also, this problem is easy to find on Wikidata itself so it is not useful to report it
         return None
-    all_types = recursive_all_subclass_of(base_type_id)
+    all_types = get_recursive_all_subclass_of(base_type_id)
     for type_id in all_types:
         if type_id == 'Q4167410':
             #TODO note that pageprops may be a better source that should be used - it does not require wikidata entry
@@ -290,13 +290,13 @@ def wikidata_entries_for_abstract_or_very_broad_concepts():
     'Q151885', 'Q35120', 'Q37260', 'Q246672', 'Q5127848', 'Q16889133',
     'Q386724', 'Q17008256', 'Q11348', 'Q11028', 'Q1260632', 'Q1209283']
 
-def recursive_all_subclass_of(wikidata_id):
+def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries_for_abstract_or_very_broad_concepts()):
     processed = []
     to_process = [wikidata_id]
     while to_process != []:
         process_id = to_process.pop()
         processed.append(process_id)
-        to_process += get_useful_direct_parents(process_id, processed + to_process)
+        to_process += get_useful_direct_parents(process_id, processed + to_process + banned_parents)
     return processed
 
 def get_useful_direct_parents(wikidata_id, forbidden):
@@ -307,13 +307,12 @@ def get_useful_direct_parents(wikidata_id, forbidden):
     for more_general in more_general_list:
         more_general_id = more_general['mainsnak']['datavalue']['value']['id']
         if more_general_id not in forbidden:
-            if more_general_id not in wikidata_entries_for_abstract_or_very_broad_concepts():
-                returned.append(more_general_id)
+            returned.append(more_general_id)
     return returned
 
 def describe_unexpected_wikidata_type(type_id):
     # print entire inheritance set
-    for parent_category in recursive_all_subclass_of(type_id):
+    for parent_category in get_recursive_all_subclass_of(type_id):
         print("if type_id == '" + parent_category + "':")
         show_wikidata_description(parent_category)
 
