@@ -231,7 +231,6 @@ def get_data_from_cache_files(response_filename, response_code_filename):
 
 def download_data_from_wikipedia(language_code, article_name):
     ensure_that_cache_folder_exists(language_code)
-    print(("downloading from " + language_code + "wiki: " + article_name))
     response_filename = get_filename_with_article(language_code, article_name)
     code_filename = get_filename_with_wikipedia_response_code(language_code, article_name)
     url = "https://" + urllib.parse.quote(language_code) + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
@@ -331,7 +330,6 @@ def it_is_necessary_to_reload_generic_url(url):
 
 def download_data_from_generic_url(url):
     ensure_that_cache_folder_exists('url')
-    print("downloading from " + url)
     response_filename = get_filename_cache_for_url(url)
     code_filename = get_filename_cache_for_url_response_code(url)
     result = download(url)
