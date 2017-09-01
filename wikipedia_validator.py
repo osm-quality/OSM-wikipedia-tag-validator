@@ -10,8 +10,12 @@ from osm_iterator import Data
 import geopy.distance
 
 def get_problem_for_given_element(element, forced_refresh):
+    if object_should_be_deleted_not_repaired(element):
+        return None
+
     if args.flush_cache:
         forced_refresh = True
+
     link = element.get_tag_value("wikipedia")
     present_wikidata_id = element.get_tag_value("wikidata")
 
@@ -392,6 +396,14 @@ def element_can_be_reduced_to_position_at_single_location(element):
     if element.get_tag_value("waterway") == "river":
         return False
     return True
+
+def object_should_be_deleted_not_repaired(element):
+    if element.get_element().tag == "relation":
+        relation_type = element.get_tag_value("type")
+        if relation_type == "person":
+            return True
+    if element.get_tag_value("historic") == "battlefield":
+        return True
 
 def wikidata_url(wikidata_id):
     return "https://www.wikidata.org/wiki/" + wikidata_id
