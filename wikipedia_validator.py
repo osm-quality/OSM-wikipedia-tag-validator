@@ -425,14 +425,11 @@ def get_interwiki(source_language_code, source_article_name, target_language, fo
         return None
 
 class ErrorReport:
-    def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, debug_log=None,
-        error_id=None, fixable_by_pure_osm_edit=None, false_positive_chance=None):
+    def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, debug_log=None, error_id=None):
         self.error_id = error_id
         self.error_message = error_message
         self.debug_log = debug_log
         self.element = element
-        self.false_positive_chance = false_positive_chance
-        self.fixable_by_pure_osm_edit = fixable_by_pure_osm_edit
         self.desired_wikipedia_target = desired_wikipedia_target
 
     def yaml_output(self, filepath):
@@ -440,8 +437,6 @@ class ErrorReport:
             error_id = self.error_id,
             error_message = self.error_message,
             debug_log = self.debug_log,
-            false_positive_chance = self.false_positive_chance,
-            fixable_by_pure_osm_edit = self.fixable_by_pure_osm_edit,
             osm_object_description = describe_osm_object(self.element),
             osm_object_url = self.element.get_link(),
             current_wikipedia_target = self.element.get_tag_value("wikipedia"),
