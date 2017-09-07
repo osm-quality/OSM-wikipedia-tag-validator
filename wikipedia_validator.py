@@ -570,3 +570,5 @@ print("https://osm.wikidata.link/filtered/Poland")
 #https://osm.wikidata.link/candidates/relation/2675566 mazury
 #https://osm.wikidata.link/candidates/relation/2675509 mazury
 #https://osm.wikidata.link/candidates/relation/2675563 mazury
+
+#links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
