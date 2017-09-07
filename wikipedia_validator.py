@@ -77,7 +77,11 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
         if present_wikidata_id == wikidata_id_from_redirect:
             message = "wikidata and wikipedia tags link to a different objects, because wikipedia page points toward redirect that should be followed (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
             new_wikipedia_link = language_code+":"+title_after_possible_redirects
-            return ErrorReport(error_id = "wikipedia wikidata mismatch - follow redirect", error_message = message, desired_wikipedia_target = new_wikipedia_link)
+            return ErrorReport(
+                error_id = "wikipedia wikidata mismatch - follow redirect",
+                error_message = message,
+                desired_wikipedia_target = new_wikipedia_link
+                )
     message = "wikidata and wikipedia tags link to a different objects (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +" wikidata from article)"
     return ErrorReport(error_id = "wikipedia wikidata mismatch", error_message = message)
 
