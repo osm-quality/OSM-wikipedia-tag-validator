@@ -63,9 +63,14 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
     if present_wikidata_id == None:
         return None
 
-    wikidata_id_from_article = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
+    article_name_with_section_stripped = article_name
+    if article_name.find("#") != -1:
+        article_name_with_section_stripped = re.match('([^:]*)#(.*)', article_name).group(1)
+
+    wikidata_id_from_article = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name_with_section_stripped, forced_refresh)
     if present_wikidata_id == wikidata_id_from_article:
         return None
+
     title_after_possible_redirects = wikipedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
     if article_name != title_after_possible_redirects and article_name.find("#") == -1:
         wikidata_id_from_redirect = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
