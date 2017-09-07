@@ -1,6 +1,8 @@
 import argparse
 import yaml
 import os.path
+import generate_shared
+import html
 
 def get_write_location():
     cache_location_config_filepath = 'cache_location.config'
@@ -60,7 +62,9 @@ def parsed_args():
     return args
 
 def htmlify(string):
-    return escape_from_internal_python_string_to_html_ascii(string).replace("\n", "<br />")
+    escaped = html.escape(string)
+    escaped_ascii = escape_from_internal_python_string_to_html_ascii(escaped)
+    return escaped_ascii.replace("\n", "<br />")
 
 def main():
     args = parsed_args()
@@ -72,8 +76,10 @@ def main():
     reported_errors = load_data(filepath)
     types = ['wikipedia tag links to 404', 'wikipedia tag relinking necessary', 'link to disambig', 'wikipedia wikidata mismatch', 'wikipedia wikidata mismatch - follow redirect']
     for error_type_id in types:
+        error_count = 0
         for e in reported_errors:
             if e['error_id'] == error_type_id:
+                error_count += 1
                 print_table_row(htmlify(e['error_message']))
                 print_table_row(link_to_osm_object(e['osm_object_url']))
                 current = format_wikipedia_link(e['current_wikipedia_target'])
@@ -84,6 +90,9 @@ def main():
                 if to != "?":
                     print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
                 print_table_row( '-------' )
+        if error_count != 0:
+            query = generate_shared.get_query(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
+            print_table_row(escape_from_internal_python_string_to_html_ascii(query))
 
     print("</table>")
     print("</body>")
