@@ -316,10 +316,6 @@ def wikidata_entries_for_abstract_or_very_broad_concepts():
     'Q673661', 'Q23008351', 'Q1914636', 'Q17334923', 'Q2221906',
     'Q2324993', 'Q58778', 'Q18340964', 'Q1544281', 'Q2101636',
     'Q30060700', 'Q3778211',
-    #hacks, unexpectedly needed - see https://www.wikidata.org/wiki/Wikidata:Project_chat#Why_statues_are_events.3F
-    #use get_recursive_all_subclass_of(base_type_id, wikidata_entries_for_abstract_or_very_broad_concepts(), True)
-    #to debug
-    'Q735', 'Q12271', 'Q1752346',
     ]
 
 def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries_for_abstract_or_very_broad_concepts(), debug = False):
