@@ -74,7 +74,7 @@ def main():
         print(filepath + " is not a file, provide an existing file")
         return
     reported_errors = load_data(filepath)
-    types = ['wikipedia tag links to 404', 'wikipedia tag relinking necessary', 'link to disambig', 'wikipedia wikidata mismatch', 'wikipedia wikidata mismatch - follow redirect']
+    types = ['wikipedia tag links to 404', 'wikipedia tag unexpected language', 'link to disambig', 'wikipedia wikidata mismatch', 'wikipedia wikidata mismatch - follow redirect']
     for error_type_id in types:
         error_count = 0
         for e in reported_errors:

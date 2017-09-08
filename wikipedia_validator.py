@@ -118,14 +118,14 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
     if correct_article != None:
         error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected:"
         good_link = args.expected_language_code + ":" + correct_article
-        return ErrorReport(error_id = "wikipedia tag relinking necessary", error_message = error_message, desired_wikipedia_target = good_link)
+        return ErrorReport(error_id = "wikipedia tag unexpected language", error_message = error_message, desired_wikipedia_target = good_link)
     else:
         if args.only_osm_edits:
             return None
         if args.allow_false_positives == False:
             return None
         error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected, no page in that language was found:"
-        return ErrorReport(error_id = "wikipedia tag relinking desirable, article missing", error_message = error_message)
+        return ErrorReport(error_id = "wikipedia tag unexpected language, article missing", error_message = error_message)
     assert(False)
 
 def should_use_subject_message(type):
