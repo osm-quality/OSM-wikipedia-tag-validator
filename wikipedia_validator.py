@@ -80,7 +80,8 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
             return ErrorReport(
                 error_id = "wikipedia wikidata mismatch - follow redirect",
                 error_message = message,
-                desired_wikipedia_target = new_wikipedia_link
+                desired_wikipedia_target = new_wikipedia_link,
+                prerequisite = {'wikidata': present_wikidata_id, 'wikipedia': language_code+":"+article_name},
                 )
     message = "wikidata and wikipedia tags link to a different objects (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +" wikidata from article)"
     return ErrorReport(error_id = "wikipedia wikidata mismatch", error_message = message)
@@ -434,12 +435,13 @@ def get_interwiki(source_language_code, source_article_name, target_language, fo
         return None
 
 class ErrorReport:
-    def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, debug_log=None, error_id=None):
+    def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, debug_log=None, error_id=None, prerequisite=None):
         self.error_id = error_id
         self.error_message = error_message
         self.debug_log = debug_log
         self.element = element
         self.desired_wikipedia_target = desired_wikipedia_target
+        self.prerequisite = prerequisite
 
     def yaml_output(self, filepath):
         data = dict(
@@ -450,6 +452,7 @@ class ErrorReport:
             osm_object_url = self.element.get_link(),
             current_wikipedia_target = self.element.get_tag_value("wikipedia"),
             desired_wikipedia_target = self.desired_wikipedia_target,
+            prerequisite = self.prerequisite,
         )
         with open(filepath, 'a') as outfile:
             yaml.dump([data], outfile, default_flow_style=False)
@@ -460,6 +463,7 @@ class ErrorReport:
         print(describe_osm_object(self.element))
         print(self.element.get_link())
         print(self.debug_log)
+        print(self.prerequisite)
         if self.desired_wikipedia_target != None:
             print("wikipedia tag should probably be relinked to " + self.desired_wikipedia_target)
 
