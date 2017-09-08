@@ -205,12 +205,6 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         if type_id == 'Q35127':
             return get_should_use_subject_error('a website', base_type_id)
         if type_id == 'Q1190554':
-            print('base_type_id: ' + wikidata_url(base_type_id))
-            print('all_types: ' + str(all_types))
-            describe_unexpected_wikidata_type(base_type_id)
-            get_recursive_all_subclass_of(base_type_id, wikidata_entries_for_abstract_or_very_broad_concepts(), True)
-            print("EVENT?")
-            return None # TODO handle poor wikidata quality
             return get_should_use_subject_error('an event', base_type_id)
         if type_id == 'Q5398426':
             return get_should_use_subject_error('a television series', base_type_id)
