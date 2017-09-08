@@ -97,8 +97,10 @@ def main():
                     print_table_row( escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
                 print_table_row( '-------' )
         if error_count != 0:
+            print_table_row( 'overpass query usable in JOSM that will load all objects with this error type:' )
             query = generate_shared.get_query(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
             print_table_row(escape_from_internal_python_string_to_html_ascii(query))
+            print_table_row( '==========' )
 
     print("</table>")
     print("</body>")
