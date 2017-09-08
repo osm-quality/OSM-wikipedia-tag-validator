@@ -208,84 +208,7 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
             return ErrorReport(error_id = "link to list", error_message = "")
     for type_id in all_types:
-        if type_id == 'Q486972':
-            #"human settlement"
-            return None
-        if type_id == 'Q811979':
-            #"designed structure"
-            return None
-        if type_id == 'Q46831':
-            # mountain range - "geographic area containing numerous geologically related mountains"
-            return None
-        if type_id == 'Q11776944':
-            # Megaregion
-            return None
-        if type_id == 'Q31855':
-            #instytut badawczy
-            return None
-        if type_id == 'Q34442':
-            #road
-            return None
-        if type_id == 'Q2143825':
-            #walking path 'path for hiking in a natural environment'
-            return None
-        if type_id == 'Q11634':
-            #'art of sculpture'
-            return None
-        if type_id == 'Q56061':
-            #'administrative territorial entity' - 'territorial entity for administration purposes, with or without its own local government'
-            return None
-        if type_id == 'Q473972':
-            #'protected area'
-            return None
-        if type_id == 'Q4022':
-            #river
-            return None
-        if type_id == 'Q22698':
-            #park
-            return None
-        if type_id == 'Q11446':
-            #ship
-            return None
-        if type_id == 'Q12876':
-            #tank
-            return None
-        if type_id == 'Q57607':
-            #christmas market
-            return None
-        if type_id == 'Q8502':
-            #mountain
-            return None
-        if type_id == 'Q10862618':
-            #mountain saddle
-            return None
-        if type_id == 'Q35509':
-            #cave
-            return None
-        if type_id == 'Q23397':
-            #lake
-            return None
-        if type_id == 'Q39816':
-            #valley
-            return None
-        #quite generic ones:
-        if type_id == 'Q271669':
-            #landform
-            return None
-        if type_id == 'Q376799':
-            #transport infrastructure
-            return None
-        if type_id == 'Q15324':
-            #body of water
-            return None
-        if type_id == 'Q975783':
-            #land estate
-            return None
-        if type_id == 'Q8205328':
-            #equipment (human-made physical object with a useful purpose)
-            return None
-        if type_id == 'Q618123':
-            #geographical object
+        if is_wikidata_type_id_recognised_as_OK(type_id):
             return None
 
     if args.additional_debug:
@@ -293,6 +216,88 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         print(describe_osm_object(element))
         print("unexpected type " + base_type_id)
         describe_unexpected_wikidata_type(base_type_id)
+
+def is_wikidata_type_id_recognised_as_OK(type_id):
+    if type_id == 'Q486972':
+        #"human settlement"
+        return True
+    if type_id == 'Q811979':
+        #"designed structure"
+        return True
+    if type_id == 'Q46831':
+        # mountain range - "geographic area containing numerous geologically related mountains"
+        return True
+    if type_id == 'Q11776944':
+        # Megaregion
+        return True
+    if type_id == 'Q31855':
+        #instytut badawczy
+        return True
+    if type_id == 'Q34442':
+        #road
+        return True
+    if type_id == 'Q2143825':
+        #walking path 'path for hiking in a natural environment'
+        return True
+    if type_id == 'Q11634':
+        #'art of sculpture'
+        return True
+    if type_id == 'Q56061':
+        #'administrative territorial entity' - 'territorial entity for administration purposes, with or without its own local government'
+        return True
+    if type_id == 'Q473972':
+        #'protected area'
+        return True
+    if type_id == 'Q4022':
+        #river
+        return True
+    if type_id == 'Q22698':
+        #park
+        return True
+    if type_id == 'Q11446':
+        #ship
+        return True
+    if type_id == 'Q12876':
+        #tank
+        return True
+    if type_id == 'Q57607':
+        #christmas market
+        return True
+    if type_id == 'Q8502':
+        #mountain
+        return True
+    if type_id == 'Q10862618':
+        #mountain saddle
+        return True
+    if type_id == 'Q35509':
+        #cave
+        return True
+    if type_id == 'Q23397':
+        #lake
+        return True
+    if type_id == 'Q39816':
+        #valley
+        return True
+    #quite generic ones:
+    if type_id == 'Q271669':
+        #landform
+        return True
+    if type_id == 'Q376799':
+        #transport infrastructure
+        return True
+    if type_id == 'Q15324':
+        #body of water
+        return True
+    if type_id == 'Q975783':
+        #land estate
+        return True
+    if type_id == 'Q8205328':
+        #equipment (human-made physical object with a useful purpose)
+        return True
+    if type_id == 'Q618123':
+        #geographical object
+        return True
+    return False
 
 def wikidata_entries_for_abstract_or_very_broad_concepts():
     return ['Q1801244', 'Q28732711', 'Q223557', 'Q488383', 'Q16686448',
