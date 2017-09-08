@@ -60,10 +60,10 @@ def main():
     reported_errors = generate_shared.load_data(filepath)
     types = [
         'wikipedia tag links to 404',
-        'wikipedia tag unexpected language',
         'link to disambig',
         'wikipedia wikidata mismatch',
         'should use wikipedia:subject',
+        'wikipedia tag unexpected language',
         'wikipedia wikidata mismatch - follow redirect',
     ]
     for error_type_id in types:
