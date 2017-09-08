@@ -80,7 +80,12 @@ def main():
                 description = "Changing [wikipedia=" + data['tag']['wikipedia'] + "] to [wikipedia=" + e['desired_wikipedia_target'] + "], as current tag is a redirect and the new page matches present wikidata"
                 print(description)
                 data['tag']['wikipedia'] = e['desired_wikipedia_target']
-                api.ChangesetCreate({"comment": description, "automatic": "yes", "discussion_before_edits": "https://forum.openstreetmap.org/viewtopic.php?id=59649"})
+                api.ChangesetCreate({
+                    "comment": description,
+                    "automatic": "yes",
+                    "discussion_before_edits": "https://forum.openstreetmap.org/viewtopic.php?id=59649",
+                    "source_code": "https://github.com/matkoniecz/OSM-wikipedia-tag-validator.git",
+                    })
                 update_element(api, type, data)
                 api.ChangesetClose()
                 print("Sleeping")
