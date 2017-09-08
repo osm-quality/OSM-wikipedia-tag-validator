@@ -291,6 +291,9 @@ def is_wikidata_type_id_recognised_as_OK(type_id):
     if type_id == 'Q39816':
         #valley
         return True
+    if type_id == 'Q179700':
+        #statue
+        return True
     #quite generic ones:
     if type_id == 'Q271669':
         #landform
