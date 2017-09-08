@@ -53,3 +53,19 @@ def get_query(filename, printed_error_ids, format):
             returned += type+'('+id+');' + "\n"
     returned += get_query_footer(format)
     return returned
+
+def get_write_location():
+    cache_location_config_filepath = 'cache_location.config'
+    cache_location_file = open(cache_location_config_filepath, 'r')
+    returned = cache_location_file.read()
+    cache_location_file.close()
+    return returned
+
+def load_data(yaml_report_filepath):
+    with open(yaml_report_filepath, 'r') as stream:
+        try:
+            return yaml.load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+            return None
+    assert(False)

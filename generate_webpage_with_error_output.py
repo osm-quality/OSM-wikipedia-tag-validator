@@ -4,22 +4,6 @@ import os.path
 import generate_shared
 import html
 
-def get_write_location():
-    cache_location_config_filepath = 'cache_location.config'
-    cache_location_file = open(cache_location_config_filepath, 'r')
-    returned = cache_location_file.read()
-    cache_location_file.close()
-    return returned
-
-def load_data(yaml_report_filepath):
-    with open(yaml_report_filepath, 'r') as stream:
-        try:
-            return yaml.load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-            return None
-    assert(False)
-
 def print_html_header():
     print("<html>")
     print("<body>")
@@ -69,11 +53,11 @@ def htmlify(string):
 def main():
     args = parsed_args()
     print_html_header()
-    filepath = get_write_location()+"/"+args.file
+    filepath = generate_shared.get_write_location()+"/"+args.file
     if not os.path.isfile(filepath):
         print(filepath + " is not a file, provide an existing file")
         return
-    reported_errors = load_data(filepath)
+    reported_errors = generate_shared.load_data(filepath)
     types = [
         'wikipedia tag links to 404',
         'wikipedia tag unexpected language',
