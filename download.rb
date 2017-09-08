@@ -5,15 +5,23 @@ def user_agent
   "downloader of interesting places, operated by #{Etc.getlogin}, written by Mateusz Konieczny (matkoniecz@gmail.com)"
 end
 
-def query_text_by_name(name, nodes, ways, relations, expand, timeout)
+def timeout
+  1550
+end
+
+def query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
   query = "[timeout:#{timeout}];(\n"
-  query += "area[name='" + name + "']->.searchArea;\n"
-  query += "node['wikipedia'](area.searchArea);\n" if nodes
-  query += "way['wikipedia'](area.searchArea);\n" if ways
-  query += "relation['wikipedia'](area.searchArea);\n" if relations
-  query += "node['wikidata'](area.searchArea);\n" if nodes
-  query += "way['wikidata'](area.searchArea);\n" if ways
-  query += "relation['wikidata'](area.searchArea);\n" if relations
+  query += area_identifier_builder if area_identifier_builder != nil
+  query += "node['wikipedia'](#{area_identifier});\n" if nodes
+  query += "way['wikipedia'](#{area_identifier});\n" if ways
+  query += "relation['wikipedia'](#{area_identifier});\n" if relations
+  query += "node['wikidata'](#{area_identifier});\n" if nodes
+  query += "way['wikidata'](#{area_identifier});\n" if ways
+  query += "relation['wikidata'](#{area_identifier});\n" if relations
+
+  query += "node[~'wikipedia:.*'~'.*'](#{area_identifier});\n" if nodes
+  query += "way[~'wikipedia:.*'~'.*'](#{area_identifier});\n" if ways
+  query += "relation[~'wikipedia:.*'~'.*'](#{area_identifier});\n" if relations
 
   query += ');
   '
@@ -23,13 +31,38 @@ def query_text_by_name(name, nodes, ways, relations, expand, timeout)
   return query
 end
 
+def query_text_by_name(name, nodes, ways, relations, expand)
+  area_identifier = 'area.searchArea'
+  area_identifier_builder = "area[name='" + name + "']->.searchArea;\n"
+  query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+end
+
+def query_text_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+  area_identifier = nil
+  area_identifier_builder = "#{lower_lat},#{left_lon},#{lower_lat+1},#{left_lon+1}\n"
+  query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+end
+
+def what_is_downloaded_to_text(nodes, ways, relations, expand)
+  returned = ""
+  returned += "_nodes" if nodes
+  returned += "_ways" if ways
+  returned += "_relations" if relations
+  returned = "_all" if nodes && ways && relations
+  returned += "_without_geometry" if expand == false
+  return returned
+end
+
 def produced_filename_by_name(name, nodes, ways, relations, expand)
   filename = name
-  filename += "_nodes" if nodes
-  filename += "_ways" if ways
-  filename += "_relations" if relations
-  filename = "#{name}_all" if nodes && ways && relations
-  filename += "_without_geometry" if expand == false
+  filename += what_is_downloaded_to_text(nodes, ways, relations, expand)
+  filename += ".osm"
+  return filename
+end
+
+def produced_filename_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+  filename = "#{lower_lat}, #{left_lon}"
+  filename += what_is_downloaded_to_text(nodes, ways, relations, expand)
   filename += ".osm"
   return filename
 end
@@ -39,11 +72,20 @@ def is_download_necessary_by_name(name, nodes, ways, relations, expand)
   return !File.exists?(filename)
 end
 
-def download(name, nodes, ways, relations, expand)
-  timeout = 1550
-  query = query_text_by_name(name, nodes, ways, relations, expand, timeout)
-  filename = produced_filename_by_name(name, nodes, ways, relations, expand)
-  return true if !is_download_necessary_by_name(name, nodes, ways, relations, expand)
+def is_download_necessary_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+  filename = produced_filename_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+  return !File.exists?(filename)
+end
+
+def download_graticule(lower_lat, left_lon)
+  nodes, ways, relations, expand = true, true, true, true
+  query = query_text_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand) 
+  filename = produced_filename_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+  return true if !is_download_necessary_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+  return download(query, filename)
+end
+
+def download(query, filename)
   puts query
   puts "downloading: start"
   url = "http://overpass-api.de/api/interpreter?data=#{query.gsub("\n", "")}"
@@ -77,31 +119,38 @@ def download(name, nodes, ways, relations, expand)
   return true
 end
 
+def download_by_name(name, nodes, ways, relations, expand)
+  query = query_text_by_name(name, nodes, ways, relations, expand)
+  filename = produced_filename_by_name(name, nodes, ways, relations, expand)
+  return true if !is_download_necessary_by_name(name, nodes, ways, relations, expand)
+  return download(query, filename)
+end
+
 voivoddeships = ["małopolskie", "podkarpackie", "lubelskie",
   "świętokrzyskie", "mazowieckie", "podlaskie",
   "warmińsko-mazurskie", "pomorskie", "kujawsko-pomorskie",
   "zachodniopomorskie", "lubuskie", "wielkopolskie", "dolnośląskie",
   "opolskie", "śląskie", "łódzkie"]
-download("Kraków", true, true, true, true)
-voivoddeships[0, 1].each do |voivodeship|
+download_by_name("Kraków", true, true, true, true)
+voivoddeships[0, 4].each do |voivodeship|
   while true
     name = "województwo #{voivodeship}"
     break if !is_download_necessary_by_name(name, true, true, true, true)
-    result = download(name, true, true, true, true)
+    result = download_by_name(name, true, true, true, true)
     puts "failed download" if !result
     sleep 600
     break if result
   end
 end
-#download("Polska", true, false, false, false)
-#download("Polska", false, true, false, false)
-#download("Polska", false, false, true, false)
-download("Stendal", true, true, true, true)
-download("Bremen", true, true, true, true)
-#download("Berlin", true, false, false, false)
-download("Nigeria", true, true, true, true)
-#download("Bolivia", true, true, true, true)
-#download("Қазақстан", true, true, true, true)
-#download("Magyarország", true, false, false, true)
-#download("Magyarország", false, true, false, true)
-#download("Magyarország", false, false, true, true)
+#download_by_name("Polska", true, false, false, false)
+#download_by_name("Polska", false, true, false, false)
+#download_by_name("Polska", false, false, true, false)
+download_by_name("Stendal", true, true, true, true)
+download_by_name("Bremen", true, true, true, true)
+#download_by_name("Berlin", true, false, false, false)
+download_by_name("Nigeria", true, true, true, true)
+#download_by_name("Bolivia", true, true, true, true)
+#download_by_name("Қазақстан", true, true, true, true)
+#download_by_name("Magyarország", true, false, false, true)
+#download_by_name("Magyarország", false, true, false, true)
+#download_by_name("Magyarország", false, false, true, true)
