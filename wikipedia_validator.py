@@ -228,6 +228,7 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         print(describe_osm_object(element))
         print("unexpected type " + base_type_id)
         describe_unexpected_wikidata_type(base_type_id)
+    return None
 
 def is_wikidata_type_id_recognised_as_OK(type_id):
     if type_id == 'Q486972':
