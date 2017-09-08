@@ -423,7 +423,7 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
     for country in countries:
         country_id = country['mainsnak']['datavalue']['value']['id']
         if country_id != target:
-            # we need to check whatever locations till belongs to a given country
+            # we need to check whatever locations still belongs to a given country
             # it is necessary to avoid gems like
             # "Płock is allowed to have foreign wikipedia link, because it is at least partially in Nazi Germany"
             # P582 indicates the time an item ceases to exist or a statement stops being valid
