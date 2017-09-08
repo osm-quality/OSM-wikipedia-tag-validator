@@ -46,19 +46,26 @@ def prerequisite_failure_reason(e, data):
             return("failed " + key + " prerequisite, as key was missing")
     return None
 
-def main():
-    api = osmapi.OsmApi(username = username(), passwordfile = "password.secret")
-    # for testing: api="https://api06.dev.openstreetmap.org", 
-    # website at https://master.apis.dev.openstreetmap.org/
+def load_errors():
     args = parsed_args()
     filepath = generate_shared.get_write_location()+"/"+args.file
     if not os.path.isfile(filepath):
         print(filepath + " is not a file, provide an existing file")
         return
-    reported_errors = generate_shared.load_data(filepath)
+    return generate_shared.load_data(filepath)
+
+def sleep(time):
+    print("Sleeping")
+    time.sleep(60)
+
+def main():
+    api = osmapi.OsmApi(username = username(), passwordfile = "password.secret")
+    # for testing: api="https://api06.dev.openstreetmap.org", 
+    # website at https://master.apis.dev.openstreetmap.org/
     types = [
         'wikipedia wikidata mismatch - follow redirect',
     ]
+    reported_errors = load_errors()
     for error_type_id in types:
         for e in reported_errors:
             if e['error_id'] == error_type_id:
@@ -87,7 +94,5 @@ def main():
                     })
                 update_element(api, type, data)
                 api.ChangesetClose()
-                print("Sleeping")
-                time.sleep(60)
 
 main()
