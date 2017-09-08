@@ -438,6 +438,8 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
             except KeyError:
                 country_name = get_wikidata_label(country_id, 'en')
                 #P582 is missing, therefore it is no longer valid
+                if country_name == None:
+                    return "it is at least partially in country without known name on Wikidata (country_id=" + country_id + ")"
                 if country_id == 'Q7318':
                     print(describe_osm_object(element) + " is tagged on wikidata as location in no longer existing " + country_name)
                     return None
