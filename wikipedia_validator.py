@@ -129,11 +129,15 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         return ErrorReport(error_id = "wikipedia tag unexpected language, article missing", error_message = error_message)
     assert(False)
 
-def should_use_subject_message(type):
-    return "article linked in wikipedia tag is about " + type + ", so it is very unlikely to be correct (subject:wikipedia=* tag would be probably better - in case of change remember to remove wikidata tag if it is present)"
+def should_use_subject_message(type, base_type_id):
+    return "article linked in wikipedia tag is about """ + type + \
+    ", so it is very unlikely to be correct \
+    (subject:wikipedia=* tag would be probably better - \
+    in case of change remember to remove wikidata tag if it is present) \
+    [base_type_id: " + base_type_id + "]"
 
-def get_should_use_subject_error(type):
-    return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type))
+def get_should_use_subject_error(type, base_type_id):
+    return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type, base_type_id))
 
 def get_list_of_links_from_disambig(element, language_code, article_name):
     returned = []
@@ -190,21 +194,28 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
             error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link\n\n" + list
             return ErrorReport(error_id = "link to disambig", error_message = error_message)
         if type_id == 'Q5':
-            return get_should_use_subject_error('human')
+            return get_should_use_subject_error('a human', base_type_id)
         if type_id == 'Q18786396' or type_id == 'Q16521':
-            return get_should_use_subject_error('animal')
-        if type_id == 'Q43229':
-            return get_should_use_subject_error('organization')
+            return get_should_use_subject_error('an animal', base_type_id)
+        #valid for example for museums, parishes
+        #if type_id == 'Q43229':
+        #    return get_should_use_subject_error('organization', base_type_id)
         if type_id == 'Q1344':
-            return get_should_use_subject_error('opera')
+            return get_should_use_subject_error('an opera', base_type_id)
         if type_id == 'Q35127':
-            return get_should_use_subject_error('website')
+            return get_should_use_subject_error('a website', base_type_id)
         if type_id == 'Q1190554':
-            return get_should_use_subject_error('event')
+            print('base_type_id: ' + wikidata_url(base_type_id))
+            print('all_types: ' + str(all_types))
+            describe_unexpected_wikidata_type(base_type_id)
+            get_recursive_all_subclass_of(base_type_id, wikidata_entries_for_abstract_or_very_broad_concepts(), True)
+            print("EVENT?")
+            return None # TODO handle poor wikidata quality
+            return get_should_use_subject_error('an event', base_type_id)
         if type_id == 'Q5398426':
-            return get_should_use_subject_error('television series')
+            return get_should_use_subject_error('a television series', base_type_id)
         if type_id == 'Q3026787':
-            return get_should_use_subject_error('saying')
+            return get_should_use_subject_error('a saying', base_type_id)
         if type_id == 'Q13406463':
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
             return ErrorReport(error_id = "link to list", error_message = "")
@@ -303,15 +314,29 @@ def is_wikidata_type_id_recognised_as_OK(type_id):
 def wikidata_entries_for_abstract_or_very_broad_concepts():
     return ['Q1801244', 'Q28732711', 'Q223557', 'Q488383', 'Q16686448',
     'Q151885', 'Q35120', 'Q37260', 'Q246672', 'Q5127848', 'Q16889133',
-    'Q386724', 'Q17008256', 'Q11348', 'Q11028', 'Q1260632', 'Q1209283']
+    'Q386724', 'Q17008256', 'Q11348', 'Q11028', 'Q1260632', 'Q1209283',
+    'Q673661', 'Q23008351', 'Q1914636', 'Q17334923', 'Q2221906',
+    'Q2324993', 'Q58778', 'Q18340964', 'Q1544281', 'Q2101636',
+    'Q30060700', 'Q3778211',
+    #hacks, unexpectedly needed - see https://www.wikidata.org/wiki/Wikidata:Project_chat#Why_statues_are_events.3F
+    #use get_recursive_all_subclass_of(base_type_id, wikidata_entries_for_abstract_or_very_broad_concepts(), True)
+    #to debug
+    'Q735', 'Q12271', 'Q1752346',
+    ]
 
-def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries_for_abstract_or_very_broad_concepts()):
+def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries_for_abstract_or_very_broad_concepts(), debug = False):
     processed = []
-    to_process = [wikidata_id]
+    to_process = [{"id": wikidata_id, "depth": 0}]
     while to_process != []:
-        process_id = to_process.pop()
+        process = to_process.pop()
+        process_id = process["id"]
+        depth = process["depth"]
+        if debug:
+            print(" "*depth + wikidata_description(process_id))
         processed.append(process_id)
-        to_process += get_useful_direct_parents(process_id, processed + to_process + banned_parents)
+        new_ids = get_useful_direct_parents(process_id, processed + to_process + banned_parents)
+        for parent_id in new_ids:
+            to_process.append({"id": parent_id, "depth": depth+1})
     return processed
 
 def get_useful_direct_parents(wikidata_id, forbidden):
@@ -329,33 +354,46 @@ def describe_unexpected_wikidata_type(type_id):
     # print entire inheritance set
     for parent_category in get_recursive_all_subclass_of(type_id):
         print("if type_id == '" + parent_category + "':")
-        show_wikidata_description(parent_category)
+        print(wikidata_description(parent_category))
 
-def show_wikidata_description(wikidata_id):
+def wikidata_description(wikidata_id):
     en_docs = get_wikidata_description(wikidata_id, 'en')
     local_docs = get_wikidata_description(wikidata_id, args.expected_language_code)
-    print(en_docs)
-    if(en_docs == (None, None)):
-        print(local_docs)
-        if(local_docs == (None, None)):
-            print("Unexpected type " + wikidata_id + " undocumented format")
+    if en_docs != None:
+        return en_docs
+    if local_docs != None:
+        return local_docs
+    return("Unexpected type " + wikidata_id + " undocumented format")
+
+def get_wikidata_label(wikidata_id, language):
+    try:
+        data = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]
+        return data['labels']['en']['value']
+    except KeyError:
+        return None
+
+def get_wikidata_explanation(wikidata_id, language):
+    try:
+        data = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]
+        return data['descriptions'][language]['value']
+    except KeyError:
+        return None
 
 def get_wikidata_description(wikidata_id, language):
     docs = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)
     returned = ""
-    label = None
-    try:
-        label = docs['entities'][wikidata_id]['labels'][language]['value']
-    except KeyError:
-        label = None
+    label = get_wikidata_label(wikidata_id, language)
+    explanation = get_wikidata_explanation(wikidata_id, language)
 
-    explanation = None
-    try:
-        explanation = docs['entities'][wikidata_id]['descriptions'][language]['value']
-    except KeyError:
-        explanation = None
+    if label == None and explanation == None:
+        return None
 
-    return dict(label = label, explanation = explanation, language = language)
+    if explanation != None:
+        explanation = ' (' + explanation +')'
+    else:
+        explanation = ''
+
+    return(language + ": " + label + explanation + ' [' + wikidata_id + "]")
 
 def get_wikidata_type_id_of_entry(wikidata_id):
     try:
@@ -394,7 +432,7 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
             try:
                 country['qualifiers']['P582']
             except KeyError:
-                country_name = get_wikidata_description(country_id, 'en')['label']
+                country_name = get_wikidata_label(country_id, 'en')
                 #P582 is missing, therefore it is no longer valid
                 if country_id == 'Q7318':
                     print(describe_osm_object(element) + " is tagged on wikidata as location in no longer existing " + country_name)
