@@ -60,7 +60,6 @@ def main():
         'wikipedia wikidata mismatch - follow redirect',
     ]
     for error_type_id in types:
-        error_count = 0
         for e in reported_errors:
             if e['error_id'] == error_type_id:
                 type = e['osm_object_url'].split("/")[3]
