@@ -79,7 +79,8 @@ def main():
         'wikipedia tag unexpected language',
         'link to disambig',
         'wikipedia wikidata mismatch',
-        'wikipedia wikidata mismatch - follow redirect'
+        'should use wikipedia:subject',
+        'wikipedia wikidata mismatch - follow redirect',
     ]
     for error_type_id in types:
         error_count = 0
