@@ -128,7 +128,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
             prerequisite = prerequisite,
             )
     else:
-        if args.only_osm_edits:
+        if not args.allow_requesting_edits_outside_osm:
             return None
         if args.allow_false_positives == False:
             return None
@@ -186,7 +186,7 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
 
     base_type_id = get_wikidata_type_id_of_entry(wikidata_id)
     if base_type_id == None:
-        if args.only_osm_edits:
+        if not args.allow_requesting_edits_outside_osm:
             return None
         # instance data not present in wikidata
         # not reporting as error as import from OSM to Wikidata is not feasible
@@ -580,7 +580,7 @@ def parsed_args():
                         (redownloads wikipedia data for cases where errors are reported, \
                         so removes false positives where wikipedia is already fixed)',
                         action='store_true')
-    parser.add_argument('-only_osm_edits', dest='only_osm_edits', help='adding this parameter will remove reporting of problems that may require editing wikipedia',
+    parser.add_argument('-allow_requesting_edits_outside_osm', dest='allow_requesting_edits_outside_osm', help='enables reporting of problems that may require editing wikipedia or wikidata',
                         action='store_true')
     parser.add_argument('-additional_debug', dest='additional_debug', help='additional debug - shows when wikidata types are no recognized, list locations allowed to have a foreign language label',
                         action='store_true')
