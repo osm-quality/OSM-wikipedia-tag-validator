@@ -77,10 +77,8 @@ def prerequisite_failure_reason(e, data):
     for key in e['prerequisite'].keys():
         try:
             if e['prerequisite'][key] != data['tag'][key]:
-                failed = True
                 return("failed " + key + " prerequisite for " + e['osm_object_url'])
         except KeyError:
-            failed = True
             return("failed " + key + " prerequisite, as key was missing")
     return None
 
