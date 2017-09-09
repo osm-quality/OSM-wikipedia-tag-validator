@@ -593,7 +593,7 @@ def parsed_args():
 wikipedia_connection.set_cache_location(common.get_file_storage_location())
 
 args = parsed_args()
-osm = Data(args.file)
+osm = Data(common.get_file_storage_location() + "/" + args.file)
 if args.flush_cache_for_reported_situations:
     osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
 else:

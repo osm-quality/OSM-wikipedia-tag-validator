@@ -9,6 +9,10 @@ def timeout
   1550
 end
 
+def download_location
+  return File.read('cache_location.config')
+end
+
 def query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
   query = "[timeout:#{timeout}];(\n"
   query += area_identifier_builder if area_identifier_builder != nil
@@ -57,14 +61,14 @@ def produced_filename_by_name(name, nodes, ways, relations, expand)
   filename = name
   filename += what_is_downloaded_to_text(nodes, ways, relations, expand)
   filename += ".osm"
-  return filename
+  return download_location+"/"+filename
 end
 
 def produced_filename_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
   filename = "#{lower_lat}, #{left_lon}"
   filename += what_is_downloaded_to_text(nodes, ways, relations, expand)
   filename += ".osm"
-  return filename
+  return download_location+"/"+filename
 end
 
 def is_download_necessary_by_name(name, nodes, ways, relations, expand)
