@@ -34,7 +34,7 @@ def update_element(api, type, data):
         return api.WayUpdate(data)
     if type == 'relation':
         return api.RelationUpdate(data)
-    assert(False)
+    assert False, str(type) + " type as not recognised"
 
 def prerequisite_failure_reason(e, data):
     for key in e['prerequisite'].keys():
