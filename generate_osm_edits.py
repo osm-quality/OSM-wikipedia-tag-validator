@@ -7,8 +7,11 @@ import os
 import wikipedia_connection
 # docs: http://osmapi.metaodi.ch/
 
-def username():
+def bot_username():
     return "Mateusz Konieczny - bot account"
+
+def manual_username():
+    return "Mateusz Konieczny"
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -141,14 +144,38 @@ def handle_follow_redirect(e, id, type, api):
     automatic_status = "yes"
     make_edit(comment, automatic_status, discussion_url, api, type, data)
 
+def change_to_local_language(e, id, type, api):
+    if e['error_id'] != 'wikipedia tag unexpected language':
+        return
+    #language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
+    #if language_code != "pl":
+    #    return
+    data = get_data(api, id, type)
+    if data == None:
+        return
+    failure = prerequisite_failure_reason(e, data)
+    if failure != None:
+        print(failure)
+        return
+    now = data['tag']['wikipedia']
+    new = e['desired_wikipedia_target']
+    reason = ", as wikipedia page in the local language should be preferred"
+    comment = fit_wikipedia_edit_changeset_description_in_255_characters(now, new, reason)
+    data['tag']['wikipedia'] = e['desired_wikipedia_target']
+    discussion_url = None
+    automatic_status = "no, it is a manually reviewed edit"
+    make_edit(comment, automatic_status, discussion_url, api, type, data)
+
 def main():
-    api = osmapi.OsmApi(username = username(), passwordfile = "password.secret")
+    bot_api = osmapi.OsmApi(username = bot_username(), passwordfile = "password.secret")
+    user_api = osmapi.OsmApi(username = manual_username(), passwordfile = "password.secret")
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     reported_errors = load_errors()
     for e in reported_errors:
         type = e['osm_object_url'].split("/")[3]
         id = e['osm_object_url'].split("/")[4]
-        handle_follow_redirect(e, id, type, api)
+        handle_follow_redirect(e, id, type, bot_api)
+        #change_to_local_language(e, id, type, user_api)
 
 main()
