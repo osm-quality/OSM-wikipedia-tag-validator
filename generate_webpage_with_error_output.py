@@ -2,6 +2,7 @@ import argparse
 import yaml
 import os.path
 import generate_shared
+import common
 import html
 
 def print_html_header():
@@ -53,7 +54,7 @@ def htmlify(string):
 def main():
     args = parsed_args()
     print_html_header()
-    filepath = generate_shared.get_write_location()+"/"+args.file
+    filepath = common.get_file_storage_location()+"/"+args.file
     if not os.path.isfile(filepath):
         print(filepath + " is not a file, provide an existing file")
         return

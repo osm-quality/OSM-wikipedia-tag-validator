@@ -6,6 +6,7 @@ import yaml
 import re
 
 import wikipedia_connection
+import common
 from osm_iterator import Data
 import geopy.distance
 
@@ -528,7 +529,7 @@ def output_element(element, error_report):
     error_report.yaml_output(yaml_report_filepath())
 
 def yaml_report_filepath():
-    return get_write_location()+"/" + args.file + ".yaml"
+    return common.get_file_storage_location()+"/" + args.file + ".yaml"
 
 def get_location_of_element(element):
     lat = None
@@ -589,14 +590,7 @@ def parsed_args():
         parser.error('Provide .osm file')
     return args
 
-def get_write_location():
-    cache_location_config_filepath = 'cache_location.config'
-    cache_location_file = open(cache_location_config_filepath, 'r')
-    returned = cache_location_file.read()
-    cache_location_file.close()
-    return returned
-
-wikipedia_connection.set_cache_location(get_write_location())
+wikipedia_connection.set_cache_location(common.get_file_storage_location())
 
 args = parsed_args()
 osm = Data(args.file)

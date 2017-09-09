@@ -1,12 +1,5 @@
 import yaml
 
-def get_write_location():
-    cache_location_config_filepath = 'cache_location.config'
-    cache_location_file = open(cache_location_config_filepath, 'r')
-    returned = cache_location_file.read()
-    cache_location_file.close()
-    return returned
-
 def load_data(yaml_report_filepath):
     with open(yaml_report_filepath, 'r') as stream:
         try:

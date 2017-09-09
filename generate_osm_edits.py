@@ -1,6 +1,7 @@
 import osmapi
 import time
 import argparse
+import common
 import generate_shared
 import os
 import wikipedia_connection
@@ -48,7 +49,7 @@ def prerequisite_failure_reason(e, data):
 
 def load_errors():
     args = parsed_args()
-    filepath = generate_shared.get_write_location()+"/"+args.file
+    filepath = common.get_file_storage_location()+"/"+args.file
     if not os.path.isfile(filepath):
         print(filepath + " is not a file, provide an existing file")
         return
