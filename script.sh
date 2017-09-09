@@ -45,7 +45,7 @@ python3 wikipedia_validator.py -expected_language_code de -file "Stendal_all.osm
 
 cd /media/mateusz/5bfa9dfc-ed86-4d19-ac36-78df1060707c
 
-rm Deutschland.yaml
+[ -e "Deutschland.yaml" ] && rm "Deutschland.yaml"
 cat Bremen_all.osm.yaml >> Deutschland.yaml
 #cat Berlin_nodes_without_geometry.osm.yaml >> Deutschland.yaml
 cat Stendal_all.osm.yaml >> Deutschland.yaml
