@@ -39,7 +39,38 @@ def update_element(api, type, data):
         return api.RelationUpdate(data)
     assert False, str(type) + " type as not recognised"
 
+def is_text_field_mentioning_wikipedia_or_wikidata(text):
+    if text.find("wikipedia") != -1:
+        return True
+    if text.find("wikidata") != -1:
+        return True
+    if text.find("wiki") != -1:
+        return True
+    return False
+
+def note_or_fixme_review_request_indication(data):
+    fixme = ""
+    note = ""
+    try:
+        fixme = data['tag']['fixme']
+    except KeyError:
+        pass
+    try:
+        note = data['tag']['note']
+    except KeyError:
+        pass
+    text_dump = "fixme=<" + fixme + "> note=<" + note + ">"
+    if is_text_field_mentioning_wikipedia_or_wikidata(fixme):
+        return text_dump
+    if is_text_field_mentioning_wikipedia_or_wikidata(note):
+        return text_dump
+    return None
+
 def prerequisite_failure_reason(e, data):
+    advice = note_or_fixme_review_request_indication(data)
+    if advice != None:
+        return advice
+
     for key in e['prerequisite'].keys():
         try:
             if e['prerequisite'][key] != data['tag'][key]:
