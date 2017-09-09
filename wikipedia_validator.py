@@ -203,7 +203,7 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         if type_id == 'Q5':
             return get_should_use_subject_error('a human', base_type_id)
         if type_id == 'Q18786396' or type_id == 'Q16521':
-            return get_should_use_subject_error('an animal', base_type_id)
+            return get_should_use_subject_error('an animal or plant', base_type_id)
         #valid for example for museums, parishes
         #if type_id == 'Q43229':
         #    return get_should_use_subject_error('organization', base_type_id)
