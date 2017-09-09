@@ -19,12 +19,15 @@ def parsed_args():
     return args
 
 def get_data(api, id, type):
-    if type == 'node':
-        return api.NodeGet(id)
-    if type == 'way':
-        return api.WayGet(id)
-    if type == 'relation':
-        return api.RelationGet(id)
+    try:
+        if type == 'node':
+            return api.NodeGet(id)
+        if type == 'way':
+            return api.WayGet(id)
+        if type == 'relation':
+            return api.RelationGet(id)
+    except osmapi.ElementDeletedApiError:
+        return None
     assert(False)
 
 def update_element(api, type, data):
@@ -55,45 +58,66 @@ def load_errors():
         return
     return generate_shared.load_data(filepath)
 
-def sleep(time):
+def sleep(time_in_s):
     print("Sleeping")
-    time.sleep(60)
+    time.sleep(time_in_s)
+
+def make_edit(comment, automatic_status, discussion_url, api, type, data):
+    if(len(comment)>255):
+        raise "comment too long"
+    print(comment)
+    changeset_description = {
+        "comment": comment,
+        "automatic": automatic_status,
+        "source_code": "https://github.com/matkoniecz/OSM-wikipedia-tag-validator.git",
+        }
+    if discussion_url != None:
+        changeset_description["discussion_before_edits"] = discussion_url
+    api.ChangesetCreate(changeset_description)
+    update_element(api, type, data)
+    api.ChangesetClose()
+    sleep(60)
+
+def fit_wikipedia_edit_changeset_description_in_255_characters(now, new, reason):
+    comment = "[wikipedia=" + now + "] to [wikipedia=" + new + "]" + reason
+    if(len(comment)) > 255:
+        comment = "changing wikipedia tag to <" + new + ">" + reason
+    if(len(comment)) > 255:
+        comment = "changing wikipedia tag " + reason
+    if(len(comment)) > 255:
+        raise("comment too long")
+    return comment
+
+def handle_follow_redirect(e, id, type, api):
+    if e['error_id'] != 'wikipedia wikidata mismatch - follow redirect':
+        return
+    language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
+    if language_code != "pl":
+        return
+    data = get_data(api, id, type)
+    if data == None:
+        return
+    failure = prerequisite_failure_reason(e, data)
+    if failure != None:
+        print(failure)
+        return
+    now = data['tag']['wikipedia']
+    new = e['desired_wikipedia_target']
+    reason = ", as current tag is a redirect and the new page matches present wikidata"
+    comment = fit_wikipedia_edit_changeset_description_in_255_characters(now, new, reason)
+    data['tag']['wikipedia'] = e['desired_wikipedia_target']
+    discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
+    automatic_status = "yes"
+    make_edit(comment, automatic_status, discussion_url, api, type, data)
 
 def main():
     api = osmapi.OsmApi(username = username(), passwordfile = "password.secret")
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
-    types = [
-        'wikipedia wikidata mismatch - follow redirect',
-    ]
     reported_errors = load_errors()
-    for error_type_id in types:
-        for e in reported_errors:
-            if e['error_id'] == error_type_id:
-                type = e['osm_object_url'].split("/")[3]
-                id = e['osm_object_url'].split("/")[4]
-                language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
-                if language_code != "pl":
-                    continue
-                try:
-                    data = get_data(api, id, type)
-                except osmapi.ElementDeletedApiError:
-                    print(type + " " + id + " that was with " + e['desired_wikipedia_target'] + " was deleted.")
-                    continue
-                failure = prerequisite_failure_reason(e, data)
-                if failure != None:
-                    print(failure)
-                    continue
-                description = "Changing [wikipedia=" + data['tag']['wikipedia'] + "] to [wikipedia=" + e['desired_wikipedia_target'] + "], as current tag is a redirect and the new page matches present wikidata"
-                print(description)
-                data['tag']['wikipedia'] = e['desired_wikipedia_target']
-                api.ChangesetCreate({
-                    "comment": description,
-                    "automatic": "yes",
-                    "discussion_before_edits": "https://forum.openstreetmap.org/viewtopic.php?id=59649",
-                    "source_code": "https://github.com/matkoniecz/OSM-wikipedia-tag-validator.git",
-                    })
-                update_element(api, type, data)
-                api.ChangesetClose()
+    for e in reported_errors:
+        type = e['osm_object_url'].split("/")[3]
+        id = e['osm_object_url'].split("/")[4]
+        handle_follow_redirect(e, id, type, api)
 
 main()
