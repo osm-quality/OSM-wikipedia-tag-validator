@@ -136,7 +136,7 @@ voivoddeships = ["małopolskie", "podkarpackie", "lubelskie",
   "zachodniopomorskie", "lubuskie", "wielkopolskie", "dolnośląskie",
   "opolskie", "śląskie", "łódzkie"]
 download_by_name("Kraków", true, true, true, true)
-voivoddeships[0, 6].each do |voivodeship|
+voivoddeships.each do |voivodeship|
   while true
     name = "województwo #{voivodeship}"
     break if !is_download_necessary_by_name(name, true, true, true, true)
