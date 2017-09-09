@@ -397,6 +397,7 @@ def get_wikidata_description(wikidata_id, language):
     return(language + ": " + label + explanation + ' [' + wikidata_id + "]")
 
 def get_wikidata_type_id_of_entry(wikidata_id):
+    #TODO - handle multiple types
     try:
         forced_refresh = False
         wikidata_entry = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
@@ -614,3 +615,4 @@ print("https://osm.wikidata.link/filtered/Poland")
 #https://osm.wikidata.link/candidates/relation/2675563 mazury
 
 #links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
+# https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
