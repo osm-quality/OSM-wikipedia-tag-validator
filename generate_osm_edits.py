@@ -13,6 +13,9 @@ def bot_username():
 def manual_username():
     return "Mateusz Konieczny"
 
+def character_limit_of_description():
+    return 255
+
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
     parser.add_argument('-file', '-f', dest='file', type=str, help='name of yaml file produced by validator')
@@ -106,9 +109,9 @@ def sleep(time_in_s):
     time.sleep(time_in_s)
 
 def make_edit(affected_objects, comment, automatic_status, discussion_url, api, type, data):
-    if(len(comment)>255):
+    if(len(comment) > character_limit_of_description()):
         raise "comment too long"
-    if(len(affected_objects + " " + comment) <= 255):
+    if(len(affected_objects + " " + comment) <= character_limit_of_description()):
         comment = affected_objects + " " + comment
     else:
         print(affected_objects)
@@ -127,11 +130,11 @@ def make_edit(affected_objects, comment, automatic_status, discussion_url, api, 
 
 def fit_wikipedia_edit_description_within_character_limit(now, new, reason):
     comment = "[wikipedia=" + now + "] to [wikipedia=" + new + "]" + reason
-    if(len(comment)) > 255:
+    if(len(comment)) > character_limit_of_description():
         comment = "changing wikipedia tag to <" + new + ">" + reason
-    if(len(comment)) > 255:
+    if(len(comment)) > character_limit_of_description():
         comment = "changing wikipedia tag " + reason
-    if(len(comment)) > 255:
+    if(len(comment)) > character_limit_of_description():
         raise("comment too long")
     return comment
 
