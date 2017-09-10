@@ -696,7 +696,7 @@ def parsed_args():
                         action='store_true')
     parser.add_argument('-additional_debug', dest='additional_debug', help='additional debug - shows when wikidata types are no recognized, list locations allowed to have a foreign language label',
                         action='store_true')
-    parser.add_argument('-allow_false_positives', dest='allow_false_positives', help='enables validator rules that may report false positives')
+    parser.add_argument('-allow_false_positives', dest='allow_false_positives', help='enables validator rules that may report false positives', action='store_true')
     args = parser.parse_args()
     if not (args.file):
         parser.error('Provide .osm file')
