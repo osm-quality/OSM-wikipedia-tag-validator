@@ -336,88 +336,39 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
     return None
 
 def is_wikidata_type_id_recognised_as_OK(type_id):
-    if type_id == 'Q486972':
-        #"human settlement"
-        return True
-    if type_id == 'Q811979':
-        #"designed structure"
-        return True
-    if type_id == 'Q46831':
-        # mountain range - "geographic area containing numerous geologically related mountains"
-        return True
-    if type_id == 'Q11776944':
-        # Megaregion
-        return True
-    if type_id == 'Q31855':
-        #instytut badawczy
-        return True
-    if type_id == 'Q34442':
-        #road
-        return True
-    if type_id == 'Q2143825':
-        #walking path 'path for hiking in a natural environment'
-        return True
-    if type_id == 'Q11634':
-        #'art of sculpture'
-        return True
-    if type_id == 'Q56061':
-        #'administrative territorial entity' - 'territorial entity for administration purposes, with or without its own local government'
-        return True
-    if type_id == 'Q473972':
-        #'protected area'
-        return True
-    if type_id == 'Q4022':
-        #river
-        return True
-    if type_id == 'Q22698':
-        #park
-        return True
-    if type_id == 'Q11446':
-        #ship
-        return True
-    if type_id == 'Q12876':
-        #tank
-        return True
-    if type_id == 'Q57607':
-        #christmas market
-        return True
-    if type_id == 'Q8502':
-        #mountain
-        return True
-    if type_id == 'Q10862618':
-        #mountain saddle
-        return True
-    if type_id == 'Q35509':
-        #cave
-        return True
-    if type_id == 'Q23397':
-        #lake
-        return True
-    if type_id == 'Q39816':
-        #valley
-        return True
-    if type_id == 'Q179700':
-        #statue
-        return True
-    #quite generic ones:
-    if type_id == 'Q271669':
-        #landform
-        return True
-    if type_id == 'Q376799':
-        #transport infrastructure
-        return True
-    if type_id == 'Q15324':
-        #body of water
-        return True
-    if type_id == 'Q975783':
-        #land estate
-        return True
-    if type_id == 'Q8205328':
-        #equipment (human-made physical object with a useful purpose)
-        return True
-    if type_id == 'Q618123':
-        #geographical object
-        return True
+    objects_mappable_in_OSM = [
+        {'wikidata': 'Q486972', 'label': 'human settlement'},
+        {'wikidata': 'Q811979', 'label': 'designed structure'},
+        {'wikidata': 'Q46831', 'label': 'mountain range - geographic area containing numerous geologically related mountains'},
+        {'wikidata': 'Q11776944', 'label': 'Megaregion'},
+        {'wikidata': 'Q31855', 'label': 'instytut badawczy'},
+        {'wikidata': 'Q34442', 'label': 'road'},
+        {'wikidata': 'Q2143825', 'label': 'walking path path for hiking in a natural environment'},
+        {'wikidata': 'Q11634', 'label': 'art of sculpture'},
+        {'wikidata': 'Q56061', 'label': 'administrative territorial entity - territorial entity for administration purposes, with or without its own local government'},
+        {'wikidata': 'Q473972', 'label': 'protected area'},
+        {'wikidata': 'Q4022', 'label': 'river'},
+        {'wikidata': 'Q22698', 'label': 'park'},
+        {'wikidata': 'Q11446', 'label': 'ship'},
+        {'wikidata': 'Q12876', 'label': 'tank'},
+        {'wikidata': 'Q57607', 'label': 'christmas market'},
+        {'wikidata': 'Q8502', 'label': 'mountain'},
+        {'wikidata': 'Q10862618', 'label': 'mountain saddle'},
+        {'wikidata': 'Q35509', 'label': 'cave'},
+        {'wikidata': 'Q23397', 'label': 'lake'},
+        {'wikidata': 'Q39816', 'label': 'valley'},
+        {'wikidata': 'Q179700', 'label': 'statue'},
+        # Quite generic ones
+        {'wikidata': 'Q271669', 'label': 'landform'},
+        {'wikidata': 'Q376799', 'label': 'transport infrastructure'},
+        {'wikidata': 'Q15324', 'label': 'body of water'},
+        {'wikidata': 'Q975783', 'label': 'land estate'},
+        {'wikidata': 'Q8205328', 'label': 'equipment (human-made physical object with a useful purpose)'},
+        {'wikidata': 'Q618123', 'label': 'geographical object'},
+    ]
+    for mappable_type in objects_mappable_in_OSM:
+        if type_id == mappable_type['wikidata']:
+            return True
     return False
 
 def wikidata_entries_for_abstract_or_very_broad_concepts():
