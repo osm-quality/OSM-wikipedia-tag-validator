@@ -10,6 +10,19 @@ import common
 from osm_iterator import Data
 import geopy.distance
 
+present_wikipedia_links = {}
+present_wikidata_links = {}
+def record_presence(wikipedia_tag, wikidata_tag, osm_object_url):
+    if wikipedia_tag != None:
+        if wikipedia_tag not in present_wikipedia_links:
+            present_wikipedia_links[wikipedia_tag] = {}
+        present_wikipedia_links[wikipedia_tag][osm_object_url] = True
+
+    if wikidata_tag != None:
+        if wikidata_tag not in present_wikidata_links:
+            present_wikidata_links[wikidata_tag] = {}
+        present_wikidata_links[wikidata_tag][osm_object_url] = True
+
 def get_problem_for_given_element(element, forced_refresh):
     if object_should_be_deleted_not_repaired(element):
         return None
@@ -19,6 +32,8 @@ def get_problem_for_given_element(element, forced_refresh):
 
     link = element.get_tag_value("wikipedia")
     present_wikidata_id = element.get_tag_value("wikidata")
+
+    record_presence(link, present_wikidata_id, element.get_link())
 
     if link == None:
         return attempt_to_locate_wikipedia_tag(element, forced_refresh)
@@ -680,6 +695,17 @@ if args.flush_cache_for_reported_situations:
     osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
 else:
     osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
+
+# TODO share between runs
+for link in present_wikipedia_links:
+    entries = present_wikipedia_links[link].keys()
+    if len(entries) > 3: # 3 instead of 1 due to https://forum.openstreetmap.org/viewtopic.php?pid=663080#p663080
+        print(link + " is repeated " + str(entries))
+
+for link in present_wikidata_links:
+    entries = present_wikidata_links[link].keys()
+    if len(entries) > 1: # 3 instead of 1 due to https://forum.openstreetmap.org/viewtopic.php?pid=663080#p663080
+        print(link + " is repeated " + str(entries))
 
 #TODO detect mismatched wikipedia and wikidata tags
 #TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
