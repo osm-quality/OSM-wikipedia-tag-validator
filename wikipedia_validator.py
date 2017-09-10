@@ -259,7 +259,9 @@ def get_list_of_links_from_disambig(element, language_code, article_name):
             returned.append(link['title'])
     return returned
 
-def get_list_of_disambig_fixes(element, language_code, article_name):
+def get_list_of_disambig_fixes(element, language_code, article_name, wikidata_id):
+    #TODO use wikidata_id rather than language_code, article_name to obtain wikidata
+    #TODO open all pages, merge duplicates using wikidata and list them as currently
     returned = ""
     links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
     for title in get_list_of_links_from_disambig(element, language_code, article_name):
@@ -323,8 +325,8 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_c
         if type_id == 'Q4167410':
             #TODO note that pageprops may be a better source that should be used - it does not require wikidata entry
             #https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
-            list = get_list_of_disambig_fixes(element, language_code, article_name)
-            error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link\n\n" + list
+            list = get_list_of_disambig_fixes(element, language_code, article_name, wikidata_id)
+            error_message = "link leads to a disambig page - not a proper wikipedia link\n\n" + list
             return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
         if type_id == 'Q13406463':
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
@@ -344,10 +346,10 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         # as OSM data is protected by ODBL, and Wikidata is on CC0 license
         # also, this problem is easy to find on Wikidata itself so it is not useful to report it
         return None
-    return get_problem_based_on_wikidata_base_types(element, language_code, article_name, base_type_ids)
+    return get_problem_based_on_wikidata_base_types(element, language_code, article_name, base_type_ids, wikidata_id)
 
-def get_problem_based_on_wikidata_base_types(element, language_code, article_name, base_type_ids):
-    unusable_wikipedia_article = get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, base_type_ids)
+def get_problem_based_on_wikidata_base_types(element, language_code, article_name, base_type_ids, wikidata_id):
+    unusable_wikipedia_article = get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, base_type_ids, wikidata_id)
     if unusable_wikipedia_article != None:
         return unusable_wikipedia_article
 
@@ -356,11 +358,11 @@ def get_problem_based_on_wikidata_base_types(element, language_code, article_nam
         return secondary_tag_error
 
     if args.additional_debug:
-        complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(base_type_ids, element)
+        complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(base_type_ids, describe_osm_object(element))
 
     return None
 
-def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(base_type_ids, element):
+def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(base_type_ids, description_of_source):
     for type_id in get_recursive_all_subclass_of_list(base_type_ids):
         if is_wikidata_type_id_recognised_as_OK(type_id):
             return None
@@ -368,7 +370,7 @@ def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(base_type_ids, e
     print("----------------")
     for type_id in get_recursive_all_subclass_of_list(base_type_ids):
         print("------")
-        print(describe_osm_object(element))
+        print(description_of_source)
         print("unexpected type " + base_type_id)
         describe_unexpected_wikidata_type(base_type_id)
 
@@ -565,7 +567,6 @@ def wikidata_url(wikidata_id):
 
 def wikipedia_url(language_code, article_name):
     return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
-
 
 def get_interwiki_by_id(wikidata_id, target_language, forced_refresh):
     wikidata_entry = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
