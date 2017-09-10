@@ -52,7 +52,7 @@ system_call('python3 generate_webpage_with_error_output.py -file Deutschland.yam
 system_call('python3 generate_webpage_with_error_output.py -file Bremen_all.osm.yaml > Bremen.html')
 
 # Kraków
-system_call('python3 wikipedia_validator.py -expected_language_code pl -file "Kraków_all.osm"')
+system_call('python3 wikipedia_validator.py -expected_language_code pl -file "Kraków_all.osm" -allow_requesting_edits_outside_osm -additional_debug -allow_false_positives')
 system_call('python3 generate_webpage_with_error_output.py -file Kraków_all.osm.yaml > Kraków.html')
 
 # Poland
