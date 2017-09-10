@@ -683,20 +683,36 @@ def validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_repo
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Validation of wikipedia tag in osm data.')
-    parser.add_argument('-expected_language_code', '-l', dest='expected_language_code', type=str, help='expected language code')
-    parser.add_argument('-file', '-f', dest='file', type=str, help='location of .osm file')
-    parser.add_argument('-flush_cache', dest='flush_cache', help='adding this parameter will trigger flushing cache',
+    parser.add_argument('-expected_language_code', '-l',
+                        dest='expected_language_code',
+                        type=str,
+                        help='expected language code (short form of parameter: -l)')
+    parser.add_argument('-file', '-f',
+                        dest='file',
+                        type=str,
+                        help='location of .osm file (short form of parameter: -f')
+    parser.add_argument('-flush_cache',
+                        dest='flush_cache',
+                        help='adding this parameter will trigger flushing cache',
                         action='store_true')
-    parser.add_argument('-flush_cache_for_reported_situations', dest='flush_cache_for_reported_situations',
+    parser.add_argument('-flush_cache_for_reported_situations',
+                        dest='flush_cache_for_reported_situations',
                         help='adding this parameter will trigger flushing cache only for reported situations \
                         (redownloads wikipedia data for cases where errors are reported, \
                         so removes false positives where wikipedia is already fixed)',
                         action='store_true')
-    parser.add_argument('-allow_requesting_edits_outside_osm', dest='allow_requesting_edits_outside_osm', help='enables reporting of problems that may require editing wikipedia or wikidata',
+    parser.add_argument('-allow_requesting_edits_outside_osm',
+                        dest='allow_requesting_edits_outside_osm',
+                        help='enables reporting of problems that may require editing wikipedia or wikidata',
                         action='store_true')
-    parser.add_argument('-additional_debug', dest='additional_debug', help='additional debug - shows when wikidata types are no recognized, list locations allowed to have a foreign language label',
+    parser.add_argument('-additional_debug',
+                        dest='additional_debug',
+                        help='additional debug - shows when wikidata types are no recognized, list locations allowed to have a foreign language label',
                         action='store_true')
-    parser.add_argument('-allow_false_positives', dest='allow_false_positives', help='enables validator rules that may report false positives', action='store_true')
+    parser.add_argument('-allow_false_positives',
+                        dest='allow_false_positives',
+                        help='enables validator rules that may report false positives',
+                        action='store_true')
     args = parser.parse_args()
     if not (args.file):
         parser.error('Provide .osm file')
