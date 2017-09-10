@@ -335,10 +335,7 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_c
 
 def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id):
     if wikidata_id == None:
-        if not args.allow_requesting_edits_outside_osm:
-            return None
-        else:
-            return ErrorReport(error_id = "wikidata entry missing", error_message = describe_osm_object(element) + " has no matching wikidata entry")
+        return None
 
     base_type_ids = get_wikidata_type_ids_of_entry(wikidata_id)
     if base_type_ids == None:
