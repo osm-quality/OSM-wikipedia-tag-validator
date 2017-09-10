@@ -522,8 +522,6 @@ def output_element(element, error_report):
     article_name = wikipedia_connection.get_article_name_from_link(link)
     lat, lon = get_location_of_element(element)
 
-    debug_log = None
-
     if (lat, lon) == (None, None):
         error_report.debug_log = "Location data missing"
 
