@@ -49,10 +49,9 @@ def get_problem_for_given_element(element, forced_refresh):
     if is_wikipedia_tag_clearly_broken(link):
         return ErrorReport(error_id = "malformed wikipedia tag", error_message = "malformed wikipedia tag (" + link + ")")
 
-    page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
-
-    if page == None:
-        return ErrorReport(error_id = "wikipedia tag links to 404", error_message = "missing article at wiki:")
+    wikipedia_page_exists = check_is_wikipedia_page_existing(language_code, article_name, forced_refresh)
+    if wikipedia_page_exists != None:
+        return wikipedia_page_exists
 
     #early to ensure later that passing wikidata_id of article is not going to be confusing
     collisions = check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh)
@@ -72,16 +71,33 @@ def get_problem_for_given_element(element, forced_refresh):
     if present_wikidata_id == None and wikidata_id != None:
         return ErrorReport(error_id = "wikidata tag may be added", error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag")
 
-    iata_from_wikidata = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P238')
-    if iata_from_wikidata != None:
-        if iata_from_wikidata != element.get_tag_value("iata"):
-            return ErrorReport(error_id = "tag may be added based on wikidata", error_message = element.get_tag_value("iata") + " may be added as iata tag based on wikidata entry REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!")
+    existence_check = check_is_object_is_existing(element)
+    if existence_check != None:
+        return existence_check
 
-    no_longer_existing = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P576')
+    new_data = add_data_from_wikidata(element)
+    if new_data != None:
+        return new_data
+
+    return None
+
+def check_is_wikipedia_page_existing(language_code, article_name, forced_refresh):
+    page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
+    if page == None:
+        return ErrorReport(error_id = "wikipedia tag links to 404", error_message = "missing article at wiki:")
+
+def check_is_object_is_existing(element):
+    present_wikidata_id = element.get_tag_value("wikidata")
+    no_longer_existing = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P576')
     if no_longer_existing != None:
         return ErrorReport(error_id = "no longer existing object", error_message ="Wikidata claims that this object no longer exists. Historical, no longer existing object must not be mapped in OSM - so it means that it is mistake or OSM is outdated. REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!")
 
-    return None
+def add_data_from_wikidata(element):
+    present_wikidata_id = element.get_tag_value("wikidata")
+    iata_from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P238')
+    if iata_from_wikidata != None:
+        if iata_from_wikidata != element.get_tag_value("iata"):
+            return ErrorReport(error_id = "tag may be added based on wikidata", error_message = element.get_tag_value("iata") + " may be added as iata tag based on wikidata entry REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!")
 
 def attempt_to_locate_wikipedia_tag(element, forced_refresh):
     present_wikidata_id = element.get_tag_value("wikidata")
@@ -303,18 +319,7 @@ def get_error_report_if_secondary_wikipedia_tag_should_be_used(base_type_id):
             return get_should_use_subject_error('a chain store', base_type_id, 'brand:')
     return None
 
-def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id):
-    if wikidata_id == None:
-        return ErrorReport(error_id = "wikidata entry missing", error_message = describe_osm_object(element) + " has no matching wikidata entry")
-
-    base_type_id = get_wikidata_type_id_of_entry(wikidata_id)
-    if base_type_id == None:
-        if not args.allow_requesting_edits_outside_osm:
-            return None
-        # instance data not present in wikidata
-        # not reporting as error as import from OSM to Wikidata is not feasible
-        # also, this problem is easy to find on Wikidata itself so it is not useful to report it
-        return None
+def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, base_type_id):
     all_types = get_recursive_all_subclass_of(base_type_id)
     for type_id in all_types:
         if type_id == 'Q4167410':
@@ -329,10 +334,31 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         if type_id == 'Q20136634':
             error_message = "article linked in wikipedia tag is an overview aerticle, so it is very unlikely to be correct"
             return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
+
+def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id):
+    if wikidata_id == None:
+        if not args.allow_requesting_edits_outside_osm:
+            return None
+        else:
+            return ErrorReport(error_id = "wikidata entry missing", error_message = describe_osm_object(element) + " has no matching wikidata entry")
+
+    base_type_id = get_wikidata_type_id_of_entry(wikidata_id)
+    if base_type_id == None:
+        # instance data not present in wikidata
+        # not fixable easily as imports from OSM to Wikidata are against rules
+        # as OSM data is protected by ODBL, and Wikidata is on CC0 license
+        # also, this problem is easy to find on Wikidata itself so it is not useful to report it
+        return None
+    return get_problem_based_on_wikidata_base_type(element, language_code, article_name, base_type_id)
+
+def get_problem_based_on_wikidata_base_type(element, language_code, article_name, base_type_id):
+    unusable_wikipedia_article = get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, base_type_id)
+    if unusable_wikipedia_article != None:
+        return unusable_wikipedia_article
+
     secondary_tag_error = get_error_report_if_secondary_wikipedia_tag_should_be_used(base_type_id)
     if secondary_tag_error != None:
         return secondary_tag_error
-
 
     for type_id in all_types:
         if is_wikidata_type_id_recognised_as_OK(type_id):
