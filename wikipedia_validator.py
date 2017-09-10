@@ -115,7 +115,7 @@ def attempt_to_locate_wikipedia_tag(element, forced_refresh):
     if present_wikidata_id != None and wikipedia_type_keys != []:
         return ErrorReport(
             error_id = "wikipedia tag in outdated form and wikidata - mismatch",
-            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present [it was unchecked whatever there is conflict between tags, target was not checked for disambigs etc - TODO, fix that]",
             )
     return None
 
@@ -127,7 +127,7 @@ def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, force
     # TODO - if not available allow English or other languages
     return ErrorReport(
         error_id = "wikipedia from wikidata tag",
-        error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article",
+        error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article [target was not checked for disambigs etc - TODO, fix that]",
         desired_wikipedia_target = language_code + ":" + article,
         prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
         )
@@ -140,13 +140,14 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wiki
     if len(links) == 1 and None not in links:
         return ErrorReport(
             error_id = "wikipedia from wikipedia tag in outdated form",
-            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag [target was not checked for disambigs etc - TODO, fix that]",
+            desired_wikipedia_target = links[0],
             prerequisite = prerequisite,
             )
     else:
         return ErrorReport(
             error_id = "wikipedia from wikipedia tag in outdated form - mismatch",
-            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag, human judgement required",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag, human judgement required [target was not checked for disambigs etc - TODO, fix that]",
             prerequisite = prerequisite,
             )
 
