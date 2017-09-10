@@ -214,7 +214,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
     else:
         if not args.allow_requesting_edits_outside_osm:
             return None
-        if args.allow_false_positives == False:
+        if not args.allow_false_positives:
             return None
         error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected, no page in that language was found:"
         return ErrorReport(error_id = "wikipedia tag unexpected language, article missing", error_message = error_message)
