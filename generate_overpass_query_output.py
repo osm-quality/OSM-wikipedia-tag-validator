@@ -1,5 +1,5 @@
 import argparse
-import generate_shared
+import common
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -10,4 +10,4 @@ def parsed_args():
     return args
 
 args = parsed_args()
-print generate_shared.get_query(filename = args.file, printed_error_ids = ['wikipedia tag links to 404'], format = "maproulette")
+print common.get_query(filename = args.file, printed_error_ids = ['wikipedia tag links to 404'], format = "maproulette")

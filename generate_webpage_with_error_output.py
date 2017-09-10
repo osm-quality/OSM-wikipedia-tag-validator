@@ -1,7 +1,6 @@
 import argparse
 import yaml
 import os.path
-import generate_shared
 import common
 
 def print_html_header():
@@ -49,7 +48,7 @@ def main():
     if not os.path.isfile(filepath):
         print(filepath + " is not a file, provide an existing file")
         return
-    reported_errors = generate_shared.load_data(filepath)
+    reported_errors = common.load_data(filepath)
     types = [
         'wikipedia tag links to 404',
         'link to disambig',
@@ -75,7 +74,7 @@ def main():
                 print_table_row( '-------' )
         if error_count != 0:
             print_table_row( 'overpass query usable in JOSM that will load all objects with this error type:' )
-            query = generate_shared.get_query(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
+            query = common.get_query(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
             print_table_row(common.escape_from_internal_python_string_to_html_ascii(query))
             print_table_row( '==========' )
 
