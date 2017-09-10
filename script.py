@@ -36,13 +36,17 @@ for filename in yaml_output_files:
     except FileNotFoundError:
         pass
 
-call(['python3', 'wikipedia_validator.py', '-expected_language_code', 'de', '-file', 'Bremen_all.osm'])
-#call(['python3', 'wikipedia_validator.py', '-expected_language_code', 'de', '-file', 'Berlin_nodes_without_geometry.osm'])
-call(['python3', 'wikipedia_validator.py', '-expected_language_code', 'de', '-file', 'Stendal_all.osm'])
-
-merge('Bremen_all.osm.yaml', 'Deutschland.yaml')
-#merge('Berlin_nodes_without_geometry.osm.yaml', 'Deutschland.yaml')
-merge('Stendal_all.osm.yaml', 'Deutschland.yaml')
+germany_filenames = [
+    'Bremen_all.osm',
+    #'Berlin_nodes_without_geometry.osm',
+    'Stendal_all.osm',
+]
+for filename in germany_filenames:
+    if not os.path.isfile(root + filename):
+        print(filename + ' is not present')
+    else:
+        call(['python3', 'wikipedia_validator.py', '-expected_language_code', 'de', '-file', filename])
+        merge(filename + '.yaml', 'Deutschland.yaml')
 
 system_call('python3 generate_webpage_with_error_output.py -file Deutschland.yaml > Deutschland.html')
 system_call('python3 generate_webpage_with_error_output.py -file Bremen_all.osm.yaml > Bremen.html')
