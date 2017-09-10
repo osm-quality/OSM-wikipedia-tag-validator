@@ -105,9 +105,13 @@ def sleep(time_in_s):
     print("Sleeping")
     time.sleep(time_in_s)
 
-def make_edit(comment, automatic_status, discussion_url, api, type, data):
+def make_edit(affected_objects, comment, automatic_status, discussion_url, api, type, data):
     if(len(comment)>255):
         raise "comment too long"
+    if(len(affected_objects + " " + comment) <= 255):
+        comment = affected_objects + " " + comment
+    else:
+        print(affected_objects)
     print(comment)
     changeset_description = {
         "comment": comment,
@@ -151,7 +155,7 @@ def handle_follow_redirect(e, id, type, api):
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
     automatic_status = "yes"
-    make_edit(comment, automatic_status, discussion_url, api, type, data)
+    make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, api, type, data)
 
 def change_to_local_language(e, id, type, api):
     if e['error_id'] != 'wikipedia tag unexpected language':
@@ -173,7 +177,7 @@ def change_to_local_language(e, id, type, api):
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = None
     automatic_status = "no, it is a manually reviewed edit"
-    make_edit(comment, automatic_status, discussion_url, api, type, data)
+    make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, api, type, data)
 
 def main():
     bot_api = osmapi.OsmApi(username = bot_username(), passwordfile = "password.secret")
