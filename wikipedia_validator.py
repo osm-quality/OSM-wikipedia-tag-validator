@@ -269,26 +269,9 @@ def get_list_of_disambig_fixes(element, language_code, article_name):
         returned += title + distance_description + "\n"
     return returned
 
-def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id):
-    if wikidata_id == None:
-        return ErrorReport(error_id = "wikidata entry missing", error_message = describe_osm_object(element) + " has no matching wikidata entry")
-
-    base_type_id = get_wikidata_type_id_of_entry(wikidata_id)
-    if base_type_id == None:
-        if not args.allow_requesting_edits_outside_osm:
-            return None
-        # instance data not present in wikidata
-        # not reporting as error as import from OSM to Wikidata is not feasible
-        # also, this problem is easy to find on Wikidata itself so it is not useful to report it
-        return None
+def get_error_report_if_secondary_wikipedia_tag_should_be_used(base_type_id):
     all_types = get_recursive_all_subclass_of(base_type_id)
     for type_id in all_types:
-        if type_id == 'Q4167410':
-            #TODO note that pageprops may be a better source that should be used - it does not require wikidata entry
-            #https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
-            list = get_list_of_disambig_fixes(element, language_code, article_name)
-            error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link\n\n" + list
-            return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
         if type_id == 'Q5':
             return get_should_use_subject_error('a human', base_type_id, 'name:')
         if type_id == 'Q18786396' or type_id == 'Q16521':
@@ -318,12 +301,39 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
             # Q217599 carefour
             # Q9196793 cropp
             return get_should_use_subject_error('a chain store', base_type_id, 'brand:')
+    return None
+
+def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id):
+    if wikidata_id == None:
+        return ErrorReport(error_id = "wikidata entry missing", error_message = describe_osm_object(element) + " has no matching wikidata entry")
+
+    base_type_id = get_wikidata_type_id_of_entry(wikidata_id)
+    if base_type_id == None:
+        if not args.allow_requesting_edits_outside_osm:
+            return None
+        # instance data not present in wikidata
+        # not reporting as error as import from OSM to Wikidata is not feasible
+        # also, this problem is easy to find on Wikidata itself so it is not useful to report it
+        return None
+    all_types = get_recursive_all_subclass_of(base_type_id)
+    for type_id in all_types:
+        if type_id == 'Q4167410':
+            #TODO note that pageprops may be a better source that should be used - it does not require wikidata entry
+            #https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
+            list = get_list_of_disambig_fixes(element, language_code, article_name)
+            error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link\n\n" + list
+            return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
         if type_id == 'Q13406463':
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
             return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
         if type_id == 'Q20136634':
             error_message = "article linked in wikipedia tag is an overview aerticle, so it is very unlikely to be correct"
             return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
+    secondary_tag_error = get_error_report_if_secondary_wikipedia_tag_should_be_used(base_type_id)
+    if secondary_tag_error != None:
+        return secondary_tag_error
+
+
     for type_id in all_types:
         if is_wikidata_type_id_recognised_as_OK(type_id):
             return None
