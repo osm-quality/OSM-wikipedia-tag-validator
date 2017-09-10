@@ -170,7 +170,7 @@ def set_cache_location(path):
     cache_location_store = path
 
 def cache_location():
-    assert(cache_location_store != None)
+    assert cache_location_store != None, "wikipedia_connection.set_cache_location must be called before that point"
     return cache_location_store
 
 def wikidata_language_placeholder():
