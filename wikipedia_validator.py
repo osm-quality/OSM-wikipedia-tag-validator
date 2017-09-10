@@ -220,15 +220,20 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         return ErrorReport(error_id = "wikipedia tag unexpected language, article missing", error_message = error_message)
     assert(False)
 
-def should_use_subject_message(type, base_type_id):
-    return "article linked in wikipedia tag is about """ + type + \
+def should_use_subject_message(type, base_type_id, special_prefix):
+    special_prefix_text = ""
+    if special_prefix != None:
+        special_prefix_text = "or " + special_prefix + ":wikipedia"
+    message = "article linked in wikipedia tag is about """ + type + \
     ", so it is very unlikely to be correct \
-    (subject:wikipedia=* tag would be probably better - \
+    (subject:wikipedia=* " + special_prefix_text + " tag would be probably better \
+    (see https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links ) - \
     in case of change remember to remove wikidata tag if it is present) \
-    [base_type_id: " + base_type_id + "]"
+    [base_type_id: " + base_type_id + "] (object categorised by Wikidata - wrong classification may be caused by wrong data on Wikidata"
+    return message
 
-def get_should_use_subject_error(type, base_type_id):
-    return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type, base_type_id))
+def get_should_use_subject_error(type, base_type_id, special_prefix):
+    return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type, base_type_id, special_prefix))
 
 def get_list_of_links_from_disambig(element, language_code, article_name):
     returned = []
@@ -285,22 +290,34 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
             error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link\n\n" + list
             return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
         if type_id == 'Q5':
-            return get_should_use_subject_error('a human', base_type_id)
+            return get_should_use_subject_error('a human', base_type_id, 'name:')
         if type_id == 'Q18786396' or type_id == 'Q16521':
-            return get_should_use_subject_error('an animal or plant', base_type_id)
+            return get_should_use_subject_error('an animal or plant', base_type_id, None)
         #valid for example for museums, parishes
         #if type_id == 'Q43229':
         #    return get_should_use_subject_error('organization', base_type_id)
         if type_id == 'Q1344':
-            return get_should_use_subject_error('an opera', base_type_id)
+            return get_should_use_subject_error('an opera', base_type_id, None)
         if type_id == 'Q35127':
-            return get_should_use_subject_error('a website', base_type_id)
+            return get_should_use_subject_error('a website', base_type_id, None)
         if type_id == 'Q1190554':
-            return get_should_use_subject_error('an event', base_type_id)
+            return get_should_use_subject_error('an event', base_type_id, None)
         if type_id == 'Q5398426':
-            return get_should_use_subject_error('a television series', base_type_id)
+            return get_should_use_subject_error('a television series', base_type_id, None)
         if type_id == 'Q3026787':
-            return get_should_use_subject_error('a saying', base_type_id)
+            return get_should_use_subject_error('a saying', base_type_id, None)
+        if type_id == 'Q18534542':
+            return get_should_use_subject_error('a restaurant chain', base_type_id, 'brand:')
+        if type_id == 'Q22687':
+            return get_should_use_subject_error('a bank', base_type_id, 'brand:')
+        if type_id == 'Q507619':
+            # TODO add test
+            # Q487494 tesco gets caught here
+            # also
+            # Q704606 makro
+            # Q217599 carefour
+            # Q9196793 cropp
+            return get_should_use_subject_error('a chain store', base_type_id, 'brand:')
         if type_id == 'Q13406463':
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
             return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
