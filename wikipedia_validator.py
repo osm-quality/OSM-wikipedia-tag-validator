@@ -655,39 +655,41 @@ def parsed_args():
         parser.error('Provide .osm file')
     return args
 
-wikipedia_connection.set_cache_location(common.get_file_storage_location())
+def main():
+    wikipedia_connection.set_cache_location(common.get_file_storage_location())
+    global args #TODO remove global
+    args = parsed_args()
+    osm = Data(common.get_file_storage_location() + "/" + args.file)
+    if args.flush_cache_for_reported_situations:
+        osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
+    else:
+        osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
 
-args = parsed_args()
-osm = Data(common.get_file_storage_location() + "/" + args.file)
-if args.flush_cache_for_reported_situations:
-    osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
-else:
-    osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
+    # TODO share between runs
+    for link in present_wikipedia_links:
+        entries = present_wikipedia_links[link].keys()
+        if len(entries) > 3: # 3 instead of 1 due to https://forum.openstreetmap.org/viewtopic.php?pid=663080#p663080
+            print(link + " is repeated " + str(entries))
 
-# TODO share between runs
-for link in present_wikipedia_links:
-    entries = present_wikipedia_links[link].keys()
-    if len(entries) > 3: # 3 instead of 1 due to https://forum.openstreetmap.org/viewtopic.php?pid=663080#p663080
-        print(link + " is repeated " + str(entries))
+    for link in present_wikidata_links:
+        entries = present_wikidata_links[link].keys()
+        if len(entries) > 1: # 3 instead of 1 due to https://forum.openstreetmap.org/viewtopic.php?pid=663080#p663080
+            print(link + " is repeated " + str(entries))
 
-for link in present_wikidata_links:
-    entries = present_wikidata_links[link].keys()
-    if len(entries) > 1: # 3 instead of 1 due to https://forum.openstreetmap.org/viewtopic.php?pid=663080#p663080
-        print(link + " is repeated " + str(entries))
+    #TODO detect mismatched wikipedia and wikidata tags
+    #TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
+    #TODO detect repeated links
 
-#TODO detect mismatched wikipedia and wikidata tags
-#TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
-#TODO detect repeated links
-#TODO find links to no longer existing objects https://www.wikidata.org/wiki/Property:P576
+    print("https://osm.wikidata.link/candidates/relation/2768922 (Kraków)")
+    print("https://osm.wikidata.link/candidates/relation/2654452 (powiat krakowski)")
+    print("https://osm.wikidata.link/candidates/relation/2907540 (Warszawa)")
+    print("https://osm.wikidata.link/filtered/Poland")
+    #https://osm.wikidata.link/candidates/relation/2675559 mazury
+    #https://osm.wikidata.link/candidates/relation/2675566 mazury
+    #https://osm.wikidata.link/candidates/relation/2675509 mazury
+    #https://osm.wikidata.link/candidates/relation/2675563 mazury
 
-print("https://osm.wikidata.link/candidates/relation/2768922 (Kraków)")
-print("https://osm.wikidata.link/candidates/relation/2654452 (powiat krakowski)")
-print("https://osm.wikidata.link/candidates/relation/2907540 (Warszawa)")
-print("https://osm.wikidata.link/filtered/Poland")
-#https://osm.wikidata.link/candidates/relation/2675559 mazury
-#https://osm.wikidata.link/candidates/relation/2675566 mazury
-#https://osm.wikidata.link/candidates/relation/2675509 mazury
-#https://osm.wikidata.link/candidates/relation/2675563 mazury
+    #links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
+    # https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
 
-#links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
-# https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
+main()
