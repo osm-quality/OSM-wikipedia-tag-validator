@@ -20,9 +20,8 @@ def get_problem_for_given_element(element, forced_refresh):
     link = element.get_tag_value("wikipedia")
     present_wikidata_id = element.get_tag_value("wikidata")
 
-    #TODO handle also cases without wikipedia but with wikidata
     if link == None:
-        return None
+        return attempt_to_locate_wikipedia_tag(element, forced_refresh)
 
     #TODO - is it OK?
     #if link.find("#") != -1:
@@ -58,7 +57,77 @@ def get_problem_for_given_element(element, forced_refresh):
     if present_wikidata_id == None and wikidata_id != None:
         return ErrorReport(error_id = "wikidata tag may be added", error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag")
 
+    iata_from_wikidata = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P238')
+    if iata_from_wikidata != None:
+        if iata_from_wikidata != element.get_tag_value("iata"):
+            return ErrorReport(error_id = "tag may be added based on wikidata", error_message = element.get_tag_value("iata") + " may be added as iata tag based on wikidata entry REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!")
+
+    no_longer_existing = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P576')
+    if no_longer_existing != None:
+        return ErrorReport(error_id = "no longer existing object", error_message ="Wikidata claims that this object no longer exists. Historical, no longer existing object must not be mapped in OSM - so it means that it is mistake or OSM is outdated. REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!")
+
     return None
+
+def attempt_to_locate_wikipedia_tag(element, forced_refresh):
+    present_wikidata_id = element.get_tag_value("wikidata")
+    wikipedia_type_keys = []
+    for key in element.get_keys():
+        if key.find("wikipedia:") != -1:
+            wikipedia_type_keys.append(key)
+
+    if present_wikidata_id != None and wikipedia_type_keys == []:
+        return attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, forced_refresh)
+
+    if present_wikidata_id == None and wikipedia_type_keys != []:
+        return attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh)
+
+    if present_wikidata_id != None and wikipedia_type_keys != []:
+        return ErrorReport(
+            error_id = "wikipedia tag in outdated form and wikidata - mismatch",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present",
+            )
+    return None
+
+def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, forced_refresh):
+    article = get_interwiki_by_id(present_wikidata_id, args.expected_language_code, forced_refresh)
+    if article == None:
+        return None
+    language_code = args.expected_language_code
+    # TODO - if not available allow English or other languages
+    return ErrorReport(
+        error_id = "wikipedia from wikidata tag",
+        error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article",
+        desired_wikipedia_target = language_code + ":" + article,
+        prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
+        )
+
+def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh):
+    prerequisite = {'wikipedia': None, 'wikidata': None}
+    links = wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh)
+    for key in wikipedia_type_keys:
+        prerequisite[key] = element.get_tag_value(key)
+    if len(links) == 1 and None not in links:
+        return ErrorReport(
+            error_id = "wikipedia from wikipedia tag in outdated form",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag",
+            prerequisite = prerequisite,
+            )
+    else:
+        return ErrorReport(
+            error_id = "wikipedia from wikipedia tag in outdated form - mismatch",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag, human judgement required",
+            prerequisite = prerequisite,
+            )
+
+def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh):
+    links = []
+    for key in wikipedia_type_keys:
+        language_code = wikipedia_connection.get_text_after_first_colon(key)
+        article_name = element.get_tag_value(key)
+        link = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
+        if link not in links:
+            links.append(link)
+    return links
 
 def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh):
     if present_wikidata_id == None:
@@ -470,9 +539,17 @@ def wikidata_url(wikidata_id):
 def wikipedia_url(language_code, article_name):
     return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
 
+
+def get_interwiki_by_id(wikidata_id, target_language, forced_refresh):
+    wikidata_entry = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
+    return get_interwiki_from_wikidata_data(wikidata_entry, target_language)
+
 def get_interwiki(source_language_code, source_article_name, target_language, forced_refresh):
+    wikidata_entry = wikipedia_connection.get_data_from_wikidata(source_language_code, source_article_name, forced_refresh)
+    return get_interwiki_from_wikidata_data(wikidata_entry, target_language)
+
+def get_interwiki_from_wikidata_data(wikidata_entry, target_language):
     try:
-        wikidata_entry = wikipedia_connection.get_data_from_wikidata(source_language_code, source_article_name, forced_refresh)
         wikidata_entry = wikidata_entry['entities']
         id = list(wikidata_entry)[0]
         return wikidata_entry[id]['sitelinks'][target_language+'wiki']['title']
@@ -521,8 +598,11 @@ def describe_osm_object(element):
 def output_element(element, error_report):
     error_report.element = element
     link = element.get_tag_value("wikipedia")
-    language_code = wikipedia_connection.get_language_code_from_link(link)
-    article_name = wikipedia_connection.get_article_name_from_link(link)
+    language_code = None
+    article_name = None
+    if link != None:
+        language_code = wikipedia_connection.get_language_code_from_link(link)
+        article_name = wikipedia_connection.get_article_name_from_link(link)
     lat, lon = get_location_of_element(element)
 
     if (lat, lon) == (None, None):

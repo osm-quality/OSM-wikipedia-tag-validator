@@ -50,10 +50,14 @@ def main():
         return
     reported_errors = common.load_data(filepath)
     types = [
+        'wikipedia tag in outdated form and wikidata - mismatch',
         'wikipedia tag links to 404',
         'link to unlinkable article',
         'wikipedia wikidata mismatch',
         'should use wikipedia:subject',
+        'wikipedia from wikipedia tag in outdated form - mismatch',
+        'wikipedia from wikidata tag',
+        'wikipedia from wikipedia tag in outdated form',
         'wikipedia tag unexpected language',
         'wikipedia wikidata mismatch - follow redirect',
     ]
