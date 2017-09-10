@@ -56,29 +56,16 @@ def is_text_field_mentioning_wikipedia_or_wikidata(text):
 def note_or_fixme_review_request_indication(data):
     fixme = ""
     note = ""
-    try:
+    if 'fixme' in data['tag']:
         fixme = data['tag']['fixme']
-    except KeyError:
-        pass
-    try:
+    if 'note' in data['tag']:
         note = data['tag']['note']
-    except KeyError:
-        pass
     text_dump = "fixme=<" + fixme + "> note=<" + note + ">"
     if is_text_field_mentioning_wikipedia_or_wikidata(fixme):
         return text_dump
     if is_text_field_mentioning_wikipedia_or_wikidata(note):
         return text_dump
     return None
-
-def is_key_missing(key, data):
-    try:
-        if data['tag'][key] != None:
-            return False
-        else:
-            return True
-    except KeyError:
-        return True
 
 def prerequisite_failure_reason(e, data):
     advice = note_or_fixme_review_request_indication(data)
@@ -87,9 +74,9 @@ def prerequisite_failure_reason(e, data):
 
     for key in e['prerequisite'].keys():
         if e['prerequisite'][key] == None:
-            if not is_key_missing(key, data):
+            if not key in data['tag']:
                 return("failed " + key + " prerequisite, as key was present")
-        elif is_key_missing(key, data):
+        elif key in data['tag']:
             return("failed " + key + " prerequisite, as key was missing")
         elif e['prerequisite'][key] != data['tag'][key]:
             return("failed " + key + " prerequisite for " + e['osm_object_url'])
