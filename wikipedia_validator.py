@@ -199,7 +199,7 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
             #https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
             list = get_list_of_disambig_fixes(element, language_code, article_name)
             error_message = wikipedia_url(language_code, article_name) + " is a disambig page - not a proper wikipedia link\n\n" + list
-            return ErrorReport(error_id = "link to disambig", error_message = error_message)
+            return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
         if type_id == 'Q5':
             return get_should_use_subject_error('a human', base_type_id)
         if type_id == 'Q18786396' or type_id == 'Q16521':
@@ -219,7 +219,10 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
             return get_should_use_subject_error('a saying', base_type_id)
         if type_id == 'Q13406463':
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
-            return ErrorReport(error_id = "link to list", error_message = "")
+            return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
+        if type_id == 'Q20136634':
+            error_message = "article linked in wikipedia tag is an overview aerticle, so it is very unlikely to be correct"
+            return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
     for type_id in all_types:
         if is_wikidata_type_id_recognised_as_OK(type_id):
             return None

@@ -51,7 +51,7 @@ def main():
     reported_errors = common.load_data(filepath)
     types = [
         'wikipedia tag links to 404',
-        'link to disambig',
+        'link to unlinkable article',
         'wikipedia wikidata mismatch',
         'should use wikipedia:subject',
         'wikipedia tag unexpected language',
