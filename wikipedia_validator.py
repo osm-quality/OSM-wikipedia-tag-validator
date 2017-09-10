@@ -755,4 +755,5 @@ def main():
     #links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
     # https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
 
-main()
+if __name__ == "__main__":
+    main()
