@@ -125,7 +125,7 @@ def make_edit(affected_objects, comment, automatic_status, discussion_url, api, 
     api.ChangesetClose()
     sleep(60)
 
-def fit_wikipedia_edit_changeset_description_in_255_characters(now, new, reason):
+def fit_wikipedia_edit_description_within_character_limit(now, new, reason):
     comment = "[wikipedia=" + now + "] to [wikipedia=" + new + "]" + reason
     if(len(comment)) > 255:
         comment = "changing wikipedia tag to <" + new + ">" + reason
@@ -151,7 +151,7 @@ def handle_follow_redirect(e, id, type, api):
     now = data['tag']['wikipedia']
     new = e['desired_wikipedia_target']
     reason = ", as current tag is a redirect and the new page matches present wikidata"
-    comment = fit_wikipedia_edit_changeset_description_in_255_characters(now, new, reason)
+    comment = fit_wikipedia_edit_description_within_character_limit(now, new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
     automatic_status = "yes"
@@ -173,7 +173,7 @@ def change_to_local_language(e, id, type, api):
     now = data['tag']['wikipedia']
     new = e['desired_wikipedia_target']
     reason = ", as wikipedia page in the local language should be preferred"
-    comment = fit_wikipedia_edit_changeset_description_in_255_characters(now, new, reason)
+    comment = fit_wikipedia_edit_description_within_character_limit(now, new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = None
     automatic_status = "no, it is a manually reviewed edit"
