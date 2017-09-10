@@ -69,17 +69,28 @@ def note_or_fixme_review_request_indication(data):
         return text_dump
     return None
 
+def is_key_missing(key, data):
+    try:
+        if data['tag'][key] != None:
+            return False
+        else:
+            return True
+    except KeyError:
+        return True
+
 def prerequisite_failure_reason(e, data):
     advice = note_or_fixme_review_request_indication(data)
     if advice != None:
         return advice
 
     for key in e['prerequisite'].keys():
-        try:
-            if e['prerequisite'][key] != data['tag'][key]:
-                return("failed " + key + " prerequisite for " + e['osm_object_url'])
-        except KeyError:
+        if e['prerequisite'][key] == None:
+            if not is_key_missing(key, data):
+                return("failed " + key + " prerequisite, as key was present")
+        elif is_key_missing(key, data):
             return("failed " + key + " prerequisite, as key was missing")
+        elif e['prerequisite'][key] != data['tag'][key]:
+            return("failed " + key + " prerequisite for " + e['osm_object_url'])
     return None
 
 def load_errors():
