@@ -116,18 +116,24 @@ def get_location_from_wikidata(wikidata_id):
     data = data['datavalue']['value']
     return data['latitude'], data['longitude']
 
-def get_language_code_from_link(link):
+def get_text_before_first_colon(link):
     parsed_link = re.match('([^:]*):(.*)', link)
     if parsed_link is None:
         return None
     return parsed_link.group(1)
 
-
-def get_article_name_from_link(link):
+def get_text_after_first_colon(link):
     parsed_link = re.match('([^:]*):(.*)', link)
     if parsed_link is None:
         return None
     return parsed_link.group(2)
+
+def get_language_code_from_link(link):
+    return get_text_before_first_colon(link)
+
+
+def get_article_name_from_link(link):
+    return get_text_after_first_colon(link)
 
 
 def get_form_of_link_usable_as_filename(link):
