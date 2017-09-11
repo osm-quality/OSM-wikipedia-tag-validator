@@ -300,9 +300,9 @@ def get_error_report_if_secondary_wikipedia_tag_should_be_used(wikidata_id):
 
 def get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary(wikidata_id):
     if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P247') != None:
-        return get_should_use_subject_error('an astronomical object', explanation, 'name:')
+        return get_should_use_subject_error('a spacecraft', 'name:')
     if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P279') != None:
-        return get_should_use_subject_error('an uncoordinable generic object', explanation, 'name:')
+        return get_should_use_subject_error('an uncoordinable generic object', 'name:')
 
 def get_all_types_describing_wikidata_object(wikidata_id):
     base_type_ids = get_wikidata_type_ids_of_entry(wikidata_id)
