@@ -10,14 +10,15 @@ def system_call(call):
     print(call)
     os.system(call)
 
-def main():
+def voivoddeships_of_poland():
     voivoddeships = ["małopolskie", "podkarpackie", "lubelskie",
       "świętokrzyskie", "mazowieckie", "podlaskie",
       "warmińsko-mazurskie", "pomorskie", "kujawsko-pomorskie",
       "zachodniopomorskie", "lubuskie", "wielkopolskie", "dolnośląskie",
       "opolskie", "śląskie", "łódzkie"]
-    voivoddeships = ["województwo " + name for name in voivoddeships]
+    return ["województwo " + name for name in voivoddeships]
 
+def main():
     yaml_output_files = [
         'Bremen_all.osm.yaml',
         'Berlin_nodes_without_geometry.osm.yaml',
@@ -27,7 +28,7 @@ def main():
         'Polska.yaml',
     ]
 
-    for index, voivoddeship in enumerate(voivoddeships):
+    for index, voivoddeship in enumerate(voivoddeships_of_poland()):
         yaml_output_files.append(voivoddeship + "_all.osm.yaml")
 
     root = common.get_file_storage_location() + "/"
@@ -57,7 +58,7 @@ def main():
     system_call('python3 generate_webpage_with_error_output.py -file Kraków_all.osm.yaml > Kraków.html')
 
     # Poland
-    for voivoddeship in voivoddeships:
+    for voivoddeship in voivoddeships_of_poland():
         filename = voivoddeship + '_all.osm'
         if not os.path.isfile(root + filename):
             print(filename + ' is not present')
@@ -87,7 +88,7 @@ def main():
         index.write("<a href = Krak&oacute;w.html>Krak&oacute;w</a></br>\n")
         index.write("<a href = Deutschland.html>Deutschland</a></br>\n")
         index.write("<a href = Bremen.html>Bremen</a></br>\n")
-        for voivoddeship in voivoddeships:
+        for voivoddeship in voivoddeships_of_poland():
             name = common.htmlify(voivoddeship)
             filename = name + '.html'
             if os.path.isfile(filename):
@@ -101,7 +102,7 @@ def main():
     system_call('mv Kraków.html OSM-wikipedia-tag-validator-reports/ -f')
     system_call('mv Deutschland.html OSM-wikipedia-tag-validator-reports/ -f')
     system_call('mv Bremen.html OSM-wikipedia-tag-validator-reports/ -f')
-    for voivoddeship in voivoddeships:
+    for voivoddeship in voivoddeships_of_poland():
         filename = voivoddeship + '.html'
         if os.path.isfile(filename):
             system_call('mv "' + filename + '" OSM-wikipedia-tag-validator-reports/ -f')
