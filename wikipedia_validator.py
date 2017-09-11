@@ -777,7 +777,6 @@ def main():
 
     process_repeated_appearances()
 
-    #TODO detect mismatched wikipedia and wikidata tags
     #TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
 
     print("https://osm.wikidata.link/candidates/relation/2768922 (Kraków)")
