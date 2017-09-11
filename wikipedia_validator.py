@@ -304,9 +304,18 @@ def get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary(wiki
     if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P279') != None:
         return get_should_use_subject_error('an uncoordinable generic object', explanation, 'name:')
 
-def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
+def get_all_types_describing_wikidata_object(wikidata_id):
     base_type_ids = get_wikidata_type_ids_of_entry(wikidata_id)
-    for type_id in get_recursive_all_subclass_of_list(base_type_ids):
+    return get_recursive_all_subclass_of_list(base_type_ids)
+
+def get_recursive_all_subclass_of_list(base_type_ids):
+    all_types = []
+    for type in base_type_ids:
+        all_types += get_recursive_all_subclass_of(type)
+    return all_types
+
+def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
+    for type_id in get_all_types_describing_wikidata_object(wikidata_id):
         if type_id == 'Q5':
             return get_should_use_subject_error('a human', 'name:')
         if type_id == 'Q18786396' or type_id == 'Q16521':
@@ -344,8 +353,8 @@ def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
             return get_should_use_subject_error('a mandatory constraint', None)
     return None
 
-def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, base_type_ids):
-    for type_id in get_recursive_all_subclass_of_list(base_type_ids):
+def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, wikidata_id):
+    for type_id in get_all_types_describing_wikidata_object(wikidata_id):
         if type_id == 'Q4167410':
             #TODO note that pageprops may be a better source that should be used - it does not require wikidata entry
             #https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
@@ -370,10 +379,10 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         # as OSM data is protected by ODBL, and Wikidata is on CC0 license
         # also, this problem is easy to find on Wikidata itself so it is not useful to report it
         return None
-    return get_problem_based_on_wikidata_base_types(element, language_code, article_name, base_type_ids, wikidata_id)
+    return get_problem_based_on_wikidata_base_types(element, language_code, article_name, wikidata_id)
 
-def get_problem_based_on_wikidata_base_types(element, language_code, article_name, base_type_ids, wikidata_id):
-    unusable_wikipedia_article = get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, base_type_ids, wikidata_id)
+def get_problem_based_on_wikidata_base_types(element, language_code, article_name, wikidata_id):
+    unusable_wikipedia_article = get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, wikidata_id)
     if unusable_wikipedia_article != None:
         return unusable_wikipedia_article
 
@@ -382,17 +391,17 @@ def get_problem_based_on_wikidata_base_types(element, language_code, article_nam
         return secondary_tag_error
 
     if args.additional_debug:
-        complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(base_type_ids, describe_osm_object(element))
+        complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, describe_osm_object(element))
 
     return None
 
-def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(base_type_ids, description_of_source):
-    for type_id in get_recursive_all_subclass_of_list(base_type_ids):
+def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, description_of_source):
+    for type_id in get_all_types_describing_wikidata_object(wikidata_id):
         if is_wikidata_type_id_recognised_as_OK(type_id):
             return None
 
     print("----------------")
-    for type_id in get_recursive_all_subclass_of_list(base_type_ids):
+    for type_id in get_wikidata_type_ids_of_entry(wikidata_id):
         print("------")
         print(description_of_source)
         print("unexpected type " + base_type_id)
@@ -442,12 +451,6 @@ def wikidata_entries_for_abstract_or_very_broad_concepts():
     'Q2324993', 'Q58778', 'Q18340964', 'Q1544281', 'Q2101636',
     'Q30060700', 'Q3778211',
     ]
-
-def get_recursive_all_subclass_of_list(base_type_ids):
-    all_types = []
-    for type in base_type_ids:
-        all_types += get_recursive_all_subclass_of(type)
-    return all_types
 
 def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries_for_abstract_or_very_broad_concepts(), debug = False):
     processed = []
