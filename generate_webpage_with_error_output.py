@@ -3,10 +3,12 @@ import yaml
 import os.path
 import common
 
-def print_html_header():
-    print("<html>")
-    print("<body>")
-    print("<table>")
+def html_header():
+    returned = ""
+    returned += "<html>\n"
+    returned += "<body>\n"
+    returned +=  "<table>\n"
+    return returned
 
 def link_to_osm_object(url):
     return '<a href="' + url + '" target="_new">OSM element with broken tag that should be fixed</a>'
@@ -26,12 +28,14 @@ def format_wikipedia_link(string):
     article_name = common.escape_from_internal_python_string_to_html_ascii(article_name)
     return '<a href="https://' + language_code + '.wikipedia.org/wiki/' + article_name + '" target="_new">' + language_code+":"+article_name + '</a>'
 
-def print_table_row(text):
-    print("<tr>")
-    print("<td>")
-    print(text)
-    print("</td>")
-    print("</tr>")
+def table_row(text):
+    returned = ""
+    returned += "<tr>\n"
+    returned += "<td>\n"
+    returned += text
+    returned += "</td>\n"
+    returned += "</tr>\n"
+    return returned
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -43,7 +47,7 @@ def parsed_args():
 
 def main():
     args = parsed_args()
-    print_html_header()
+    print(html_header())
     filepath = common.get_file_storage_location()+"/"+args.file
     if not os.path.isfile(filepath):
         print(filepath + " is not a file, provide an existing file")
@@ -66,24 +70,25 @@ def main():
         for e in reported_errors:
             if e['error_id'] == error_type_id:
                 error_count += 1
-                print_table_row(common.htmlify(e['error_message']))
-                print_table_row(link_to_osm_object(e['osm_object_url']))
+                print(table_row(common.htmlify(e['error_message'])))
+                print(table_row(link_to_osm_object(e['osm_object_url'])))
                 current = format_wikipedia_link(e['current_wikipedia_target'])
                 to = format_wikipedia_link(e['desired_wikipedia_target'])
                 if to == current:
                     to = "?"
-                print_table_row( current + " -> " + to)
+                print(table_row( current + " -> " + to))
                 if to != "?":
-                    print_table_row( common.escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target'])))
-                print_table_row( '-------' )
+                    print(table_row( common.escape_from_internal_python_string_to_html_ascii(article_name_from_wikipedia_string(e['desired_wikipedia_target']))))
+                print(table_row( '-------' ))
         if error_count != 0:
-            print_table_row( 'overpass query usable in JOSM that will load all objects with this error type:' )
+            print(table_row( 'overpass query usable in JOSM that will load all objects with this error type:' ))
             query = common.get_query(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
-            print_table_row(common.escape_from_internal_python_string_to_html_ascii(query))
-            print_table_row( '==========' )
+            print(table_row(common.escape_from_internal_python_string_to_html_ascii(query)))
+            print(table_row( '==========' ))
 
     print("</table>")
     print("</body>")
     print("</html>")
 
-main()
+if __name__ == "__main__":
+    main()
