@@ -763,7 +763,6 @@ def main():
 
     #TODO detect mismatched wikipedia and wikidata tags
     #TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
-    #TODO detect repeated links
 
     print("https://osm.wikidata.link/candidates/relation/2768922 (Kraków)")
     print("https://osm.wikidata.link/candidates/relation/2654452 (powiat krakowski)")
