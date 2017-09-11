@@ -237,7 +237,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         return ErrorReport(error_id = "wikipedia tag unexpected language, article missing", error_message = error_message)
     assert(False)
 
-def should_use_subject_message(type, base_type_id, special_prefix):
+def should_use_subject_message(type, special_prefix):
     special_prefix_text = ""
     if special_prefix != None:
         special_prefix_text = "or " + special_prefix + ":wikipedia"
@@ -246,11 +246,11 @@ def should_use_subject_message(type, base_type_id, special_prefix):
     (subject:wikipedia=* " + special_prefix_text + " tag would be probably better \
     (see https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links ) - \
     in case of change remember to remove wikidata tag if it is present) \
-    [base_type_id: " + base_type_id + "] (object categorised by Wikidata - wrong classification may be caused by wrong data on Wikidata"
+    (object categorised by Wikidata - wrong classification may be caused by wrong data on Wikidata"
     return message
 
-def get_should_use_subject_error(type, base_type_id, special_prefix):
-    return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type, base_type_id, special_prefix))
+def get_should_use_subject_error(type, special_prefix):
+    return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type, special_prefix))
 
 def get_list_of_links_from_disambig(element, language_code, article_name):
     returned = []
@@ -288,29 +288,46 @@ def get_list_of_disambig_fixes(element, language_code, article_name, wikidata_id
         returned += title + distance_description + "\n"
     return returned
 
-def get_error_report_if_secondary_wikipedia_tag_should_be_used(base_type_ids):
+def get_error_report_if_secondary_wikipedia_tag_should_be_used(wikidata_id):
+    # contains ideas based partially on constraints in https://www.wikidata.org/wiki/Property:P625
+    class_error = get_error_report_if_type_unlinkable_as_primary(wikidata_id)
+    if class_error != None:
+        return class_error
+
+    property_error = get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary(wikidata_id)
+    if property_error != None:
+        return property_error
+
+def get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary(wikidata_id):
+    if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P247') != None:
+        return get_should_use_subject_error('an astronomical object', explanation, 'name:')
+    if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P279') != None:
+        return get_should_use_subject_error('an uncoordinable generic object', explanation, 'name:')
+
+def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
+    base_type_ids = get_wikidata_type_ids_of_entry(wikidata_id)
     for type_id in get_recursive_all_subclass_of_list(base_type_ids):
         if type_id == 'Q5':
-            return get_should_use_subject_error('a human', base_type_id, 'name:')
+            return get_should_use_subject_error('a human', 'name:')
         if type_id == 'Q18786396' or type_id == 'Q16521':
-            return get_should_use_subject_error('an animal or plant', base_type_id, None)
+            return get_should_use_subject_error('an animal or plant', None)
         #valid for example for museums, parishes
         #if type_id == 'Q43229':
-        #    return get_should_use_subject_error('organization', base_type_id)
+        #    return get_should_use_subject_error('organization', None)
         if type_id == 'Q1344':
-            return get_should_use_subject_error('an opera', base_type_id, None)
+            return get_should_use_subject_error('an opera', None)
         if type_id == 'Q35127':
-            return get_should_use_subject_error('a website', base_type_id, None)
+            return get_should_use_subject_error('a website', None)
         if type_id == 'Q1190554':
-            return get_should_use_subject_error('an event', base_type_id, None)
+            return get_should_use_subject_error('an event', None)
         if type_id == 'Q5398426':
-            return get_should_use_subject_error('a television series', base_type_id, None)
+            return get_should_use_subject_error('a television series', None)
         if type_id == 'Q3026787':
-            return get_should_use_subject_error('a saying', base_type_id, None)
+            return get_should_use_subject_error('a saying', None)
         if type_id == 'Q18534542':
-            return get_should_use_subject_error('a restaurant chain', base_type_id, 'brand:')
+            return get_should_use_subject_error('a restaurant chain', 'brand:')
         if type_id == 'Q22687':
-            return get_should_use_subject_error('a bank', base_type_id, 'brand:')
+            return get_should_use_subject_error('a bank', 'brand:')
         if type_id == 'Q507619':
             # TODO add test
             # Q487494 tesco gets caught here
@@ -318,7 +335,13 @@ def get_error_report_if_secondary_wikipedia_tag_should_be_used(base_type_ids):
             # Q704606 makro
             # Q217599 carefour
             # Q9196793 cropp
-            return get_should_use_subject_error('a chain store', base_type_id, 'brand:')
+            return get_should_use_subject_error('a chain store', 'brand:')
+        if type_id == 'Q4830453':
+            return get_should_use_subject_error('a business enterprise', 'brand:')
+        if type_id == 'Q202444':
+            return get_should_use_subject_error('a given name', 'name:')
+        if type_id == 'Q21502408':
+            return get_should_use_subject_error('a mandatory constraint', None)
     return None
 
 def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, base_type_ids):
@@ -354,7 +377,7 @@ def get_problem_based_on_wikidata_base_types(element, language_code, article_nam
     if unusable_wikipedia_article != None:
         return unusable_wikipedia_article
 
-    secondary_tag_error = get_error_report_if_secondary_wikipedia_tag_should_be_used(base_type_ids)
+    secondary_tag_error = get_error_report_if_secondary_wikipedia_tag_should_be_used(wikidata_id)
     if secondary_tag_error != None:
         return secondary_tag_error
 
