@@ -17,5 +17,9 @@ class Tests(unittest.TestCase):
         wikipedia_connection.set_cache_location(common.get_file_storage_location())
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary('Q2513'))
 
+    def test_complain_function(self):
+        wikipedia_connection.set_cache_location(common.get_file_storage_location())
+        wikipedia_validator.complain_in_stdout_if_wikidata_entry_not_of_known_safe_type('Q824359', "explanation")
+
 if __name__ == '__main__':
     unittest.main()

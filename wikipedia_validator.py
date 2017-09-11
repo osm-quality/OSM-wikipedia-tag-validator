@@ -403,11 +403,12 @@ def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, des
             return None
 
     print("----------------")
+    print(wikidata_id)
     for type_id in get_wikidata_type_ids_of_entry(wikidata_id):
         print("------")
         print(description_of_source)
-        print("unexpected type " + base_type_id)
-        describe_unexpected_wikidata_type(base_type_id)
+        print("unexpected type " + type_id)
+        describe_unexpected_wikidata_type(type_id)
 
 def is_wikidata_type_id_recognised_as_OK(type_id):
     objects_mappable_in_OSM = [
@@ -488,11 +489,11 @@ def describe_unexpected_wikidata_type(type_id):
 
 def wikidata_description(wikidata_id):
     en_docs = get_wikidata_description(wikidata_id, 'en')
-    local_docs = get_wikidata_description(wikidata_id, args.expected_language_code)
     if en_docs != None:
         return en_docs
-    if local_docs != None:
-        return local_docs
+    pl_docs = get_wikidata_description(wikidata_id, 'pl')
+    if pl_docs != None:
+        return pl_docs
     return("Unexpected type " + wikidata_id + " undocumented format")
 
 def get_wikidata_label(wikidata_id, language):
@@ -741,8 +742,6 @@ def parsed_args():
                         help='enables validator rules that may report false positives',
                         action='store_true')
     args = parser.parse_args()
-    if not (args.file):
-        parser.error('Provide .osm file')
     return args
 
 def process_repeated_appearances():
@@ -769,8 +768,8 @@ def process_repeated_appearances():
 
 def main():
     wikipedia_connection.set_cache_location(common.get_file_storage_location())
-    global args #TODO remove global
-    args = parsed_args()
+    if not (args.file):
+        parser.error('Provide .osm file')
     osm = Data(common.get_file_storage_location() + "/" + args.file)
     if args.flush_cache_for_reported_situations:
         osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
@@ -792,6 +791,9 @@ def main():
 
     #links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
     # https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
+
+global args #TODO remove global
+args = parsed_args()
 
 if __name__ == "__main__":
     main()
