@@ -90,7 +90,7 @@ def main():
         index.write("<a href = Bremen.html>Bremen</a></br>\n")
         for voivoddeship in voivoddeships_of_poland():
             name = common.htmlify(voivoddeship)
-            filename = name + '.html'
+            filename = voivoddeship + '.html'
             if os.path.isfile(filename):
                 index.write('<a href = "' + filename + '">' + name + "</a></br>\n")
             else:
