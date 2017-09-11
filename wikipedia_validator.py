@@ -750,20 +750,23 @@ def process_repeated_appearances():
     repeated_wikidata_warned_already = []
     for link in present_wikipedia_links:
         entries = present_wikipedia_links[link].keys()
-        print(link + " is repeated " + str(entries))
+        if len(entries) == 1:
+            continue
         language_code = wikipedia_connection.get_language_code_from_link(link)
         article_name = wikipedia_connection.get_article_name_from_link(link)
         wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
         if wikidata_id != None and wikidata_id not in repeated_wikidata_warned_already:
             if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
-                print(link + " is repeated, should be replaced by river relation " + str(entries))
+                print(link + " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation" + str(entries))
                 repeated_wikidata_warned_already.append(wikidata_id)
 
     for link in present_wikidata_links:
         entries = present_wikidata_links[link].keys()
+        if len(entries) == 1:
+            continue
         if wikidata_id not in repeated_wikidata_warned_already:
             if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
-                print(link + " is repeated, should be replaced by river relation " + str(entries))
+                print(link + " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation" + str(entries))
                 repeated_wikidata_warned_already.append(wikidata_id)
 
 def main():
