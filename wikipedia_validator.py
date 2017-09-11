@@ -743,6 +743,28 @@ def parsed_args():
         parser.error('Provide .osm file')
     return args
 
+def process_repeated_appearances():
+    # TODO share between runs
+    # TODO warn about all, not just rivers (what about node + relation duplicates?)
+    repeated_wikidata_warned_already = []
+    for link in present_wikipedia_links:
+        entries = present_wikipedia_links[link].keys()
+        print(link + " is repeated " + str(entries))
+        language_code = wikipedia_connection.get_language_code_from_link(link)
+        article_name = wikipedia_connection.get_article_name_from_link(link)
+        wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+        if wikidata_id != None and wikidata_id not in repeated_wikidata_warned_already:
+            if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
+                print(link + " is repeated, should be replaced by river relation " + str(entries))
+                repeated_wikidata_warned_already.append(wikidata_id)
+
+    for link in present_wikidata_links:
+        entries = present_wikidata_links[link].keys()
+        if wikidata_id not in repeated_wikidata_warned_already:
+            if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
+                print(link + " is repeated, should be replaced by river relation " + str(entries))
+                repeated_wikidata_warned_already.append(wikidata_id)
+
 def main():
     wikipedia_connection.set_cache_location(common.get_file_storage_location())
     global args #TODO remove global
@@ -753,16 +775,7 @@ def main():
     else:
         osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
 
-    # TODO share between runs
-    for link in present_wikipedia_links:
-        entries = present_wikipedia_links[link].keys()
-        if len(entries) > 3: # 3 instead of 1 due to https://forum.openstreetmap.org/viewtopic.php?pid=663080#p663080
-            print(link + " is repeated " + str(entries))
-
-    for link in present_wikidata_links:
-        entries = present_wikidata_links[link].keys()
-        if len(entries) > 1: # 3 instead of 1 due to https://forum.openstreetmap.org/viewtopic.php?pid=663080#p663080
-            print(link + " is repeated " + str(entries))
+    process_repeated_appearances()
 
     #TODO detect mismatched wikipedia and wikidata tags
     #TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
