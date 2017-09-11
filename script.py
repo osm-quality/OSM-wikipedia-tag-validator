@@ -74,6 +74,7 @@ def main():
         system_call('python3 generate_webpage_with_error_output.py -file ' + filename  + ' > Polska.html')
     else:
         print(filename + ' is not present [highly surprising]')
+        return
 
     try:
         os.remove("index.html")
