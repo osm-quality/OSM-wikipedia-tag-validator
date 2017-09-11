@@ -306,6 +306,8 @@ def get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary(wiki
 
 def get_all_types_describing_wikidata_object(wikidata_id):
     base_type_ids = get_wikidata_type_ids_of_entry(wikidata_id)
+    if base_type_ids == None:
+        return []
     return get_recursive_all_subclass_of_list(base_type_ids)
 
 def get_recursive_all_subclass_of_list(base_type_ids):
