@@ -93,7 +93,7 @@ def main():
                 print(error_description(e))
         if error_count != 0:
             print(table_row( 'overpass query usable in JOSM that will load all objects with this error type:' ))
-            query = common.get_query(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
+            query = common.get_query_for_loading_errors_by_category(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
             print(table_row(common.escape_from_internal_python_string_to_html_ascii(query)))
             print(table_row( '==========' ))
 

@@ -11,7 +11,7 @@ def parsed_args():
 
 def main():
     args = parsed_args()
-    print(common.get_query(filename = args.file, printed_error_ids = ['wikipedia tag links to 404'], format = "maproulette"))
+    print(common.get_query_for_loading_errors_by_category(filename = args.file, printed_error_ids = ['wikipedia tag links to 404'], format = "maproulette"))
 
 if __name__ == '__main__':
     main()

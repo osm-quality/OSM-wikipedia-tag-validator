@@ -46,7 +46,7 @@ def get_query_footer(format):
     else:
         assert(False)
 
-def get_query(filename, printed_error_ids, format):
+def get_query_for_loading_errors_by_category(filename, printed_error_ids, format):
     # accepted formats:
     # maproulette - json output, workarounds for maproulette bugs
     # josm - xml output
