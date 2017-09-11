@@ -180,4 +180,5 @@ def main():
         handle_follow_redirect(e, id, type, bot_api)
         #change_to_local_language(e, id, type, user_api)
 
-main()
+if __name__ == '__main__':
+    main()

@@ -9,5 +9,9 @@ def parsed_args():
         parser.error('Provide .osm file')
     return args
 
-args = parsed_args()
-print common.get_query(filename = args.file, printed_error_ids = ['wikipedia tag links to 404'], format = "maproulette")
+def main():
+    args = parsed_args()
+    print(common.get_query(filename = args.file, printed_error_ids = ['wikipedia tag links to 404'], format = "maproulette"))
+
+if __name__ == '__main__':
+    main()
