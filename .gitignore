@@ -1,8 +1,13 @@
-*.bat
+# downloaded/generated files
 *.osm
-*.pyc
-**/
-cache_location.config
 *.html
-password.secret
 *.query
+OSM-wikipedia-tag-validator-reports
+
+# python
+*.pyc
+.idea
+
+# config files
+cache_location.config
+password.secret
