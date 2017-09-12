@@ -368,7 +368,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
 def should_use_subject_message(type, special_prefix):
     special_prefix_text = ""
     if special_prefix != None:
-        special_prefix_text = "or " + special_prefix + ":wikipedia"
+        special_prefix_text = "or " + special_prefix + "wikipedia"
     message = "article linked in wikipedia tag is about """ + type + \
     ", so it is very unlikely to be correct \
     (subject:wikipedia=* " + special_prefix_text + " tag would be probably better \
@@ -377,8 +377,12 @@ def should_use_subject_message(type, special_prefix):
     (object categorised by Wikidata - wrong classification may be caused by wrong data on Wikidata"
     return message
 
-def get_should_use_subject_error(type, special_prefix):
-    return ErrorReport(error_id = "should use wikipedia:subject", error_message = should_use_subject_message(type, special_prefix))
+def get_should_use_subject_error(type, special_prefix, wikidata_id):
+    return ErrorReport(
+        error_id = "should use wikipedia:subject",
+        error_message = should_use_subject_message(type, special_prefix),
+        prerequisite = {'wikidata': wikidata_id},
+        )
 
 def get_list_of_links_from_disambig(element, language_code, article_name):
     returned = []
@@ -430,9 +434,9 @@ def get_error_report_if_secondary_wikipedia_tag_should_be_used(wikidata_id):
 
 def get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary(wikidata_id):
     if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P247') != None:
-        return get_should_use_subject_error('a spacecraft', 'name:')
+        return get_should_use_subject_error('a spacecraft', 'name:', wikidata_id)
     if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P279') != None:
-        return get_should_use_subject_error('an uncoordinable generic object', 'name:')
+        return get_should_use_subject_error('an uncoordinable generic object', 'name:', wikidata_id)
 
 def get_all_types_describing_wikidata_object(wikidata_id):
     base_type_ids = get_wikidata_type_ids_of_entry(wikidata_id)
@@ -449,26 +453,26 @@ def get_recursive_all_subclass_of_list(base_type_ids):
 def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
     for type_id in get_all_types_describing_wikidata_object(wikidata_id):
         if type_id == 'Q5':
-            return get_should_use_subject_error('a human', 'name:')
+            return get_should_use_subject_error('a human', 'name:', wikidata_id)
         if type_id == 'Q18786396' or type_id == 'Q16521':
-            return get_should_use_subject_error('an animal or plant', None)
+            return get_should_use_subject_error('an animal or plant', None, wikidata_id)
         #valid for example for museums, parishes
         #if type_id == 'Q43229':
         #    return get_should_use_subject_error('organization', None)
         if type_id == 'Q1344':
-            return get_should_use_subject_error('an opera', None)
+            return get_should_use_subject_error('an opera', None, wikidata_id)
         if type_id == 'Q35127':
-            return get_should_use_subject_error('a website', None)
+            return get_should_use_subject_error('a website', None, wikidata_id)
         if type_id == 'Q1190554':
-            return get_should_use_subject_error('an event', None)
+            return get_should_use_subject_error('an event', None, wikidata_id)
         if type_id == 'Q5398426':
-            return get_should_use_subject_error('a television series', None)
+            return get_should_use_subject_error('a television series', None, wikidata_id)
         if type_id == 'Q3026787':
-            return get_should_use_subject_error('a saying', None)
+            return get_should_use_subject_error('a saying', None, wikidata_id)
         if type_id == 'Q18534542':
-            return get_should_use_subject_error('a restaurant chain', 'brand:')
+            return get_should_use_subject_error('a restaurant chain', 'brand:', wikidata_id)
         if type_id == 'Q22687':
-            return get_should_use_subject_error('a bank', 'brand:')
+            return get_should_use_subject_error('a bank', 'brand:', wikidata_id)
         if type_id == 'Q507619':
             # TODO add test
             # Q487494 tesco gets caught here
@@ -476,13 +480,15 @@ def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
             # Q704606 makro
             # Q217599 carefour
             # Q9196793 cropp
-            return get_should_use_subject_error('a chain store', 'brand:')
-        if type_id == 'Q4830453':
-            return get_should_use_subject_error('a business enterprise', 'brand:')
+            return get_should_use_subject_error('a chain store', 'brand:', wikidata_id)
+        # appears in constraints of coordinate property in Wikidata but not applicable to OSM
+        # pl:ArcelorMittal Poland Oddział w Krakowie may be linked
+        #if type_id == 'Q4830453':
+        #    return get_should_use_subject_error('a business enterprise', 'brand:', wikidata_id)
         if type_id == 'Q202444':
-            return get_should_use_subject_error('a given name', 'name:')
+            return get_should_use_subject_error('a given name', 'name:', wikidata_id)
         if type_id == 'Q21502408':
-            return get_should_use_subject_error('a mandatory constraint', None)
+            return get_should_use_subject_error('a mandatory constraint', None, wikidata_id)
     return None
 
 def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_code, article_name, wikidata_id):
