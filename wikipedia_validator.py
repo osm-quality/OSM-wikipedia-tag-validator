@@ -442,6 +442,7 @@ def is_wikidata_type_id_recognised_as_OK(type_id):
         {'wikidata': 'Q975783', 'label': 'land estate'},
         {'wikidata': 'Q8205328', 'label': 'equipment (human-made physical object with a useful purpose)'},
         {'wikidata': 'Q618123', 'label': 'geographical object'},
+        {'wikidata': 'Q43229', 'label': 'organization'},
     ]
     for mappable_type in objects_mappable_in_OSM:
         if type_id == mappable_type['wikidata']:
