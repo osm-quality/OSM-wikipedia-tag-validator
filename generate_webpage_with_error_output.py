@@ -70,6 +70,13 @@ def error_description(e):
     returned = ""
     returned += table_row(common.htmlify(e['error_message']))
     returned += table_row(link_to_osm_object(e['osm_object_url']))
+    if e['desired_wikipedia_target'] != None:
+        returned += describe_proposed_relinking(e)
+    returned += table_row( '-------' )
+    return returned
+
+def describe_proposed_relinking(e):
+    returned = ""
     current = format_wikipedia_link(e['current_wikipedia_target'])
     to = format_wikipedia_link(e['desired_wikipedia_target'])
     if to == current:
@@ -78,7 +85,6 @@ def error_description(e):
     if to != "?":
         article_name = article_name_from_wikipedia_string(e['desired_wikipedia_target'])
         returned += table_row( common.escape_from_internal_python_string_to_html_ascii(article_name))
-    returned += table_row( '-------' )
     return returned
 
 def main():
