@@ -497,6 +497,8 @@ def wikidata_description(wikidata_id):
     return("Unexpected type " + wikidata_id + " undocumented format")
 
 def get_wikidata_label(wikidata_id, language):
+    if wikidata_id == None:
+        return None
     try:
         data = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]
         return data['labels']['en']['value']
@@ -504,6 +506,8 @@ def get_wikidata_label(wikidata_id, language):
         return None
 
 def get_wikidata_explanation(wikidata_id, language):
+    if wikidata_id == None:
+        return None
     try:
         data = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]
         return data['descriptions'][language]['value']
@@ -511,6 +515,8 @@ def get_wikidata_explanation(wikidata_id, language):
         return None
 
 def get_wikidata_description(wikidata_id, language):
+    if wikidata_id == None:
+        return None
     docs = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)
     returned = ""
     label = get_wikidata_label(wikidata_id, language)
@@ -527,6 +533,8 @@ def get_wikidata_description(wikidata_id, language):
     return(language + ": " + label + explanation + ' [' + wikidata_id + "]")
 
 def get_wikidata_type_ids_of_entry(wikidata_id):
+    if wikidata_id == None:
+        return None
     types = None
     try:
         forced_refresh = False
@@ -541,6 +549,9 @@ def get_wikidata_type_ids_of_entry(wikidata_id):
 # unknown data, known to be completely inside -> not allowed, returns None
 # known to be outside or on border -> allowed, returns reason
 def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
+    if wikidata_id == None:
+        return "no wikidata entry exists"
+
     if args.expected_language_code == None:
         return "no expected language is defined"
 
@@ -599,6 +610,8 @@ def wikipedia_url(language_code, article_name):
     return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
 
 def get_interwiki_by_id(wikidata_id, target_language, forced_refresh):
+    if wikidata_id == None:
+        return None
     wikidata_entry = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
     return get_interwiki_from_wikidata_data(wikidata_entry, target_language)
 
