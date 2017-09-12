@@ -5,3 +5,4 @@
 cache_location.config
 *.html
 password.secret
+*.query

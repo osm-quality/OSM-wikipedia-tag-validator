@@ -109,6 +109,15 @@ def main():
         else:
             print(filename + ' is not present')
 
+    with open('reload_Poland.query', 'w') as query_file:
+        file = 'Polska.yaml'
+        filepath = common.get_file_storage_location() + "/" + file
+        all_errors = []
+        for e in common.load_data(filepath):
+            if e['error_id'] not in all_errors:
+                all_errors.append(e['error_id'])
+        query_file.write(common.get_query_for_loading_errors_by_category(filename = file, printed_error_ids = all_errors, format = "josm"))
+
     os.chdir('OSM-wikipedia-tag-validator-reports')
     system_call('git add --all')
     system_call('git commit -m "automatic update of report files"')

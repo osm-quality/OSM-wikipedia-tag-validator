@@ -158,3 +158,8 @@ download_by_name("Nigeria", true, true, true, true)
 #download_by_name("Magyarország", true, false, false, true)
 #download_by_name("Magyarország", false, true, false, true)
 #download_by_name("Magyarország", false, false, true, true)
+#TODO blocked by URL length https://josm.openstreetmap.de/ticket/15141
+#http://overpass-api.de/command_line.html
+#https://github.com/BrunoSalerno/overpass-api-ruby/issues/6
+query = File.read('reload_Poland.query')
+download(query, 'reloaded_Poland.osm')
