@@ -26,6 +26,13 @@ def record_presence(element):
             present_wikidata_links[wikidata_tag] = {}
         present_wikidata_links[wikidata_tag][osm_object_url] = element
 
+properties = {}
+def record_property_presence(property):
+    if property not in properties:
+        properties[property] = 1
+    else:
+        properties[property] += 1
+
 def get_problem_for_given_element(element, forced_refresh):
     if object_should_be_deleted_not_repaired(element):
         return None
@@ -88,6 +95,11 @@ def get_problem_for_given_element(element, forced_refresh):
     if new_data != None:
         return new_data
 
+    if present_wikidata_id != None:
+        wikidata = wikipedia_connection.get_data_from_wikidata_by_id(present_wikidata_id)
+        for property in wikidata['entities'][present_wikidata_id]['claims']:
+            property = str(property)
+            record_property_presence(property)
     return None
 
 def check_is_wikipedia_page_existing(language_code, article_name, forced_refresh):
@@ -934,6 +946,26 @@ def process_repeated_appearances():
             process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries)
             repeated_wikidata_warned_already.append(wikidata_id)
 
+def print_popular_properties():
+    known = ['P18','P1566','P31','P646','P421','P910','P94','P131','P373',
+    'P625','P17', 'P856', 'P1376', 'P935', 'P1435', 'P2044', 'P4046', 'P1464',
+    'P206', 'P41', 'P1200', 'P884', 'P2225', 'P227', 'P30', 'P1792', 'P361',
+    'P1343', 'P706', 'P949', 'P242', 'P14', 'P214', 'P197', 'P126', 'P708',
+    'P2053', 'P974', 'P1653', 'P268', 'P201', 'P395', 'P571', 'P84', 'P403',
+    'P47', 'P2043', 'P138']
+    limit = 100
+    iata_code_property = 'P238'
+    if iata_code_property in properties:
+        limit = properties[iata_code_property] * 5
+    for property in properties.keys():
+        if properties[property] > limit:
+            if property not in known:
+                print("https://www.wikidata.org/wiki/Property:" + str(property))
+    for property in properties.keys():
+        if properties[property] > limit:
+            if property not in known:
+                print("'" + str(property) + "',")
+
 def main():
     wikipedia_connection.set_cache_location(common.get_file_storage_location())
     if not (args.file):
@@ -960,6 +992,8 @@ def main():
 
     #links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
     # https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
+
+    print_popular_properties()
 
 global args #TODO remove global
 args = parsed_args()
