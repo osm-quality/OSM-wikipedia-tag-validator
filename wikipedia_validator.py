@@ -95,19 +95,121 @@ def check_is_wikipedia_page_existing(language_code, article_name, forced_refresh
     if page == None:
         return ErrorReport(error_id = "wikipedia tag links to 404", error_message = "missing article at wiki:")
 
+def wikidata_data_quality_warning():
+    return "REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!"
+
 def check_is_object_is_existing(present_wikidata_id):
     if present_wikidata_id == None:
         return None
     no_longer_existing = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P576')
     if no_longer_existing != None:
-        return ErrorReport(error_id = "no longer existing object", error_message ="Wikidata claims that this object no longer exists. Historical, no longer existing object must not be mapped in OSM - so it means that it is mistake or OSM is outdated. REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!")
+        return ErrorReport(
+                        error_id = "no longer existing object",
+                        error_message ="Wikidata claims that this object no longer exists. Historical, no longer existing object must not be mapped in OSM - so it means that it is mistake or OSM is outdated." + " " + wikidata_data_quality_warning(),
+                        prerequisite = {'wikidata': present_wikidata_id}
+                        )
+
+def decapsulate_wikidata_value(from_wikidata):
+    # https://www.mediawiki.org/wiki/Wikibase/DataModel/JSON#Claims_and_Statements
+    # todo fix flow by random exception
+    try:
+        from_wikidata = from_wikidata[0]['datavalue']['value']
+    except KeyError:
+        pass
+    try:
+        from_wikidata = from_wikidata[0]['mainsnak']['datavalue']['value']
+    except KeyError:
+        pass
+    try:
+        # for wikidata values formed like
+        # {'entity-type': 'item', 'id': 'Q43399', 'numeric-id': 43399}
+        if from_wikidata['entity-type'] == 'item':
+            from_wikidata = from_wikidata['id']
+    except KeyError:
+        pass
+
+def tag_from_wikidata(present_wikidata_id, osm_key, wikidata_property, element, id_suffix=""):
+    from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, wikidata_property)
+    if from_wikidata == None:
+        return None
+    from_wikidata = decapsulate_wikidata_value(from_wikidata)
+    if element.get_tag_value(osm_key) == None:
+            return ErrorReport(
+                        error_id = "tag may be added based on wikidata" + id_suffix,
+                        error_message = str(from_wikidata) + " may be added as " + osm_key + " tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
+                        prerequisite = {'wikidata': present_wikidata_id, osm_key: None}
+                        )
+    elif element.get_tag_value(osm_key) != from_wikidata:
+            return ErrorReport(
+                        error_id = "tag conflict with wikidata value" + id_suffix,
+                        error_message = str(from_wikidata) + " conflicts with " + element.get_tag_value(osm_key) + " for " + osm_key + " tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
+                        prerequisite = {'wikidata': present_wikidata_id, osm_key: element.get_tag_value(osm_key)}
+                        )
 
 def add_data_from_wikidata(element):
     present_wikidata_id = element.get_tag_value("wikidata")
-    iata_from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P238')
-    if iata_from_wikidata != None:
-        if iata_from_wikidata != element.get_tag_value("iata"):
-            return ErrorReport(error_id = "tag may be added based on wikidata", error_message = element.get_tag_value("iata") + " may be added as iata tag based on wikidata entry REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!")
+    if present_wikidata_id == None:
+        return None
+    if len(present_wikidata_links[present_wikidata_id].keys()) != 1:
+        return None
+    iata = tag_from_wikidata(present_wikidata_id, 'iata', 'P238', element)
+    if iata != None:
+        return iata
+    simc = tag_from_wikidata(present_wikidata_id, 'teryt:simc', 'P4046', element)
+    if simc != None:
+        return simc
+    etymology = tag_from_wikidata(present_wikidata_id, 'name:wikidata', 'P138', element, " - testing")
+    if etymology != None:
+        return etymology
+    website = tag_from_wikidata(present_wikidata_id, 'website', 'P856', element, " - boring")
+    if website != None and website.find('web.archive.org') != -1:
+        return website
+    operator = tag_from_wikidata(present_wikidata_id, 'operator', 'P126', element, " - testing")
+    if operator != None:
+        return operator
+    if element.get_tag_value('historic') == None:
+        from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P1435')
+        if from_wikidata == None:
+            return None
+        return ErrorReport(
+            error_id = "tag conflict with wikidata value",
+            error_message = "without historic tag and has heritage designation according to wikidata" + wikidata_data_quality_warning(),
+            prerequisite = {'wikidata': present_wikidata_id, 'historic': None}
+            )
+
+    if element.get_tag_value('ele') != None:
+        from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P2044')
+        if from_wikidata == None:
+            return None
+        from_wikidata = decapsulate_wikidata_value(from_wikidata)
+        if from_wikidata != element.get_tag_value('ele'):
+            return ErrorReport(
+                error_id = "tag conflict with wikidata value",
+                error_message = "elevation in OSM vs elevation in Wikidata" + wikidata_data_quality_warning(),
+                prerequisite = {'wikidata': present_wikidata_id, 'ele': element.get_tag_value('ele')}
+                )
+
+    if element.get_tag_value('ele') == None:
+        if element.get_tag_value('natural') == 'peak':
+            from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P2044')
+            if from_wikidata == None:
+                return None
+            from_wikidata = decapsulate_wikidata_value(from_wikidata)
+            return ErrorReport(
+                        error_id = "tag may be added based on wikidata",
+                        error_message = str(from_wikidata) + " may be added as ele tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
+                        prerequisite = {'wikidata': present_wikidata_id, 'ele': None}
+                        )
+    #TODO - match wikidata by teryt:simc (P4046)
+    #2 minutes wasted on matching https://www.openstreetmap.org/node/3009664303
+
+    #TODO  P1653 is also teryt property
+    #P395 license plate code
+    #geometry - waterway structure graph (inflow [P974], outflow [P403], tributary [P974]) - see http://tinyurl.com/y9h7ym7g
+    #P571 - should be easy to process - lakes on river
+    #P814 protected area
+    #P2043 length
+    return None
 
 def attempt_to_locate_wikipedia_tag(element, forced_refresh):
     present_wikidata_id = element.get_tag_value("wikidata")
