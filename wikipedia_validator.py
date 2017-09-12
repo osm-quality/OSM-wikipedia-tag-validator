@@ -105,7 +105,11 @@ def get_problem_for_given_element(element, forced_refresh):
 def check_is_wikipedia_page_existing(language_code, article_name, forced_refresh):
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
     if page == None:
-        return ErrorReport(error_id = "wikipedia tag links to 404", error_message = "missing article at wiki:")
+        return ErrorReport(
+                    error_id = "wikipedia tag links to 404",
+                    error_message = "missing article at wiki:",
+                    prerequisite = {'wikipedia': language_code+":"+article_name}
+                    )
 
 def wikidata_data_quality_warning():
     return "REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!"
@@ -237,11 +241,29 @@ def attempt_to_locate_wikipedia_tag(element, forced_refresh):
         return attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh)
 
     if present_wikidata_id != None and wikipedia_type_keys != []:
+        return attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(element, wikipedia_type_keys, present_wikidata_id, forced_refresh)
+    return None
+
+def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(element, wikipedia_type_keys, wikidata_id, forced_refresh):
+    prerequisite = {'wikidata': wikidata_id}
+    links = wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh)
+    link_from_wikidata = args.expected_language_code + ":" + get_interwiki_by_id(wikidata_id, args.expected_language_code, forced_refresh)
+    for key in wikipedia_type_keys:
+        prerequisite[key] = element.get_tag_value(key)
+    if len(links) != 1 or links[0] != link_from_wikidata or link_from_wikidata == None:
         return ErrorReport(
             error_id = "wikipedia tag in outdated form and wikidata - mismatch",
-            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present [it was unchecked whatever there is conflict between tags, target was not checked for disambigs etc - TODO, fix that]",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present. Mismatch happened and requires human judgment to solve.",
+            prerequisite = prerequisite,
             )
-    return None
+    else:
+        return ErrorReport(
+            error_id = "wikipedia tag from wikipedia tag in outdated form and wikidata",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present",
+            prerequisite = prerequisite,
+            desired_wikipedia_target = link_from_wikidata,
+            )
+
 
 def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, forced_refresh):
     article = get_interwiki_by_id(present_wikidata_id, args.expected_language_code, forced_refresh)
@@ -280,9 +302,12 @@ def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_ty
     for key in wikipedia_type_keys:
         language_code = wikipedia_connection.get_text_after_first_colon(key)
         article_name = element.get_tag_value(key)
-        link = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
-        if link not in links:
-            links.append(link)
+        article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
+        if article == None:
+            if key not in links:
+                links.append(key)
+        elif article not in links:
+            links.append(args.expected_language_code + ":" + article)
     return links
 
 def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh):
@@ -362,7 +387,11 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         if not args.allow_false_positives:
             return None
         error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected, no page in that language was found:"
-        return ErrorReport(error_id = "wikipedia tag unexpected language, article missing", error_message = error_message)
+        return ErrorReport(
+            error_id = "wikipedia tag unexpected language, article missing",
+            error_message = error_message,
+            prerequisite = prerequisite,
+            )
     assert(False)
 
 def should_use_subject_message(type, special_prefix):
