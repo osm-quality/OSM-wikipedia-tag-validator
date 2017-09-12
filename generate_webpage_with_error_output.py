@@ -53,10 +53,14 @@ def displayed_types():
         'wikipedia wikidata mismatch',
         'should use wikipedia:subject',
         'wikipedia from wikipedia tag in outdated form - mismatch',
-        'wikipedia from wikidata tag',
-        'wikipedia from wikipedia tag in outdated form',
-        'wikipedia tag unexpected language',
-        'wikipedia wikidata mismatch - follow redirect',
+        'tag may be added based on wikidata',
+        'duplicated link',
+        'tag may be added based on wikidata - testing',
+        'tag may be added based on wikidata - boring',
+        #'wikipedia from wikidata tag',
+        #'wikipedia from wikipedia tag in outdated form',
+        #'wikipedia tag unexpected language',
+        #'wikipedia wikidata mismatch - follow redirect',
     ]
 
 def get_errors(args):
