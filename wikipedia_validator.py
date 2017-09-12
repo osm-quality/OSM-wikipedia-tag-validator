@@ -260,6 +260,12 @@ def get_list_of_links_from_disambig(element, language_code, article_name):
             returned.append(link['title'])
     return returned
 
+def distance_in_km_to_description(distance_in_km):
+    if distance_in_km > 3:
+        return str(int(distance_in_km)) + " km"
+    else:
+        return str(int(distance_in_km*1000)) + " m"
+
 def get_list_of_disambig_fixes(element, language_code, article_name, wikidata_id):
     #TODO use wikidata_id rather than language_code, article_name to obtain wikidata
     #TODO open all pages, merge duplicates using wikidata and list them as currently
@@ -280,11 +286,7 @@ def get_list_of_disambig_fixes(element, language_code, article_name, wikidata_id
             coords_2 = (get_location_of_element(element)[0], get_location_of_element(element)[1])
             # recommended by https://stackoverflow.com/a/43211266/4130619
             distance = geopy.distance.vincenty(coords_1, coords_2).km
-            if distance > 3:
-                distance = str(int(distance)) + " km"
-            else:
-                distance = str(int(distance*1000)) + " m"
-            distance_description = ' is ' + distance + " away"
+            distance_description = ' is ' + distance_in_km_to_description(distance) + " away"
         returned += title + distance_description + "\n"
     return returned
 
