@@ -92,7 +92,7 @@ def main():
             name = common.htmlify(voivoddeship)
             filename = voivoddeship + '.html'
             if os.path.isfile(filename):
-                index.write('<a href = "' + filename + '">' + name + "</a></br>\n")
+                index.write('<a href = "' + name + '.html">' + name + "</a></br>\n")
             else:
                 print(filename + ' is not present')
         index.write("</html></body>\n")
