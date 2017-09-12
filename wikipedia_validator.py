@@ -12,16 +12,19 @@ import geopy.distance
 
 present_wikipedia_links = {}
 present_wikidata_links = {}
-def record_presence(wikipedia_tag, wikidata_tag, osm_object_url):
+def record_presence(element):
+    wikipedia_tag = element.get_tag_value("wikipedia")
+    wikidata_tag = element.get_tag_value("wikidata")
+    osm_object_url = element.get_link()
     if wikipedia_tag != None:
         if wikipedia_tag not in present_wikipedia_links:
             present_wikipedia_links[wikipedia_tag] = {}
-        present_wikipedia_links[wikipedia_tag][osm_object_url] = True
+        present_wikipedia_links[wikipedia_tag][osm_object_url] = element
 
     if wikidata_tag != None:
         if wikidata_tag not in present_wikidata_links:
             present_wikidata_links[wikidata_tag] = {}
-        present_wikidata_links[wikidata_tag][osm_object_url] = True
+        present_wikidata_links[wikidata_tag][osm_object_url] = element
 
 def get_problem_for_given_element(element, forced_refresh):
     if object_should_be_deleted_not_repaired(element):
@@ -32,8 +35,6 @@ def get_problem_for_given_element(element, forced_refresh):
 
     link = element.get_tag_value("wikipedia")
     present_wikidata_id = element.get_tag_value("wikidata")
-
-    record_presence(link, present_wikidata_id, element.get_link())
 
     if link == None:
         return attempt_to_locate_wikipedia_tag(element, forced_refresh)
@@ -760,6 +761,27 @@ def parsed_args():
     args = parser.parse_args()
     return args
 
+def output_message_about_duplication(complaint, wikidata_id, link, entries):
+    query = "[out:xml](\n\
+            node[wikidata='" + wikidata_id + "];\n\
+            way[wikidata=" + wikidata_id + "];\n\
+            relation[wikidata=" + wikidata_id + "];\n\
+            );\n\
+            out meta;>;out meta qt;"
+    message = link + complaint + str(entries) + "\n\n\n" + query
+    example_element = list(present_wikipedia_links[link].values())[0]
+    problem = ErrorReport(
+                        error_id = "duplicated link",
+                        error_message = message,
+                        prerequisite = {'wikidata': wikidata_id},
+                        )
+    output_element(example_element, problem)
+
+def process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries):
+    if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
+        complaint = " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation "
+        output_message_about_duplication(complaint, wikidata_id, link, entries)
+
 def process_repeated_appearances():
     # TODO share between runs
     # TODO warn about all, not just rivers (what about node + relation duplicates?)
@@ -771,25 +793,26 @@ def process_repeated_appearances():
         language_code = wikipedia_connection.get_language_code_from_link(link)
         article_name = wikipedia_connection.get_article_name_from_link(link)
         wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-        if wikidata_id != None and wikidata_id not in repeated_wikidata_warned_already:
-            if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
-                print(link + " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation" + str(entries))
-                repeated_wikidata_warned_already.append(wikidata_id)
+        if wikidata_id == None:
+            continue
+        if wikidata_id not in repeated_wikidata_warned_already:
+            process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries)
+            repeated_wikidata_warned_already.append(wikidata_id)
 
     for link in present_wikidata_links:
         entries = present_wikidata_links[link].keys()
         if len(entries) == 1:
             continue
         if wikidata_id not in repeated_wikidata_warned_already:
-            if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
-                print(link + " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation" + str(entries))
-                repeated_wikidata_warned_already.append(wikidata_id)
+            process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries)
+            repeated_wikidata_warned_already.append(wikidata_id)
 
 def main():
     wikipedia_connection.set_cache_location(common.get_file_storage_location())
     if not (args.file):
         parser.error('Provide .osm file')
     osm = Data(common.get_file_storage_location() + "/" + args.file)
+    osm.iterate_over_data(record_presence)
     if args.flush_cache_for_reported_situations:
         osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
     else:
