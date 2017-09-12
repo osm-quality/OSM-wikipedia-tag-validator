@@ -212,6 +212,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         return None
     if args.expected_language_code == language_code:
         return None
+    prerequisite = {'wikipedia': language_code+":"+article_name}
     reason = why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id)
     if reason != None:
         if args.additional_debug:
@@ -221,7 +222,6 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
     if correct_article != None:
         error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected:"
         good_link = args.expected_language_code + ":" + correct_article
-        prerequisite = {'wikipedia': language_code+":"+article_name}
         return ErrorReport(
             error_id = "wikipedia tag unexpected language",
             error_message = error_message,
