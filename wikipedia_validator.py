@@ -80,7 +80,7 @@ def get_problem_for_given_element(element, forced_refresh):
                         prerequisite = {'wikipedia': link, 'wikidata': None}
                         )
 
-    existence_check = check_is_object_is_existing(element)
+    existence_check = check_is_object_is_existing(present_wikidata_id)
     if existence_check != None:
         return existence_check
 
@@ -95,8 +95,9 @@ def check_is_wikipedia_page_existing(language_code, article_name, forced_refresh
     if page == None:
         return ErrorReport(error_id = "wikipedia tag links to 404", error_message = "missing article at wiki:")
 
-def check_is_object_is_existing(element):
-    present_wikidata_id = element.get_tag_value("wikidata")
+def check_is_object_is_existing(present_wikidata_id):
+    if present_wikidata_id == None:
+        return None
     no_longer_existing = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P576')
     if no_longer_existing != None:
         return ErrorReport(error_id = "no longer existing object", error_message ="Wikidata claims that this object no longer exists. Historical, no longer existing object must not be mapped in OSM - so it means that it is mistake or OSM is outdated. REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!")
