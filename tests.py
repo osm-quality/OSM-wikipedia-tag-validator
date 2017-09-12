@@ -7,6 +7,8 @@ import generate_osm_edits
 import generate_webpage_with_error_output
 import generate_overpass_query_output
 import script
+import osm_iterator
+from lxml import etree
 
 class Tests(unittest.TestCase):
     def test_rejects_links_to_events(self):
@@ -20,6 +22,14 @@ class Tests(unittest.TestCase):
     def test_complain_function(self):
         wikipedia_connection.set_cache_location(common.get_file_storage_location())
         wikipedia_validator.complain_in_stdout_if_wikidata_entry_not_of_known_safe_type('Q824359', "explanation")
+
+    def test_get_prerequisite_in_overpass_query_format(self):
+        self.assertEqual(common.get_prerequisite_in_overpass_query_format({'prerequisite': {}}), "")
+
+    def test_osm_iterator(self):
+        from io import BytesIO
+        some_file_or_file_like_object = BytesIO(b"<root>data</root>")
+        osm_iterator.Data(some_file_or_file_like_object)
 
 if __name__ == '__main__':
     unittest.main()
