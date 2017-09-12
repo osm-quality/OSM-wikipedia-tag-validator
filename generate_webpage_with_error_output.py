@@ -11,7 +11,7 @@ def html_header():
     return returned
 
 def link_to_osm_object(url):
-    return '<a href="' + url + '" target="_new">OSM element with broken tag that should be fixed</a>'
+    return '<a href="' + url + '" target="_new">Affected OSM element that may be improved</a>'
 
 def article_name_from_wikipedia_string(string):
     return string[string.find(":")+1:]
