@@ -8,7 +8,6 @@ import generate_webpage_with_error_output
 import generate_overpass_query_output
 import script
 import osm_iterator
-from lxml import etree
 
 class Tests(unittest.TestCase):
     def test_rejects_links_to_events(self):
@@ -28,8 +27,10 @@ class Tests(unittest.TestCase):
 
     def test_osm_iterator(self):
         from io import BytesIO
-        some_file_or_file_like_object = BytesIO(b"<root>data</root>")
-        osm_iterator.Data(some_file_or_file_like_object)
+        some_file_or_file_like_object = BytesIO(b'<?xml version="1.0" encoding="UTF-8"?><osm><node id="17658600" lat="49.8698080" lon="8.6300980"></node></osm>')
+        print(osm_iterator.Data(some_file_or_file_like_object).data)
+        for element in osm_iterator.Data(some_file_or_file_like_object).data.getiterator():
+            print("XXYXYXYXY" + " " + str(element.tag))
 
 if __name__ == '__main__':
     unittest.main()
