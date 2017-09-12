@@ -46,6 +46,25 @@ def get_query_footer(format):
     else:
         assert(False)
 
+def escape_for_overpass(text):
+    return text.replace("\\", "\\\\")
+    return text.replace("'", "\\'")
+
+def get_prerequisite_in_overpass_query_format(error):
+    try:
+        prerequisite = error['prerequisite']
+    except KeyError:
+        return ""
+    returned = ""
+    for key in prerequisite.keys():
+        escaped_key = escape_for_overpass(key)
+        if prerequisite[key] == None:
+            returned += "['" + escaped_key + "'!~'.*']"
+        else:
+            escaped_value = escape_for_overpass(prerequisite[key])
+            returned += "['" + escaped_key + "'='" + escaped_value + "']"
+    return returned
+
 def get_query_for_loading_errors_by_category(filename, printed_error_ids, format):
     # accepted formats:
     # maproulette - json output, workarounds for maproulette bugs
@@ -59,7 +78,7 @@ def get_query_for_loading_errors_by_category(filename, printed_error_ids, format
             if type == "relation" and format == "maproulette":
                 #relations skipped due to https://github.com/maproulette/maproulette2/issues/259
                 continue
-            returned += type+'('+id+');' + "\n"
+            returned += type+'('+id+')' + get_prerequisite_in_overpass_query_format(e) + ';' + "\n"
     returned += get_query_footer(format)
     return returned
 
