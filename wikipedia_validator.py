@@ -48,7 +48,11 @@ def get_problem_for_given_element(element, forced_refresh):
     wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
 
     if is_wikipedia_tag_clearly_broken(link):
-        return ErrorReport(error_id = "malformed wikipedia tag", error_message = "malformed wikipedia tag (" + link + ")")
+        return ErrorReport(
+                        error_id = "malformed wikipedia tag",
+                        error_message = "malformed wikipedia tag (" + link + ")",
+                        prerequisite = {'wikipedia': link},
+                        )
 
     wikipedia_page_exists = check_is_wikipedia_page_existing(language_code, article_name, forced_refresh)
     if wikipedia_page_exists != None:
@@ -70,7 +74,11 @@ def get_problem_for_given_element(element, forced_refresh):
         return wikipedia_language_issues
 
     if present_wikidata_id == None and wikidata_id != None:
-        return ErrorReport(error_id = "wikidata tag may be added", error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag")
+        return ErrorReport(
+                        error_id = "wikidata tag may be added",
+                        error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag",
+                        prerequisite = {'wikipedia': link, 'wikidata': None}
+                        )
 
     existence_check = check_is_object_is_existing(element)
     if existence_check != None:
@@ -187,7 +195,11 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
                 prerequisite = {'wikidata': present_wikidata_id, 'wikipedia': language_code+":"+article_name},
                 )
     message = "wikidata and wikipedia tags link to a different objects (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +" wikidata from article)"
-    return ErrorReport(error_id = "wikipedia wikidata mismatch", error_message = message)
+    return ErrorReport(
+        error_id = "wikipedia wikidata mismatch",
+        error_message = message,
+        prerequisite = {'wikidata': present_wikidata_id, 'wikipedia': language_code+":"+article_name},
+        )
 
 def compare_wikidata_ids(id1, id2):
     if id1 == None:
@@ -365,13 +377,25 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_c
             #https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
             list = get_list_of_disambig_fixes(element, language_code, article_name, wikidata_id)
             error_message = "link leads to a disambig page - not a proper wikipedia link\n\n" + list
-            return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
+            return ErrorReport(
+                error_id = "link to unlinkable article",
+                error_message = error_message,
+                prerequisite = {'wikidata': wikidata_id},
+                )
         if type_id == 'Q13406463':
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
-            return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
+            return ErrorReport(
+                error_id = "link to unlinkable article",
+                error_message = error_message,
+                prerequisite = {'wikidata': wikidata_id},
+                )
         if type_id == 'Q20136634':
             error_message = "article linked in wikipedia tag is an overview aerticle, so it is very unlikely to be correct"
-            return ErrorReport(error_id = "link to unlinkable article", error_message = error_message)
+            return ErrorReport(
+                error_id = "link to unlinkable article",
+                error_message = error_message,
+                prerequisite = {'wikidata': wikidata_id},
+                )
 
 def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id):
     if wikidata_id == None:
