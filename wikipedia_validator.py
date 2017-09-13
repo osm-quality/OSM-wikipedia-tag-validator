@@ -150,7 +150,7 @@ def decapsulate_wikidata_value(from_wikidata):
         pass
     return from_wikidata
 
-def tag_from_wikidata(present_wikidata_id, osm_key, wikidata_property, element, id_suffix=""):
+def tag_from_wikidata(present_wikidata_id, osm_key, wikidata_property, element, id_suffix="", message_suffix = ""):
     from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, wikidata_property)
     if from_wikidata == None:
         return None
@@ -158,7 +158,7 @@ def tag_from_wikidata(present_wikidata_id, osm_key, wikidata_property, element, 
     if element.get_tag_value(osm_key) == None:
             return ErrorReport(
                         error_id = "tag may be added based on wikidata" + id_suffix,
-                        error_message = str(from_wikidata) + " may be added as " + osm_key + " tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
+                        error_message = str(from_wikidata) + " may be added as " + osm_key + " tag based on wikidata entry" + message_suffix + " " + wikidata_data_quality_warning(),
                         prerequisite = {'wikidata': present_wikidata_id, osm_key: None}
                         )
     elif element.get_tag_value(osm_key) != from_wikidata:
@@ -177,7 +177,7 @@ def add_data_from_wikidata(element):
     iata = tag_from_wikidata(present_wikidata_id, 'iata', 'P238', element)
     if iata != None:
         return iata
-    simc = tag_from_wikidata(present_wikidata_id, 'teryt:simc', 'P4046', element)
+    simc = tag_from_wikidata(present_wikidata_id, 'teryt:simc', 'P4046', element, '', ' do weryfikacji przydaje się http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/wyszukiwanie/wyszukiwanie.aspx?contrast=default ')
     if simc != None:
         return simc
     etymology = tag_from_wikidata(present_wikidata_id, 'name:wikidata', 'P138', element, " - testing")
