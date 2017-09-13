@@ -252,12 +252,23 @@ def attempt_to_locate_wikipedia_tag(element, forced_refresh):
     return None
 
 def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(element, wikipedia_type_keys, wikidata_id, forced_refresh):
-    prerequisite = {'wikidata': wikidata_id}
+    assert(wikidata_id != None)
+
     links = wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh)
-    link_from_wikidata = args.expected_language_code + ":" + get_interwiki_by_id(wikidata_id, args.expected_language_code, forced_refresh)
+
+    prerequisite = {'wikidata': wikidata_id}
     for key in wikipedia_type_keys:
         prerequisite[key] = element.get_tag_value(key)
-    if len(links) != 1 or links[0] != link_from_wikidata or link_from_wikidata == None:
+
+    conflict = False
+    for link in links:
+        language_code = wikipedia_connection.get_language_code_from_link(link)
+        article_name = wikipedia_connection.get_article_name_from_link(link)
+        id_from_link = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
+        if wikidata_id != id_from_link:
+            conflict = True
+
+    if conflict:
         return ErrorReport(
             error_id = "wikipedia tag in outdated form and wikidata - mismatch",
             error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present. Mismatch happened and requires human judgment to solve.",
