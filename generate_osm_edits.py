@@ -114,6 +114,14 @@ def make_edit(affected_objects, comment, automatic_status, discussion_url, api, 
     api.ChangesetClose()
     sleep(60)
 
+def fit_wikipedia_edit_description_within_character_limit(new, reason):
+    comment = "adding [wikipedia=" + new + "]" + reason
+    if(len(comment)) > character_limit_of_description():
+        comment = "adding wikipedia tag " + reason
+    if(len(comment)) > character_limit_of_description():
+        raise("comment too long")
+    return comment
+
 def fit_wikipedia_edit_description_within_character_limit(now, new, reason):
     comment = "[wikipedia=" + now + "] to [wikipedia=" + new + "]" + reason
     if(len(comment)) > character_limit_of_description():
@@ -159,7 +167,29 @@ def change_to_local_language(e, id, type, api):
     if failure != None:
         print(failure)
         return
-    now = data['tag']['wikipedia']
+    new = e['desired_wikipedia_target']
+    reason = ", as wikipedia page in the local language should be preferred"
+    comment = fit_wikipedia_edit_description_within_character_limit(new, reason)
+    data['tag']['wikipedia'] = e['desired_wikipedia_target']
+    discussion_url = None
+    automatic_status = "no, it is a manually reviewed edit"
+    make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, api, type, data)
+
+def add_wikipedia_tag_based_wikidata(e, id, type, api):
+    if e['error_id'] != 'wikipedia from wikidata tag':
+        return
+    #TODO - tylko w Polsce
+    #language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
+    #if language_code != "pl":
+    #    return
+    data = get_data(api, id, type)
+    if data == None:
+        return
+    failure = prerequisite_failure_reason(e, data)
+    if failure != None:
+        print(failure)
+        return
+    now = None
     new = e['desired_wikipedia_target']
     reason = ", as wikipedia page in the local language should be preferred"
     comment = fit_wikipedia_edit_description_within_character_limit(now, new, reason)
@@ -177,8 +207,9 @@ def main():
     for e in reported_errors:
         type = e['osm_object_url'].split("/")[3]
         id = e['osm_object_url'].split("/")[4]
-        handle_follow_redirect(e, id, type, bot_api)
+        #handle_follow_redirect(e, id, type, bot_api)
         #change_to_local_language(e, id, type, user_api)
+        add_wikipedia_tag_based_wikidata(e, id, type, user_api)
 
 if __name__ == '__main__':
     main()
