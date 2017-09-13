@@ -27,11 +27,14 @@ def download(url):
             print(e)
             continue
 
-def get_from_wikipedia_api(language_code, what, article_name):
+def get_from_wikipedia_api(language_code, what, article_name, forced_refresh=False):
     language_code = urllib.parse.quote(language_code)
     article_name = urllib.parse.quote(article_name)
     url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + article_name
-    parsed_json = json.loads(get_from_generic_url(url))
+    wikidata_id = get_wikidata_object_id_from_article(language_code, article_name)
+    if wikidata_id == None:
+        wikidata_id = ""
+    parsed_json = json.loads(get_from_generic_url(url, forced_refresh, wikidata_id))
     id = list(parsed_json['query']['pages'])[0]
     data = parsed_json['query']['pages'][id]
     return data
@@ -322,33 +325,33 @@ def get_wikipedia_page(language_code, article_name, forced_refresh):
     response = get_data_from_cache_files(response_filename, response_code_filename)
     return response
 
-def get_filename_cache_for_url(url):
+def get_filename_cache_for_url(url, identifier_hack):
     #HACK! but simply using get_form_of_link_usable_as_filename is not going to work as filename due to limit of filename length
-    return os.path.join(cache_location(), 'cache', 'url', url_to_hash(url) + ".txt")
+    return os.path.join(cache_location(), 'cache', 'url', url_to_hash(url) + ":" + identifier_hack + ".txt")
 
-def get_filename_cache_for_url_response_code(url):
-    return os.path.join(cache_location(), 'cache', 'url', url_to_hash(url) + ".code.txt")
+def get_filename_cache_for_url_response_code(url, identifier_hack):
+    return os.path.join(cache_location(), 'cache', 'url', url_to_hash(url) + ":" + identifier_hack + ".code.txt")
 
-def it_is_necessary_to_reload_generic_url(url):
-    content_filename = get_filename_cache_for_url(url)
-    code_filename = get_filename_cache_for_url_response_code(url)
+def it_is_necessary_to_reload_generic_url(url, identifier_hack):
+    content_filename = get_filename_cache_for_url(url, identifier_hack)
+    code_filename = get_filename_cache_for_url_response_code(url, identifier_hack)
     return is_it_necessary_to_reload_files(content_filename, code_filename)
 
-def download_data_from_generic_url(url):
+def download_data_from_generic_url(url, identifier_hack):
     ensure_that_cache_folder_exists('url')
-    response_filename = get_filename_cache_for_url(url)
-    code_filename = get_filename_cache_for_url_response_code(url)
+    response_filename = get_filename_cache_for_url(url, identifier_hack)
+    code_filename = get_filename_cache_for_url_response_code(url, identifier_hack)
     result = download(url)
     write_to_file(response_filename, str(result.content.decode()))
     write_to_file(code_filename, str(result.code))
 
-def get_from_generic_url(url, forced_refresh=False):
-    if it_is_necessary_to_reload_generic_url(url) or forced_refresh:
-        download_data_from_generic_url(url)
-    response_filename = get_filename_cache_for_url(url)
-    code_filename = get_filename_cache_for_url_response_code(url)
+def get_from_generic_url(url, forced_refresh=False, identifier_hack=""):
+    if it_is_necessary_to_reload_generic_url(url, identifier_hack) or forced_refresh:
+        download_data_from_generic_url(url, identifier_hack)
+    response_filename = get_filename_cache_for_url(url, identifier_hack)
+    code_filename = get_filename_cache_for_url_response_code(url, identifier_hack)
     if not os.path.isfile(response_filename):
-        print(it_is_necessary_to_reload_generic_url(url))
+        print(it_is_necessary_to_reload_generic_url(url, identifier_hack))
         print(response_filename)
         assert False
     response = get_data_from_cache_files(response_filename, code_filename)
