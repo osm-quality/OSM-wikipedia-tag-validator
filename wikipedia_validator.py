@@ -139,10 +139,12 @@ def decapsulate_wikidata_value(from_wikidata):
     try:
         # for wikidata values formed like
         # {'entity-type': 'item', 'id': 'Q43399', 'numeric-id': 43399}
-        if from_wikidata['entity-type'] == 'item':
-            from_wikidata = from_wikidata['id']
+        if isinstance(from_wikidata, dict):
+            if from_wikidata['entity-type'] == 'item':
+                from_wikidata = from_wikidata['id']
     except KeyError:
         pass
+    return from_wikidata
 
 def tag_from_wikidata(present_wikidata_id, osm_key, wikidata_property, element, id_suffix=""):
     from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, wikidata_property)
@@ -178,7 +180,7 @@ def add_data_from_wikidata(element):
     if etymology != None:
         return etymology
     website = tag_from_wikidata(present_wikidata_id, 'website', 'P856', element, " - boring")
-    if website != None and website.find('web.archive.org') != -1:
+    if website != None and website.error_message.find('web.archive.org') != -1:
         return website
     operator = tag_from_wikidata(present_wikidata_id, 'operator', 'P126', element, " - testing")
     if operator != None:
