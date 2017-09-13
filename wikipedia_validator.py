@@ -546,7 +546,7 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(element, language_c
             # wikidata entry may be wrong
             # https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
             list = get_list_of_disambig_fixes(element, language_code, article_name, wikidata_id)
-            error_message = "link leads to a disambig page - not a proper wikipedia link\n\n" + list
+            error_message = "link leads to a disambig page - not a proper wikipedia link (according to Wikidata - if target is not a disambig check Wikidata entry whatever it is correct)\n\n" + list
             return ErrorReport(
                 error_id = "link to unlinkable article",
                 error_message = error_message,
