@@ -103,7 +103,7 @@ def get_problem_for_given_element(element, forced_refresh):
     return None
 
 def check_is_wikipedia_page_existing(language_code, article_name, forced_refresh):
-    page_according_to_wikidata = get_interwiki(language_code, article_name, language_code, forced_refresh)
+    page_according_to_wikidata = get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
     if page_according_to_wikidata != None:
         # assume that wikidata is correct to save downloading page
         return None
@@ -284,7 +284,7 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(
 
 
 def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, forced_refresh):
-    article = get_interwiki_by_id(present_wikidata_id, args.expected_language_code, forced_refresh)
+    article = get_interwiki_article_name_by_id(present_wikidata_id, args.expected_language_code, forced_refresh)
     if article == None:
         return None
     language_code = args.expected_language_code
@@ -320,7 +320,7 @@ def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_ty
     for key in wikipedia_type_keys:
         language_code = wikipedia_connection.get_text_after_first_colon(key)
         article_name = element.get_tag_value(key)
-        article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
+        article = get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
         if article == None:
             if key not in links:
                 links.append(key)
@@ -389,7 +389,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         if args.additional_debug:
             print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
         return None
-    correct_article = get_interwiki(language_code, article_name, args.expected_language_code, forced_refresh)
+    correct_article = get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
     if correct_article != None:
         error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected:"
         good_link = args.expected_language_code + ":" + correct_article
@@ -807,17 +807,17 @@ def wikidata_url(wikidata_id):
 def wikipedia_url(language_code, article_name):
     return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
 
-def get_interwiki_by_id(wikidata_id, target_language, forced_refresh):
+def get_interwiki_article_name_by_id(wikidata_id, target_language, forced_refresh):
     if wikidata_id == None:
         return None
     wikidata_entry = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
-    return get_interwiki_from_wikidata_data(wikidata_entry, target_language)
+    return get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language)
 
-def get_interwiki(source_language_code, source_article_name, target_language, forced_refresh):
+def get_interwiki_article_name(source_language_code, source_article_name, target_language, forced_refresh):
     wikidata_entry = wikipedia_connection.get_data_from_wikidata(source_language_code, source_article_name, forced_refresh)
-    return get_interwiki_from_wikidata_data(wikidata_entry, target_language)
+    return get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language)
 
-def get_interwiki_from_wikidata_data(wikidata_entry, target_language):
+def get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language):
     try:
         wikidata_entry = wikidata_entry['entities']
         id = list(wikidata_entry)[0]
