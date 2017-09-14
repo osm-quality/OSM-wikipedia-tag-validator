@@ -449,7 +449,6 @@ def get_list_of_disambig_fixes(element, language_code, article_name, wikidata_id
     #TODO use wikidata_id rather than language_code, article_name to obtain wikidata
     #TODO open all pages, merge duplicates using wikidata and list them as currently
     returned = ""
-    links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
     for title in get_list_of_links_from_disambig(element, language_code, article_name):
         wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title)
         location = (None, None)
