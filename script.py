@@ -18,7 +18,10 @@ def voivoddeships_of_poland():
       "opolskie", "śląskie", "łódzkie"]
     return ["województwo " + name for name in voivoddeships]
 
-def main():
+def root():
+    return common.get_file_storage_location() + "/"
+
+def delete_output_files():
     yaml_output_files = [
         'Bremen_all.osm.yaml',
         'Berlin_nodes_without_geometry.osm.yaml',
@@ -31,12 +34,31 @@ def main():
     for index, voivoddeship in enumerate(voivoddeships_of_poland()):
         yaml_output_files.append(voivoddeship + "_all.osm.yaml")
 
-    root = common.get_file_storage_location() + "/"
     for filename in yaml_output_files:
         try:
-            os.remove(root + filename)
+            os.remove(root() + filename)
         except FileNotFoundError:
             pass
+
+def make_website(filename_with_report, output_filename_website):
+    system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" > "' +  output_filename_website + '"')
+
+
+def pipeline(osm_filename, output_filename_website, merged_output_file):
+        output_filename_errors = osm_filename + '.yaml'
+        if not os.path.isfile(root() + osm_filename):
+            print(osm_filename + ' is not present')
+            return
+        system_call('python3 wikipedia_validator.py -expected_language_code pl -file "' + osm_filename + '"')
+        if not os.path.isfile(root() + output_filename_errors):
+            print(output_filename_errors + ' is not present [highly surprising]')
+            return
+        if merged_output_file != None:
+            merge(output_filename_errors, merged_output_file)
+        make_website(output_filename_errors, output_filename_website)
+
+def main():
+    delete_output_files()
 
     germany_filenames = [
         'Bremen_all.osm',
@@ -44,35 +66,30 @@ def main():
         'Stendal_all.osm',
     ]
     for filename in germany_filenames:
-        if not os.path.isfile(root + filename):
+        if not os.path.isfile(root() + filename):
             print(filename + ' is not present')
         else:
             call(['python3', 'wikipedia_validator.py', '-expected_language_code', 'de', '-file', filename])
             merge(filename + '.yaml', 'Deutschland.yaml')
 
-    system_call('python3 generate_webpage_with_error_output.py -file Deutschland.yaml > Deutschland.html')
-    system_call('python3 generate_webpage_with_error_output.py -file Bremen_all.osm.yaml > Bremen.html')
+    make_website('Deutschland.yaml', 'Deutschland.html')
+    make_website('Bremen_all.osm.yaml', 'Bremen.html')
 
     # Kraków
     system_call('python3 wikipedia_validator.py -expected_language_code pl -file "Kraków_all.osm" -allow_requesting_edits_outside_osm -additional_debug -allow_false_positives')
-    system_call('python3 generate_webpage_with_error_output.py -file Kraków_all.osm.yaml > Kraków.html')
+    make_website('Kraków_all.osm.yaml', 'Kraków.html')
 
     # Poland
-    for voivoddeship in voivoddeships_of_poland():
-        filename = voivoddeship + '_all.osm'
-        if not os.path.isfile(root + filename):
-            print(filename + ' is not present')
-            continue
-        system_call('python3 wikipedia_validator.py -expected_language_code pl -file "' + filename + '"')
-        filename = voivoddeship + '_all.osm.yaml'
-        if not os.path.isfile(root + filename):
-            print(filename + ' is not present [highly surprising]')
-        merge(filename, 'Polska.yaml')
-        system_call('python3 generate_webpage_with_error_output.py -file "' + filename + '" > "' + voivoddeship + '.html"')
+    for name in voivoddeships_of_poland():
+        pipeline(
+                osm_filename = name + '_all.osm',
+                output_filename_website = name + '.html',
+                merged_output_file = 'Polska.yaml'
+                )
 
     filename = 'Polska.yaml'
-    if os.path.isfile(root + filename):
-        system_call('python3 generate_webpage_with_error_output.py -file ' + filename  + ' > Polska.html')
+    if os.path.isfile(root() + filename):
+        make_website(filename, 'Polska.html')
     else:
         print(filename + ' is not present [highly surprising]')
         return
