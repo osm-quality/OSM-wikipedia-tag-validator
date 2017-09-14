@@ -232,6 +232,7 @@ def add_data_from_wikidata(element):
     #P814 protected area
     #P2043 length
     #P36 capital of something
+    #P140 religion
     return None
 
 def attempt_to_locate_wikipedia_tag(element, forced_refresh):
@@ -1006,7 +1007,7 @@ def print_popular_properties():
     'P206', 'P41', 'P1200', 'P884', 'P2225', 'P227', 'P30', 'P1792', 'P361',
     'P1343', 'P706', 'P949', 'P242', 'P14', 'P214', 'P197', 'P126', 'P708',
     'P2053', 'P974', 'P1653', 'P268', 'P201', 'P395', 'P571', 'P84', 'P403',
-    'P47', 'P2043', 'P138', 'P36']
+    'P47', 'P2043', 'P138', 'P36', 'P140', 'P356']
     limit = 100
     iata_code_property = 'P238'
     if iata_code_property in properties:
