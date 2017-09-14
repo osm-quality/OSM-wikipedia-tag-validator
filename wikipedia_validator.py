@@ -105,7 +105,7 @@ def get_problem_for_given_element(element, forced_refresh):
 def check_is_wikipedia_page_existing(language_code, article_name, forced_refresh):
     page_according_to_wikidata = get_interwiki(language_code, article_name, language_code, forced_refresh)
     if page_according_to_wikidata != None:
-        # assume that wikidat is correct to save downloading page
+        # assume that wikidata is correct to save downloading page
         return None
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
     if page == None:
