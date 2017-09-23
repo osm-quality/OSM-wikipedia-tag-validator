@@ -57,15 +57,13 @@ def pipeline(osm_filename, output_filename_website, merged_output_file):
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, output_filename_website)
 
-def main():
-    delete_output_files()
-
-    germany_filenames = [
+def germany():
+    input_filenames = [
         'Bremen_all.osm',
         #'Berlin_nodes_without_geometry.osm',
         'Stendal_all.osm',
     ]
-    for filename in germany_filenames:
+    for filename in input_filenames:
         if not os.path.isfile(root() + filename):
             print(filename + ' is not present')
         else:
@@ -75,9 +73,15 @@ def main():
     make_website('Deutschland.yaml', 'Deutschland.html')
     make_website('Bremen_all.osm.yaml', 'Bremen.html')
 
-    # Kraków
+def krakow():
     system_call('python3 wikipedia_validator.py -expected_language_code pl -file "Kraków_all.osm" -allow_requesting_edits_outside_osm -additional_debug -allow_false_positives')
     make_website('Kraków_all.osm.yaml', 'Kraków.html')
+
+def main():
+    delete_output_files()
+
+    germany()
+    krakow()
 
     # Poland
     for name in voivoddeships_of_poland():
