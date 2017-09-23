@@ -1015,24 +1015,29 @@ def process_repeated_appearances():
             process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries)
             repeated_wikidata_warned_already.append(wikidata_id)
 
-def print_popular_properties():
+def skip_property(property_name):
     known = ['P18','P1566','P31','P646','P421','P910','P94','P131','P373',
     'P625','P17', 'P856', 'P1376', 'P935', 'P1435', 'P2044', 'P4046', 'P1464',
     'P206', 'P41', 'P1200', 'P884', 'P2225', 'P227', 'P30', 'P1792', 'P361',
     'P1343', 'P706', 'P949', 'P242', 'P14', 'P214', 'P197', 'P126', 'P708',
     'P2053', 'P974', 'P1653', 'P268', 'P201', 'P395', 'P571', 'P84', 'P403',
     'P47', 'P2043', 'P138', 'P36', 'P140', 'P356']
+    if property_name in known:
+        return True
+    return False
+
+def print_popular_properties():
     limit = 100
     iata_code_property = 'P238'
     if iata_code_property in properties:
         limit = properties[iata_code_property] * 5 + 50
     for property in properties.keys():
         if properties[property] > limit:
-            if property not in known:
+            if not skip_property(property):
                 print("https://www.wikidata.org/wiki/Property:" + str(property))
     for property in properties.keys():
         if properties[property] > limit:
-            if property not in known:
+            if not skip_property(property):
                 print("'" + str(property) + "',")
 
 def main():
