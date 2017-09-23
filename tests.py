@@ -18,12 +18,34 @@ class Tests(unittest.TestCase):
         wikipedia_connection.set_cache_location(common.get_file_storage_location())
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary('Q2513'))
 
+    def test_reject_links_to_humans(self):
+        example_artist_id = 'Q561127'
+        location = None
+        forced_refresh = False
+        self.assertNotEqual(None, wikipedia_validator.get_problem_based_on_wikidata_base_types(location, example_artist_id, forced_refresh))
+
     def test_complain_function(self):
         wikipedia_connection.set_cache_location(common.get_file_storage_location())
         wikipedia_validator.complain_in_stdout_if_wikidata_entry_not_of_known_safe_type('Q824359', "explanation")
 
     def test_get_prerequisite_in_overpass_query_format(self):
         self.assertEqual(common.get_prerequisite_in_overpass_query_format({'prerequisite': {}}), "")
+
+    def test_description_of_distance_return_string(self):
+        example_city_wikidata_id = 'Q31487'
+        self.assertEqual(type(""), type(wikipedia_validator.get_distance_description_between_location_and_wikidata_id((50, 20), example_city_wikidata_id)))
+
+    def test_description_of_distance_return_string_for_missing_location(self):
+        example_city_wikidata_id = 'Q31487'
+        self.assertEqual(type(""), type(wikipedia_validator.get_distance_description_between_location_and_wikidata_id((None, None), example_city_wikidata_id)))
+
+    def test_description_of_distance_return_string_for_missing_location_and_missing_location_in_wikidata(self):
+        example_artist_id = 'Q561127'
+        self.assertEqual(type(""), type(wikipedia_validator.get_distance_description_between_location_and_wikidata_id((None, None), example_artist_id)))
+
+    def test_description_of_distance_return_string_for_missing_location_in_wikidata(self):
+        example_artist_id = 'Q561127'
+        self.assertEqual(type(""), type(wikipedia_validator.get_distance_description_between_location_and_wikidata_id((50, 20), example_artist_id)))
 
     def test_osm_iterator(self):
         from io import BytesIO

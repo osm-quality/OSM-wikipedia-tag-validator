@@ -71,8 +71,8 @@ def get_problem_for_given_element(element, forced_refresh):
         return collisions
 
     #do not pass language_code, article_name
-    #aquire from wikidata within function if truly necessary
-    wikipedia_link_issues = get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id)
+    #acquire from wikidata within function if truly necessary
+    wikipedia_link_issues = get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id, forced_refresh)
     if wikipedia_link_issues != None:
         return wikipedia_link_issues
 
@@ -276,11 +276,13 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(
             prerequisite = prerequisite,
             )
     else:
+        language_code = args.expected_language_code
+        article_name = get_interwiki_article_name_by_id(wikidata_id, language_code, forced_refresh)
         return ErrorReport(
             error_id = "wikipedia tag from wikipedia tag in outdated form and wikidata",
             error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present",
             prerequisite = prerequisite,
-            desired_wikipedia_target = link_from_wikidata,
+            desired_wikipedia_target = language_code + ":" + article_name,
             )
 
 
@@ -432,11 +434,11 @@ def get_should_use_subject_error(type, special_prefix, wikidata_id):
         prerequisite = {'wikidata': wikidata_id},
         )
 
-def get_list_of_links_from_disambig(wikidata_id):
+def get_list_of_links_from_disambig(wikidata_id, forced_refresh):
     language_code = "en"
     if args.expected_language_code != None:
         language_code = args.expected_language_code
-    article_name = get_interwiki_article_name_by_id(wikidata_id, language_code)
+    article_name = get_interwiki_article_name_by_id(wikidata_id, language_code, forced_refresh)
     returned = []
     links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
     for link in links_from_disambig_page:
@@ -450,35 +452,33 @@ def distance_in_km_to_string(distance_in_km):
     else:
         return str(int(distance_in_km*1000)) + " m"
 
-def distance_in_km_of_wikidata_object_from_location(location, wikidata_id):
+def distance_in_km_of_wikidata_object_from_location(coords_given, wikidata_id):
     if wikidata_id == None:
         return None
-    location = wikipedia_connection.get_location_from_wikidata(wikidata_id)
-    coords_1 = (location[0], location[1])
-    coords_2 = (get_location_of_element(element)[0], get_location_of_element(element)[1])
+    location_from_wikidata = wikipedia_connection.get_location_from_wikidata(wikidata_id)
     # recommended by https://stackoverflow.com/a/43211266/4130619
-    return geopy.distance.vincenty(coords_1, coords_2).km
+    return geopy.distance.vincenty(coords_given, location_from_wikidata).km
 
 def get_distance_description_between_location_and_wikidata_id(location, wikidata_id):
     if location == (None, None):
         return " <no location data>"
-    distance = distance_of_wikidata_object_from_location(location, wikidata_id)
+    distance = distance_in_km_of_wikidata_object_from_location(location, wikidata_id)
     if distance == None:
         return " <no location data on wikidata>"
     return ' is ' + distance_in_km_to_string(distance) + " away"
 
-def get_list_of_disambig_fixes(location, element_wikidata_id):
+def get_list_of_disambig_fixes(location, element_wikidata_id, forced_refresh):
     #TODO open all pages, merge duplicates using wikidata and list them as currently
     returned = ""
-    links = get_list_of_links_from_disambig(element_wikidata_id, preferred_language_code)
-    if wikidata_id == None:
+    links = get_list_of_links_from_disambig(element_wikidata_id, forced_refresh)
+    if element_wikidata_id == None:
         return "page without wikidata element, unable to load link data. Please, create wikidata element (TODO: explain how it can be done)"
     if links == None:
         return "TODO improve language handling on foreign disambigs"
     for link in links:
         link_wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(link['language_code'], link['title'])
         distance_description = get_distance_description_between_location_and_wikidata_id(location, link_wikidata_id)
-        returned += title + distance_description + "\n"
+        returned += link['title'] + distance_description + "\n"
     return returned
 
 def get_error_report_if_secondary_wikipedia_tag_should_be_used(wikidata_id):
@@ -550,14 +550,14 @@ def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
             return get_should_use_subject_error('a mandatory constraint', None, wikidata_id)
     return None
 
-def get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_id):
+def get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_id, forced_refresh):
     for type_id in get_all_types_describing_wikidata_object(wikidata_id):
         if type_id == 'Q4167410':
             # TODO note that pageprops may be a better source that should be used
             # it does not require wikidata entry
             # wikidata entry may be wrong
             # https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
-            list = get_list_of_disambig_fixes(location, wikidata_id)
+            list = get_list_of_disambig_fixes(location, wikidata_id, forced_refresh)
             error_message = "link leads to a disambig page - not a proper wikipedia link (according to Wikidata - if target is not a disambig check Wikidata entry whatever it is correct)\n\n" + list
             return ErrorReport(
                 error_id = "link to unlinkable article",
@@ -579,7 +579,7 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_
                 prerequisite = {'wikidata': wikidata_id},
                 )
 
-def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id):
+def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id, forced_refresh):
     if wikidata_id == None:
         return None
 
@@ -591,15 +591,15 @@ def get_problem_based_on_wikidata(element, language_code, article_name, wikidata
         # also, this problem is easy to find on Wikidata itself so it is not useful to report it
         return None
     location = get_location_of_element(element)
-    base_type_problem = get_problem_based_on_wikidata_base_types(location, wikidata_id)
+    base_type_problem = get_problem_based_on_wikidata_base_types(location, wikidata_id, forced_refresh)
     if base_type_problem != None:
         return base_type_problem
 
     if args.additional_debug:
         complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, describe_osm_object(element))
 
-def get_problem_based_on_wikidata_base_types(location, wikidata_id):
-    unusable_wikipedia_article = get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_id)
+def get_problem_based_on_wikidata_base_types(location, wikidata_id, forced_refresh):
+    unusable_wikipedia_article = get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_id, forced_refresh)
     if unusable_wikipedia_article != None:
         return unusable_wikipedia_article
 
