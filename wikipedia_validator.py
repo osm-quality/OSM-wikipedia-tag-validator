@@ -1025,7 +1025,7 @@ def print_popular_properties():
     limit = 100
     iata_code_property = 'P238'
     if iata_code_property in properties:
-        limit = properties[iata_code_property] * 5
+        limit = properties[iata_code_property] * 5 + 50
     for property in properties.keys():
         if properties[property] > limit:
             if property not in known:
