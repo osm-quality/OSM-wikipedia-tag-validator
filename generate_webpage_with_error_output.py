@@ -114,7 +114,7 @@ def for_public_use():
         'should use wikipedia:subject',
         'wikipedia from wikipedia tag in outdated form - mismatch',
         'tag may be added based on wikidata',
-        'duplicated link',
+        'duplicated link - waterway',
         'tag may be added based on wikidata - boring',
     ]
 
@@ -134,6 +134,7 @@ def for_tests():
         'tag conflict with wikidata value',
         'tag may be added based on wikidata - testing',
         'tag conflict with wikidata value - testing',
+        'duplicated link - testing'
     ]
 
 def main():

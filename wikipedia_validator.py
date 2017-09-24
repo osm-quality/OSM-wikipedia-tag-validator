@@ -986,17 +986,17 @@ def parsed_args():
     args = parser.parse_args()
     return args
 
-def output_message_about_duplication(complaint, wikidata_id, link, entries):
+def output_message_about_duplication(complaint, wikidata_id, link, entries, id_suffix=""):
     query = "[out:xml](\n\
             node[wikidata='" + wikidata_id + "];\n\
             way[wikidata=" + wikidata_id + "];\n\
             relation[wikidata=" + wikidata_id + "];\n\
             );\n\
             out meta;>;out meta qt;"
-    message = link + complaint + str(entries) + "\n\n\n" + query
+    message = link + complaint + str(list(entries)) + "\n\n\n" + query
     example_element = list(present_wikipedia_links[link].values())[0]
     problem = ErrorReport(
-                        error_id = "duplicated link",
+                        error_id = "duplicated link" + id_suffix,
                         error_message = message,
                         prerequisite = {'wikidata': wikidata_id},
                         )
@@ -1005,7 +1005,10 @@ def output_message_about_duplication(complaint, wikidata_id, link, entries):
 def process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries):
     if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
         complaint = " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation "
-        output_message_about_duplication(complaint, wikidata_id, link, entries)
+        output_message_about_duplication(complaint, wikidata_id, link, entries, " - waterway")
+    elif len(entries) > 10:
+        complaint = " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation "
+        output_message_about_duplication(complaint, wikidata_id, link, entries, " - testing")
 
 def process_repeated_appearances():
     # TODO share between runs
