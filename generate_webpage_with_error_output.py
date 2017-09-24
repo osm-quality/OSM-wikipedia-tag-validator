@@ -7,6 +7,9 @@ def html_header():
     returned = ""
     returned += "<html>\n"
     returned += "<body>\n"
+    returned += "Feedback? Ideas? Complaints? Suggestions? Request for report about other area? <a href=\"https://www.openstreetmap.org/message/new/Mateusz%20Konieczny\">send me a message</a>!"
+    returned += "<br />\n"
+    returned += "---------------\n"
     returned +=  "<table>\n"
     return returned
 
