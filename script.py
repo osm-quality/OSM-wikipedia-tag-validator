@@ -77,6 +77,15 @@ def krakow():
     system_call('python3 wikipedia_validator.py -expected_language_code pl -file "Kraków_all.osm" -allow_requesting_edits_outside_osm -additional_debug -allow_false_positives')
     make_website('Kraków_all.osm.yaml', 'Kraków')
 
+def make_query_to_reload_only_affected_objects(input_filename_with_reports, output_query_filename):
+    with open(output_query_filename, 'w') as query_file:
+        filepath = common.get_file_storage_location() + "/" + input_filename_with_reports
+        all_errors = []
+        for e in common.load_data(filepath):
+            if e['error_id'] not in all_errors:
+                all_errors.append(e['error_id'])
+        query_file.write(common.get_query_for_loading_errors_by_category(filename = input_filename_with_reports, printed_error_ids = all_errors, format = "josm"))
+
 def main():
     delete_output_files()
 
@@ -130,14 +139,7 @@ def main():
         else:
             print(filename + ' is not present')
 
-    with open('reload_Poland.query', 'w') as query_file:
-        file = 'Polska.yaml'
-        filepath = common.get_file_storage_location() + "/" + file
-        all_errors = []
-        for e in common.load_data(filepath):
-            if e['error_id'] not in all_errors:
-                all_errors.append(e['error_id'])
-        query_file.write(common.get_query_for_loading_errors_by_category(filename = file, printed_error_ids = all_errors, format = "josm"))
+    make_query_to_reload_only_affected_objects('Polska.yaml', 'reload_Poland.query')
 
     os.chdir('OSM-wikipedia-tag-validator-reports')
     system_call('git add --all')
