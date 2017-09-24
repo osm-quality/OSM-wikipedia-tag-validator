@@ -40,8 +40,8 @@ def delete_output_files():
         except FileNotFoundError:
             pass
 
-def make_website(filename_with_report, output_filename_website):
-    system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" > "' +  output_filename_website + '"')
+def make_website(filename_with_report, output_filename_base):
+    system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '"')
 
 
 def pipeline(osm_filename, output_filename_website, merged_output_file):
@@ -70,12 +70,12 @@ def germany():
             call(['python3', 'wikipedia_validator.py', '-expected_language_code', 'de', '-file', filename])
             merge(filename + '.yaml', 'Deutschland.yaml')
 
-    make_website('Deutschland.yaml', 'Deutschland.html')
-    make_website('Bremen_all.osm.yaml', 'Bremen.html')
+    make_website('Deutschland.yaml', 'Deutschland')
+    make_website('Bremen_all.osm.yaml', 'Bremen')
 
 def krakow():
     system_call('python3 wikipedia_validator.py -expected_language_code pl -file "Kraków_all.osm" -allow_requesting_edits_outside_osm -additional_debug -allow_false_positives')
-    make_website('Kraków_all.osm.yaml', 'Kraków.html')
+    make_website('Kraków_all.osm.yaml', 'Kraków')
 
 def main():
     delete_output_files()
@@ -87,13 +87,13 @@ def main():
     for name in voivoddeships_of_poland():
         pipeline(
                 osm_filename = name + '_all.osm',
-                output_filename_website = name + '.html',
+                output_filename_website = name,
                 merged_output_file = 'Polska.yaml'
                 )
 
     filename = 'Polska.yaml'
     if os.path.isfile(root() + filename):
-        make_website(filename, 'Polska.html')
+        make_website(filename, 'Polska')
     else:
         print(filename + ' is not present [highly surprising]')
         return
