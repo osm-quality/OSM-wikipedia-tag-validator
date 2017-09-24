@@ -1023,6 +1023,10 @@ def skip_property(property_name):
     'P998', 'P948', 'P159', 'P443', 'P3417']
     if property_name in known:
         return True
+    types = get_all_types_describing_wikidata_object(property_name)
+    if "Q18608871" in types:
+        # Wikidata property for items about people
+        return True
     return False
 
 def print_popular_properties():
