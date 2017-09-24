@@ -111,6 +111,7 @@ def make_edit(affected_objects, comment, automatic_status, discussion_url, type,
         api = get_api(manual_username())
     elif automatic_status == fully_automated_description():
         api = get_api(bot_username())
+        assert(discussion_url != None)
     else:
         assert(False)
 
