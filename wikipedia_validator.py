@@ -434,11 +434,11 @@ def should_use_subject_message(type, special_prefix):
     if special_prefix != None:
         special_prefix_text = "or " + special_prefix + "wikipedia"
     message = "article linked in wikipedia tag is about """ + type + \
-    ", so it is very unlikely to be correct \
-    (subject:wikipedia=* " + special_prefix_text + " tag would be probably better \
-    (see https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links ) - \
-    in case of change remember to remove wikidata tag if it is present) \
-    (object categorised by Wikidata - wrong classification may be caused by wrong data on Wikidata"
+    ", so it is very unlikely to be correct \n\
+    subject:wikipedia=* " + special_prefix_text + " tag would be probably better \
+    (see https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links ) \n\
+    in case of change remember to remove wikidata tag if it is present \n\
+    object categorised by Wikidata - wrong classification may be caused by wrong data on Wikidata"
     return message
 
 def get_should_use_subject_error(type, special_prefix, wikidata_id):
