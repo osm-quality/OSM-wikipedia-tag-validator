@@ -205,7 +205,7 @@ def change_to_local_language(e):
     source = "wikidata, OSM"
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
 
-def add_wikipedia_tag_based_wikidata(e):
+def add_wikipedia_tag_from_wikidata_tag(e):
     if e['error_id'] != 'wikipedia from wikidata tag':
         return
     #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
@@ -216,7 +216,7 @@ def add_wikipedia_tag_based_wikidata(e):
     if data == None:
         return None
     new = e['desired_wikipedia_target']
-    reason = ", as wikipedia page in the local language should be preferred"
+    reason = ", as wikipedia tag may be added based on wikidata"
     comment = fit_wikipedia_edit_description_within_character_limit_new(new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = None
@@ -255,8 +255,8 @@ def main():
     reported_errors = load_errors()
     for e in reported_errors:
         #handle_follow_redirect(e)
-        change_to_local_language(e)
-        #add_wikipedia_tag_based_wikidata(e)
+        #change_to_local_language(e)
+        add_wikipedia_tag_from_wikidata_tag(e)
         #add_wikipedia_links_basing_on_old_style_wikipedia_tags()
 
 if __name__ == '__main__':
