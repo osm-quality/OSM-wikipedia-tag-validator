@@ -1072,3 +1072,8 @@ args = parsed_args()
 
 if __name__ == "__main__":
     main()
+
+# TODO
+# 21k entries for import
+# http://88.99.164.208/wikidata/#SELECT %3Fitem %3Fteryt %3FitemLabel WHERE {%0A %3Fitem wdt%3AP31%2Fwdt%3AP279* wd%3AQ486972 .%0A %3Fitem wdt%3AP4046 %3Fteryt .%0A FILTER NOT EXISTS { %3Fosm1 osmt%3Awikidata %3Fitem . }%0A %0A SERVICE wikibase%3Alabel { bd%3AserviceParam wikibase%3Alanguage "[AUTO_LANGUAGE]%2Cen" }%0A}
+# https://wiki.openstreetmap.org/wiki/User_talk:Yurik
