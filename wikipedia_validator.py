@@ -231,6 +231,8 @@ def add_data_from_wikidata(element):
     #P2043 length
     #P36 capital of something
     #P140 religion
+    #P150 - list of subareas
+    #P2046 - area of feature
     return None
 
 def attempt_to_locate_wikipedia_tag(element, forced_refresh):
@@ -1015,7 +1017,7 @@ def skip_property(property_name):
     'P2053', 'P974', 'P1653', 'P268', 'P201', 'P395', 'P571', 'P84', 'P403',
     'P47', 'P2043', 'P138', 'P36', 'P140', 'P356', 'P1889', 'P1082', 'P190',
     'P998', 'P948', 'P159', 'P443', 'P3417', 'P982', 'P1997', 'P1448', 'P6',
-    'P237', 'P1036', 'P1705']
+    'P237', 'P1036', 'P1705', 'P281', 'P150', 'P2046']
     if property_name in known:
         return True
     types = get_all_types_describing_wikidata_object(property_name)
