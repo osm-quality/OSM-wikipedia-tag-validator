@@ -97,6 +97,14 @@ def generate_html_file(args, name_suffix, types):
         file.write("</body>")
         file.write("</html>")
 
+def note_unused_errors(args):
+    reported_errors = get_errors(args)
+    for e in reported_errors:
+        if e['error_id'] not in for_public_use():
+            if e['error_id'] not in for_private_use():
+                if e['error_id'] not in for_tests():
+                    print(e['error_id'] + " is not appearing in webpage")
+
 def for_public_use():
     return [
         'wikipedia tag in outdated form and wikidata - mismatch',
@@ -107,7 +115,6 @@ def for_public_use():
         'wikipedia from wikipedia tag in outdated form - mismatch',
         'tag may be added based on wikidata',
         'duplicated link',
-        'tag may be added based on wikidata - testing',
         'tag may be added based on wikidata - boring',
     ]
 
@@ -118,12 +125,23 @@ def for_private_use():
         'wikipedia tag from wikipedia tag in an outdated form',
         'wikipedia from wikidata tag',
         'wikipedia wikidata mismatch - follow redirect',
+        'wikidata tag may be added',
+    ]
+
+def for_tests():
+    return [
+        'no longer existing object',
+        'tag conflict with wikidata value',
+        'tag may be added based on wikidata - testing',
+        'tag conflict with wikidata value - testing',
     ]
 
 def main():
     args = parsed_args()
     generate_html_file(args, "", for_public_use())
     generate_html_file(args, " - private", for_private_use())
+    generate_html_file(args, " - test", for_tests())
+    note_unused_errors(args)
 
 if __name__ == "__main__":
     main()
