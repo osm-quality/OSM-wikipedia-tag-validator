@@ -164,7 +164,7 @@ def tag_from_wikidata(present_wikidata_id, osm_key, wikidata_property, element, 
     elif element.get_tag_value(osm_key) != from_wikidata:
             return ErrorReport(
                         error_id = "tag conflict with wikidata value" + id_suffix,
-                        error_message = str(from_wikidata) + " conflicts with " + element.get_tag_value(osm_key) + " for " + osm_key + " tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
+                        error_message = str(from_wikidata) + " conflicts with " + element.get_tag_value(osm_key) + " for " + osm_key + " tag based on wikidata entry" + message_suffix + " " + wikidata_data_quality_warning(),
                         prerequisite = {'wikidata': present_wikidata_id, osm_key: element.get_tag_value(osm_key)}
                         )
 
