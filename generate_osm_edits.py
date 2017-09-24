@@ -179,7 +179,7 @@ def handle_follow_redirect(e):
     comment = fit_wikipedia_edit_description_within_character_limit_changed(now, new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
-    automatic_status = "yes"
+    automatic_status = fully_automated_description()
     type = e['osm_object_url'].split("/")[3]
     source = "wikipedia"
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
@@ -219,7 +219,7 @@ def add_wikipedia_tag_based_wikidata(e):
     comment = fit_wikipedia_edit_description_within_character_limit_new(new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = None
-    automatic_status = "no, it is a manually reviewed edit"
+    automatic_status = manually_reviewed_description()
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata"
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
