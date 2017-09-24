@@ -70,14 +70,14 @@ def note_or_fixme_review_request_indication(data):
 def prerequisite_failure_reason(e, data):
     advice = note_or_fixme_review_request_indication(data)
     if advice != None:
-        return advice
+        return advice + " was present for " + e['osm_object_url']
 
     for key in e['prerequisite'].keys():
         if e['prerequisite'][key] == None:
             if key in data['tag']:
-                return("failed " + key + " prerequisite, as key was present for " + e['osm_object_url'])
+                return("failed " + key + " prerequisite, as key " + key + " was present for " + e['osm_object_url'])
         elif key not in data['tag']:
-            return("failed " + key + " prerequisite, as key was missing for " + e['osm_object_url'])
+            return("failed " + key + " prerequisite, as key " + key + " was missing for " + e['osm_object_url'])
         elif e['prerequisite'][key] != data['tag'][key]:
             return("failed " + key + " prerequisite for " + e['osm_object_url'])
     return None
