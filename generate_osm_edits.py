@@ -132,19 +132,27 @@ def fit_wikipedia_edit_description_within_character_limit(now, new, reason):
         raise("comment too long")
     return comment
 
-def handle_follow_redirect(e, id, type, api):
+def get_and_verify_data(e, api):
+    type = e['osm_object_url'].split("/")[3]
+    id = e['osm_object_url'].split("/")[4]
+    data = get_data(api, id, type)
+    if data == None:
+        return None
+    failure = prerequisite_failure_reason(e, data)
+    if failure != None:
+        print(failure)
+        return None
+    return data
+
+def handle_follow_redirect(e, api):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow redirect':
         return
     language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
     if language_code != "pl":
         return
-    data = get_data(api, id, type)
+    data = get_and_verify_data(e, api)
     if data == None:
-        return
-    failure = prerequisite_failure_reason(e, data)
-    if failure != None:
-        print(failure)
-        return
+        return None
     now = data['tag']['wikipedia']
     new = e['desired_wikipedia_target']
     reason = ", as current tag is a redirect and the new page matches present wikidata"
@@ -152,43 +160,37 @@ def handle_follow_redirect(e, id, type, api):
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
     automatic_status = "yes"
+    type = e['osm_object_url'].split("/")[3]
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, api, type, data)
 
-def change_to_local_language(e, id, type, api):
+def change_to_local_language(e, api):
     if e['error_id'] != 'wikipedia tag unexpected language':
         return
     #language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
     #if language_code != "pl":
     #    return
-    data = get_data(api, id, type)
+    data = get_and_verify_data(e, api)
     if data == None:
-        return
-    failure = prerequisite_failure_reason(e, data)
-    if failure != None:
-        print(failure)
-        return
+        return None
     new = e['desired_wikipedia_target']
     reason = ", as wikipedia page in the local language should be preferred"
     comment = fit_wikipedia_edit_description_within_character_limit(new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = None
     automatic_status = "no, it is a manually reviewed edit"
+    type = e['osm_object_url'].split("/")[3]
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, api, type, data)
 
-def add_wikipedia_tag_based_wikidata(e, id, type, api):
+def add_wikipedia_tag_based_wikidata(e, api):
     if e['error_id'] != 'wikipedia from wikidata tag':
         return
-    #TODO - tylko w Polsce
-    #language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
+    #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
+    #language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
     #if language_code != "pl":
     #    return
-    data = get_data(api, id, type)
+    data = get_and_verify_data(e, api)
     if data == None:
-        return
-    failure = prerequisite_failure_reason(e, data)
-    if failure != None:
-        print(failure)
-        return
+        return None
     now = None
     new = e['desired_wikipedia_target']
     reason = ", as wikipedia page in the local language should be preferred"
@@ -196,6 +198,7 @@ def add_wikipedia_tag_based_wikidata(e, id, type, api):
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = None
     automatic_status = "no, it is a manually reviewed edit"
+    type = e['osm_object_url'].split("/")[3]
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, api, type, data)
 
 def main():
@@ -205,11 +208,9 @@ def main():
     # website at https://master.apis.dev.openstreetmap.org/
     reported_errors = load_errors()
     for e in reported_errors:
-        type = e['osm_object_url'].split("/")[3]
-        id = e['osm_object_url'].split("/")[4]
-        #handle_follow_redirect(e, id, type, bot_api)
-        #change_to_local_language(e, id, type, user_api)
-        add_wikipedia_tag_based_wikidata(e, id, type, user_api)
+        handle_follow_redirect(e, bot_api)
+        change_to_local_language(e, user_api)
+        #add_wikipedia_tag_based_wikidata(e, id, type, user_api)
 
 if __name__ == '__main__':
     main()
