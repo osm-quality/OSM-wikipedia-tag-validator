@@ -1014,7 +1014,8 @@ def skip_property(property_name):
     'P1343', 'P706', 'P949', 'P242', 'P14', 'P214', 'P197', 'P126', 'P708',
     'P2053', 'P974', 'P1653', 'P268', 'P201', 'P395', 'P571', 'P84', 'P403',
     'P47', 'P2043', 'P138', 'P36', 'P140', 'P356', 'P1889', 'P1082', 'P190',
-    'P998', 'P948', 'P159', 'P443', 'P3417']
+    'P998', 'P948', 'P159', 'P443', 'P3417', 'P982', 'P1997', 'P1448', 'P6',
+    'P237', 'P1036', 'P1705']
     if property_name in known:
         return True
     types = get_all_types_describing_wikidata_object(property_name)
