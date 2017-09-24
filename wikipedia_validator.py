@@ -72,7 +72,7 @@ def get_problem_for_given_element(element, forced_refresh):
 
     #do not pass language_code, article_name
     #acquire from wikidata within function if truly necessary
-    wikipedia_link_issues = get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id, forced_refresh)
+    wikipedia_link_issues = get_problem_based_on_wikidata_and_osm_element(element, wikidata_id, forced_refresh)
     if wikipedia_link_issues != None:
         return wikipedia_link_issues
 
@@ -279,7 +279,7 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(
         language_code = args.expected_language_code
         article_name = get_interwiki_article_name_by_id(wikidata_id, language_code, forced_refresh)
         return ErrorReport(
-            error_id = "wikipedia tag from wikipedia tag in outdated form and wikidata",
+            error_id = "wikipedia tag from wikipedia tag in an outdated form and wikidata",
             error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present",
             prerequisite = prerequisite,
             desired_wikipedia_target = language_code + ":" + article_name,
@@ -290,33 +290,50 @@ def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, force
     article = get_interwiki_article_name_by_id(present_wikidata_id, args.expected_language_code, forced_refresh)
     if article == None:
         return None
-    language_code = args.expected_language_code
     # TODO - if not available allow English or other languages
-    return ErrorReport(
-        error_id = "wikipedia from wikidata tag",
-        error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article [target was not checked for disambigs etc - TODO, fix that]",
-        desired_wikipedia_target = language_code + ":" + article,
-        prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
-        )
+    language_code = args.expected_language_code
+    description = "object with wikidata=" + present_wikidata_id
+    location = (None, None)
+    problem_indicated_by_wikidata = get_problem_based_on_wikidata(present_wikidata_id, description, location, forced_refresh)
+    if problem_indicated_by_wikidata:
+        return problem_indicated_by_wikidata
+    else:
+        return ErrorReport(
+            error_id = "wikipedia from wikidata tag",
+            error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article",
+            desired_wikipedia_target = language_code + ":" + article,
+            prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
+            )
 
 def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh):
     prerequisite = {'wikipedia': None, 'wikidata': None}
     links = wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh)
     for key in wikipedia_type_keys:
         prerequisite[key] = element.get_tag_value(key)
-    if len(links) == 1 and None not in links:
-        return ErrorReport(
-            error_id = "wikipedia from wikipedia tag in outdated form",
-            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag [target was not checked for disambigs etc - TODO, fix that]",
-            desired_wikipedia_target = links[0],
-            prerequisite = prerequisite,
-            )
-    else:
+    if len(links) != 1 or None in links:
         return ErrorReport(
             error_id = "wikipedia from wikipedia tag in outdated form - mismatch",
-            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag, human judgement required [target was not checked for disambigs etc - TODO, fix that]",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag, human judgement required due to mismatch between old style wikipedia tags",
             prerequisite = prerequisite,
             )
+    wikipedia_link = links[0]
+    lang = wikipedia_connection.get_language_code_from_link(wikipedia_link)
+    article = wikipedia_connection.get_article_name_from_link(wikipedia_link)
+    wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(lang, article)
+    # if wikidata_id is None - some checks will not be done
+    # it is considered acceptable as it will not introduce new error in OSM
+    # though it skips situation where human maybe would notice it
+    description = "object with " + str(wikipedia_type_keys)
+    location = (None, None)
+    problem_indicated_by_wikidata = get_problem_based_on_wikidata(wikidata_id, description, location, forced_refresh)
+    if problem_indicated_by_wikidata:
+        return problem_indicated_by_wikidata
+    return ErrorReport(
+        error_id = "wikipedia tag from wikipedia tag in an outdated form",
+        error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag",
+        desired_wikipedia_target = wikipedia_link,
+        prerequisite = prerequisite,
+        )
 
 def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh):
     links = []
@@ -573,24 +590,33 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_
                 prerequisite = {'wikidata': wikidata_id},
                 )
 
-def get_problem_based_on_wikidata(element, language_code, article_name, wikidata_id, forced_refresh):
+def get_problem_based_on_wikidata_and_osm_element(element, wikidata_id, forced_refresh):
     if wikidata_id == None:
-        return None
-
-    base_type_ids = get_wikidata_type_ids_of_entry(wikidata_id)
-    if base_type_ids == None:
         # instance data not present in wikidata
         # not fixable easily as imports from OSM to Wikidata are against rules
         # as OSM data is protected by ODBL, and Wikidata is on CC0 license
         # also, this problem is easy to find on Wikidata itself so it is not useful to report it
         return None
+
+    description = describe_osm_object(element)
     location = get_location_of_element(element)
+    return get_problem_based_on_wikidata(wikidata_id, description, location, forced_refresh)
+
+def get_problem_based_on_wikidata(wikidata_id, description, location, forced_refresh):
+    return get_problem_based_on_base_types(wikidata_id, description, location, forced_refresh)
+
+def get_problem_based_on_base_types(wikidata_id, description, location, forced_refresh):
+    base_type_ids = get_wikidata_type_ids_of_entry(wikidata_id)
+    if base_type_ids == None:
+        return None
+
     base_type_problem = get_problem_based_on_wikidata_base_types(location, wikidata_id, forced_refresh)
     if base_type_problem != None:
         return base_type_problem
 
     if args.additional_debug:
-        complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, describe_osm_object(element))
+        complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, description)
+
 
 def get_problem_based_on_wikidata_base_types(location, wikidata_id, forced_refresh):
     unusable_wikipedia_article = get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_id, forced_refresh)

@@ -114,7 +114,8 @@ def for_public_use():
 def for_private_use():
     return [
         'wikipedia tag unexpected language',
-        'wikipedia from wikipedia tag in outdated form',
+        'wikipedia tag from wikipedia tag in an outdated form and wikidata',
+        'wikipedia tag from wikipedia tag in an outdated form',
         'wikipedia from wikidata tag',
         'wikipedia wikidata mismatch - follow redirect',
     ]
