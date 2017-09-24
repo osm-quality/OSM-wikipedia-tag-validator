@@ -180,9 +180,7 @@ def add_data_from_wikidata(element):
     simc = tag_from_wikidata(present_wikidata_id, 'teryt:simc', 'P4046', element, '', ' do weryfikacji przydaje się http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/wyszukiwanie/wyszukiwanie.aspx?contrast=default ')
     if simc != None:
         return simc
-    etymology = tag_from_wikidata(present_wikidata_id, 'name:wikidata', 'P138', element, " - testing")
-    if etymology != None:
-        return etymology
+    #moving P138 to name:wikidata tag makes no sense, just use wikidata instead
     website = tag_from_wikidata(present_wikidata_id, 'website', 'P856', element, " - boring")
     if website != None and website.error_message.find('web.archive.org') != -1:
         return website
