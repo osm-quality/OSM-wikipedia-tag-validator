@@ -220,10 +220,7 @@ def add_data_from_wikidata(element):
                         error_message = str(from_wikidata) + " may be added as ele tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
                         prerequisite = {'wikidata': present_wikidata_id, 'ele': None}
                         )
-    #TODO - match wikidata by teryt:simc (P4046)
-    #2 minutes wasted on matching https://www.openstreetmap.org/node/3009664303
-
-    #TODO  P1653 is also teryt property
+    #IDEA  P1653 is also teryt property
     #P395 license plate code
     #geometry - waterway structure graph (inflow [P974], outflow [P403], tributary [P974]) - see http://tinyurl.com/y9h7ym7g
     #P571 - should be easy to process - lakes on river
@@ -1079,8 +1076,6 @@ def main():
 
     process_repeated_appearances()
 
-    #TODO detect wikidata tag matching subject:wikipedia or operator:wikipedia
-
     print("https://osm.wikidata.link/candidates/relation/2768922 (Kraków)")
     print("https://osm.wikidata.link/candidates/relation/2654452 (powiat krakowski)")
     print("https://osm.wikidata.link/candidates/relation/2907540 (Warszawa)")
@@ -1101,7 +1096,11 @@ args = parsed_args()
 if __name__ == "__main__":
     main()
 
-# TODO
+# IDEA
 # 21k entries for import
 # http://88.99.164.208/wikidata/#SELECT%20%3Fitem%20%3Fteryt%20%3FitemLabel%20WHERE%20{%0A%20%3Fitem%20wdt%3AP31%2Fwdt%3AP279*%20wd%3AQ486972%20.%0A%20%3Fitem%20wdt%3AP4046%20%3Fteryt%20.%0A%20FILTER%20NOT%20EXISTS%20{%20%3Fosm1%20osmt%3Awikidata%20%3Fitem%20.%20}%0A%20%0A%20SERVICE%20wikibase%3Alabel%20{%20bd%3AserviceParam%20wikibase%3Alanguage%20"[AUTO_LANGUAGE]%2Cen"%20}%0A}
 # https://wiki.openstreetmap.org/wiki/User_talk:Yurik
+# 2 minutes wasted on matching https://www.openstreetmap.org/node/3009664303
+
+# TODO - search for IDEA note
+# IDEA detect wikidata tag matching subject:wikipedia or operator:wikipedia
