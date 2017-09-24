@@ -47,6 +47,22 @@ class Tests(unittest.TestCase):
         example_artist_id = 'Q561127'
         self.assertEqual(type(""), type(wikipedia_validator.get_distance_description_between_location_and_wikidata_id((50, 20), example_artist_id)))
 
+    def test_detecting_makro_as_invalid_prinary_link(self):
+        wikidata_id = 'Q704606'
+        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
+
+    def test_detecting_tesco_as_invalid_prinary_link(self):
+        wikidata_id = 'Q487494'
+        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
+
+    def test_detecting_carrefour_as_invalid_prinary_link(self):
+        wikidata_id = 'Q217599'
+        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
+
+    def test_detecting_cropp_as_invalid_prinary_link(self):
+        wikidata_id = 'Q9196793'
+        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
+
     def test_osm_iterator(self):
         from io import BytesIO
         some_file_or_file_like_object = BytesIO(b'<?xml version="1.0" encoding="UTF-8"?><osm><node id="17658600" lat="49.8698080" lon="8.6300980"></node></osm>')

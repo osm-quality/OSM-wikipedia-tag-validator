@@ -531,12 +531,6 @@ def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
         if type_id == 'Q22687':
             return get_should_use_subject_error('a bank', 'brand:', wikidata_id)
         if type_id == 'Q507619':
-            # TODO add test
-            # Q487494 tesco gets caught here
-            # also
-            # Q704606 makro
-            # Q217599 carefour
-            # Q9196793 cropp
             return get_should_use_subject_error('a chain store', 'brand:', wikidata_id)
         # appears in constraints of coordinate property in Wikidata but not applicable to OSM
         # pl:ArcelorMittal Poland Oddział w Krakowie may be linked
