@@ -70,5 +70,13 @@ class Tests(unittest.TestCase):
         for element in osm_iterator.Data(some_file_or_file_like_object).data.getiterator():
             print("XXYXYXYXY" + " " + str(element.tag))
 
+    def test_overpass_escaping(self):
+        before = {'wikipedia:de': "Zapiekle, Pickel's Vorwerk"}
+        after = "['wikipedia:de'='Zapiekle, Pickel\\'s Vorwerk']"
+        print(before)
+        print(common.tag_dict_to_overpass_query_format(before))
+        print(before)
+        self.assertEqual(after, common.tag_dict_to_overpass_query_format(before))
+
 if __name__ == '__main__':
     unittest.main()

@@ -47,21 +47,23 @@ def get_query_footer(format):
         assert(False)
 
 def escape_for_overpass(text):
-    return text.replace("\\", "\\\\")
+    text = text.replace("\\", "\\\\")
     return text.replace("'", "\\'")
 
 def get_prerequisite_in_overpass_query_format(error):
     try:
-        prerequisite = error['prerequisite']
+        return tag_dict_to_overpass_query_format(error['prerequisite'])
     except KeyError:
         return ""
+
+def tag_dict_to_overpass_query_format(tags):
     returned = ""
-    for key in prerequisite.keys():
+    for key in tags.keys():
         escaped_key = escape_for_overpass(key)
-        if prerequisite[key] == None:
+        if tags[key] == None:
             returned += "['" + escaped_key + "'!~'.*']"
         else:
-            escaped_value = escape_for_overpass(prerequisite[key])
+            escaped_value = escape_for_overpass(tags[key])
             returned += "['" + escaped_key + "'='" + escaped_value + "']"
     return returned
 
