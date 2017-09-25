@@ -1108,3 +1108,5 @@ if __name__ == "__main__":
 
 # TODO - search for IDEA note
 # IDEA detect wikidata tag matching subject:wikipedia or operator:wikipedia
+
+# IDEA import name:pl - for example for https://www.wikidata.org/wiki/Q1952
