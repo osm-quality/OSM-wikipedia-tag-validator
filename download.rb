@@ -92,10 +92,15 @@ end
 def download(query, filename)
   puts query
   puts "downloading: start"
-  url = "http://overpass-api.de/api/interpreter?data=#{query.gsub("\n", "")}"
+  url = "http://overpass-api.de/api/interpreter"
   start = Time.now.to_i
   begin
-    text = RestClient::Request.execute(method: :get, url: URI.escape(url), timeout: timeout, user_agent: user_agent).to_str
+     text = RestClient::Request.execute(
+              :method => :post,
+              :url => URI.escape(url),
+              :timeout => timeout,
+              :payload => {'data': query},
+              )
   rescue RestClient::BadRequest => e
     puts url
     puts e
