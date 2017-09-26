@@ -44,7 +44,7 @@ def make_website(filename_with_report, output_filename_base):
     system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '"')
 
 
-def pipeline(osm_filename, output_filename_website, merged_output_file):
+def pipeline(osm_filename, website_main_title_part, merged_output_file):
         output_filename_errors = osm_filename + '.yaml'
         if not os.path.isfile(root() + osm_filename):
             print(osm_filename + ' is not present')
@@ -55,7 +55,8 @@ def pipeline(osm_filename, output_filename_website, merged_output_file):
             raise 'Unexpected failure'
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
-        make_website(output_filename_errors, output_filename_website)
+        make_website(output_filename_errors, website_main_title_part)
+        make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + ' new iteration.query')
 
 def germany():
     input_filenames = [
@@ -96,7 +97,7 @@ def main():
     for name in voivoddeships_of_poland():
         pipeline(
                 osm_filename = name + '_all.osm',
-                output_filename_website = name,
+                website_main_title_part = name,
                 merged_output_file = 'Polska.yaml'
                 )
 
