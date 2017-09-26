@@ -1234,3 +1234,4 @@ if __name__ == "__main__":
 # IDEA detect wikidata tag matching subject:wikipedia or operator:wikipedia
 
 # IDEA import name:pl - for example for https://www.wikidata.org/wiki/Q1952
+# IDEA make maproulette and post on https://forum.openstreetmap.org/viewtopic.php?id=59430
