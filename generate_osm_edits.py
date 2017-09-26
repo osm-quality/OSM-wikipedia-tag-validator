@@ -231,29 +231,49 @@ def add_wikipedia_tag_from_wikidata_tag(e):
     source = "wikidata, OSM"
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
 
-def add_wikipedia_links_basing_on_old_style_wikipedia_tags(e):
-    if e['error_id'] != 'wikipedia tag from wikipedia tag in an outdated form and wikidata':
-        if e['error_id'] != 'wikipedia tag from wikipedia tag in an outdated form':
-            return
+def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
+    matching = [
+                'wikipedia tag from wikipedia tag in an outdated form and wikidata',
+                'wikipedia tag from wikipedia tag in an outdated form',
+                ]
+    errors_for_removal = []
+    for e in reported_errors:
+        if e['error_id'] in matching:
+            errors_for_removal.append(e)
+    if errors_for_removal == []:
+        return
+    #errors_for_removal = errors_for_removal[:1]
+    print(errors_for_removal)
     #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
     #language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
     #if language_code != "pl":
     #    return
-    data = get_and_verify_data(e)
-    if data == None:
-        return None
-    new = e['desired_wikipedia_target']
-    language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
-    article_name = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
-    wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-    reason = ", as standard wikipedia tag is better than old style wikipedia tags [+adding matching wikidata=" + wikidata_id + "]"
-    comment = fit_wikipedia_edit_description_within_character_limit_new(new, reason)
-    data['tag']['wikidata'] = wikidata_id
-    discussion_url = None
+
     automatic_status = manually_reviewed_description()
-    type = e['osm_object_url'].split("/")[3]
+    affected_objects_description = ""
+    comment = "adding wikipedia and wikidata tags based on old style wikipedia tags"
+    discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59665'
+    api = get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
-    make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
+    create_changeset(api, affected_objects_description, comment, automatic_status, discussion_url, source)
+
+    for e in errors_for_removal:
+        data = get_and_verify_data(e)
+        if data == None:
+            continue
+        data['tag']['wikipedia'] = e['desired_wikipedia_target']
+        reason = ", as standard wikipedia tag is better than old style wikipedia tags"
+        if e['error_id'] == 'wikipedia tag from wikipedia tag in an outdated form':
+            language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
+            article_name = wikipedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
+            wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+            assert(wikidata_id != None)
+            data['tag']['wikidata'] = wikidata_id
+        type = e['osm_object_url'].split("/")[3]
+        update_element(api, type, data)
+
+    api.ChangesetClose()
+    sleep(60)
 
 def main():
     wikipedia_connection.set_cache_location(common.get_file_storage_location())
