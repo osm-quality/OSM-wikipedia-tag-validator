@@ -77,9 +77,12 @@ def describe_proposed_relinking(e):
         returned += table_row( common.escape_from_internal_python_string_to_html_ascii(article_name))
     return returned
 
-def generate_html_file(args, name_suffix, types):
+def generate_html_file(args, name_suffix, types, information_header):
     with open(args.out + name_suffix + '.html', 'w') as file:
         file.write(html_header())
+        file.write(table_row( '==========' ))
+        file.write(table_row( information_header ))
+        file.write(table_row( '==========' ))
         reported_errors = get_errors(args)
         for error_type_id in types:
             error_count = 0
@@ -139,9 +142,9 @@ def for_tests():
 
 def main():
     args = parsed_args()
-    generate_html_file(args, "", for_public_use())
-    generate_html_file(args, " - private", for_private_use())
-    generate_html_file(args, " - test", for_tests())
+    generate_html_file(args, "", for_public_use(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
+    generate_html_file(args, " - private", for_private_use(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
+    generate_html_file(args, " - test", for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
     note_unused_errors(args)
 
 if __name__ == "__main__":
