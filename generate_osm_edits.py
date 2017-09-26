@@ -261,14 +261,17 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
         data = get_and_verify_data(e)
         if data == None:
             continue
-        data['tag']['wikipedia'] = e['desired_wikipedia_target']
-        reason = ", as standard wikipedia tag is better than old style wikipedia tags"
+        new = e['desired_wikipedia_target']
+        data['tag']['wikipedia'] = new
+        change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + "to " + new +", as standard wikipedia tag is better than old style wikipedia tags"
         if e['error_id'] == 'wikipedia tag from wikipedia tag in an outdated form':
             language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
             article_name = wikipedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
             wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
             assert(wikidata_id != None)
             data['tag']['wikidata'] = wikidata_id
+            change_description += " +adding wikidata=" + wikidata_id
+        print(change_description)
         type = e['osm_object_url'].split("/")[3]
         update_element(api, type, data)
 
