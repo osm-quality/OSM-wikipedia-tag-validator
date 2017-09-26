@@ -343,8 +343,7 @@ def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_ty
         article_name = element.get_tag_value(key)
         article = get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
         if article == None:
-            if key not in links:
-                links.append(key)
+            links.append(None)
         elif article not in links:
             links.append(args.expected_language_code + ":" + article)
     return links
