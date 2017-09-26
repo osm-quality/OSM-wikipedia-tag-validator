@@ -356,6 +356,9 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(
 
     conflict = False
     for link in links:
+        if link == None:
+            conflict = True
+            continue
         language_code = wikipedia_connection.get_language_code_from_link(link)
         article_name = wikipedia_connection.get_article_name_from_link(link)
         id_from_link = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
