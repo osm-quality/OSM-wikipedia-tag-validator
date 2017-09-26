@@ -154,11 +154,16 @@ def decapsulate_wikidata_value(from_wikidata):
         pass
     return from_wikidata
 
-def tag_from_wikidata(present_wikidata_id, osm_key, wikidata_property, element, id_suffix="", message_suffix = ""):
+def tag_from_wikidata(present_wikidata_id, wikidata_property):
     from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, wikidata_property)
     if from_wikidata == None:
         return None
-    from_wikidata = decapsulate_wikidata_value(from_wikidata)
+    return decapsulate_wikidata_value(from_wikidata)
+
+def tag_from_wikidata_error_report(present_wikidata_id, osm_key, wikidata_property, element, id_suffix="", message_suffix = ""):
+    from_wikidata = tag_from_wikidata(present_wikidata_id, wikidata_property)
+    if from_wikidata == None:
+        return None
     if element.get_tag_value(osm_key) == None:
             return ErrorReport(
                         error_id = "tag may be added based on wikidata" + id_suffix,
