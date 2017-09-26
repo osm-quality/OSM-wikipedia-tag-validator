@@ -11,7 +11,11 @@ from osm_iterator import Data
 import geopy.distance
 
 present_wikipedia_links = {}
+# dictionary contains entries indexed by wikidata_id
+# each entry is dictionary with entries where key is url to OSM object and value is element
 present_wikidata_links = {}
+# dictionary contains entries indexed by wikidata_id
+# each entry is dictionary with entries where key is url to OSM object and value is element
 def record_presence(element):
     wikipedia_tag = element.get_tag_value("wikipedia")
     wikidata_tag = element.get_tag_value("wikidata")
