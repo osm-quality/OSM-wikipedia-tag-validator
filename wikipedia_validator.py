@@ -541,7 +541,7 @@ def should_use_subject_message(type, special_prefix):
 
 def get_should_use_subject_error(type, special_prefix, wikidata_id):
     return ErrorReport(
-        error_id = "should use wikipedia:subject",
+        error_id = "should use secondary wikipedia tag",
         error_message = should_use_subject_message(type, special_prefix),
         prerequisite = {'wikidata': wikidata_id},
         )

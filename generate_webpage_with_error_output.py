@@ -114,10 +114,12 @@ def for_public_use():
         'wikipedia tag links to 404',
         'link to unlinkable article',
         'wikipedia wikidata mismatch',
-        'should use wikipedia:subject',
+        'should use secondary wikipedia tag',
         'wikipedia from wikipedia tag in outdated form - mismatch',
         'tag may be added based on wikidata',
         'duplicated link - waterway',
+        'tag may be added based on wikidata - teryt',
+        'tag may be added based on wikidata - heritage=church',
         'tag may be added based on wikidata - boring',
     ]
 
@@ -133,11 +135,14 @@ def for_private_use():
 
 def for_tests():
     return [
+        'tag may be added based on wikidata - heritage',
         'no longer existing object',
         'tag conflict with wikidata value',
         'tag may be added based on wikidata - testing',
         'tag conflict with wikidata value - testing',
-        'duplicated link - testing'
+        'duplicated link - testing',
+        'wikipedia tag unexpected language, article missing',
+        'tag conflict with wikidata value - boring',
     ]
 
 def main():
