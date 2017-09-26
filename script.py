@@ -79,13 +79,17 @@ def krakow():
     make_website('Kraków_all.osm.yaml', 'Kraków')
 
 def make_query_to_reload_only_affected_objects(input_filename_with_reports, output_query_filename):
+    filepath = common.get_file_storage_location() + "/" + input_filename_with_reports
+    if not os.path.isfile(filepath):
+        print("file not found")
+        return
     with open(output_query_filename, 'w') as query_file:
-        filepath = common.get_file_storage_location() + "/" + input_filename_with_reports
         all_errors = []
         for e in common.load_data(filepath):
             if e['error_id'] not in all_errors:
                 all_errors.append(e['error_id'])
-        query_file.write(common.get_query_for_loading_errors_by_category(filename = input_filename_with_reports, printed_error_ids = all_errors, format = "josm"))
+        query = common.get_query_for_loading_errors_by_category(filename = input_filename_with_reports, printed_error_ids = all_errors, format = "josm")
+        query_file.write(query)
 
 def main():
     delete_output_files()
