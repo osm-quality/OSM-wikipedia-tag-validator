@@ -119,7 +119,7 @@ def for_public_use():
         'tag may be added based on wikidata',
         'duplicated link - waterway',
         'tag may be added based on wikidata - teryt',
-        'tag may be added based on wikidata - heritage=church',
+        'tag may be added based on wikidata - historic=church',
         'tag may be added based on wikidata - boring',
     ]
 
@@ -135,7 +135,7 @@ def for_private_use():
 
 def for_tests():
     return [
-        'tag may be added based on wikidata - heritage',
+        'tag may be added based on wikidata - historic',
         'no longer existing object',
         'tag conflict with wikidata value',
         'tag may be added based on wikidata - testing',

@@ -264,12 +264,12 @@ def get_heritage_data_from_wikidata_report(element):
     if element.get_tag_value('historic') == None and element.get_tag_value('heritage') == None:
         specific_tag = guess_value_of_historic_tag_from_element(element)
         if specific_tag != None:
-            specific_tag = "heritage="+specific_tag
+            specific_tag = "historic="+specific_tag
         else:
-            specific_tag = "heritage"
+            specific_tag = "historic"
         return ErrorReport(
             error_id = "tag may be added based on wikidata - " + specific_tag,
-            error_message = "without historic tag, without " + specific_tag + " tag (see http://wiki.openstreetmap.org/wiki/Key:historic ) and has heritage designation according to wikidata " + wikidata_data_quality_warning(),
+            error_message = "without heritage tag, without " + specific_tag + " tag (see http://wiki.openstreetmap.org/wiki/Key:historic ) and has heritage designation according to wikidata " + wikidata_data_quality_warning(),
             prerequisite = {'wikidata': present_wikidata_id, 'historic': None, 'heritage': None}
             )
     return None
