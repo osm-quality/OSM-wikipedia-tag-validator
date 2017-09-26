@@ -225,7 +225,7 @@ def add_wikipedia_tag_from_wikidata_tag(e):
     reason = ", as wikipedia tag may be added based on wikidata"
     comment = fit_wikipedia_edit_description_within_character_limit_new(new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
-    discussion_url = None
+    discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?pid=665412'
     automatic_status = manually_reviewed_description()
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata, OSM"
