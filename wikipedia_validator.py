@@ -168,10 +168,7 @@ def tag_from_wikidata(present_wikidata_id, wikidata_property):
         return None
     return decapsulate_wikidata_value(from_wikidata)
 
-def tag_from_wikidata_error_report(present_wikidata_id, osm_key, wikidata_property, element, id_suffix="", message_suffix = ""):
-    from_wikidata = tag_from_wikidata(present_wikidata_id, wikidata_property)
-    if from_wikidata == None:
-        return None
+def generate_error_report_for_tag_from_wikidata(from_wikidata, present_wikidata_id, osm_key, element, id_suffix="", message_suffix = ""):
     if element.get_tag_value(osm_key) == None:
             return ErrorReport(
                         error_id = "tag may be added based on wikidata" + id_suffix,
@@ -179,11 +176,103 @@ def tag_from_wikidata_error_report(present_wikidata_id, osm_key, wikidata_proper
                         prerequisite = {'wikidata': present_wikidata_id, osm_key: None}
                         )
     elif element.get_tag_value(osm_key) != from_wikidata:
+            if not args.allow_requesting_edits_outside_osm:
+                # typically Wikidata is wrong, not OSM
+                return None
             return ErrorReport(
                         error_id = "tag conflict with wikidata value" + id_suffix,
-                        error_message = str(from_wikidata) + " conflicts with " + element.get_tag_value(osm_key) + " for " + osm_key + " tag based on wikidata entry" + message_suffix + " " + wikidata_data_quality_warning(),
+                        error_message = str(from_wikidata) + " conflicts with " + element.get_tag_value(osm_key) + " for " + osm_key + " tag based on wikidata entry - note that OSM value may be OK and Wikidata entry is wrong, in that case one may either ignore this error or fix Wikidata entry" + message_suffix + " " + wikidata_data_quality_warning(),
                         prerequisite = {'wikidata': present_wikidata_id, osm_key: element.get_tag_value(osm_key)}
                         )
+
+def tag_from_wikidata_error_report(present_wikidata_id, osm_key, wikidata_property, element, id_suffix="", message_suffix = ""):
+    from_wikidata = tag_from_wikidata(present_wikidata_id, wikidata_property)
+    if from_wikidata == None:
+        return None
+    return generate_error_report_for_tag_from_wikidata(from_wikidata, present_wikidata_id, osm_key, element, id_suffix, message_suffix)
+
+def teryt_code_from_wikidata(element):
+    present_wikidata_id = element.get_tag_value("wikidata")
+    from_wikidata = tag_from_wikidata(present_wikidata_id, 'P4046')
+    if from_wikidata == None:
+        return None
+    from_wikidata = from_wikidata.replace("{{r|Dz.U. 29/2013}}", "") # popular Wikidata problem
+    return generate_error_report_for_tag_from_wikidata(from_wikidata, present_wikidata_id, 'teryt:simc', element, ' - teryt', ' do weryfikacji przydaje się \nhttp://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/wyszukiwanie/wyszukiwanie.aspx?contrast=default\n ')
+
+def add_name_from_wikidata(element):
+    present_wikidata_id = element.get_tag_value("wikidata")
+    # IDEA - skip former official names ( https://www.wikidata.org/wiki/Q387396 ), skip official_name equal to name
+
+    official_name_wikidata = tag_from_wikidata(present_wikidata_id, 'P1448')
+    name_wikidata = tag_from_wikidata(present_wikidata_id, 'P1705')
+    keys_with_names_from_OSM = ["name", "official_name", "loc_name"]
+    names_in_wikidata = []
+    if official_name_wikidata != None:
+        names_in_wikidata.append(official_name_wikidata['text'])
+    if name_wikidata != None:
+        names_in_wikidata.append(name_wikidata['text'])
+
+    names_in_OSM = []
+    prerequisite = {'wikidata': present_wikidata_id}
+    for key in keys_with_names_from_OSM:
+        if element.get_tag_value(key) != None:
+            names_in_OSM.append(element.get_tag_value(key))
+            prerequisite[key] = element.get_tag_value(key)
+    for_import = list(set(names_in_wikidata) - set(names_in_OSM))
+    if for_import == []:
+        return None
+    return ErrorReport(
+                error_id = "tag may be added based on wikidata - testing",
+                error_message = str(for_import) + " may be added as names (name, loc_name, offivial_name tags...) based on wikidata entry - note that even slight variations are useful " + wikidata_data_quality_warning(),
+                prerequisite = prerequisite,
+                )
+
+def get_elevation_data_from_wikidata_report(element):
+    present_wikidata_id = element.get_tag_value("wikidata")
+    ele_from_tag = element.get_tag_value('ele')
+    from_wikidata = tag_from_wikidata(present_wikidata_id, 'P2044')
+    if from_wikidata == None:
+        return None
+    if ele_from_tag != None:
+        if from_wikidata != ele_from_tag:
+            return ErrorReport(
+                error_id = "tag conflict with wikidata value - testing",
+                error_message = "elevation in OSM (" + ele_from_tag + ") vs elevation in Wikidata (" + str(from_wikidata) + ")" + " " + wikidata_data_quality_warning(),
+                prerequisite = {'wikidata': present_wikidata_id, 'ele': element.get_tag_value('ele')}
+                )
+
+    if element.get_tag_value('ele') == None:
+        if element.get_tag_value('natural') == 'peak':
+            return ErrorReport(
+                        error_id = "tag may be added based on wikidata - testing",
+                        error_message = str(from_wikidata) + " may be added as ele tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
+                        prerequisite = {'wikidata': present_wikidata_id, 'ele': None}
+                        )
+
+def guess_value_of_historic_tag_from_element(element):
+    if element.get_tag_value('building') == "church":
+        return "church"
+    if element.get_tag_value('amenity') == 'place_of_worship' and element.get_tag_value('religion') == 'christian':
+        return "church"
+    return None
+
+def get_heritage_data_from_wikidata_report(element):
+    present_wikidata_id = element.get_tag_value("wikidata")
+    from_wikidata = tag_from_wikidata(present_wikidata_id, 'P1435')
+    if from_wikidata == None:
+        return None
+    if element.get_tag_value('historic') == None and element.get_tag_value('heritage') == None:
+        specific_tag = guess_value_of_historic_tag_from_element(element)
+        if specific_tag != None:
+            specific_tag = "heritage="+specific_tag
+        else:
+            specific_tag = "heritage"
+        return ErrorReport(
+            error_id = "tag may be added based on wikidata - " + specific_tag,
+            error_message = "without historic tag, without " + specific_tag + " tag (see http://wiki.openstreetmap.org/wiki/Key:historic ) and has heritage designation according to wikidata " + wikidata_data_quality_warning(),
+            prerequisite = {'wikidata': present_wikidata_id, 'historic': None, 'heritage': None}
+            )
+    return None
 
 def add_data_from_wikidata(element):
     present_wikidata_id = element.get_tag_value("wikidata")
@@ -191,52 +280,42 @@ def add_data_from_wikidata(element):
         return None
     if len(present_wikidata_links[present_wikidata_id].keys()) != 1:
         return None
-    iata = tag_from_wikidata(present_wikidata_id, 'iata', 'P238', element)
+    tag = add_name_from_wikidata(element)
+    if tag != None:
+        return None
+    tag = teryt_code_from_wikidata(element)
+    if tag != None:
+        return None
+    iata = tag_from_wikidata_error_report(present_wikidata_id, 'iata', 'P238', element)
     if iata != None:
         return iata
-    simc = tag_from_wikidata(present_wikidata_id, 'teryt:simc', 'P4046', element, '', ' do weryfikacji przydaje się http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/wyszukiwanie/wyszukiwanie.aspx?contrast=default ')
-    if simc != None:
-        return simc
+    # importing directly from GUS is probably a better idea
+    #population = tag_from_wikidata_error_report(present_wikidata_id, 'population', 'P1082', element, " - testing")
+    #if population != None:
+    #    return population
+    tag = tag_from_wikidata_error_report(present_wikidata_id, 'postal_code', 'P281', element, ' - testing')
+    if tag != None:
+        return tag
     #moving P138 to name:wikidata tag makes no sense, just use wikidata instead
-    website = tag_from_wikidata(present_wikidata_id, 'website', 'P856', element, " - boring")
-    if website != None and website.error_message.find('web.archive.org') != -1:
+    website = tag_from_wikidata_error_report(present_wikidata_id, 'website', 'P856', element, " - boring")
+    if website != None and website.error_message.find('web.archive.org') == -1:
         return website
-    operator = tag_from_wikidata(present_wikidata_id, 'operator', 'P126', element, " - testing")
-    if operator != None:
-        return operator
-    if element.get_tag_value('historic') == None:
-        from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P1435')
-        if from_wikidata == None:
-            return None
-        return ErrorReport(
-            error_id = "tag conflict with wikidata value",
-            error_message = "without historic tag and has heritage designation according to wikidata" + wikidata_data_quality_warning(),
-            prerequisite = {'wikidata': present_wikidata_id, 'historic': None}
-            )
+    #IDEA
+    #handle multiple operators - https://www.wikidata.org/wiki/Q429672
+    #handle conversion from wikidata_id to text
+    #operator = tag_from_wikidata_error_report(present_wikidata_id, 'operator', 'P126', element, " - testing")
+    #if operator != None:
+    #    return operator
+    #also, P127 is for owner
 
-    if element.get_tag_value('ele') != None:
-        from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P2044')
-        if from_wikidata == None:
-            return None
-        from_wikidata = decapsulate_wikidata_value(from_wikidata)
-        if from_wikidata != element.get_tag_value('ele'):
-            return ErrorReport(
-                error_id = "tag conflict with wikidata value",
-                error_message = "elevation in OSM vs elevation in Wikidata" + wikidata_data_quality_warning(),
-                prerequisite = {'wikidata': present_wikidata_id, 'ele': element.get_tag_value('ele')}
-                )
+    tag = get_elevation_data_from_wikidata_report(element)
+    if tag != None:
+        return tag
 
-    if element.get_tag_value('ele') == None:
-        if element.get_tag_value('natural') == 'peak':
-            from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P2044')
-            if from_wikidata == None:
-                return None
-            from_wikidata = decapsulate_wikidata_value(from_wikidata)
-            return ErrorReport(
-                        error_id = "tag may be added based on wikidata",
-                        error_message = str(from_wikidata) + " may be added as ele tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
-                        prerequisite = {'wikidata': present_wikidata_id, 'ele': None}
-                        )
+    tag = get_heritage_data_from_wikidata_report(element)
+    if tag != None:
+        return tag
+
     #IDEA  P1653 is also teryt property
     #P395 license plate code
     #geometry - waterway structure graph (inflow [P974], outflow [P403], tributary [P974]) - see http://tinyurl.com/y9h7ym7g
