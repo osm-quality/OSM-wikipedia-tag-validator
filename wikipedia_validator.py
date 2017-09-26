@@ -1115,15 +1115,15 @@ def parsed_args():
     args = parser.parse_args()
     return args
 
-def output_message_about_duplication(complaint, wikidata_id, link, entries, id_suffix=""):
+
+def output_message_about_duplication_of_wikidata_id(example_element, wikidata_id, complaint, osm_links_of_affected, id_suffix=""):
     query = "[out:xml](\n\
             node[wikidata='" + wikidata_id + "];\n\
             way[wikidata=" + wikidata_id + "];\n\
             relation[wikidata=" + wikidata_id + "];\n\
             );\n\
             out meta;>;out meta qt;"
-    message = link + complaint + str(list(entries)) + "\n\n\n" + query
-    example_element = list(present_wikipedia_links[link].values())[0]
+    message = wikidata_id + complaint + str(osm_links_of_affected) + "\n\n\n" + query
     problem = ErrorReport(
                         error_id = "duplicated link" + id_suffix,
                         error_message = message,
@@ -1131,37 +1131,32 @@ def output_message_about_duplication(complaint, wikidata_id, link, entries, id_s
                         )
     output_element(example_element, problem)
 
-def process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries):
-    if 'Q4022' in get_all_types_describing_wikidata_object(wikidata_id):
+def process_repeated_appearances_for_this_wikidata_id(wikidata_id, entries):
+    example_element = list(entries.values())[0]
+    complaint = None
+    category = None
+    if example_element.get_tag_value('waterway') != None:
         complaint = " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation "
-        output_message_about_duplication(complaint, wikidata_id, link, entries, " - waterway")
-    elif len(entries) > 10:
-        complaint = " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation "
-        output_message_about_duplication(complaint, wikidata_id, link, entries, " - testing")
-
+        category = " - waterway"
+    elif example_element.get_tag_value('highway') != None and example_element.get_tag_value('area') == None:
+        return # road may be tagged multiple times and it is OK
+    elif len(entries) > 2:
+        complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated"
+        category = " - testing"
+    else:
+        return
+    output_message_about_duplication_of_wikidata_id(example_element, wikidata_id, complaint, list(entries.keys()), category)
 def process_repeated_appearances():
     # TODO share between runs
-    # TODO warn about all, not just rivers (what about node + relation duplicates?)
     repeated_wikidata_warned_already = []
-    for link in present_wikipedia_links:
-        entries = present_wikipedia_links[link].keys()
-        if len(entries) == 1:
-            continue
-        language_code = wikipedia_connection.get_language_code_from_link(link)
-        article_name = wikipedia_connection.get_article_name_from_link(link)
-        wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-        if wikidata_id == None:
-            continue
-        if wikidata_id not in repeated_wikidata_warned_already:
-            process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries)
-            repeated_wikidata_warned_already.append(wikidata_id)
+    for wikipedia_link in present_wikipedia_links:
+        pass # IDEA - consider complaining
 
-    for link in present_wikidata_links:
-        entries = present_wikidata_links[link].keys()
-        if len(entries) == 1:
+    for wikidata_id in present_wikidata_links:
+        if len(present_wikidata_links[wikidata_id].keys()) == 1:
             continue
         if wikidata_id not in repeated_wikidata_warned_already:
-            process_repeated_appearances_for_this_wikidata_id(wikidata_id, link, entries)
+            process_repeated_appearances_for_this_wikidata_id(wikidata_id, present_wikidata_links[wikidata_id])
             repeated_wikidata_warned_already.append(wikidata_id)
 
 def skip_property(property_name):
