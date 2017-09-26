@@ -626,6 +626,37 @@ def get_problem_based_on_wikidata_base_types(location, wikidata_id, forced_refre
     secondary_tag_error = get_error_report_if_secondary_wikipedia_tag_should_be_used(wikidata_id)
     if secondary_tag_error != None:
         return secondary_tag_error
+
+    secondary_tag_error = headquaters_location_indicate_invalid_connection(location, wikidata_id)
+    if secondary_tag_error != None:
+        return secondary_tag_error
+
+def get_location_of_this_headquaters(headquarters):
+    try:
+        position = headquarters['qualifiers']['P625'][0]['datavalue']['value']
+        position = (position['latitude'], position['longitude'])
+        return position
+    except KeyError:
+        pass
+    try:
+        id_of_location = headquarters['mainsnak']['datavalue']['value']['id']
+        return wikipedia_connection.get_location_from_wikidata(id_of_location)
+    except KeyError:
+        pass
+    return (None, None)
+
+def headquaters_location_indicate_invalid_connection(location, wikidata_id):
+    if location == (None, None):
+        return None
+    headquarters_location_data = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P159')
+    if headquarters_location_data == None:
+        return None
+    for option in headquarters_location_data:
+        location_from_wikidata = get_location_of_this_headquaters(option)
+        if location_from_wikidata != (None, None):
+            if geopy.distance.vincenty(location, location_from_wikidata).km > 20:
+                return get_should_use_subject_error('a company that is not linkable from a single location', 'brand:', wikidata_id)
+
     return None
 
 def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, description_of_source):
