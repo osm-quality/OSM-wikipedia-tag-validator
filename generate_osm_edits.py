@@ -249,7 +249,7 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
     #if language_code != "pl":
     #    return
 
-    automatic_status = manually_reviewed_description()
+    automatic_status = fully_automated_description()
     affected_objects_description = ""
     comment = "adding wikipedia and wikidata tags based on old style wikipedia tags"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59665'
