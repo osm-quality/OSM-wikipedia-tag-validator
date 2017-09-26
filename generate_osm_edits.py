@@ -104,24 +104,26 @@ def sleep(time_in_s):
     print("Sleeping")
     time.sleep(time_in_s)
 
-def make_edit(affected_objects, comment, automatic_status, discussion_url, type, data, source):
-    api = None
-
+def get_correct_api(automatic_status, discussion_url):
     if automatic_status == manually_reviewed_description():
-        api = get_api(manual_username())
+        return get_api(manual_username())
     elif automatic_status == fully_automated_description():
-        api = get_api(bot_username())
         assert(discussion_url != None)
+        return get_api(bot_username())
     else:
         assert(False)
 
+def output_full_comment_get_comment_within_limit(affected_objects_description, comment):
+    full_comment = affected_objects_description + " " + comment
     if(len(comment) > character_limit_of_description()):
         raise "comment too long"
-    if(len(affected_objects + " " + comment) <= character_limit_of_description()):
-        comment = affected_objects + " " + comment
-    else:
-        print(affected_objects)
-    print(comment)
+    if(len(full_comment) <= character_limit_of_description()):
+        comment = full_comment
+    print(full_comment)
+    return comment
+
+def create_changeset(api, affected_objects_description, comment, automatic_status, discussion_url, source):
+    comment = output_full_comment_get_comment_within_limit(affected_objects_description, comment)
     changeset_description = {
         "comment": comment,
         "automatic": automatic_status,
@@ -131,6 +133,10 @@ def make_edit(affected_objects, comment, automatic_status, discussion_url, type,
     if discussion_url != None:
         changeset_description["discussion_before_edits"] = discussion_url
     api.ChangesetCreate(changeset_description)
+
+def make_edit(affected_objects_description, comment, automatic_status, discussion_url, type, data, source):
+    api = get_correct_api(automatic_status, discussion_url)
+    create_changeset(api, affected_objects_description, comment, automatic_status, discussion_url, source)
     update_element(api, type, data)
     api.ChangesetClose()
     sleep(60)
