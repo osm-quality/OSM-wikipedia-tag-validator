@@ -176,6 +176,7 @@ def handle_follow_redirect(e):
         return
     language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
     if language_code != "pl":
+        print(e['prerequisite']['wikipedia'] + " is not in the expected language code!")
         return
     data = get_and_verify_data(e)
     if data == None:
