@@ -65,7 +65,7 @@ def get_problem_for_given_element(element, forced_refresh):
                         prerequisite = {'wikipedia': link},
                         )
 
-    wikipedia_page_exists = check_is_wikipedia_page_existing(language_code, article_name, forced_refresh)
+    wikipedia_page_exists = check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, forced_refresh)
     if wikipedia_page_exists != None:
         return wikipedia_page_exists
 
@@ -106,17 +106,25 @@ def get_problem_for_given_element(element, forced_refresh):
             record_property_presence(property)
     return None
 
-def check_is_wikipedia_page_existing(language_code, article_name, forced_refresh):
+def check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, forced_refresh):
     page_according_to_wikidata = get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
     if page_according_to_wikidata != None:
         # assume that wikidata is correct to save downloading page
         return None
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
     if page == None:
+        message = "Wikipedia article linked from OSM object using wikipedia tag is missing. Typically article was moved and wikipedia tag should be edited to point to the new one. Sometimes article was deleted and no longer exists so wikipedia tag should be deleted."
+        proposed_new_target = None
+        potential_language_code = args.expected_language_code
+        potential_article_name = get_interwiki_article_name_by_id(wikidata_id, potential_language_code, forced_refresh)
+        if potential_article_name != None:
+            proposed_new_target = potential_language_code + ":" + potential_article_name
+            message += " wikidata tag present on element points to an existing article"
         return ErrorReport(
                     error_id = "wikipedia tag links to 404",
-                    error_message = "missing article at wiki:",
-                    prerequisite = {'wikipedia': language_code+":"+article_name}
+                    error_message = message,
+                    prerequisite = {'wikipedia': language_code+":"+article_name},
+                    desired_wikipedia_target = proposed_new_target,
                     )
 
 def wikidata_data_quality_warning():
