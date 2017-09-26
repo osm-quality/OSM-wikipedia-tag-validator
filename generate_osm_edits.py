@@ -289,6 +289,7 @@ def main():
         #handle_follow_redirect(e)
         #change_to_local_language(e)
         #add_wikipedia_tag_from_wikidata_tag(e)
+        pass
 
 if __name__ == '__main__':
     main()
