@@ -678,7 +678,7 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_
                 prerequisite = {'wikidata': wikidata_id},
                 )
         if type_id == 'Q20136634':
-            error_message = "article linked in wikipedia tag is an overview aerticle, so it is very unlikely to be correct"
+            error_message = "article linked in wikipedia tag is an overview article, so it is very unlikely to be correct"
             return ErrorReport(
                 error_id = "link to unlinkable article",
                 error_message = error_message,
