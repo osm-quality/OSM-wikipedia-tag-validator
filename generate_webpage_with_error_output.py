@@ -106,7 +106,7 @@ def note_unused_errors(args):
         if e['error_id'] not in for_public_use():
             if e['error_id'] not in for_private_use():
                 if e['error_id'] not in for_tests():
-                    print(e['error_id'] + " is not appearing in webpage")
+                    print('"' + e['error_id'] + '" is not appearing in any generated webpage')
 
 def for_public_use():
     return [
