@@ -133,16 +133,24 @@ def main():
         index.write("</html></body>\n")
 
     system_call('mv index.html OSM-wikipedia-tag-validator-reports/ -f')
-    system_call('mv Polska.html OSM-wikipedia-tag-validator-reports/ -f')
-    system_call('mv Kraków.html OSM-wikipedia-tag-validator-reports/ -f')
-    system_call('mv Deutschland.html OSM-wikipedia-tag-validator-reports/ -f')
-    system_call('mv Bremen.html OSM-wikipedia-tag-validator-reports/ -f')
+    main_name_parts_of_reports = []
+    main_name_parts_of_reports.append('Polska')
+    main_name_parts_of_reports.append('Kraków')
+    main_name_parts_of_reports.append('Deutschland')
+    main_name_parts_of_reports.append('Bremen')
     for voivoddeship in voivoddeships_of_poland():
-        filename = voivoddeship + '.html'
-        if os.path.isfile(filename):
-            system_call('mv "' + filename + '" OSM-wikipedia-tag-validator-reports/ -f')
-        else:
-            print(filename + ' is not present')
+        main_name_parts_of_reports.append(voivoddeship)
+
+    for name in main_name_parts_of_reports:
+        filenames = []
+        filenames.append(name + '.html')
+        filenames.append(name + ' - private.html')
+        filenames.append(name + ' - test.html')
+        for filename in filenames:
+            if os.path.isfile(filename):
+                system_call('mv "' + filename + '" OSM-wikipedia-tag-validator-reports/ -f')
+            else:
+                print(filename + ' is not present')
 
     make_query_to_reload_only_affected_objects('Polska.yaml', 'reload_Poland.query')
 
