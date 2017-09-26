@@ -284,11 +284,11 @@ def main():
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     reported_errors = load_errors()
+    #requires manual checking is it operating in Poland #add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors)
     for e in reported_errors:
         #handle_follow_redirect(e)
         #change_to_local_language(e)
-        add_wikipedia_tag_from_wikidata_tag(e)
-        #add_wikipedia_links_basing_on_old_style_wikipedia_tags()
+        #add_wikipedia_tag_from_wikidata_tag(e)
 
 if __name__ == '__main__':
     main()
