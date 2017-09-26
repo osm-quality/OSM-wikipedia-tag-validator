@@ -28,11 +28,13 @@ def load_data(yaml_report_filepath):
 def get_query_header(format):
     header = ""
     if format == "maproulette":
-        header+= '[out:json];'
+        header+= '[out:json]'
     elif format == "josm":
-        header += '[out:xml];'
+        header += '[out:xml]'
     else:
         assert(False)
+    header += "[timeout:3600]"
+    header += ";"
     header += "\n"
     header += '('
     header += "\n"
