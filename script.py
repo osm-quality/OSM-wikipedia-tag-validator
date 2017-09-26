@@ -52,7 +52,7 @@ def pipeline(osm_filename, output_filename_website, merged_output_file):
         system_call('python3 wikipedia_validator.py -expected_language_code pl -file "' + osm_filename + '"')
         if not os.path.isfile(root() + output_filename_errors):
             print(output_filename_errors + ' is not present [highly surprising]')
-            return
+            raise 'Unexpected failure'
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, output_filename_website)
@@ -105,7 +105,7 @@ def main():
         make_website(filename, 'Polska')
     else:
         print(filename + ' is not present [highly surprising]')
-        return
+        raise 'Unexpected failure'
 
     try:
         os.remove("index.html")
