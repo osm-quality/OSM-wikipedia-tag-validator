@@ -264,7 +264,8 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
             continue
         new = e['desired_wikipedia_target']
         data['tag']['wikipedia'] = new
-        change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + new +", as standard wikipedia tag is better than old style wikipedia tags"
+        reason = ", as standard wikipedia tag is better than old style wikipedia tags"
+        change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + new + reason
         if e['error_id'] == 'wikipedia tag from wikipedia tag in an outdated form':
             language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
             article_name = wikipedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
