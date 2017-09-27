@@ -136,6 +136,7 @@ def for_private_use():
 
 def for_tests():
     return [
+        'tag may be added based on wikidata - historic=lighthouse',
         'tag may be added based on wikidata - historic',
         'no longer existing object',
         'tag conflict with wikidata value',

@@ -274,6 +274,10 @@ def guess_value_of_historic_tag_from_element(element):
         return "church"
     if element.get_tag_value('amenity') == 'place_of_worship' and element.get_tag_value('religion') == 'christian':
         return "church"
+    if element.get_tag_value('man_made') == "lighthouse":
+        return "lighthouse"
+    if element.get_tag_value('building') == "yes":
+        return "building"
     return None
 
 def get_heritage_data_from_wikidata_report(element):
