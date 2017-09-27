@@ -277,6 +277,10 @@ def guess_value_of_historic_tag_from_element(element):
     return None
 
 def get_heritage_data_from_wikidata_report(element):
+    if element.get_tag_value("boundary") == "national_park":
+        # so are tagged on wikidata as P1435
+        return None
+
     present_wikidata_id = element.get_tag_value("wikidata")
     from_wikidata = tag_from_wikidata(present_wikidata_id, 'P1435')
     if from_wikidata == None:
