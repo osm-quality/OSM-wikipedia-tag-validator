@@ -242,6 +242,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
         new = e['desired_wikipedia_target']
         reason = ", as wikipedia tag may be added based on wikidata"
         change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + new + reason
+        print(change_description)
         data['tag']['wikipedia'] = e['desired_wikipedia_target']
         type = e['osm_object_url'].split("/")[3]
         update_element(api, type, data)
