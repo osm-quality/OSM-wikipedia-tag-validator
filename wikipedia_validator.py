@@ -951,29 +951,39 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
     else:
         assert(False)
 
-    countries = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P17')
+    countries = get_current_countries_by_id(wikidata_id)
     if countries == None:
         # TODO locate based on coordinates...
         return None
+    for country_id in countries:
+        if country_id == target:
+            continue
+        country_name = get_wikidata_label(country_id, 'en')
+        if country_name == None:
+            return "it is at least partially in country without known name on Wikidata (country_id=" + country_id + ")"
+        if country_id == 'Q7318':
+            print(describe_osm_object(element) + " is tagged on wikidata as location in no longer existing " + country_name)
+            return None
+        return "it is at least partially in " + country_name
+    return None
+
+def get_current_countries_by_id(wikidata_id):
+    countries = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P17')
+    if countries == None:
+        return None
+    returned = []
     for country in countries:
         country_id = country['mainsnak']['datavalue']['value']['id']
-        if country_id != target:
-            # we need to check whatever locations still belongs to a given country
-            # it is necessary to avoid gems like
-            # "Płock is allowed to have foreign wikipedia link, because it is at least partially in Nazi Germany"
-            # P582 indicates the time an item ceases to exist or a statement stops being valid
-            try:
-                country['qualifiers']['P582']
-            except KeyError:
-                country_name = get_wikidata_label(country_id, 'en')
-                #P582 is missing, therefore it is no longer valid
-                if country_name == None:
-                    return "it is at least partially in country without known name on Wikidata (country_id=" + country_id + ")"
-                if country_id == 'Q7318':
-                    print(describe_osm_object(element) + " is tagged on wikidata as location in no longer existing " + country_name)
-                    return None
-                return "it is at least partially in " + country_name
-    return None
+        # we need to check whatever locations still belongs to a given country
+        # it is necessary to avoid gems like
+        # "Płock is allowed to have foreign wikipedia link, because it is at least partially in Nazi Germany"
+        # P582 indicates the time an item ceases to exist or a statement stops being valid
+        try:
+            country['qualifiers']['P582']
+        except KeyError:
+                #P582 is missing, therefore it is not a statement aplying to the past
+                returned.append(country_id)
+    return returned
 
 def element_can_be_reduced_to_position_at_single_location(element):
     if element.get_element().tag == "relation":
