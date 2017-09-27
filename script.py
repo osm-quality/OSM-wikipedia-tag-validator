@@ -36,11 +36,14 @@ def delete_output_files():
         except FileNotFoundError:
             pass
 
-def make_website(filename_with_report, output_filename_base):
-    system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '"')
+def make_website(filename_with_report, output_filename_base, hide_bottable_from_public):
+    split_human_bot = ""
+    if hide_bottable_from_public == True:
+        split_human_bot = "-hide_bottable_from_public"
+    system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '" ' + split_human_bot)
 
 
-def pipeline(osm_filename, website_main_title_part, merged_output_file, language_code, silent=False):
+def pipeline(osm_filename, website_main_title_part, merged_output_file, language_code, hide_bottable_from_public, silent=False):
         output_filename_errors = osm_filename + '.yaml'
         if exit_pipeline_due_to_missing_osm_data(osm_filename, silent):
             return
@@ -50,7 +53,7 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
             raise 'Unexpected failure'
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
-        make_website(output_filename_errors, website_main_title_part)
+        make_website(output_filename_errors, website_main_title_part, hide_bottable_from_public)
         make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + ' new iteration.query')
         move_files_to_report_directory(website_main_title_part)
 
@@ -115,15 +118,20 @@ def main():
             osm_filename = entry['region_name'] + "_all.osm",
             website_main_title_part = entry['website_main_title_part'],
             merged_output_file = entry['merged_output_file'],
-            language_code = entry['language_code']
+            language_code = entry['language_code'],
+            hide_bottable_from_public = entry['hide_bottable_from_public'],
             )
     
-    pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
+    pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl", hide_bottable_from_public=True)
 
     for name in merged_outputs_list():
         filename = name + '.yaml'
         if os.path.isfile(root() + filename):
-            make_website(filename, name)
+            for entry in get_entries_to_process():
+                if entry['merged_output_file'] == name:
+                    # inherit split status on bottable and nonbottable tasks
+                    make_website(filename, name, entry['hide_bottable_from_public'])
+                    break
         else:
             print(filename + ' is not present [highly surprising]')
             raise 'Unexpected failure'
