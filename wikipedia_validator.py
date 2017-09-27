@@ -1183,7 +1183,7 @@ def process_repeated_appearances_for_this_wikidata_id(wikidata_id, entries):
         return # road may be tagged multiple times and it is OK
     elif len(entries) > 2:
         complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated "
-        category = " - testing"
+        category = " - generic"
     else:
         return
     output_message_about_duplication_of_wikidata_id(example_element, wikidata_id, complaint, list(entries.keys()), category)
