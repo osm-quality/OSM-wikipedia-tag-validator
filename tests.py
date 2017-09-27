@@ -78,5 +78,8 @@ class Tests(unittest.TestCase):
         print(before)
         self.assertEqual(after, common.tag_dict_to_overpass_query_format(before))
 
+    def test_wikidata_structure_unit_test_castle_is_not_event(self):
+        self.assertEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary('Q2106892'))
+
 if __name__ == '__main__':
     unittest.main()
