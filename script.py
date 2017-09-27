@@ -44,12 +44,11 @@ def make_website(filename_with_report, output_filename_base):
     system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '"')
 
 
-def pipeline(osm_filename, website_main_title_part, merged_output_file):
+def pipeline(osm_filename, website_main_title_part, merged_output_file, language_code, silent=False):
         output_filename_errors = osm_filename + '.yaml'
-        if not os.path.isfile(root() + osm_filename):
-            print(osm_filename + ' is not present')
+        if exit_pipeline_due_to_missing_osm_data(osm_filename):
             return
-        system_call('python3 wikipedia_validator.py -expected_language_code pl -file "' + osm_filename + '"')
+        make_report_file(language_code, osm_filename)
         if not os.path.isfile(root() + output_filename_errors):
             print(output_filename_errors + ' is not present [highly surprising]')
             raise 'Unexpected failure'
@@ -57,6 +56,20 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file):
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, website_main_title_part)
         make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + ' new iteration.query')
+
+def exit_pipeline_due_to_missing_osm_data(osm_filename):
+    if os.path.isfile(root() + osm_filename):
+        return False
+    if silent:
+        return True
+    print(osm_filename + ' is not present')
+    return True
+
+def make_report_file(language_code, osm_filename):
+    language_code_parameter = ""
+    if language_code != None:
+        language_code_parameter = '-expected_language_code pl'
+    system_call('python3 wikipedia_validator.py ' + language_code_parameter + ' -file "' + osm_filename + '"')
 
 def germany():
     input_filenames = [
