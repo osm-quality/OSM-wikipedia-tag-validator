@@ -154,11 +154,11 @@ def main():
     for voivoddeship in voivoddeships_of_poland():
         main_name_parts_of_reports.append(voivoddeship)
 
-    for name in main_name_parts_of_reports:
+    for website_main_title_part in main_name_parts_of_reports:
         filenames = []
-        filenames.append(name + '.html')
-        filenames.append(name + ' - private.html')
-        filenames.append(name + ' - test.html')
+        filenames.append(website_main_title_part + '.html')
+        filenames.append(website_main_title_part + ' - private.html')
+        filenames.append(website_main_title_part + ' - test.html')
         for filename in filenames:
             if os.path.isfile(filename):
                 system_call('mv "' + filename + '" OSM-wikipedia-tag-validator-reports/ -f')
