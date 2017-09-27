@@ -42,8 +42,8 @@ def query_text_by_name(name, nodes, ways, relations, expand)
 end
 
 def query_text_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
-  area_identifier = nil
-  area_identifier_builder = "#{lower_lat},#{left_lon},#{lower_lat+1},#{left_lon+1}\n"
+  area_identifier_builder = nil
+  area_identifier = "#{lower_lat},#{left_lon},#{lower_lat+1},#{left_lon+1}"
   query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
 end
 
