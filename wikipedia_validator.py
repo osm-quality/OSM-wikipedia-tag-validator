@@ -778,7 +778,10 @@ def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, des
     for type_id in get_all_types_describing_wikidata_object(wikidata_id):
         if is_wikidata_type_id_recognised_as_OK(type_id):
             return None
+    dump_base_types_of_object_in_stdout(wikidata_id, description_of_source)
 
+
+def dump_base_types_of_object_in_stdout(wikidata_id, description_of_source):
     print("----------------")
     print(wikidata_id)
     for type_id in get_wikidata_type_ids_of_entry(wikidata_id):
