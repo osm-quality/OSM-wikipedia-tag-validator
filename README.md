@@ -13,4 +13,4 @@ see also https://wiki.openstreetmap.org/wiki/SPARQL_examples#Quality_Control
 
 to run tests:
 
-```python3 tests.py```
+```nosetests3```

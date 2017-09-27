@@ -3,11 +3,11 @@ import wikipedia_validator
 import common
 import osm_iterator
 import wikipedia_connection
-import generate_osm_edits
 import generate_webpage_with_error_output
 import generate_overpass_query_output
 import script
 import osm_iterator
+from tests_of_generate_osm_edits import *
 
 class Tests(unittest.TestCase):
     def test_rejects_links_to_events(self):

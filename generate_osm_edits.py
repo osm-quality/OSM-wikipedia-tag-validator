@@ -212,39 +212,51 @@ def change_to_local_language(e):
     source = "wikidata, OSM"
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
 
-def add_wikipedia_tag_from_wikidata_tag(e):
-    if e['error_id'] != 'wikipedia from wikidata tag':
+def filter_reported_errors(reported_errors, matching_error_ids):
+    errors_for_removal = []
+    for e in reported_errors:
+        if e['error_id'] in matching_error_ids:
+            errors_for_removal.append(e)
+    return errors_for_removal
+
+def add_wikipedia_tag_from_wikidata_tag(reported_errors):
+    errors_for_removal = filter_reported_errors(reported_errors, ['wikipedia from wikidata tag'])
+    if errors_for_removal == []:
         return
     #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
     #language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
     #if language_code != "pl":
     #    return
-    data = get_and_verify_data(e)
-    if data == None:
-        return None
-    new = e['desired_wikipedia_target']
-    reason = ", as wikipedia tag may be added based on wikidata"
-    comment = fit_wikipedia_edit_description_within_character_limit_new(new, reason)
-    data['tag']['wikipedia'] = e['desired_wikipedia_target']
+    automatic_status = fully_automated_description()
+    affected_objects_description = ""
+    comment = "add wikipedia tag based on wikidata tag"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59888'
-    automatic_status = manually_reviewed_description()
-    type = e['osm_object_url'].split("/")[3]
+    api = get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
-    make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
+    create_changeset(api, affected_objects_description, comment, automatic_status, discussion_url, source)
+
+    for e in errors_for_removal:
+        data = get_and_verify_data(e)
+        if data == None:
+            continue
+        new = e['desired_wikipedia_target']
+        reason = ", as wikipedia tag may be added based on wikidata"
+        change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + new + reason
+        data['tag']['wikipedia'] = e['desired_wikipedia_target']
+        type = e['osm_object_url'].split("/")[3]
+        update_element(api, type, data)
+
+    api.ChangesetClose()
+    sleep(60)
 
 def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
-    matching = [
+    matching_error_ids = [
                 'wikipedia tag from wikipedia tag in an outdated form and wikidata',
                 'wikipedia tag from wikipedia tag in an outdated form',
                 ]
-    errors_for_removal = []
-    for e in reported_errors:
-        if e['error_id'] in matching:
-            errors_for_removal.append(e)
+    errors_for_removal = filter_reported_errors(reported_errors, matching_error_ids)
     if errors_for_removal == []:
         return
-    #errors_for_removal = errors_for_removal[:1]
-    print(errors_for_removal)
     #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
     #language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
     #if language_code != "pl":
@@ -286,10 +298,10 @@ def main():
     # website at https://master.apis.dev.openstreetmap.org/
     reported_errors = load_errors()
     #requires manual checking is it operating in Poland #add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors)
+    #requires manual checking is it operating in Poland #add_wikipedia_tag_from_wikidata_tag(reported_errors)
     for e in reported_errors:
         #handle_follow_redirect(e)
         #change_to_local_language(e)
-        #add_wikipedia_tag_from_wikidata_tag(e)
         pass
 
 if __name__ == '__main__':
