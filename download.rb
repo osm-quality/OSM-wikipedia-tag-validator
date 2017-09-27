@@ -1,5 +1,6 @@
 require 'rest-client'
 require 'etc'
+require 'yaml'
 
 def user_agent
   "downloader of interesting places, operated by #{Etc.getlogin}, written by Mateusz Konieczny (matkoniecz@gmail.com)"
@@ -135,15 +136,10 @@ def download_by_name(name, nodes, ways, relations, expand)
   return download(query, filename)
 end
 
-voivoddeships = ["małopolskie", "podkarpackie", "lubelskie",
-  "świętokrzyskie", "mazowieckie", "podlaskie",
-  "warmińsko-mazurskie", "pomorskie", "kujawsko-pomorskie",
-  "zachodniopomorskie", "lubuskie", "wielkopolskie", "dolnośląskie",
-  "opolskie", "śląskie", "łódzkie"]
-download_by_name("Kraków", true, true, true, true)
-voivoddeships.each do |voivodeship|
+region_data = YAML.load_file('processed_regions.yaml')
+region_data.each do |region|
   while true
-    name = "województwo #{voivodeship}"
+    name = region['region_name']
     break if !is_download_necessary_by_name(name, true, true, true, true)
     result = download_by_name(name, true, true, true, true)
     puts "failed download" if !result
@@ -151,20 +147,13 @@ voivoddeships.each do |voivodeship|
     break if result
   end
 end
-#download_by_name("Polska", true, false, false, false)
-#download_by_name("Polska", false, true, false, false)
-#download_by_name("Polska", false, false, true, false)
-download_by_name("Stendal", true, true, true, true)
-download_by_name("Bremen", true, true, true, true)
-#download_by_name("Berlin", true, false, false, false)
-download_by_name("Nigeria", true, true, true, true)
-#download_by_name("Bolivia", true, true, true, true)
-#download_by_name("Қазақстан", true, true, true, true)
-#download_by_name("Magyarország", true, false, false, true)
-#download_by_name("Magyarország", false, true, false, true)
-#download_by_name("Magyarország", false, false, true, true)
-#TODO blocked by URL length https://josm.openstreetmap.de/ticket/15141
-#http://overpass-api.de/command_line.html
-#https://github.com/BrunoSalerno/overpass-api-ruby/issues/6
-#query = File.read('reload_Poland.query')
-#download(query, 'reloaded_Poland.osm')
+
+query = File.read('reload_Poland.query')
+download(query, download_location+"/"+'reloaded_Poland.osm')
+
+# around Poland - for making map that shows how nicely stuff was fixed in Poland
+download_graticule(50, 14)
+# N 55
+# S 48
+# E 14
+# W 24

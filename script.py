@@ -1,5 +1,6 @@
 import common
 import os
+import yaml
 from subprocess import call
 
 def merge(source_yaml, target_yaml):
@@ -10,29 +11,24 @@ def system_call(call):
     print(call)
     os.system(call)
 
-def voivoddeships_of_poland():
-    voivoddeships = ["małopolskie", "podkarpackie", "lubelskie",
-      "świętokrzyskie", "mazowieckie", "podlaskie",
-      "warmińsko-mazurskie", "pomorskie", "kujawsko-pomorskie",
-      "zachodniopomorskie", "lubuskie", "wielkopolskie", "dolnośląskie",
-      "opolskie", "śląskie", "łódzkie"]
-    return ["województwo " + name for name in voivoddeships]
-
 def root():
     return common.get_file_storage_location() + "/"
 
-def delete_output_files():
-    yaml_output_files = [
-        'Bremen_all.osm.yaml',
-        'Berlin_nodes_without_geometry.osm.yaml',
-        'Stendal_all.osm.yaml',
-        'Kraków_all.osm.yaml',
-        'Deutschland.yaml',
-        'Polska.yaml',
-    ]
+def delete_output_file(filename):
+        try:
+            os.remove(root() + filename)
+        except FileNotFoundError:
+            return
 
-    for index, voivoddeship in enumerate(voivoddeships_of_poland()):
-        yaml_output_files.append(voivoddeship + "_all.osm.yaml")
+def delete_output_files():
+    for entry in get_entries_to_process():
+        delete_output_file(entry['region_name'] + "_all.osm.yaml")
+        if entry['merged_output_file'] != None:
+            delete_output_file(entry['merged_output_file'] + ".yaml")
+
+    yaml_output_files = [
+        'polska_reloaded.osm.yaml',
+    ]
 
     for filename in yaml_output_files:
         try:
@@ -46,7 +42,7 @@ def make_website(filename_with_report, output_filename_base):
 
 def pipeline(osm_filename, website_main_title_part, merged_output_file, language_code, silent=False):
         output_filename_errors = osm_filename + '.yaml'
-        if exit_pipeline_due_to_missing_osm_data(osm_filename):
+        if exit_pipeline_due_to_missing_osm_data(osm_filename, silent):
             return
         make_report_file(language_code, osm_filename)
         if not os.path.isfile(root() + output_filename_errors):
@@ -56,8 +52,20 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, website_main_title_part)
         make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + ' new iteration.query')
+        move_files_to_report_directory(website_main_title_part)
 
-def exit_pipeline_due_to_missing_osm_data(osm_filename):
+def move_files_to_report_directory(website_main_title_part):
+    filenames = []
+    filenames.append(website_main_title_part + '.html')
+    filenames.append(website_main_title_part + ' - private.html')
+    filenames.append(website_main_title_part + ' - test.html')
+    for filename in filenames:
+        if os.path.isfile(filename):
+            system_call('mv "' + filename + '" OSM-wikipedia-tag-validator-reports/ -f')
+        else:
+            print(filename + ' is not present')
+
+def exit_pipeline_due_to_missing_osm_data(osm_filename, silent):
     if os.path.isfile(root() + osm_filename):
         return False
     if silent:
@@ -70,26 +78,6 @@ def make_report_file(language_code, osm_filename):
     if language_code != None:
         language_code_parameter = '-expected_language_code pl'
     system_call('python3 wikipedia_validator.py ' + language_code_parameter + ' -file "' + osm_filename + '"')
-
-def germany():
-    input_filenames = [
-        'Bremen_all.osm',
-        #'Berlin_nodes_without_geometry.osm',
-        'Stendal_all.osm',
-    ]
-    for filename in input_filenames:
-        if not os.path.isfile(root() + filename):
-            print(filename + ' is not present')
-        else:
-            call(['python3', 'wikipedia_validator.py', '-expected_language_code', 'de', '-file', filename])
-            merge(filename + '.yaml', 'Deutschland.yaml')
-
-    make_website('Deutschland.yaml', 'Deutschland')
-    make_website('Bremen_all.osm.yaml', 'Bremen')
-
-def krakow():
-    system_call('python3 wikipedia_validator.py -expected_language_code pl -file "Kraków_all.osm" -allow_requesting_edits_outside_osm -additional_debug -allow_false_positives')
-    make_website('Kraków_all.osm.yaml', 'Kraków')
 
 def make_query_to_reload_only_affected_objects(input_filename_with_reports, output_query_filename):
     filepath = common.get_file_storage_location() + "/" + input_filename_with_reports
@@ -104,66 +92,59 @@ def make_query_to_reload_only_affected_objects(input_filename_with_reports, outp
         query = common.get_query_for_loading_errors_by_category(filename = input_filename_with_reports, printed_error_ids = all_errors, format = "josm")
         query_file.write(query)
 
+def get_entries_to_process():
+    returned = None
+    with open("processed_regions.yaml", 'r') as stream:
+        try:
+            returned = yaml.load(stream)
+        except yaml.YAMLError as exc:
+            raise(exc)
+    return returned
+
+def merged_outputs_list():
+    merged_outputs = []
+    for entry in get_entries_to_process():
+        if entry['merged_output_file'] != None:
+            merged_outputs.append(entry['merged_output_file'])
+    return list(set(merged_outputs))
+
 def main():
     delete_output_files()
-
-    germany()
-    krakow()
-
-    # Poland
-    for name in voivoddeships_of_poland():
+    for entry in get_entries_to_process():
         pipeline(
-                osm_filename = name + '_all.osm',
-                website_main_title_part = name,
-                merged_output_file = 'Polska.yaml'
-                )
+            osm_filename = entry['region_name'] + "_all.osm",
+            website_main_title_part = entry['website_main_title_part'],
+            merged_output_file = entry['merged_output_file'],
+            language_code = entry['language_code']
+            )
+    
+    pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
 
-    filename = 'Polska.yaml'
-    if os.path.isfile(root() + filename):
-        make_website(filename, 'Polska')
-    else:
-        print(filename + ' is not present [highly surprising]')
-        raise 'Unexpected failure'
-
-    try:
-        os.remove("index.html")
-    except FileNotFoundError:
-        pass
+    for name in merged_outputs_list():
+        filename = name + '.yaml'
+        if os.path.isfile(root() + filename):
+            make_website(filename, name)
+        else:
+            print(filename + ' is not present [highly surprising]')
+            raise 'Unexpected failure'
 
     with open('index.html', 'w') as index:
         index.write("<html><body>\n")
-        index.write("<a href = Polska.html>Polska</a></br>\n")
-        index.write("<a href = Krak&oacute;w.html>Krak&oacute;w</a></br>\n")
-        index.write("<a href = Deutschland.html>Deutschland</a></br>\n")
-        index.write("<a href = Bremen.html>Bremen</a></br>\n")
-        for voivoddeship in voivoddeships_of_poland():
-            name = common.htmlify(voivoddeship)
-            filename = voivoddeship + '.html'
+        for name in merged_outputs_list():
+            index.write("<a href = " + name + ".html>" + name + "</a></br>\n")
+        for entry in get_entries_to_process():
+            website_main_title_part = entry['website_main_title_part']
+            filename = website_main_title_part + '.html'
             if os.path.isfile(filename):
-                index.write('<a href = "' + name + '.html">' + name + "</a></br>\n")
+                index.write('<a href = "' + filename + '">' + website_main_title_part + "</a></br>\n")
             else:
                 print(filename + ' is not present')
         index.write("</html></body>\n")
 
     system_call('mv index.html OSM-wikipedia-tag-validator-reports/ -f')
     main_name_parts_of_reports = []
-    main_name_parts_of_reports.append('Polska')
-    main_name_parts_of_reports.append('Kraków')
-    main_name_parts_of_reports.append('Deutschland')
-    main_name_parts_of_reports.append('Bremen')
-    for voivoddeship in voivoddeships_of_poland():
-        main_name_parts_of_reports.append(voivoddeship)
-
-    for website_main_title_part in main_name_parts_of_reports:
-        filenames = []
-        filenames.append(website_main_title_part + '.html')
-        filenames.append(website_main_title_part + ' - private.html')
-        filenames.append(website_main_title_part + ' - test.html')
-        for filename in filenames:
-            if os.path.isfile(filename):
-                system_call('mv "' + filename + '" OSM-wikipedia-tag-validator-reports/ -f')
-            else:
-                print(filename + ' is not present')
+    for name in merged_outputs_list():
+        move_files_to_report_directory(name)
 
     make_query_to_reload_only_affected_objects('Polska.yaml', 'reload_Poland.query')
 
