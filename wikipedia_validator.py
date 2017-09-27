@@ -403,7 +403,7 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(
 
 
 def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, forced_refresh):
-    article = get_interwiki_article_name_by_id(present_wikidata_id, args.expected_language_code, forced_refresh)
+    article = get_interwiki_article_name_by_id(present_wikidata_id, args.expected_language_code, forced_refresh) #TODO support missing lang code
     if article == None:
         return None
     # TODO - if not available allow English or other languages
