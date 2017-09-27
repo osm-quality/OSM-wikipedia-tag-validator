@@ -437,7 +437,7 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wiki
     if len(links) != 1 or None in links:
         return ErrorReport(
             error_id = "wikipedia from wikipedia tag in outdated form - mismatch",
-            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag, human judgement required due to mismatch between old style wikipedia tags",
+            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag, human judgement required as algorithm failed to find certain match",
             prerequisite = prerequisite,
             )
     wikipedia_link = links[0]
