@@ -119,9 +119,12 @@ def for_public_use():
         'wikipedia from wikipedia tag in outdated form - mismatch',
         'tag may be added based on wikidata',
         'duplicated link - waterway',
+        'duplicated link - generic',
         'tag may be added based on wikidata - teryt',
         'tag may be added based on wikidata - historic=church',
-        'tag may be added based on wikidata - boring',
+        'tag may be added based on wikidata - historic=building',
+        'tag may be added based on wikidata - website',
+        'tag may be added based on wikidata - postal_code',
     ]
 
 def for_private_use():
@@ -142,7 +145,6 @@ def for_tests():
         'tag conflict with wikidata value',
         'tag may be added based on wikidata - testing',
         'tag conflict with wikidata value - testing',
-        'duplicated link - testing',
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',
     ]
