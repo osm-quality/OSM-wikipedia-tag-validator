@@ -189,7 +189,7 @@ def handle_follow_redirect(e):
     discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
     automatic_status = fully_automated_description()
     type = e['osm_object_url'].split("/")[3]
-    source = "wikipedia, OSM"
+    source = "wikidata, OSM"
     make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
 
 def change_to_local_language(e):
