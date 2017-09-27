@@ -787,7 +787,7 @@ def dump_base_types_of_object_in_stdout(wikidata_id, description_of_source):
     for type_id in get_wikidata_type_ids_of_entry(wikidata_id):
         print("------")
         print(description_of_source)
-        print("unexpected type " + type_id)
+        print("type " + type_id)
         describe_unexpected_wikidata_type(type_id)
 
 def is_wikidata_type_id_recognised_as_OK(type_id):
