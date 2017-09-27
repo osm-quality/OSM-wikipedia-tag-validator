@@ -1164,7 +1164,7 @@ def process_repeated_appearances_for_this_wikidata_id(wikidata_id, entries):
     elif example_element.get_tag_value('highway') != None and example_element.get_tag_value('area') == None:
         return # road may be tagged multiple times and it is OK
     elif len(entries) > 2:
-        complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated"
+        complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated "
         category = " - testing"
     else:
         return
