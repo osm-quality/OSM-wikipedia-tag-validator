@@ -864,7 +864,7 @@ def get_useful_direct_parents(wikidata_id, forbidden):
 
 def describe_unexpected_wikidata_type(type_id):
     # print entire inheritance set
-    for parent_category in get_recursive_all_subclass_of(type_id):
+    for parent_category in get_recursive_all_subclass_of(type_id, wikidata_entries_for_abstract_or_very_broad_concepts(), True):
         print("if type_id == '" + parent_category + "':")
         print(wikidata_description(parent_category))
 
