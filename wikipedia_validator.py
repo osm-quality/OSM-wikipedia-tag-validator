@@ -233,19 +233,39 @@ def get_elevation_data_from_wikidata_report(element):
     from_wikidata = tag_from_wikidata(present_wikidata_id, 'P2044')
     if from_wikidata == None:
         return None
+    unit_from_wikidata = from_wikidata['unit']
+    amount_from_wikidata = from_wikidata['amount']
+    if unit_from_wikidata != "http://www.wikidata.org/entity/Q11573":
+        print("unexpected height unit in Wikidata: " + unit_from_wikidata + " in " + present_wikidata_id + " for " + element.get_link())
+        return None
+
+    try:
+        amount_from_wikidata = float(amount_from_wikidata)
+    except ValueError:
+        print("failed conversion to float: " + from_wikidata['amount'] + " in " + present_wikidata_id + " for " + element.get_link())
+        return None
+
     if ele_from_tag != None:
-        if from_wikidata != ele_from_tag:
-            return ErrorReport(
-                error_id = "tag conflict with wikidata value - testing",
-                error_message = "elevation in OSM (" + ele_from_tag + ") vs elevation in Wikidata (" + str(from_wikidata) + ")" + " " + wikidata_data_quality_warning(),
-                prerequisite = {'wikidata': present_wikidata_id, 'ele': element.get_tag_value('ele')}
-                )
+        try:
+            ele_from_tag = float(ele_from_tag)
+        except ValueError:
+            print("failed conversion to float: ele=" +element.get_tag_value('ele') + " in " + element.get_link())
+            return None
+
+    if ele_from_tag != None:
+        if amount_from_wikidata != ele_from_tag:
+            if(abs(amount_from_wikidata - ele_from_tag) > 1):
+                return ErrorReport(
+                    error_id = "tag conflict with wikidata value - testing",
+                    error_message = "elevation in OSM (" + str(ele_from_tag) + ") vs elevation in Wikidata (" + str(amount_from_wikidata) + ")" + " " + wikidata_data_quality_warning(),
+                    prerequisite = {'wikidata': present_wikidata_id, 'ele': element.get_tag_value('ele')}
+                    )
 
     if element.get_tag_value('ele') == None:
         if element.get_tag_value('natural') == 'peak':
             return ErrorReport(
                         error_id = "tag may be added based on wikidata - testing",
-                        error_message = str(from_wikidata) + " may be added as ele tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
+                        error_message = str(amount_from_wikidata) + " may be added as ele tag based on wikidata entry" + " " + wikidata_data_quality_warning(),
                         prerequisite = {'wikidata': present_wikidata_id, 'ele': None}
                         )
 
