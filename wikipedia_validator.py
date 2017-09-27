@@ -321,11 +321,11 @@ def add_data_from_wikidata(element):
     #population = tag_from_wikidata_error_report(present_wikidata_id, 'population', 'P1082', element, " - testing")
     #if population != None:
     #    return population
-    tag = tag_from_wikidata_error_report(present_wikidata_id, 'postal_code', 'P281', element, ' - testing')
+    tag = tag_from_wikidata_error_report(present_wikidata_id, 'postal_code', 'P281', element, ' - postal_code')
     if tag != None:
         return tag
     #moving P138 to name:wikidata tag makes no sense, just use wikidata instead
-    website = tag_from_wikidata_error_report(present_wikidata_id, 'website', 'P856', element, " - boring")
+    website = tag_from_wikidata_error_report(present_wikidata_id, 'website', 'P856', element, " - website")
     if website != None and website.error_message.find('web.archive.org') == -1:
         return website
     #IDEA
