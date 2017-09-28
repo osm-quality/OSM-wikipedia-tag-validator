@@ -36,9 +36,17 @@ def query_text(area_identifier_builder, area_identifier, nodes, ways, relations,
   return query
 end
 
+def area_identifier_builder_by_name(name)
+  return "area[name='" + name + "']->.searchArea;\n"
+end
+
+def area_identifier_by_name(name)
+  return 'area.searchArea'
+end
+
 def query_text_by_name(name, nodes, ways, relations, expand)
-  area_identifier = 'area.searchArea'
-  area_identifier_builder = "area[name='" + name + "']->.searchArea;\n"
+  area_identifier = area_identifier_by_name(name)
+  area_identifier_builder = area_identifier_builder_by_name(name)
   query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
 end
 
