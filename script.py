@@ -5,10 +5,11 @@ from subprocess import call
 
 def merge(source_yaml, target_yaml):
     root = common.get_file_storage_location() + "/"
-    system_call('cat "' + root + source_yaml +'" >> "' + root + target_yaml + '"')
+    system_call('cat "' + root + source_yaml +'" >> "' + root + target_yaml + '"', False)
 
-def system_call(call):
-    print(call)
+def system_call(call, verbose=True):
+    if verbose:
+        print(call)
     os.system(call)
 
 def root():
@@ -55,16 +56,17 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, website_main_title_part, hide_bottable_from_public)
         make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + ' new iteration.query')
-        move_files_to_report_directory(website_main_title_part)
+        move_files_to_report_directory(website_main_title_part, hide_bottable_from_public)
 
-def move_files_to_report_directory(website_main_title_part):
+def move_files_to_report_directory(website_main_title_part, hide_bottable_from_public):
     filenames = []
     filenames.append(website_main_title_part + '.html')
-    filenames.append(website_main_title_part + ' - private.html')
+    if hide_bottable_from_public:
+        filenames.append(website_main_title_part + ' - private.html')
     filenames.append(website_main_title_part + ' - test.html')
     for filename in filenames:
         if os.path.isfile(filename):
-            system_call('mv "' + filename + '" OSM-wikipedia-tag-validator-reports/ -f')
+            system_call('mv "' + filename + '" OSM-wikipedia-tag-validator-reports/ -f', False)
         else:
             print(filename + ' is not present')
 
@@ -111,6 +113,12 @@ def merged_outputs_list():
             merged_outputs.append(entry['merged_output_file'])
     return list(set(merged_outputs))
 
+def get_entry_contributing_to_merged_file(name_of_merged):
+    for entry in get_entries_to_process():
+        if entry['merged_output_file'] == name_of_merged:
+            return entry
+    raise "unexpected"
+
 def main():
     delete_output_files()
     for entry in get_entries_to_process():
@@ -124,14 +132,12 @@ def main():
     
     pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl", hide_bottable_from_public=True)
 
-    for name in merged_outputs_list():
-        filename = name + '.yaml'
+    for filename in merged_outputs_list():
         if os.path.isfile(root() + filename):
-            for entry in get_entries_to_process():
-                if entry['merged_output_file'] == name:
-                    # inherit split status on bottable and nonbottable tasks
-                    make_website(filename, name, entry['hide_bottable_from_public'])
-                    break
+            # inherit split status on bottable and nonbottable tasks
+            entry = get_entry_contributing_to_merged_file(filename)
+            make_website(filename, filename.replace(".yaml", ""), entry['hide_bottable_from_public'])
+            break
         else:
             print(filename + ' is not present [highly surprising]')
             raise 'Unexpected failure'
@@ -139,12 +145,12 @@ def main():
     with open('index.html', 'w') as index:
         index.write("<html><body>\n")
         for name in merged_outputs_list():
-            index.write("<a href = " + name + ".html>" + name + "</a></br>\n")
+            index.write("<a href = " + common.htmlify(name) + ".html>" + common.htmlify(name) + "</a></br>\n")
         for entry in get_entries_to_process():
             website_main_title_part = entry['website_main_title_part']
             filename = website_main_title_part + '.html'
             if os.path.isfile(filename):
-                index.write('<a href = "' + filename + '">' + website_main_title_part + "</a></br>\n")
+                index.write('<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + "</a></br>\n")
             else:
                 print(filename + ' is not present')
         index.write("</html></body>\n")
@@ -152,7 +158,8 @@ def main():
     system_call('mv index.html OSM-wikipedia-tag-validator-reports/ -f')
     main_name_parts_of_reports = []
     for name in merged_outputs_list():
-        move_files_to_report_directory(name)
+        entry = get_entry_contributing_to_merged_file(name)
+        move_files_to_report_directory(name, entry['hide_bottable_from_public'])
 
     make_query_to_reload_only_affected_objects('Polska.yaml', 'reload_Poland.query')
 
