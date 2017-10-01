@@ -124,6 +124,7 @@ def for_public_use():
         'duplicated link - generic',
         'tag may be added based on wikidata - teryt',
         'tag may be added based on wikidata - website',
+        'duplicated link - place',
     ]
 
 def for_private_use():
@@ -138,7 +139,6 @@ def for_private_use():
 
 def for_tests():
     return [
-        'duplicated link - place',
         'tag may be added based on wikidata - historic=church',
         'tag may be added based on wikidata - historic=building',
         'tag may be added based on wikidata - historic=lighthouse',
