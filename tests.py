@@ -81,5 +81,10 @@ class Tests(unittest.TestCase):
     def test_wikidata_structure_unit_test_castle_is_not_event(self):
         self.assertEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary('Q2106892'))
 
+    def test_args_depending_code_for_behavior(self):
+        wikipedia_connection.set_cache_location(common.get_file_storage_location())
+        #TODO - handle args. in test
+        #wikipedia_validator.attempt_to_locate_wikipedia_tag_using_wikidata_id('Q2106892', False)
+
 if __name__ == '__main__':
     unittest.main()

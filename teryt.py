@@ -1,0 +1,124 @@
+from osm_iterator import Data
+import csv
+import wikipedia_connection
+import common
+import generate_osm_edits
+import geopy.distance
+
+# IDEA
+# 21k entries for import
+# http://88.99.164.208/wikidata/#SELECT%20%3Fitem%20%3Fteryt%20%3FitemLabel%20WHERE%20{%0A%20%3Fitem%20wdt%3AP31%2Fwdt%3AP279*%20wd%3AQ486972%20.%0A%20%3Fitem%20wdt%3AP4046%20%3Fteryt%20.%0A%20FILTER%20NOT%20EXISTS%20{%20%3Fosm1%20osmt%3Awikidata%20%3Fitem%20.%20}%0A%20%0A%20SERVICE%20wikibase%3Alabel%20{%20bd%3AserviceParam%20wikibase%3Alanguage%20"[AUTO_LANGUAGE]%2Cen"%20}%0A}
+# later also everything with teryt (see https://www.wikidata.org/wiki/Q30910912 )
+# https://wiki.openstreetmap.org/wiki/User_talk:Yurik
+# 2 minutes wasted on matching https://www.openstreetmap.org/node/3009664303
+# https://query.wikidata.org/#SELECT %3Fitem %3FitemLabel %3Fvalue %3Fresult (STRLEN(STR(%3Fvalue)) AS %3Fstringlength) %3Fsnak %3Frank%0AWHERE%0A{%0A%09{%0A%09%09SELECT %3Fitem %3Fvalue %3Fresult %3Fsnak %3Frank%0A%09%09WHERE%0A%09%09{%0A%09%09%09{%0A%09%09%09%09%3Fitem p%3AP4046 [ ps%3AP4046 %3Fvalue%3B wikibase%3Arank %3Frank ] .%0A%09%09%09%09BIND("mainsnak" AS %3Fsnak) .%0A%09%09%09} UNION {%0A%09%09%09%09%3Fstatement1 pq%3AP4046 %3Fvalue%3B%0A%09%09%09%09%09wikibase%3Arank %3Frank .%0A%09%09%09%09%3Fitem %3Fp1 %3Fstatement1 .%0A%09%09%09%09BIND("qualifier" AS %3Fsnak) .%0A%09%09%09} UNION {%0A%09%09%09%09%3Fref pr%3AP4046 %3Fvalue .%0A%09%09%09%09%3Fstatement2 prov%3AwasDerivedFrom %3Fref%3B%0A%09%09%09%09%09wikibase%3Arank %3Frank .%0A%09%09%09%09%3Fitem %3Fp2 %3Fstatement2 .%0A%09%09%09%09BIND("reference" AS %3Fsnak) .%0A%09%09%09} .%0A%09%09%09BIND( REGEX( STR( %3Fvalue )%2C "^(\\d{7})%24" ) AS %3Fregexresult ) .%0A%09%09%09FILTER( %3Fregexresult %3D false ) .%0A%09%09%09BIND( IF( %3Fregexresult %3D true%2C "pass"%2C "fail" ) AS %3Fresult ) .%0A%09%09%09FILTER( %3Fitem NOT IN ( wd%3AQ4115189%2C wd%3AQ13406268%2C wd%3AQ15397819 ) ) .%0A%09%09} %0A%09%09LIMIT 100%0A%09} .%0A%09SERVICE wikibase%3Alabel { bd%3AserviceParam wikibase%3Alanguage "en" } .%0A}%0A%23ORDER BY %3Frank %3Fsnak %3Fvalue%0A%23PLEASE NOTE%3A This is experimental and may only work for simple patterns.%0A%23Tests may fail due to%3A%0A%23(1) differences in regex format between SPARQL (https%3A%2F%2Fwww.w3.org%2FTR%2Fxpath-functions%2F%23regex-syntax) and PCRE (used by constraint reports). Don't change the regex to work with SPARQL!%0A%23(2) some bug in the link that brought you here%0A%23Known to fail%3A P227 (multiple curly braces)%2C P274%2C P281
+
+teryt_simc_in_OSM = {}
+
+def is_valid_teryt_code(teryt):
+    return len(teryt) == 7
+
+def get_linkable_OSM_element(teryt, potential_wikidata_id):
+    if not is_valid_teryt_code(teryt):
+        return None
+    elif teryt not in list(teryt_simc_in_OSM.keys()):
+        #print("teryt <" + teryt + "> not found in OSM http://www.wikidata.org/entity/" + potential_wikidata_id)
+        return None
+    elif len(teryt_simc_in_OSM[teryt]) > 1:
+        error = "repeated teryt: " + str(len(teryt_simc_in_OSM[teryt])) + " "
+        for element in teryt_simc_in_OSM[teryt]:
+            error += element.get_link()
+        #print(error)
+        return None
+    elif len(teryt_simc_in_OSM[teryt]) == 1:
+        print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link())
+        return teryt_simc_in_OSM[teryt][0]
+    else:
+        assert(False)
+
+def get_wikidata_OSM_pairs():
+    returned = []
+    with open(common.get_file_storage_location() + "/" + 'teryt_wikidata.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            wikidata_id = row[0].replace("http://www.wikidata.org/entity/", "")
+            teryt = row[1]
+            element = get_linkable_OSM_element(teryt, wikidata_id)
+            if element == None:
+                continue
+            returned.append({'osm_element': element, 'wikidata_id': wikidata_id})
+    return returned
+
+def get_changeset_builder():
+    affected_objects_description = ""
+    comment = "adding wikipedia and wikidata tags based on teryt simc code in OSM (teryt:simc tag) and Wikidata (P4046 property)"
+    automatic_status = generate_osm_edits.fully_automated_description()
+    discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59926'
+    source = "wikidata, OSM"
+    return generate_osm_edits.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+
+def load_data():
+    wikipedia_connection.set_cache_location(common.get_file_storage_location())
+    file = "teryt_simc.osm"
+    osm = Data(common.get_file_storage_location() + "/" + file)
+    osm.iterate_over_data(record_presence)
+    return get_wikidata_OSM_pairs()
+
+def generate_edit(osm_element):
+    edit = {}
+    edit['osm_object_url'] = osm_element.get_link()
+    edit['prerequisite'] = {'wikidata': None, 'wikipedia': None, "teryt:simc": osm_element.get_tag_value("teryt:simc")}
+    return edit
+
+def get_location_of_element(element):
+    coord = element.get_coords()
+    if coord is None:
+        return None, None
+    else:
+        return float(coord.lat), float(coord.lon)
+    assert(False)
+
+def main():
+    pairs = load_data()
+    api = generate_osm_edits.get_correct_api(get_changeset_builder().automatic_status, get_changeset_builder().discussion_url)
+    center_location = None
+    count = 0
+    get_changeset_builder().create_changeset(api)
+    for pair in pairs:
+        edit = generate_edit(pair['osm_element'])
+        data = generate_osm_edits.get_and_verify_data(edit)
+        if data == None:
+            continue
+
+        location = get_location_of_element(pair['osm_element'])
+        if(center_location == None):
+            center_location = location
+
+        if geopy.distance.vincenty(center_location, location).km > 30:
+            continue
+
+        data['tag']['wikidata'] = pair['wikidata_id']
+        wikipedia_in_pl = wikipedia_connection.get_interwiki_article_name_by_id(pair['wikidata_id'], 'pl')
+        if wikipedia_in_pl == None:
+            continue
+        data['tag']['wikipedia'] = "pl:" + wikipedia_in_pl
+        type = edit['osm_object_url'].split("/")[3]
+
+        count += 1
+        generate_osm_edits.update_element(api, type, data)
+        generate_osm_edits.sleep(6)
+
+        if count >= 10:
+            api.ChangesetClose()
+            get_changeset_builder().create_changeset(api)
+            center_location = None
+            count = 0
+            generate_osm_edits.sleep(60)
+
+def record_presence(element):
+    teryt = element.get_tag_value("teryt:simc")
+    if teryt not in teryt_simc_in_OSM:
+        teryt_simc_in_OSM[teryt] = []
+    teryt_simc_in_OSM[teryt].append(element)
+
+main()

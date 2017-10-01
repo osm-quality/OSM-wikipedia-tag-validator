@@ -24,6 +24,26 @@ def get_api(username):
 def character_limit_of_description():
     return 255
 
+class ChangesetBuilder:
+    def __init__(self, affected_objects_description, comment, automatic_status, discussion_url, source):
+        self.affected_objects_description = affected_objects_description
+        self.comment = comment
+        self.automatic_status = automatic_status
+        self.discussion_url = discussion_url
+        self.source = source
+
+    def create_changeset(self, api):
+        comment = output_full_comment_get_comment_within_limit(self.affected_objects_description, self.comment)
+        changeset_description = {
+            "comment": comment,
+            "automatic": self.automatic_status,
+            "source_code": "https://github.com/matkoniecz/OSM-wikipedia-tag-validator.git",
+            "source": self.source,
+            }
+        if self.discussion_url != None:
+            changeset_description["discussion_before_edits"] = self.discussion_url
+        api.ChangesetCreate(changeset_description)
+
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
     parser.add_argument('-file', '-f', dest='file', type=str, help='name of yaml file produced by validator')
@@ -122,21 +142,10 @@ def output_full_comment_get_comment_within_limit(affected_objects_description, c
     print(full_comment)
     return comment
 
-def create_changeset(api, affected_objects_description, comment, automatic_status, discussion_url, source):
-    comment = output_full_comment_get_comment_within_limit(affected_objects_description, comment)
-    changeset_description = {
-        "comment": comment,
-        "automatic": automatic_status,
-        "source_code": "https://github.com/matkoniecz/OSM-wikipedia-tag-validator.git",
-        "source": source,
-        }
-    if discussion_url != None:
-        changeset_description["discussion_before_edits"] = discussion_url
-    api.ChangesetCreate(changeset_description)
-
 def make_edit(affected_objects_description, comment, automatic_status, discussion_url, type, data, source):
     api = get_correct_api(automatic_status, discussion_url)
-    create_changeset(api, affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder = ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder.create_changeset(api)
     update_element(api, type, data)
     api.ChangesetClose()
     sleep(60)

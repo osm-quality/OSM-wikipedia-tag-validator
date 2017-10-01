@@ -356,3 +356,21 @@ def get_from_generic_url(url, forced_refresh=False, identifier_hack=""):
         assert False
     response = get_data_from_cache_files(response_filename, code_filename)
     return response
+
+def get_interwiki_article_name_by_id(wikidata_id, target_language, forced_refresh=False):
+    if wikidata_id == None:
+        return None
+    wikidata_entry = get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
+    return get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language)
+
+def get_interwiki_article_name(source_language_code, source_article_name, target_language, forced_refresh=False):
+    wikidata_entry = get_data_from_wikidata(source_language_code, source_article_name, forced_refresh)
+    return get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language)
+
+def get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language):
+    try:
+        wikidata_entry = wikidata_entry['entities']
+        id = list(wikidata_entry)[0]
+        return wikidata_entry[id]['sitelinks'][target_language+'wiki']['title']
+    except KeyError:
+        return None

@@ -37,6 +37,14 @@ def record_property_presence(property):
     else:
         properties[property] += 1
 
+# TODO replace args.expected_language_code where applicable
+def get_expected_language_codes():
+    returned = []
+    if args.expected_language_code != None:
+        returned.append(args.expected_language_code)
+    returned.append("en")
+    return returned
+
 def get_problem_for_given_element(element, forced_refresh):
     if object_should_be_deleted_not_repaired(element):
         return None
@@ -107,25 +115,33 @@ def get_problem_for_given_element(element, forced_refresh):
     return None
 
 def check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, forced_refresh):
-    page_according_to_wikidata = get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
+    page_according_to_wikidata = wikipedia_connection.get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
     if page_according_to_wikidata != None:
         # assume that wikidata is correct to save downloading page
         return None
     page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
     if page == None:
-        message = "Wikipedia article linked from OSM object using wikipedia tag is missing. Typically article was moved and wikipedia tag should be edited to point to the new one. Sometimes article was deleted and no longer exists so wikipedia tag should be deleted."
-        proposed_new_target = None
-        potential_language_code = args.expected_language_code
-        potential_article_name = get_interwiki_article_name_by_id(wikidata_id, potential_language_code, forced_refresh)
+        return report_failed_wikipedia_page_link(language_code, article_name, wikidata_id, forced_refresh)
+
+def get_best_interwiki_link_by_id(wikidata_id, forced_refresh):
+    # TODO - should report something also if there is only article outside get_expected_language_codes()
+    for potential_language_code in get_expected_language_codes():
+        potential_article_name = wikipedia_connection.get_interwiki_article_name_by_id(wikidata_id, potential_language_code, forced_refresh)
         if potential_article_name != None:
-            proposed_new_target = potential_language_code + ":" + potential_article_name
-            message += " wikidata tag present on element points to an existing article"
-        return ErrorReport(
-                    error_id = "wikipedia tag links to 404",
-                    error_message = message,
-                    prerequisite = {'wikipedia': language_code+":"+article_name},
-                    desired_wikipedia_target = proposed_new_target,
-                    )
+            return potential_language_code + ':' + potential_article_name
+    return None
+
+def report_failed_wikipedia_page_link(language_code, article_name, wikidata_id, forced_refresh):
+    message = "Wikipedia article linked from OSM object using wikipedia tag is missing. Typically article was moved and wikipedia tag should be edited to point to the new one. Sometimes article was deleted and no longer exists so wikipedia tag should be deleted."
+    proposed_new_target = get_best_interwiki_link_by_id(wikidata_id, forced_refresh)
+    if proposed_new_target != None:
+        message += " wikidata tag present on element points to an existing article"
+    return ErrorReport(
+                error_id = "wikipedia tag links to 404",
+                error_message = message,
+                prerequisite = {'wikipedia': language_code+":"+article_name},
+                desired_wikipedia_target = proposed_new_target,
+                )
 
 def wikidata_data_quality_warning():
     return "REMEMBER TO VERIFY! WIKIDATA QUALITY MAY BE POOR!"
@@ -255,6 +271,10 @@ def get_elevation_data_from_wikidata_report(element):
     if ele_from_tag != None:
         if amount_from_wikidata != ele_from_tag:
             if(abs(amount_from_wikidata - ele_from_tag) > 1):
+                if not args.allow_requesting_edits_outside_osm:
+                    return None
+                if not args.allow_false_positives:
+                    return None
                 return ErrorReport(
                     error_id = "tag conflict with wikidata value - testing",
                     error_message = "elevation in OSM (" + str(ele_from_tag) + ") vs elevation in Wikidata (" + str(amount_from_wikidata) + ")" + " " + wikidata_data_quality_warning(),
@@ -278,6 +298,8 @@ def guess_value_of_historic_tag_from_element(element):
         return "lighthouse"
     if element.get_tag_value('building') == "yes":
         return "building"
+    if element.get_tag_value('leisure') == "park":
+        return "park"
     return None
 
 def get_heritage_data_from_wikidata_report(element):
@@ -400,34 +422,30 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(
             prerequisite = prerequisite,
             )
     else:
-        language_code = args.expected_language_code
-        article_name = get_interwiki_article_name_by_id(wikidata_id, language_code, forced_refresh)
         return ErrorReport(
             error_id = "wikipedia tag from wikipedia tag in an outdated form and wikidata",
             error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present",
             prerequisite = prerequisite,
-            desired_wikipedia_target = language_code + ":" + article_name,
+            desired_wikipedia_target = get_best_interwiki_link_by_id(wikidata_id, forced_refresh),
             )
 
 
 def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, forced_refresh):
-    article = get_interwiki_article_name_by_id(present_wikidata_id, args.expected_language_code, forced_refresh) #TODO support missing lang code
-    if article == None:
-        return None
-    # TODO - if not available allow English or other languages
-    language_code = args.expected_language_code
-    description = "object with wikidata=" + present_wikidata_id
     location = (None, None)
+    description = "object with wikidata=" + present_wikidata_id
     problem_indicated_by_wikidata = get_problem_based_on_wikidata(present_wikidata_id, description, location, forced_refresh)
     if problem_indicated_by_wikidata:
         return problem_indicated_by_wikidata
-    else:
-        return ErrorReport(
-            error_id = "wikipedia from wikidata tag",
-            error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article",
-            desired_wikipedia_target = language_code + ":" + article,
-            prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
-            )
+
+    link = get_best_interwiki_link_by_id(present_wikidata_id, forced_refresh)
+    if link == None:
+        return None
+    return ErrorReport(
+        error_id = "wikipedia from wikidata tag",
+        error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article",
+        desired_wikipedia_target = link,
+        prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
+        )
 
 def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh):
     prerequisite = {'wikipedia': None, 'wikidata': None}
@@ -464,7 +482,7 @@ def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_ty
     for key in wikipedia_type_keys:
         language_code = wikipedia_connection.get_text_after_first_colon(key)
         article_name = element.get_tag_value(key)
-        article = get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
+        article = wikipedia_connection.get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
         if article == None:
             links.append(None)
         elif article not in links:
@@ -532,7 +550,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         if args.additional_debug:
             print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
         return None
-    correct_article = get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
+    correct_article = wikipedia_connection.get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
     if correct_article != None:
         error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected:"
         good_link = args.expected_language_code + ":" + correct_article
@@ -578,7 +596,7 @@ def get_list_of_links_from_disambig(wikidata_id, forced_refresh):
     language_code = "en"
     if args.expected_language_code != None:
         language_code = args.expected_language_code
-    article_name = get_interwiki_article_name_by_id(wikidata_id, language_code, forced_refresh)
+    article_name = wikipedia_connection.get_interwiki_article_name_by_id(wikidata_id, language_code, forced_refresh)
     returned = []
     links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
     for link in links_from_disambig_page:
@@ -1008,24 +1026,6 @@ def wikidata_url(wikidata_id):
 def wikipedia_url(language_code, article_name):
     return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
 
-def get_interwiki_article_name_by_id(wikidata_id, target_language, forced_refresh):
-    if wikidata_id == None:
-        return None
-    wikidata_entry = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
-    return get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language)
-
-def get_interwiki_article_name(source_language_code, source_article_name, target_language, forced_refresh):
-    wikidata_entry = wikipedia_connection.get_data_from_wikidata(source_language_code, source_article_name, forced_refresh)
-    return get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language)
-
-def get_interwiki_article_name_from_wikidata_data(wikidata_entry, target_language):
-    try:
-        wikidata_entry = wikidata_entry['entities']
-        id = list(wikidata_entry)[0]
-        return wikidata_entry[id]['sitelinks'][target_language+'wiki']['title']
-    except KeyError:
-        return None
-
 class ErrorReport:
     def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, debug_log=None, error_id=None, prerequisite=None):
         self.error_id = error_id
@@ -1084,18 +1084,11 @@ def yaml_report_filepath():
     return common.get_file_storage_location()+"/" + args.file + ".yaml"
 
 def get_location_of_element(element):
-    lat = None
-    lon = None
-    if element.get_element().tag == "node":
-        lat = float(element.get_element().attrib['lat'])
-        lon = float(element.get_element().attrib['lon'])
-        return lat, lon
-    elif element.get_element().tag == "way" or element.get_element().tag == "relation":
-        coord = element.get_coords()
-        if coord is None:
-            return None, None
-        else:
-            return float(coord.lat), float(coord.lon)
+    coord = element.get_coords()
+    if coord is None:
+        return None, None
+    else:
+        return float(coord.lat), float(coord.lon)
     assert(False)
 
 def is_wikipedia_page_geotagged(page):
@@ -1264,12 +1257,6 @@ args = parsed_args()
 
 if __name__ == "__main__":
     main()
-
-# IDEA
-# 21k entries for import
-# http://88.99.164.208/wikidata/#SELECT%20%3Fitem%20%3Fteryt%20%3FitemLabel%20WHERE%20{%0A%20%3Fitem%20wdt%3AP31%2Fwdt%3AP279*%20wd%3AQ486972%20.%0A%20%3Fitem%20wdt%3AP4046%20%3Fteryt%20.%0A%20FILTER%20NOT%20EXISTS%20{%20%3Fosm1%20osmt%3Awikidata%20%3Fitem%20.%20}%0A%20%0A%20SERVICE%20wikibase%3Alabel%20{%20bd%3AserviceParam%20wikibase%3Alanguage%20"[AUTO_LANGUAGE]%2Cen"%20}%0A}
-# https://wiki.openstreetmap.org/wiki/User_talk:Yurik
-# 2 minutes wasted on matching https://www.openstreetmap.org/node/3009664303
 
 # TODO - search for IDEA note
 # IDEA detect wikidata tag matching subject:wikipedia or operator:wikipedia

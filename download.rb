@@ -144,6 +144,27 @@ def download_by_name(name, nodes, ways, relations, expand)
   return download(query, filename)
 end
 
+def teryt_query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+  query = "[timeout:#{timeout}];(\n"
+  query += area_identifier_builder if area_identifier_builder != nil
+  query += "node['teryt:simc'](#{area_identifier});\n" if nodes
+  query += "way['teryt:simc'](#{area_identifier});\n" if ways
+  query += "relation['teryt:simc'](#{area_identifier});\n" if relations
+  query += ');
+  '
+  query += '(._;>;);' if expand
+  query += 'out meta;
+  <;'
+  return query
+end
+
+def teryt_simc_query()
+  name = "Polska"
+  area_identifier = area_identifier_by_name(name)
+  area_identifier_builder = area_identifier_builder_by_name(name)
+  return teryt_query_text(area_identifier_builder, area_identifier, true, true, true, false)
+end
+
 region_data = YAML.load_file('processed_regions.yaml')
 region_data.each do |region|
   while true
@@ -156,8 +177,18 @@ region_data.each do |region|
   end
 end
 
-query = File.read('reload_Poland.query')
-download(query, download_location+"/"+'reloaded_Poland.osm')
+
+filepath = download_location+"/"+'reloaded_Poland.osm'
+if !File.exists?(filepath)
+  query = File.read('reload_Poland.query')
+  download(query, filepath)
+end
+
+filepath = download_location+"/"+'teryt_simc.osm'
+if !File.exists?(filepath)
+  query = teryt_simc_query()
+  download(query, filepath)
+end
 
 # around Poland - for making map that shows how nicely stuff was fixed in Poland
 download_graticule(50, 14)

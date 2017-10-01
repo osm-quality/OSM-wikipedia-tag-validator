@@ -33,8 +33,10 @@ class Element(etree._Element):
         return returned
 
     def get_coords(self):
-        #if self.element.tag == "nd":
-        #    return data.get_coords_of_node()
+        if self.element.tag == "node":
+            lat = float(self.element.attrib['lat'])
+            lon = float(self.element.attrib['lon'])
+            return Coord(lat, lon)
         return self.data.get_coords_of_complex_object(self.element)
 
     def get_link(self):

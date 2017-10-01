@@ -1,6 +1,13 @@
 import html
 import yaml
 
+def parse_yaml_file(filename):
+    with open(filename, 'r') as stream:
+        try:
+            return yaml.load(stream)
+        except yaml.YAMLError as exc:
+            raise(exc)
+
 def get_file_storage_location():
     cache_location_config_filepath = 'cache_location.config'
     cache_location_file = open(cache_location_config_filepath, 'r')
