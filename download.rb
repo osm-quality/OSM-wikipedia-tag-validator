@@ -31,8 +31,7 @@ def query_text(area_identifier_builder, area_identifier, nodes, ways, relations,
   query += ');
   '
   query += '(._;>;);' if expand
-  query += 'out meta;
-  <;'
+  query += 'out meta;'
   return query
 end
 
