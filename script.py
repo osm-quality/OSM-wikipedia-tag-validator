@@ -3,6 +3,15 @@ import os
 import yaml
 from subprocess import call
 
+def main():
+    delete_output_files()
+    pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl", hide_bottable_from_public=True)
+    pipeline_basic_entries()
+    make_websites_for_merged_entries()
+    write_index()
+    make_query_to_reload_only_affected_objects('Polska.yaml', 'reload_Poland.query')
+    commit_changes_in_report_directory()
+
 def merge(source_yaml, target_yaml):
     root = common.get_file_storage_location() + "/"
     system_call('cat "' + root + source_yaml +'" >> "' + root + target_yaml + '"', False)
@@ -165,16 +174,6 @@ def write_index():
         index.write("</html></body>\n")
 
     system_call('mv index.html ' + get_report_directory() + '/ -f')
-
-def main():
-    delete_output_files()
-    pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl", hide_bottable_from_public=True)
-    pipeline_basic_entries()
-    make_websites_for_merged_entries()
-    write_index()
-    make_query_to_reload_only_affected_objects('Polska.yaml', 'reload_Poland.query')
-    commit_changes_in_report_directory()
-
 
 if __name__ == '__main__':
     main()
