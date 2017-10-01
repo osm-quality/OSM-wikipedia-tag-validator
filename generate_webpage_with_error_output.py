@@ -89,6 +89,8 @@ def generate_html_file(args, name_suffix, types, information_header):
             error_count = 0
             for e in reported_errors:
                 if e['error_id'] == error_type_id:
+                    if error_count == 0:
+                        file.write(table_row( '<h2>' + error_type_id + '</h2>'))
                     error_count += 1
                     file.write(error_description(e))
             if error_count != 0:
