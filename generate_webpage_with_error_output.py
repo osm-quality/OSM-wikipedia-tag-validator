@@ -115,9 +115,9 @@ def for_public_use():
     return [
         'wikipedia tag in outdated form and wikidata - mismatch',
         'wikipedia tag links to 404',
-        'link to unlinkable article',
+        'link to an unlinkable article',
         'wikipedia wikidata mismatch',
-        'should use secondary wikipedia tag',
+        'should use a secondary wikipedia tag',
         'wikipedia from wikipedia tag in outdated form - mismatch',
         'tag may be added based on wikidata',
         'duplicated link - waterway',

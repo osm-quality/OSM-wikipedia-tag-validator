@@ -587,7 +587,7 @@ def should_use_subject_message(type, special_prefix):
 
 def get_should_use_subject_error(type, special_prefix, wikidata_id):
     return ErrorReport(
-        error_id = "should use secondary wikipedia tag",
+        error_id = "should use a secondary wikipedia tag",
         error_message = should_use_subject_message(type, special_prefix),
         prerequisite = {'wikidata': wikidata_id},
         )
@@ -712,21 +712,21 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_
             list = get_list_of_disambig_fixes(location, wikidata_id, forced_refresh)
             error_message = "link leads to a disambig page - not a proper wikipedia link (according to Wikidata - if target is not a disambig check Wikidata entry whatever it is correct)\n\n" + list
             return ErrorReport(
-                error_id = "link to unlinkable article",
+                error_id = "link to an unlinkable article",
                 error_message = error_message,
                 prerequisite = {'wikidata': wikidata_id},
                 )
         if type_id == 'Q13406463':
             error_message = "article linked in wikipedia tag is a list, so it is very unlikely to be correct"
             return ErrorReport(
-                error_id = "link to unlinkable article",
+                error_id = "link to an unlinkable article",
                 error_message = error_message,
                 prerequisite = {'wikidata': wikidata_id},
                 )
         if type_id == 'Q20136634':
             error_message = "article linked in wikipedia tag is an overview article, so it is very unlikely to be correct"
             return ErrorReport(
-                error_id = "link to unlinkable article",
+                error_id = "link to an unlinkable article",
                 error_message = error_message,
                 prerequisite = {'wikidata': wikidata_id},
                 )
