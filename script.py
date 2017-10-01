@@ -34,7 +34,7 @@ def delete_output_files():
     for entry in get_entries_to_process():
         delete_output_file(entry['region_name'] + "_all.osm.yaml")
         if entry['merged_output_file'] != None:
-            delete_output_file(entry['merged_output_file'] + ".yaml")
+            delete_output_file(entry['merged_output_file'])
 
     yaml_output_files = [
         'polska_reloaded.osm.yaml',
