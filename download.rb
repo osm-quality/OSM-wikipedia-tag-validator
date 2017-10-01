@@ -190,7 +190,7 @@ if !File.exists?(filepath)
 end
 
 # around Poland - for making map that shows how nicely stuff was fixed in Poland
-download_graticule(50, 14)
+# download_graticule(50, 14)
 # N 55
 # S 48
 # E 14
