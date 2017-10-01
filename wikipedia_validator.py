@@ -963,18 +963,27 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
         return "no expected language is defined"
 
     if args.expected_language_code == "pl":
-        target = 'Q36'
+        targets = ['Q36']
     elif args.expected_language_code == "de":
-        target = 'Q183'
+        targets = ['Q183']
+    elif args.expected_language_code == "en":
+        new_zealand = 'Q664'
+        usa = 'Q30'
+        uk = 'Q145'
+        australia = 'Q408'
+        canada = 'Q16'
+        ireland = 'Q22890'
+        # IDEA - add other areas from https://en.wikipedia.org/wiki/English_language
+        targets = [uk, usa, new_zealand, australia, canada, ireland]
     else:
-        assert(False)
+        assert False, "language code without list of matching countries"
 
     countries = get_current_countries_by_id(wikidata_id)
     if countries == None:
         # TODO locate based on coordinates...
         return None
     for country_id in countries:
-        if country_id == target:
+        if country_id in targets:
             continue
         country_name = get_wikidata_label(country_id, 'en')
         if country_name == None:
