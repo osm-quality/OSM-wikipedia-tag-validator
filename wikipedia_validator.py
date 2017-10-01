@@ -1184,8 +1184,21 @@ def process_repeated_appearances_for_this_wikidata_id(wikidata_id, entries):
     elif example_element.get_tag_value('highway') != None and example_element.get_tag_value('area') == None:
         return # road may be tagged multiple times and it is OK
     elif len(entries) > 2:
-        complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated "
-        category = " - generic"
+        is_about_place = False
+        for element in list(entries.values()):
+            if element.get_tag_value("place") != None:
+                is_about_place = True
+        if is_about_place:
+            if len(entries) <= 10:
+                # place is commonly duplicated on areas and nodes
+                # sometimes there are even multiple relations for the same are
+                # for example city and county having the same area
+                return None
+            complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated "
+            category = " - place"
+        else:
+            complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated "
+            category = " - generic"
     else:
         return
     output_message_about_duplication_of_wikidata_id(example_element, wikidata_id, complaint, list(entries.keys()), category)
