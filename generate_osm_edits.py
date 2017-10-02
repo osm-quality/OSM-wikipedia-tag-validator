@@ -242,7 +242,8 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59888'
     api = get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
-    create_changeset(api, affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder = ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder.create_changeset(api)
 
     for e in errors_for_removal:
         data = get_and_verify_data(e)
@@ -278,7 +279,8 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59665'
     api = get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
-    create_changeset(api, affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder = ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder.create_changeset(api)
 
     for e in errors_for_removal:
         data = get_and_verify_data(e)
