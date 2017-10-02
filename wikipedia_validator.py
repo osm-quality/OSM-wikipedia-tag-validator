@@ -251,14 +251,20 @@ def get_elevation_data_from_wikidata_report(element):
         return None
     unit_from_wikidata = from_wikidata['unit']
     amount_from_wikidata = from_wikidata['amount']
-    if unit_from_wikidata != "http://www.wikidata.org/entity/Q11573":
-        print("unexpected height unit in Wikidata: " + unit_from_wikidata + " in " + present_wikidata_id + " for " + element.get_link())
-        return None
 
     try:
         amount_from_wikidata = float(amount_from_wikidata)
     except ValueError:
         print("failed conversion to float: " + from_wikidata['amount'] + " in " + present_wikidata_id + " for " + element.get_link())
+        return None
+
+    if unit_from_wikidata == 'http://www.wikidata.org/entity/Q3710':
+        # feets
+        unit_from_wikidata = "http://www.wikidata.org/entity/Q11573"
+        amount_from_wikidata = 0.3048006 * amount_from_wikidata
+
+    if unit_from_wikidata != "http://www.wikidata.org/entity/Q11573":
+        print("unexpected height unit in Wikidata: " + unit_from_wikidata + " in " + present_wikidata_id + " for " + element.get_link())
         return None
 
     if ele_from_tag != None:
