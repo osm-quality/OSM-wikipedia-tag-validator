@@ -1260,17 +1260,7 @@ def main():
 
     process_repeated_appearances()
 
-    print("https://osm.wikidata.link/candidates/relation/2768922 (Kraków)")
-    print("https://osm.wikidata.link/candidates/relation/2654452 (powiat krakowski)")
-    print("https://osm.wikidata.link/candidates/relation/2907540 (Warszawa)")
-    print("https://osm.wikidata.link/filtered/Poland")
-    #https://osm.wikidata.link/candidates/relation/2675559 mazury
-    #https://osm.wikidata.link/candidates/relation/2675566 mazury
-    #https://osm.wikidata.link/candidates/relation/2675509 mazury
-    #https://osm.wikidata.link/candidates/relation/2675563 mazury
-
-    #links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
-    # https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
+    # idea links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
 
     print_popular_properties()
 
