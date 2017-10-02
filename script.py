@@ -50,7 +50,7 @@ def make_website(filename_with_report, output_filename_base, hide_bottable_from_
     split_human_bot = ""
     if hide_bottable_from_public == True:
         split_human_bot = "-hide_bottable_from_public"
-    system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '" ' + split_human_bot)
+    system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '" ' + split_human_bot, False)
 
 
 def pipeline(osm_filename, website_main_title_part, merged_output_file, language_code, hide_bottable_from_public, silent=False):
