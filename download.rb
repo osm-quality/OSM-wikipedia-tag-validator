@@ -14,8 +14,24 @@ def download_location
   return File.read('cache_location.config')
 end
 
+QueryBuilder = Struct.new(:timeout, :expand) do
+  def query_header()
+    return "[timeout:#{timeout}];(\n"
+  end
+  def query_footer()
+    returned = ''
+    returned += ');
+    '
+    returned += '(._;>;);' if expand
+    returned += "\n"
+    returned += 'out meta;'
+    return returned
+  end
+end
+
 def query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
-  query = "[timeout:#{timeout}];(\n"
+  builder = QueryBuilder.new(timeout, expand)
+  query = builder.query_header
   query += area_identifier_builder if area_identifier_builder != nil
   query += "node['wikipedia'](#{area_identifier});\n" if nodes
   query += "way['wikipedia'](#{area_identifier});\n" if ways
@@ -28,10 +44,29 @@ def query_text(area_identifier_builder, area_identifier, nodes, ways, relations,
   query += "way[~'wikipedia:.*'~'.*'](#{area_identifier});\n" if ways
   query += "relation[~'wikipedia:.*'~'.*'](#{area_identifier});\n" if relations
 
-  query += ');
-  '
-  query += '(._;>;);' if expand
-  query += 'out meta;'
+  query += builder.query_footer()
+  return query
+end
+
+def teryt_query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+  builder = QueryBuilder.new(timeout, expand)
+  query = builder.query_header
+  query += area_identifier_builder if area_identifier_builder != nil
+  query += "node['teryt:simc'](#{area_identifier});\n" if nodes
+  query += "way['teryt:simc'](#{area_identifier});\n" if ways
+  query += "relation['teryt:simc'](#{area_identifier});\n" if relations
+  query += builder.query_footer()
+  return query
+end
+
+def missing_namepl_query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+  builder = QueryBuilder.new(timeout, expand)
+  query = builder.query_header
+  query += area_identifier_builder if area_identifier_builder != nil
+  query += "node['name']['name:pl'!~'.*'](#{area_identifier});\n" if nodes
+  query += "way['name']['name:pl'!~'.*'](#{area_identifier});\n" if ways
+  query += "relation['name']['name:pl'!~'.*'](#{area_identifier});\n" if relations
+  query += builder.query_footer()
   return query
 end
 
@@ -143,55 +178,50 @@ def download_by_name(name, nodes, ways, relations, expand)
   return download(query, filename)
 end
 
-def teryt_query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
-  query = "[timeout:#{timeout}];(\n"
-  query += area_identifier_builder if area_identifier_builder != nil
-  query += "node['teryt:simc'](#{area_identifier});\n" if nodes
-  query += "way['teryt:simc'](#{area_identifier});\n" if ways
-  query += "relation['teryt:simc'](#{area_identifier});\n" if relations
-  query += ');
-  '
-  query += '(._;>;);' if expand
-  query += 'out meta;
-  <;'
-  return query
-end
+def main()
+  region_data = YAML.load_file('processed_regions.yaml')
+  region_data.each do |region|
+    while true
+      name = region['region_name']
+      break if !is_download_necessary_by_name(name, true, true, true, true)
+      result = download_by_name(name, true, true, true, true)
+      puts "failed download" if !result
+      sleep 600
+      break if result
+    end
+  end
 
-def teryt_simc_query()
-  name = "Polska"
-  area_identifier = area_identifier_by_name(name)
-  area_identifier_builder = area_identifier_builder_by_name(name)
-  return teryt_query_text(area_identifier_builder, area_identifier, true, true, true, false)
-end
 
-region_data = YAML.load_file('processed_regions.yaml')
-region_data.each do |region|
-  while true
-    name = region['region_name']
-    break if !is_download_necessary_by_name(name, true, true, true, true)
-    result = download_by_name(name, true, true, true, true)
-    puts "failed download" if !result
-    sleep 600
-    break if result
+  filepath = download_location+"/"+'teryt_simc.osm'
+  if !File.exists?(filepath)
+    name = "Polska"
+    area_identifier = area_identifier_by_name(name)
+    area_identifier_builder = area_identifier_builder_by_name(name)
+    query = teryt_query_text(area_identifier_builder, area_identifier, true, true, true, false)
+    download(query, filepath)
+  end
+
+  filepath = download_location+"/"+'namepl_krk.osm'
+  if !File.exists?(filepath)
+    name = "Kraków"
+    area_identifier = area_identifier_by_name(name)
+    area_identifier_builder = area_identifier_builder_by_name(name)
+    query = missing_namepl_query_text(area_identifier_builder, area_identifier, true, true, true, true)
+    download(query, filepath)
+  end
+
+  # around Poland - for making map that shows how nicely stuff was fixed in Poland
+  # download_graticule(50, 14)
+  # N 55
+  # S 48
+  # E 14
+  # W 24
+
+  filepath = download_location+"/"+'reloaded_Poland.osm'
+  if !File.exists?(filepath)
+    query = File.read('reload_Poland.query')
+    download(query, filepath)
   end
 end
 
-
-filepath = download_location+"/"+'reloaded_Poland.osm'
-if !File.exists?(filepath)
-  query = File.read('reload_Poland.query')
-  download(query, filepath)
-end
-
-filepath = download_location+"/"+'teryt_simc.osm'
-if !File.exists?(filepath)
-  query = teryt_simc_query()
-  download(query, filepath)
-end
-
-# around Poland - for making map that shows how nicely stuff was fixed in Poland
-# download_graticule(50, 14)
-# N 55
-# S 48
-# E 14
-# W 24
+main
