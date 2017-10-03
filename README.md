@@ -7,7 +7,7 @@ Dependencies: python3
 
 To install: `pip3 install -r requirements.txt`
 
-see https://www.mediawiki.org/wiki/User:Yurik/OSM_wiki_tag_problems for something that my be a better implementation but rely on service that may be hard to replicate once it stops working
+see https://wiki.openstreetmap.org/wiki/Wikipedia_Link_Improvement_Project for something that my be a better implementation but rely on service that may be hard to replicate once it stops working
 
 see also https://wiki.openstreetmap.org/wiki/SPARQL_examples#Quality_Control
 
