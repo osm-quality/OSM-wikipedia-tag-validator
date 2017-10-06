@@ -179,19 +179,6 @@ def download_by_name(name, nodes, ways, relations, expand)
 end
 
 def main()
-  region_data = YAML.load_file('processed_regions.yaml')
-  region_data.each do |region|
-    while true
-      name = region['region_name']
-      break if !is_download_necessary_by_name(name, true, true, true, true)
-      result = download_by_name(name, true, true, true, true)
-      puts "failed download" if !result
-      sleep 600
-      break if result
-    end
-  end
-
-
   filepath = download_location+"/"+'teryt_simc.osm'
   if !File.exists?(filepath)
     name = "Polska"
@@ -221,6 +208,18 @@ def main()
   if !File.exists?(filepath)
     query = File.read('reload_Poland.query')
     download(query, filepath)
+  end
+
+  region_data = YAML.load_file('processed_regions.yaml')
+  region_data.each do |region|
+    while true
+      name = region['region_name']
+      break if !is_download_necessary_by_name(name, true, true, true, true)
+      result = download_by_name(name, true, true, true, true)
+      puts "failed download" if !result
+      sleep 600
+      break if result
+    end
   end
 end
 
