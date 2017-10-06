@@ -88,20 +88,21 @@ def process_pairs(pairs):
     count = 0
     changeset_opened = False
     for pair in pairs:
+        location = get_location_of_element(pair['osm_element'])
+        if geopy.distance.vincenty(center_location, location).km > 80 and center_location != None:
+            unprocessed.append(pair)
+            continue
+
         edit = generate_edit(pair['osm_element'])
         data = generate_osm_edits.get_and_verify_data(edit)
+
         if data == None:
             continue
 
-        location = get_location_of_element(pair['osm_element'])
         if(center_location == None):
             get_changeset_builder().create_changeset(api)
             changeset_opened = True
             center_location = location
-
-        if geopy.distance.vincenty(center_location, location).km > 80:
-            unprocessed.append(pair)
-            continue
 
         data['tag']['wikidata'] = pair['wikidata_id']
         wikipedia_in_pl = wikipedia_connection.get_interwiki_article_name_by_id(pair['wikidata_id'], 'pl')
