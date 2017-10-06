@@ -488,11 +488,12 @@ def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_ty
     for key in wikipedia_type_keys:
         language_code = wikipedia_connection.get_text_after_first_colon(key)
         article_name = element.get_tag_value(key)
-        article = wikipedia_connection.get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
+        language_code = get_expected_language_codes()[0]
+        article = wikipedia_connection.get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
         if article == None:
-            links.append(None)
+            links.append(None) #TODO fix passing None as mysterious sign to fail
         elif article not in links:
-            links.append(args.expected_language_code + ":" + article)
+            links.append(language_code + ":" + article)
     return links
 
 def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh):
@@ -599,9 +600,7 @@ def get_should_use_subject_error(type, special_prefix, wikidata_id):
         )
 
 def get_list_of_links_from_disambig(wikidata_id, forced_refresh):
-    language_code = "en"
-    if args.expected_language_code != None:
-        language_code = args.expected_language_code
+    language_code = get_expected_language_codes()[0]
     article_name = wikipedia_connection.get_interwiki_article_name_by_id(wikidata_id, language_code, forced_refresh)
     returned = []
     links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
