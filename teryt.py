@@ -7,7 +7,7 @@ import geopy.distance
 
 # IDEA
 # 21k entries for import
-# http://88.99.164.208/wikidata/#SELECT%20%3Fitem%20%3Fteryt%20%3FitemLabel%20WHERE%20{%0A%20%3Fitem%20wdt%3AP31%2Fwdt%3AP279*%20wd%3AQ486972%20.%0A%20%3Fitem%20wdt%3AP4046%20%3Fteryt%20.%0A%20FILTER%20NOT%20EXISTS%20{%20%3Fosm1%20osmt%3Awikidata%20%3Fitem%20.%20}%0A%20%0A%20SERVICE%20wikibase%3Alabel%20{%20bd%3AserviceParam%20wikibase%3Alanguage%20"[AUTO_LANGUAGE]%2Cen"%20}%0A}
+# http://88.99.164.208/wikidata/#SELECT%20%3Fitem%20%3Fteryt%20%3FitemLabel%20WHERE%20{%0A%20%3Fitem%20wdt%3AP31%2Fwdt%3AP279*%20wd%3AQ486972%20.%0A%20%3Fitem%20wdt%3AP4046%20%3Fteryt%20.%0A%20FILTER%20NOT%20EXISTS%20{%20%3Fosm1%20osmt%3Awikidata%20%3Fitem%20.%20}%0A%20%0A%20SERVICE%20wikibase%3Alabel%20{%20bd%3AserviceParam%20wikibase%3Alanguage%20"pl%2C[AUTO_LANGUAGE]%2Cen"%20}%0A}
 # later also everything with teryt (see https://www.wikidata.org/wiki/Q30910912 )
 # https://wiki.openstreetmap.org/wiki/User_talk:Yurik
 # 2 minutes wasted on matching https://www.openstreetmap.org/node/3009664303
