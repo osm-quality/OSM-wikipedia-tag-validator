@@ -125,6 +125,7 @@ def process_pairs(pairs):
             generate_osm_edits.sleep(60)
     if changeset_opened:
         api.ChangesetClose()
+        generate_osm_edits.sleep(60)
     return unprocessed
 
 def main():
