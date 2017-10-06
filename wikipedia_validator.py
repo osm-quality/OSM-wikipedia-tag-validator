@@ -600,10 +600,14 @@ def get_should_use_subject_error(type, special_prefix, wikidata_id):
         )
 
 def get_list_of_links_from_disambig(wikidata_id, forced_refresh):
-    language_code = get_expected_language_codes()[0]
-    article_name = wikipedia_connection.get_interwiki_article_name_by_id(wikidata_id, language_code, forced_refresh)
-    returned = []
+    link = get_best_interwiki_link_by_id(wikidata_id, forced_refresh)
+    if link == None:
+        print("ops, no language code matched for " + wikidata_id)
+        return []
+    article_name = wikipedia_connection.get_article_name_from_link(link)
+    language_code = wikipedia_connection.get_language_code_from_link(link)
     links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
+    returned = []
     for link in links_from_disambig_page:
         if link['ns'] == 0:
             returned.append({'title': link['title'], 'language_code': language_code})
