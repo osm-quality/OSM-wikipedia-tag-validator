@@ -78,12 +78,15 @@ def get_location_of_element(element):
         return float(coord.lat), float(coord.lon)
     assert(False)
 
-def main():
-    pairs = load_data()
-    api = generate_osm_edits.get_correct_api(get_changeset_builder().automatic_status, get_changeset_builder().discussion_url)
+def get_api():
+    return generate_osm_edits.get_correct_api(get_changeset_builder().automatic_status, get_changeset_builder().discussion_url)
+
+def process_pairs(pairs):
+    api = get_api()
+    unprocessed = []
     center_location = None
     count = 0
-    get_changeset_builder().create_changeset(api)
+    changeset_opened = False
     for pair in pairs:
         edit = generate_edit(pair['osm_element'])
         data = generate_osm_edits.get_and_verify_data(edit)
@@ -92,9 +95,12 @@ def main():
 
         location = get_location_of_element(pair['osm_element'])
         if(center_location == None):
+            get_changeset_builder().create_changeset(api)
+            changeset_opened = True
             center_location = location
 
-        if geopy.distance.vincenty(center_location, location).km > 30:
+        if geopy.distance.vincenty(center_location, location).km > 80:
+            unprocessed.append(pair)
             continue
 
         data['tag']['wikidata'] = pair['wikidata_id']
@@ -104,16 +110,33 @@ def main():
         data['tag']['wikipedia'] = "pl:" + wikipedia_in_pl
         type = edit['osm_object_url'].split("/")[3]
 
+        print(edit['osm_object_url'] + ' ' + data['tag']['name'] + ' - adding wikidata=' + data['tag']['wikidata'] + ' wikipedia=' + data['tag']['wikipedia'])
+
         count += 1
         generate_osm_edits.update_element(api, type, data)
-        generate_osm_edits.sleep(6)
 
-        if count >= 10:
+        if count >= 500:
+            print("closing changeset after reaching limit of 500 items")
             api.ChangesetClose()
-            get_changeset_builder().create_changeset(api)
+            changeset_opened = False
             center_location = None
             count = 0
             generate_osm_edits.sleep(60)
+    if changeset_opened:
+        api.ChangesetClose()
+    return unprocessed
+
+def main():
+    pairs = load_data()
+    for pair in pairs:
+        wikipedia_in_pl = wikipedia_connection.get_interwiki_article_name_by_id(pair['wikidata_id'], 'pl')
+        if wikipedia_in_pl == None:
+            print(pair['osm_element'].get_link() + " has no matching entry in pl wikipedia")
+    while True:
+        pairs = process_pairs(pairs)
+        if pairs == []:
+            break
+
 
 def record_presence(element):
     teryt = element.get_tag_value("teryt:simc")
