@@ -972,6 +972,8 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
         targets = ['Q36']
     elif args.expected_language_code == "de":
         targets = ['Q183']
+    elif args.expected_language_code == "cz":
+        targets = ['Q213']
     elif args.expected_language_code == "en":
         new_zealand = 'Q664'
         usa = 'Q30'
