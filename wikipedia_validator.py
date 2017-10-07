@@ -722,7 +722,7 @@ def get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_
             # wikidata entry may be wrong
             # https://pl.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&redirects=&titles=Java%20(ujednoznacznienie)
             list = get_list_of_disambig_fixes(location, wikidata_id, forced_refresh)
-            error_message = "link leads to a disambig page - not a proper wikipedia link (according to Wikidata - if target is not a disambig check Wikidata entry whatever it is correct)\n\n" + list
+            error_message = "link leads to a disambig page - not a proper wikipedia link (according to Wikidata - if target is not a disambig check Wikidata entry whether it is correct)\n\n" + list
             return ErrorReport(
                 error_id = "link to an unlinkable article",
                 error_message = error_message,
@@ -1015,7 +1015,7 @@ def get_current_countries_by_id(wikidata_id):
     returned = []
     for country in countries:
         country_id = country['mainsnak']['datavalue']['value']['id']
-        # we need to check whatever locations still belongs to a given country
+        # we need to check whether locations still belongs to a given country
         # it is necessary to avoid gems like
         # "Płock is allowed to have foreign wikipedia link, because it is at least partially in Nazi Germany"
         # P582 indicates the time an item ceases to exist or a statement stops being valid
