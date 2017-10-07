@@ -1064,7 +1064,6 @@ class ErrorReport:
             error_id = self.error_id,
             error_message = self.error_message,
             debug_log = self.debug_log,
-            osm_object_description = describe_osm_object(self.element),
             osm_object_url = self.element.get_link(),
             current_wikipedia_target = self.current_wikipedia_target,
             desired_wikipedia_target = self.desired_wikipedia_target,
