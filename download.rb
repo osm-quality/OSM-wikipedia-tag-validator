@@ -216,8 +216,11 @@ def main()
       name = region['region_name']
       break if !is_download_necessary_by_name(name, true, true, true, true)
       result = download_by_name(name, true, true, true, true)
-      puts "failed download" if !result
-      sleep 600
+      if !result
+        puts "failed download"
+        sleep 300
+      end
+      sleep 300
       break if result
     end
   end
