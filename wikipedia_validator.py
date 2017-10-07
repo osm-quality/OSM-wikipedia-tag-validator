@@ -382,6 +382,9 @@ def add_data_from_wikidata(element):
     #P140 religion
     #P150 - list of subareas
     #P2046 - area of feature
+    #P402 - id of OSM relation
+    #P4080 - house count
+    #P1427 - start point (for routes)
     return None
 
 def attempt_to_locate_wikipedia_tag(element, forced_refresh):
@@ -1235,7 +1238,11 @@ def skip_property(property_name):
     'P47', 'P2043', 'P138', 'P36', 'P140', 'P356', 'P1889', 'P1082', 'P190',
     'P998', 'P948', 'P159', 'P443', 'P3417', 'P982', 'P1997', 'P1448', 'P6',
     'P237', 'P1036', 'P1705', 'P281', 'P150', 'P2046', 'P473', 'P213',
-    'P1619', 'P127']
+    'P1619', 'P127', 'P1249', 'P2788', 'P691', 'P402', 'P762', 'P4080',
+    'P1427',
+    # not thoroughly investigated
+    'P149',
+    ]
     if property_name in known:
         return True
     types = get_all_types_describing_wikidata_object(property_name)
