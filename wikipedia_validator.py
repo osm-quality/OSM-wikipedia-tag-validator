@@ -1055,6 +1055,7 @@ class ErrorReport:
         self.error_message = error_message
         self.debug_log = debug_log
         self.element = element
+        self.current_wikipedia_target = element.get_tag_value("wikipedia")
         self.desired_wikipedia_target = desired_wikipedia_target
         self.prerequisite = prerequisite
 
@@ -1065,7 +1066,7 @@ class ErrorReport:
             debug_log = self.debug_log,
             osm_object_description = describe_osm_object(self.element),
             osm_object_url = self.element.get_link(),
-            current_wikipedia_target = self.element.get_tag_value("wikipedia"),
+            current_wikipedia_target = self.current_wikipedia_target,
             desired_wikipedia_target = self.desired_wikipedia_target,
             prerequisite = self.prerequisite,
         )
