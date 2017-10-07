@@ -1,6 +1,7 @@
 import common
 import os
 import yaml
+import generate_webpage_with_error_output
 from subprocess import call
 
 def main():
@@ -160,6 +161,8 @@ def make_websites_for_merged_entries():
 def write_index():
     with open('index.html', 'w') as index:
         index.write("<html><body>\n")
+        index.write(generate_webpage_with_error_output.feedback_header())
+        index.write("</br>\n")
         for filename in merged_outputs_list():
             name = filename.replace('.yaml', '')
             index.write("<a href = " + common.htmlify(name) + ".html>" + common.htmlify(name) + "</a></br>\n")
