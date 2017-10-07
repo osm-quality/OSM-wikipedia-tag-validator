@@ -90,7 +90,7 @@ def get_query_for_loading_errors_by_category(filename, printed_error_ids, format
                 #relations skipped due to https://github.com/maproulette/maproulette2/issues/259
                 continue
             returned += type+'('+id+')' + get_prerequisite_in_overpass_query_format(e) + ';' + "\n"
-    returned += get_query_footer(format)
+    returned += get_query_footer(format) + "//" + str(printed_error_ids)
     return returned
 
 def get_write_location():
