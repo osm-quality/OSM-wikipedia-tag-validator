@@ -28,15 +28,19 @@ def download(url):
             continue
 
 def get_from_wikipedia_api(language_code, what, article_name, forced_refresh=False):
-    language_code = urllib.parse.quote(language_code)
-    article_name = urllib.parse.quote(article_name)
-    url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + article_name
-    wikidata_id = get_wikidata_object_id_from_article(language_code, article_name)
-    if wikidata_id == None:
-        wikidata_id = ""
-    parsed_json = json.loads(get_from_generic_url(url, forced_refresh, wikidata_id))
-    id = list(parsed_json['query']['pages'])[0]
-    data = parsed_json['query']['pages'][id]
+    try:
+        language_code = urllib.parse.quote(language_code)
+        article_name = urllib.parse.quote(article_name)
+        url = "https://" + language_code + ".wikipedia.org/w/api.php?action=query&format=json"+what+"&redirects=&titles=" + article_name
+        wikidata_id = get_wikidata_object_id_from_article(language_code, article_name)
+        if wikidata_id == None:
+            wikidata_id = ""
+        parsed_json = json.loads(get_from_generic_url(url, forced_refresh, wikidata_id))
+        id = list(parsed_json['query']['pages'])[0]
+        data = parsed_json['query']['pages'][id]
+    except TypeError:
+        print("language_code=", language_code, "what=", what, "article_name=", article_name)
+        raise
     return data
 
 def get_intro_from_wikipedia(language_code, article_name, requested_length=None):
