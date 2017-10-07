@@ -3,11 +3,23 @@ import yaml
 import os.path
 import common
 
+def contact_url():
+    return "https://www.openstreetmap.org/message/new/Mateusz%20Konieczny"
+
+def contact_html_prefix():
+    return "<a href=\"" + contact_url() + "\">"
+
+def contact_html_suffix():
+    return "</a>"
+
+def feedback_header():
+    return "Feedback? Ideas? Complaints? Suggestions? Request for report about other area? " + contact_html_prefix() + "send me a message" + contact_html_suffix() + "!"
+
 def html_header():
     returned = ""
     returned += "<html>\n"
     returned += "<body>\n"
-    returned += "Feedback? Ideas? Complaints? Suggestions? Request for report about other area? <a href=\"https://www.openstreetmap.org/message/new/Mateusz%20Konieczny\">send me a message</a>!"
+    returned += feedback_header()
     returned += "<br />\n"
     returned += "---------------\n"
     returned +=  "<table>\n"
