@@ -22,7 +22,7 @@ QueryBuilder = Struct.new(:timeout, :expand) do
     returned = ''
     returned += ');
     '
-    returned += '(._;>;);' if expand
+    returned += '>;' if expand
     returned += "\n"
     returned += 'out meta;'
     return returned
