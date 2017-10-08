@@ -36,13 +36,50 @@ def record_property_presence(property):
     else:
         properties[property] += 1
 
+def all_wikipedia_language_codes_order_by_importance():
+    # list from https://meta.wikimedia.org/wiki/List_of_Wikipedias as of 2017-10-07
+    # ordered by article count except some for extreme bot spam
+    return ['en', 'de', 'fr', 'nl', 'ru', 'it', 'es', 'pl',
+            'vi', 'ja', 'pt', 'zh', 'uk', 'fa', 'ca', 'ar', 'no', 'sh', 'fi',
+            'hu', 'id', 'ko', 'cs', 'ro', 'sr', 'ms', 'tr', 'eu', 'eo', 'bg',
+            'hy', 'da', 'zh-min-nan', 'sk', 'min', 'kk', 'he', 'lt', 'hr',
+            'ce', 'et', 'sl', 'be', 'gl', 'el', 'nn', 'uz', 'simple', 'la',
+            'az', 'ur', 'hi', 'vo', 'th', 'ka', 'ta', 'cy', 'mk', 'mg', 'oc',
+            'tl', 'ky', 'lv', 'bs', 'tt', 'new', 'sq', 'tg', 'te', 'pms',
+            'br', 'be-tarask', 'zh-yue', 'bn', 'ml', 'ht', 'ast', 'lb', 'jv',
+            'mr', 'azb', 'af', 'sco', 'pnb', 'ga', 'is', 'cv', 'ba', 'fy',
+            'su', 'sw', 'my', 'lmo', 'an', 'yo', 'ne', 'gu', 'io', 'pa',
+            'nds', 'scn', 'bpy', 'als', 'bar', 'ku', 'kn', 'ia', 'qu', 'ckb',
+            'mn', 'arz', 'bat-smg', 'wa', 'gd', 'nap', 'bug', 'yi', 'am',
+            'si', 'cdo', 'map-bms', 'or', 'fo', 'mzn', 'hsb', 'xmf', 'li',
+            'mai', 'sah', 'sa', 'vec', 'ilo', 'os', 'mrj', 'hif', 'mhr', 'bh',
+            'roa-tara', 'eml', 'diq', 'pam', 'ps', 'sd', 'hak', 'nso', 'se',
+            'ace', 'bcl', 'mi', 'nah', 'zh-classical', 'nds-nl', 'szl', 'gan',
+            'vls', 'rue', 'wuu', 'bo', 'glk', 'vep', 'sc', 'fiu-vro', 'frr',
+            'co', 'crh', 'km', 'lrc', 'tk', 'kv', 'csb', 'so', 'gv', 'as',
+            'lad', 'zea', 'ay', 'udm', 'myv', 'lez', 'kw', 'stq', 'ie',
+            'nrm', 'nv', 'pcd', 'mwl', 'rm', 'koi', 'gom', 'ug', 'lij', 'ab',
+            'gn', 'mt', 'fur', 'dsb', 'cbk-zam', 'dv', 'ang', 'ln', 'ext',
+            'kab', 'sn', 'ksh', 'lo', 'gag', 'frp', 'pag', 'pi', 'olo', 'av',
+            'dty', 'xal', 'pfl', 'krc', 'haw', 'bxr', 'kaa', 'pap', 'rw',
+            'pdc', 'bjn', 'to', 'nov', 'kl', 'arc', 'jam', 'kbd', 'ha', 'tpi',
+            'tyv', 'tet', 'ig', 'ki', 'na', 'lbe', 'roa-rup', 'jbo', 'ty',
+            'mdf', 'kg', 'za', 'wo', 'lg', 'bi', 'srn', 'zu', 'chr', 'tcy',
+            'ltg', 'sm', 'om', 'xh', 'tn', 'pih', 'chy', 'rmy', 'tw', 'cu',
+            'kbp', 'tum', 'ts', 'st', 'got', 'rn', 'pnt', 'ss', 'fj', 'bm',
+            'ch', 'ady', 'iu', 'mo', 'ny', 'ee', 'ks', 'ak', 'ik', 've', 'sg',
+            'dz', 'ff', 'ti', 'cr', 'atj', 'din', 'ng', 'cho', 'kj', 'mh',
+            'ho', 'ii', 'aa', 'mus', 'hz', 'kr',
+            # degraded due to major low-quality bot spam
+            'ceb', 'sv', 'war'
+            ]
+
 # TODO replace args.expected_language_code where applicable
 def get_expected_language_codes():
     returned = []
     if args.expected_language_code != None:
         returned.append(args.expected_language_code)
-    returned.append("en")
-    return returned
+    return returned + all_wikipedia_language_codes_order_by_importance()
 
 def get_problem_for_given_element(element, forced_refresh):
     if object_should_be_deleted_not_repaired(element):
@@ -123,7 +160,6 @@ def check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, f
         return report_failed_wikipedia_page_link(language_code, article_name, wikidata_id, forced_refresh)
 
 def get_best_interwiki_link_by_id(wikidata_id, forced_refresh):
-    # TODO - should report something also if there is only article outside get_expected_language_codes()
     for potential_language_code in get_expected_language_codes():
         potential_article_name = wikipedia_connection.get_interwiki_article_name_by_id(wikidata_id, potential_language_code, forced_refresh)
         if potential_article_name != None:
@@ -490,13 +526,19 @@ def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_ty
     for key in wikipedia_type_keys:
         language_code = wikipedia_connection.get_text_after_first_colon(key)
         article_name = element.get_tag_value(key)
-        language_code = get_expected_language_codes()[0]
-        article = wikipedia_connection.get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
-        if article == None:
-            links.append(None) #TODO fix passing None as mysterious sign to fail
-        elif article not in links:
-            links.append(language_code + ":" + article)
-    return links
+
+        wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+        if wikidata_id == None:
+            links.append(language_code + ":" + article_name)
+            continue
+
+        link = get_best_interwiki_link_by_id(wikidata_id, forced_refresh)
+        if link == None:
+            links.append(language_code + ":" + article_name)
+            continue
+
+        links.append(link)
+    return list(set(links))
 
 def get_wikidata_id_after_redirect(wikidata_id):
     return wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]['id']
