@@ -54,6 +54,7 @@ def parsed_args():
     return args
 
 def get_data(id, type):
+    print("downloading", id, type)
     api = get_api(manual_username())
     try:
         if type == 'node':
