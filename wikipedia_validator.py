@@ -1107,23 +1107,26 @@ def object_should_be_deleted_not_repaired(element):
         return True
 
 class ErrorReport:
-    def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, debug_log=None, error_id=None, prerequisite=None):
+    def __init__(self, error_message=None, desired_wikipedia_target=None, debug_log=None, error_id=None, prerequisite=None):
         self.error_id = error_id
         self.error_message = error_message
         self.debug_log = debug_log
-        self.element = element
-        self.current_wikipedia_target = element.get_tag_value("wikipedia")
+        self.current_wikipedia_target = None
         self.desired_wikipedia_target = desired_wikipedia_target
         self.prerequisite = prerequisite
+
+    def bind_to_element(self, element):
+        self.current_wikipedia_target = element.get_tag_value("wikipedia") # TODO - save all tags #TODO - how to handle multiple?
+        self.osm_object_url = element.get_link()
 
     def yaml_output(self, filepath):
         data = dict(
             error_id = self.error_id,
             error_message = self.error_message,
             debug_log = self.debug_log,
-            osm_object_url = self.element.get_link(),
-            current_wikipedia_target = self.current_wikipedia_target,
-            desired_wikipedia_target = self.desired_wikipedia_target,
+            osm_object_url = self.osm_object_url,
+            current_wikipedia_target = self.current_wikipedia_target, #TODO - make it generic
+            desired_wikipedia_target = self.desired_wikipedia_target, #TODO - make it generic
             prerequisite = self.prerequisite,
         )
         with open(filepath, 'a') as outfile:
@@ -1132,8 +1135,7 @@ class ErrorReport:
     def stdout_output(self):
         print()
         print(self.error_message)
-        print(describe_osm_object(self.element))
-        print(self.element.get_link())
+        print(self.osm_object_url)
         print(self.debug_log)
         print(self.prerequisite)
         if self.desired_wikipedia_target != None:
@@ -1146,7 +1148,7 @@ def describe_osm_object(element):
     return name + " " + element.get_link()
 
 def output_element(element, error_report):
-    error_report.element = element
+    error_report.bind_to_element(element)
     link = element.get_tag_value("wikipedia")
     language_code = None
     article_name = None
