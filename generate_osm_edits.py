@@ -183,7 +183,7 @@ def get_and_verify_data(e):
         return None
     return data
 
-def handle_follow_redirect(e):
+def handle_follow_wikipedia_redirect(e):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
     language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
@@ -317,7 +317,7 @@ def main():
     #requires manual checking is it operating in Poland #add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors)
     #requires manual checking is it operating in Poland #add_wikipedia_tag_from_wikidata_tag(reported_errors)
     for e in reported_errors:
-        #handle_follow_redirect(e)
+        #handle_follow_wikipedia_redirect(e)
         #change_to_local_language(e)
         pass
 
