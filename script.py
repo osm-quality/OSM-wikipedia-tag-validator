@@ -150,7 +150,6 @@ def make_websites_for_merged_entries():
             entry = get_entry_contributing_to_merged_file(filename)
             output_filename_base = filename.replace(".yaml", "")
             make_website(filename, output_filename_base, entry['hide_bottable_from_public'])
-            break
         else:
             print(filepath + ' is not present [highly surprising]')
             raise 'Unexpected failure'
