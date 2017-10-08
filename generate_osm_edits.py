@@ -297,7 +297,9 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
             language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
             article_name = wikipedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
             wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-            assert(wikidata_id != None)
+            if wikidata_id == None:
+                print(common.wikipedia_url(language_code, article_name) + " from " + e['osm_object_url'] + " has no wikidata entry")
+                continue
             data['tag']['wikidata'] = wikidata_id
             change_description += " +adding wikidata=" + wikidata_id
         print(change_description)
