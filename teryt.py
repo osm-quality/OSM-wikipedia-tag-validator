@@ -31,14 +31,29 @@ def get_linkable_OSM_element(teryt, potential_wikidata_id):
         #print(error)
         return None
     elif len(teryt_simc_in_OSM[teryt]) == 1:
-        print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link())
-        return teryt_simc_in_OSM[teryt][0]
+        osm_element = teryt_simc_in_OSM[teryt][0]
+        if osm_element.get_tag_value('wikidata') == None:
+            print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link())
+            return osm_element
+        if osm_element.get_tag_value('wikidata') != potential_wikidata_id:
+            print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link() + " but there is already a different wikidata value")
+            lang = 'pl'
+            article = wikipedia_connection.get_interwiki_article_name_by_id(potential_wikidata_id, lang)
+            print("#: Expected article: " + common.wikipedia_url(lang, article))
+            article = wikipedia_connection.get_interwiki_article_name_by_id(osm_element.get_tag_value('wikidata'), lang)
+            print("#: Currently linked article: " + common.wikipedia_url(lang, article))
+            if osm_element.get_tag_value('place') != None:
+                print("#: place=" + osm_element.get_tag_value('place'))
+            else:
+                print("#: place tag not present")
+        return None
     else:
         assert(False)
 
 def get_wikidata_OSM_pairs():
     returned = []
     with open(common.get_file_storage_location() + "/" + 'teryt_wikidata.csv', 'r') as csvfile:
+        print(common.get_file_storage_location() + "/" + 'teryt_wikidata.csv')
         reader = csv.reader(csvfile)
         for row in reader:
             wikidata_id = row[0].replace("http://www.wikidata.org/entity/", "")
