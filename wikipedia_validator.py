@@ -1275,6 +1275,7 @@ def process_repeated_appearances_for_this_wikidata_id(wikidata_id, entries):
     else:
         return
     output_message_about_duplication_of_wikidata_id(example_element, wikidata_id, complaint, list(entries.keys()), category)
+
 def process_repeated_appearances():
     # TODO share between runs
     repeated_wikidata_warned_already = []
