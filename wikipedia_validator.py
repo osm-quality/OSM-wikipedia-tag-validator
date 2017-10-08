@@ -498,6 +498,12 @@ def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_ty
             links.append(language_code + ":" + article)
     return links
 
+def get_wikidata_id_after_redirect(wikidata_id):
+    return wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]['id']
+
+def get_article_name_after_redirect(language_code, article_name):
+    return wikipedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
+
 def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh):
     if present_wikidata_id == None:
         return None
@@ -510,19 +516,35 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
     if present_wikidata_id == wikidata_id_from_article:
         return None
 
-    title_after_possible_redirects = wikipedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
-    if article_name != title_after_possible_redirects and article_name.find("#") == -1:
+    base_message = "wikidata and wikipedia tags link to a different objects"
+    message = base_message + ", because wikidata tag points to a redirect that should be followed (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
+    maybe_redirected_wikidata_id = get_wikidata_id_after_redirect(present_wikidata_id)
+    if maybe_redirected_wikidata_id != present_wikidata_id:
+        if maybe_redirected_wikidata_id == wikidata_id_from_article:
+            return ErrorReport(
+                error_id = "wikipedia wikidata mismatch - follow wikidata redirect",
+                error_message = message,
+                prerequisite = {'wikidata': present_wikidata_id, 'wikipedia': language_code+":"+article_name},
+                )
+
+    title_after_possible_redirects = get_article_name_after_redirect(language_code, article_name)
+    is_article_redirected = (article_name != title_after_possible_redirects and article_name.find("#") == -1)
+    if is_article_redirected:
         wikidata_id_from_redirect = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
         if present_wikidata_id == wikidata_id_from_redirect:
-            message = "wikidata and wikipedia tags link to a different objects, because wikipedia page points toward redirect that should be followed (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
+            message = base_message + ", because wikidata tag points to a redirect that should be followed (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
             new_wikipedia_link = language_code+":"+title_after_possible_redirects
             return ErrorReport(
-                error_id = "wikipedia wikidata mismatch - follow redirect",
+                error_id = "wikipedia wikidata mismatch - follow wikipedia redirect",
                 error_message = message,
                 desired_wikipedia_target = new_wikipedia_link,
                 prerequisite = {'wikidata': present_wikidata_id, 'wikipedia': language_code+":"+article_name},
                 )
-    message = "wikidata and wikipedia tags link to a different objects (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +" wikidata from article)"
+    message = base_message + " (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +" wikidata from article)"
+    if maybe_redirected_wikidata_id != present_wikidata_id:
+        message += " Note that this OSM object has wikidata tag links a redirect (" + present_wikidata_id  + " to " + maybe_redirected_wikidata_id + ")."
+    if is_article_redirected:
+        message += " Note that this OSM object has wikipedia tag that links redirect ('" + article_name  + "' to '" + title_after_possible_redirects + "')."
     return ErrorReport(
         error_id = "wikipedia wikidata mismatch",
         error_message = message,

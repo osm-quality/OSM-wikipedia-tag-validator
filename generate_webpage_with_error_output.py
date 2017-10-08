@@ -144,13 +144,14 @@ def for_private_use():
         'wikipedia tag unexpected language',
         'wikipedia tag from wikipedia tag in an outdated form and wikidata',
         'wikipedia tag from wikipedia tag in an outdated form',
-        'wikipedia wikidata mismatch - follow redirect',
+        'wikipedia wikidata mismatch - follow wikipedia redirect',
         'wikipedia from wikidata tag',
         'wikidata tag may be added',
     ]
 
 def for_tests():
     return [
+        'wikipedia wikidata mismatch - follow wikidata redirect',
         'tag may be added based on wikidata - historic=church',
         'tag may be added based on wikidata - historic=building',
         'tag may be added based on wikidata - historic=lighthouse',

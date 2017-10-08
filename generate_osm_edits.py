@@ -182,7 +182,7 @@ def get_and_verify_data(e):
     return data
 
 def handle_follow_redirect(e):
-    if e['error_id'] != 'wikipedia wikidata mismatch - follow redirect':
+    if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
     language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
     if language_code != "pl":
