@@ -76,6 +76,7 @@ def update_element(api, type, data):
     assert False, str(type) + " type as not recognised"
 
 def is_text_field_mentioning_wikipedia_or_wikidata(text):
+    text = text.replace("http://wiki-de.genealogy.net/GOV:", "")
     if text.find("wikipedia") != -1:
         return True
     if text.find("wikidata") != -1:
