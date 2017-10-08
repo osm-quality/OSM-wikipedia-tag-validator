@@ -144,14 +144,15 @@ def pipeline_basic_entries():
 
 def make_websites_for_merged_entries():
     for filename in merged_outputs_list():
-        if os.path.isfile(root() + filename):
+        filepath = root() + filename
+        if os.path.isfile(filepath):
             # inherit split status on bottable and nonbottable tasks
             entry = get_entry_contributing_to_merged_file(filename)
             output_filename_base = filename.replace(".yaml", "")
             make_website(filename, output_filename_base, entry['hide_bottable_from_public'])
             break
         else:
-            print(root() + filename + ' is not present [highly surprising]')
+            print(filepath + ' is not present [highly surprising]')
             raise 'Unexpected failure'
 
     for filename in merged_outputs_list():
