@@ -59,8 +59,9 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
         if exit_pipeline_due_to_missing_osm_data(osm_filename, silent):
             return
         make_report_file(language_code, osm_filename)
-        if not os.path.isfile(root() + output_filename_errors):
-            print(output_filename_errors + ' is not present [highly surprising]')
+        filepath = root() + output_filename_errors
+        if not os.path.isfile(filepath):
+            print(filepath + ' is not present [highly surprising]')
             raise 'Unexpected failure'
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
