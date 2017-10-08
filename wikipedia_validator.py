@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import urllib.request, urllib.error, urllib.parse
 import argparse
 import yaml
 import re
@@ -1042,12 +1041,6 @@ def object_should_be_deleted_not_repaired(element):
             return True
     if element.get_tag_value("historic") == "battlefield":
         return True
-
-def wikidata_url(wikidata_id):
-    return "https://www.wikidata.org/wiki/" + wikidata_id
-
-def wikipedia_url(language_code, article_name):
-    return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
 
 class ErrorReport:
     def __init__(self, error_message=None, element=None, desired_wikipedia_target=None, debug_log=None, error_id=None, prerequisite=None):
