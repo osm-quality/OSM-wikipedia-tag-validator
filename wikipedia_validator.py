@@ -1133,15 +1133,6 @@ class ErrorReport:
         with open(filepath, 'a') as outfile:
             yaml.dump([data], outfile, default_flow_style=False)
 
-    def stdout_output(self):
-        print()
-        print(self.error_message)
-        print(self.osm_object_url)
-        print(self.debug_log)
-        print(self.prerequisite)
-        if self.desired_wikipedia_target != None:
-            print("wikipedia tag should probably be relinked to " + self.desired_wikipedia_target)
-
 def describe_osm_object(element):
     name = element.get_tag_value("name")
     if name == None:
