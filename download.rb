@@ -203,10 +203,6 @@ def main()
       download_graticule(lat, lon)
     end
   end
-  # N 55
-  # S 48
-  # W 14
-  # E 24
 
   filepath = download_location+"/"+'reloaded_Poland.osm'
   if !File.exists?(filepath)
