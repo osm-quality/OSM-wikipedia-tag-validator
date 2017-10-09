@@ -154,6 +154,7 @@ def pipeline_graticule_entries():
                 merged_output_file = None,
                 language_code = None,
                 hide_bottable_from_public = False,
+                silent = True,
                 )
 
 def make_websites_for_merged_entries():
