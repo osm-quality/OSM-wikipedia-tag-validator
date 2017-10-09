@@ -12,6 +12,7 @@ def main():
     write_index()
     make_query_to_reload_only_affected_objects('Polska.yaml', 'reload_Poland.query')
     commit_changes_in_report_directory()
+    pipeline_graticule_entries()
 
 def merge(source_yaml, target_yaml):
     root = common.get_file_storage_location() + "/"
@@ -142,6 +143,18 @@ def pipeline_basic_entries():
             language_code = entry['language_code'],
             hide_bottable_from_public = entry['hide_bottable_from_public'],
             )
+
+def pipeline_graticule_entries():
+    for lat in range(-180, 180+1):
+        for lon in range(-180, 180+1):
+            region_name = str(lat) + ", " + str(lon)
+            pipeline(
+                osm_filename = region_name + "_all.osm",
+                website_main_title_part = region_name,
+                merged_output_file = None,
+                language_code = None,
+                hide_bottable_from_public = False,
+                )
 
 def make_websites_for_merged_entries():
     for filename in merged_outputs_list():

@@ -198,11 +198,15 @@ def main()
   end
 
   # around Poland - for making map that shows how nicely stuff was fixed in Poland
-  # download_graticule(50, 14)
+  for lat in 48..55
+    for lon in 14..24
+      download_graticule(lat, lon)
+    end
+  end
   # N 55
   # S 48
-  # E 14
-  # W 24
+  # W 14
+  # E 24
 
   filepath = download_location+"/"+'reloaded_Poland.osm'
   if !File.exists?(filepath)
