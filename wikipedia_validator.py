@@ -1119,6 +1119,7 @@ class ErrorReport:
     def bind_to_element(self, element):
         self.current_wikipedia_target = element.get_tag_value("wikipedia") # TODO - save all tags #TODO - how to handle multiple?
         self.osm_object_url = element.get_link()
+        self.location = get_location_of_element(element)
 
     def yaml_output(self, filepath):
         data = dict(
@@ -1129,6 +1130,7 @@ class ErrorReport:
             current_wikipedia_target = self.current_wikipedia_target, #TODO - make it generic
             desired_wikipedia_target = self.desired_wikipedia_target, #TODO - make it generic
             prerequisite = self.prerequisite,
+            location = self.location,
         )
         with open(filepath, 'a') as outfile:
             yaml.dump([data], outfile, default_flow_style=False)
