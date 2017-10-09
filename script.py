@@ -33,6 +33,10 @@ def delete_output_file(filename):
             return
 
 def delete_output_files():
+    for region_name in get_graticule_region_names():
+        file_for_deletion = region_name + "_all.osm.yaml"
+        delete_output_file(file_for_deletion)
+
     for entry in get_entries_to_process():
         delete_output_file(entry['region_name'] + "_all.osm.yaml")
         if entry['merged_output_file'] != None:
@@ -145,18 +149,24 @@ def pipeline_basic_entries():
             hide_bottable_from_public = entry['hide_bottable_from_public'],
             )
 
-def pipeline_graticule_entries():
+def get_graticule_region_names():
+    returned = []
     for lat in range(-180, 180+1):
         for lon in range(-180, 180+1):
             region_name = str(lat) + ", " + str(lon)
-            pipeline(
-                osm_filename = region_name + "_all.osm",
-                website_main_title_part = region_name,
-                merged_output_file = None,
-                language_code = None,
-                hide_bottable_from_public = False,
-                silent = True,
-                )
+            returned.append(region_name)
+    return returned
+
+def pipeline_graticule_entries():
+    for region_name in get_graticule_region_names():
+        pipeline(
+            osm_filename = region_name + "_all.osm",
+            website_main_title_part = region_name,
+            merged_output_file = None,
+            language_code = None,
+            hide_bottable_from_public = False,
+            silent = True,
+            )
 
 def make_websites_for_merged_entries():
     for filename in merged_outputs_list():
