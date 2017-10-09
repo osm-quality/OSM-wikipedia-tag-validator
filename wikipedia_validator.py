@@ -365,6 +365,13 @@ def get_heritage_data_from_wikidata_report(element):
             )
     return None
 
+def website_from_wikidata_error_report(element):
+    present_wikidata_id = element.get_tag_value("wikidata")
+    website = tag_from_wikidata_error_report(present_wikidata_id, 'website', 'P856', element, " - website")
+    if website != None and website.error_message.find('web.archive.org') == -1:
+        if element.get_tag_value('contact:website') == None:
+            return website
+
 def add_data_from_wikidata(element):
     present_wikidata_id = element.get_tag_value("wikidata")
     if present_wikidata_id == None:
@@ -387,10 +394,11 @@ def add_data_from_wikidata(element):
     tag = tag_from_wikidata_error_report(present_wikidata_id, 'postal_code', 'P281', element, ' - postal_code')
     if tag != None:
         return tag
+
+    tag = website_from_wikidata_error_report(element)
+    if tag != None:
+        return tag
     #moving P138 to name:wikidata tag makes no sense, just use wikidata instead
-    website = tag_from_wikidata_error_report(present_wikidata_id, 'website', 'P856', element, " - website")
-    if website != None and website.error_message.find('web.archive.org') == -1:
-        return website
     #IDEA
     #handle multiple operators - https://www.wikidata.org/wiki/Q429672
     #handle conversion from wikidata_id to text
