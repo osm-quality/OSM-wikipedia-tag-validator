@@ -67,7 +67,7 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, website_main_title_part, hide_bottable_from_public)
-        make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + ' new iteration.query')
+        make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + '.new iteration.query')
         move_files_to_report_directory(website_main_title_part, hide_bottable_from_public)
 
 def move_files_to_report_directory(website_main_title_part, hide_bottable_from_public):
@@ -97,13 +97,14 @@ def make_report_file(language_code, osm_filename):
     system_call('python3 wikipedia_validator.py ' + language_code_parameter + ' -file "' + osm_filename + '"')
 
 def make_query_to_reload_only_affected_objects(input_filename_with_reports, output_query_filename):
-    filepath = common.get_file_storage_location() + "/" + input_filename_with_reports
-    if not os.path.isfile(filepath):
+    input_filepath = common.get_file_storage_location() + "/" + input_filename_with_reports
+    output_filepath = root() + 'reload_querries/' + output_query_filename
+    if not os.path.isfile(input_filepath):
         print("file not found")
         return
-    with open(output_query_filename, 'w') as query_file:
+    with open(output_filepath, 'w') as query_file:
         all_errors = []
-        for e in common.load_data(filepath):
+        for e in common.load_data(input_filepath):
             if e['error_id'] not in all_errors:
                 all_errors.append(e['error_id'])
         query = common.get_query_for_loading_errors_by_category(filename = input_filename_with_reports, printed_error_ids = all_errors, format = "josm")

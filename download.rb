@@ -210,7 +210,7 @@ def main()
 
   filepath = download_location+"/"+'reloaded_Poland.osm'
   if !File.exists?(filepath)
-    query = File.read('reload_Poland.query')
+    query = File.read(download_location+'/reload_querries/reload_Poland.query')
     download(query, filepath)
   end
 
