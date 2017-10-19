@@ -1,5 +1,6 @@
 import html
 import yaml
+import os
 import urllib.parse
 
 def wikidata_url(wikidata_id):
@@ -17,6 +18,8 @@ def parse_yaml_file(filename):
 
 def get_file_storage_location():
     cache_location_config_filepath = 'cache_location.config'
+    if not os.path.isfile(cache_location_config_filepath):
+        raise "failed to locate " + cache_location_config_filepath
     cache_location_file = open(cache_location_config_filepath, 'r')
     returned = cache_location_file.read()
     cache_location_file.close()
