@@ -49,24 +49,13 @@ def query_text(area_identifier_builder, area_identifier, nodes, ways, relations,
   return query
 end
 
-def teryt_query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+def filtered_query_text(filter, area_identifier_builder, area_identifier, nodes, ways, relations, expand)
   builder = QueryBuilder.new(timeout, expand)
   query = builder.query_header
   query += area_identifier_builder if area_identifier_builder != nil
-  query += "node['teryt:simc'](#{area_identifier});\n" if nodes
-  query += "way['teryt:simc'](#{area_identifier});\n" if ways
-  query += "relation['teryt:simc'](#{area_identifier});\n" if relations
-  query += builder.query_footer()
-  return query
-end
-
-def missing_namepl_query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
-  builder = QueryBuilder.new(timeout, expand)
-  query = builder.query_header
-  query += area_identifier_builder if area_identifier_builder != nil
-  query += "node['name']['name:pl'!~'.*'](#{area_identifier});\n" if nodes
-  query += "way['name']['name:pl'!~'.*'](#{area_identifier});\n" if ways
-  query += "relation['name']['name:pl'!~'.*'](#{area_identifier});\n" if relations
+  query += "node" + filter + "(#{area_identifier});\n" if nodes
+  query += "way" + filter + "(#{area_identifier});\n" if ways
+  query += "relation" + filter + "(#{area_identifier});\n" if relations
   query += builder.query_footer()
   return query
 end
@@ -185,7 +174,7 @@ def main()
     name = "Polska"
     area_identifier = area_identifier_by_name(name)
     area_identifier_builder = area_identifier_builder_by_name(name)
-    query = teryt_query_text(area_identifier_builder, area_identifier, true, true, true, false)
+    query = filtered_query_text("['teryt:simc']", area_identifier_builder, area_identifier, true, true, true, false)
     download(query, filepath)
   end
 
@@ -194,7 +183,7 @@ def main()
     name = "Kraków"
     area_identifier = area_identifier_by_name(name)
     area_identifier_builder = area_identifier_builder_by_name(name)
-    query = missing_namepl_query_text(area_identifier_builder, area_identifier, true, true, true, true)
+    query = filtered_query_text("['name']['name:pl'!~'.*']", area_identifier_builder, area_identifier, true, true, true, false)
     download(query, filepath)
   end
 
