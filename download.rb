@@ -2,6 +2,54 @@ require 'rest-client'
 require 'etc'
 require 'yaml'
 
+def main()
+  filepath = download_location+"/"+'teryt_simc.osm'
+  if !File.exists?(filepath)
+    name = "Polska"
+    area_identifier = area_identifier_by_name(name)
+    area_identifier_builder = area_identifier_builder_by_name(name)
+    query = filtered_query_text("['teryt:simc']", area_identifier_builder, area_identifier, true, true, true, false)
+    download(query, filepath)
+  end
+
+  filepath = download_location+"/"+'namepl_krk.osm'
+  if !File.exists?(filepath)
+    name = "Kraków"
+    area_identifier = area_identifier_by_name(name)
+    area_identifier_builder = area_identifier_builder_by_name(name)
+    query = filtered_query_text("['name']['name:pl'!~'.*']", area_identifier_builder, area_identifier, true, true, true, false)
+    download(query, filepath)
+  end
+
+  # around Poland - for making map that shows how nicely stuff was fixed in Poland
+  for lat in 48..55
+    for lon in 14..24
+      download_graticule(lat, lon)
+    end
+  end
+
+  filepath = download_location+"/"+'reloaded_Poland.osm'
+  if !File.exists?(filepath)
+    query = File.read(download_location+'/reload_querries/reload_Poland.query')
+    download(query, filepath)
+  end
+
+  region_data = YAML.load_file('processed_regions.yaml')
+  region_data.each do |region|
+    while true
+      name = region['region_name']
+      break if !is_download_necessary_by_name(name, true, true, true, true)
+      result = download_by_name(name, true, true, true, true)
+      if !result
+        puts "failed download"
+        sleep 300
+      end
+      sleep 300
+      break if result
+    end
+  end
+end
+
 def user_agent
   "downloader of interesting places, operated by #{Etc.getlogin}, written by Mateusz Konieczny (matkoniecz@gmail.com)"
 end
@@ -166,54 +214,6 @@ def download_by_name(name, nodes, ways, relations, expand)
   filename = produced_filename_by_name(name, nodes, ways, relations, expand)
   return true if !is_download_necessary_by_name(name, nodes, ways, relations, expand)
   return download(query, filename)
-end
-
-def main()
-  filepath = download_location+"/"+'teryt_simc.osm'
-  if !File.exists?(filepath)
-    name = "Polska"
-    area_identifier = area_identifier_by_name(name)
-    area_identifier_builder = area_identifier_builder_by_name(name)
-    query = filtered_query_text("['teryt:simc']", area_identifier_builder, area_identifier, true, true, true, false)
-    download(query, filepath)
-  end
-
-  filepath = download_location+"/"+'namepl_krk.osm'
-  if !File.exists?(filepath)
-    name = "Kraków"
-    area_identifier = area_identifier_by_name(name)
-    area_identifier_builder = area_identifier_builder_by_name(name)
-    query = filtered_query_text("['name']['name:pl'!~'.*']", area_identifier_builder, area_identifier, true, true, true, false)
-    download(query, filepath)
-  end
-
-  # around Poland - for making map that shows how nicely stuff was fixed in Poland
-  for lat in 48..55
-    for lon in 14..24
-      download_graticule(lat, lon)
-    end
-  end
-
-  filepath = download_location+"/"+'reloaded_Poland.osm'
-  if !File.exists?(filepath)
-    query = File.read(download_location+'/reload_querries/reload_Poland.query')
-    download(query, filepath)
-  end
-
-  region_data = YAML.load_file('processed_regions.yaml')
-  region_data.each do |region|
-    while true
-      name = region['region_name']
-      break if !is_download_necessary_by_name(name, true, true, true, true)
-      result = download_by_name(name, true, true, true, true)
-      if !result
-        puts "failed download"
-        sleep 300
-      end
-      sleep 300
-      break if result
-    end
-  end
 end
 
 main
