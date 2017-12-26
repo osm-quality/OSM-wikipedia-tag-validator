@@ -29,8 +29,9 @@ def main()
   end
 
   filepath = download_location+"/"+'reloaded_Poland.osm'
-  if !File.exists?(filepath)
-    query = File.read(download_location+'/reload_querries/reload_Poland.query')
+  query_filepath = download_location+'/reload_querries/reload_Poland.query'
+  if !File.exists?(filepath) && File.exists?(query_filepath)
+    query = File.read(query_filepath)
     download(query, filepath)
   end
 
