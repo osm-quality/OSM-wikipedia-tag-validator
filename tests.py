@@ -86,5 +86,9 @@ class Tests(unittest.TestCase):
         #TODO - handle args. in test
         #wikipedia_validator.attempt_to_locate_wikipedia_tag_using_wikidata_id('Q2106892', False)
 
+    def test_wikidata_ids_of_countries_with_language(self):
+        self.assertEqual (['Q36'], wikipedia_validator.wikidata_ids_of_countries_with_language("pl"))
+        self.assertEqual (('Q408' in wikipedia_validator.wikidata_ids_of_countries_with_language("en")), True)
+
 if __name__ == '__main__':
     unittest.main()

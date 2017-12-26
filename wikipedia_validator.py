@@ -124,7 +124,7 @@ def get_problem_for_given_element(element, forced_refresh):
     if wikipedia_link_issues != None:
         return wikipedia_link_issues
 
-    wikipedia_language_issues = get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id)
+    wikipedia_language_issues = get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id, args.expected_language_code)
     if wikipedia_language_issues != None:
         return wikipedia_language_issues
 
@@ -621,21 +621,23 @@ def is_wikipedia_tag_clearly_broken(link):
     if re.search("^[a-z]+\Z",language_code) == None:
         return True
 
-def get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id):
-    if args.expected_language_code is None:
+def get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id, expected_language_code):
+    # complains when Wikipedia page is not in the preferred language,
+    # in cases when it is possible
+    if expected_language_code is None:
         return None
-    if args.expected_language_code == language_code:
+    if expected_language_code == language_code:
         return None
     prerequisite = {'wikipedia': language_code+":"+article_name}
-    reason = why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id)
+    reason = why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id, expected_language_code)
     if reason != None:
         if args.additional_debug:
             print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
         return None
-    correct_article = wikipedia_connection.get_interwiki_article_name(language_code, article_name, args.expected_language_code, forced_refresh)
+    correct_article = wikipedia_connection.get_interwiki_article_name(language_code, article_name, expected_language_code, forced_refresh)
     if correct_article != None:
-        error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected:"
-        good_link = args.expected_language_code + ":" + correct_article
+        error_message = "wikipedia page in unexpected language - " + expected_language_code + " was expected:"
+        good_link = expected_language_code + ":" + correct_article
         return ErrorReport(
             error_id = "wikipedia tag unexpected language",
             error_message = error_message,
@@ -647,7 +649,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
             return None
         if not args.allow_false_positives:
             return None
-        error_message = "wikipedia page in unexpected language - " + args.expected_language_code + " was expected, no page in that language was found:"
+        error_message = "wikipedia page in unexpected language - " + expected_language_code + " was expected, no page in that language was found:"
         return ErrorReport(
             error_id = "wikipedia tag unexpected language, article missing",
             error_message = error_message,
@@ -1037,22 +1039,14 @@ def get_wikidata_type_ids_of_entry(wikidata_id):
         return None
     return [type['mainsnak']['datavalue']['value']['id'] for type in types]
 
-# unknown data, known to be completely inside -> not allowed, returns None
-# known to be outside or on border -> allowed, returns reason
-def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
-    if wikidata_id == None:
-        return "no wikidata entry exists"
-
-    if args.expected_language_code == None:
-        return "no expected language is defined"
-
-    if args.expected_language_code == "pl":
-        targets = ['Q36']
-    elif args.expected_language_code == "de":
-        targets = ['Q183']
-    elif args.expected_language_code == "cz":
-        targets = ['Q213']
-    elif args.expected_language_code == "en":
+def wikidata_ids_of_countries_with_language(language_code):
+    if language_code == "pl":
+        return ['Q36']
+    if language_code == "de":
+        return ['Q183']
+    if language_code == "cz":
+        return ['Q213']
+    if language_code == "en":
         new_zealand = 'Q664'
         usa = 'Q30'
         uk = 'Q145'
@@ -1060,16 +1054,26 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id):
         canada = 'Q16'
         ireland = 'Q22890'
         # IDEA - add other areas from https://en.wikipedia.org/wiki/English_language
-        targets = [uk, usa, new_zealand, australia, canada, ireland]
-    else:
-        assert False, "language code without list of matching countries"
+        return [uk, usa, new_zealand, australia, canada, ireland]
+    assert False, "language code <" + language_code + "> without hardcoded list of matching countries"
+
+# unknown data, known to be completely inside -> not allowed, returns None
+# known to be outside or on border -> allowed, returns reason
+def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id, expected_language_code):
+    if wikidata_id == None:
+        return "no wikidata entry exists"
+
+    if expected_language_code == None:
+        return "no expected language is defined"
+
+    country_ids_where_expected_language_will_be_enforced = wikidata_ids_of_countries_with_language(expected_language_code)
 
     countries = get_current_countries_by_id(wikidata_id)
     if countries == None:
         # TODO locate based on coordinates...
         return None
     for country_id in countries:
-        if country_id in targets:
+        if country_id in country_ids_where_expected_language_will_be_enforced:
             continue
         country_name = get_wikidata_label(country_id, 'en')
         if country_name == None:
