@@ -77,6 +77,8 @@ def get_image_from_wikipedia_article(language_code, article_name):
     return filename_via_page_image
 
 def get_wikidata_object_id_from_article(language_code, article_name, forced_refresh = False):
+    if article_name == None:
+        return None
     try:
         wikidata_entry = get_data_from_wikidata(language_code, article_name, forced_refresh)['entities']
         id = list(wikidata_entry)[0]
