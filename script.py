@@ -39,8 +39,9 @@ def delete_output_files():
 
     for entry in get_entries_to_process():
         delete_output_file(entry['region_name'] + "_all.osm.yaml")
-        if entry['merged_output_file'] != None:
-            delete_output_file(entry['merged_output_file'])
+        file = entry.get('merged_output_file', None)
+        if file != None:
+            delete_output_file(file)
 
     yaml_output_files = [
         'polska_reloaded.osm.yaml',
@@ -120,13 +121,13 @@ def get_entries_to_process():
 def merged_outputs_list():
     merged_outputs = []
     for entry in get_entries_to_process():
-        if entry['merged_output_file'] != None:
+        if entry.get('merged_output_file', None) != None:
             merged_outputs.append(entry['merged_output_file'])
     return list(set(merged_outputs))
 
 def get_entry_contributing_to_merged_file(name_of_merged):
     for entry in get_entries_to_process():
-        if entry['merged_output_file'] == name_of_merged:
+        if entry.get('merged_output_file', None) == name_of_merged:
             return entry
     raise "unexpected"
 
@@ -144,8 +145,8 @@ def pipeline_basic_entries():
         pipeline(
             osm_filename = entry['region_name'] + "_all.osm",
             website_main_title_part = entry['website_main_title_part'],
-            merged_output_file = entry['merged_output_file'],
-            language_code = entry['language_code'],
+            merged_output_file = entry.get('merged_output_file', None),
+            language_code = entry.get('language_code', None),
             hide_bottable_from_public = entry['hide_bottable_from_public'],
             )
 
