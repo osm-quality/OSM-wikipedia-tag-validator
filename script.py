@@ -4,6 +4,9 @@ import yaml
 import generate_webpage_with_error_output
 from subprocess import call
 
+class ProcessingException(Exception):
+    """TODO: documentation, not something so badly generic"""
+
 def main():
     delete_output_files()
     pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl", hide_bottable_from_public=True)
@@ -68,7 +71,7 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
         filepath = root() + output_filename_errors
         if not os.path.isfile(filepath):
             print(filepath + ' is not present [highly surprising]')
-            raise 'Unexpected failure'
+            raise ProcessingException('Unexpected failure')
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, website_main_title_part, hide_bottable_from_public)
@@ -129,7 +132,7 @@ def get_entry_contributing_to_merged_file(name_of_merged):
     for entry in get_entries_to_process():
         if entry.get('merged_output_file', None) == name_of_merged:
             return entry
-    raise "unexpected"
+    raise ProcessingException("unexpected")
 
 def get_report_directory():
     return 'OSM-wikipedia-tag-validator-reports'
@@ -181,7 +184,7 @@ def make_websites_for_merged_entries():
             make_website(filename, output_filename_base, entry['hide_bottable_from_public'])
         else:
             print(filepath + ' is not present [highly surprising]')
-            raise 'Unexpected failure'
+            raise ProcessingException('Unexpected failure')
 
     for filename in merged_outputs_list():
         entry = get_entry_contributing_to_merged_file(filename)
