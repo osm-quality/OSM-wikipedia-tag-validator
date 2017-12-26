@@ -37,11 +37,11 @@ def delete_output_file(filename):
 
 def delete_output_files():
     for region_name in get_graticule_region_names():
-        file_for_deletion = region_name + "_all.osm.yaml"
+        file_for_deletion = region_name + ".osm.yaml"
         delete_output_file(file_for_deletion)
 
     for entry in get_entries_to_process():
-        delete_output_file(entry['region_name'] + "_all.osm.yaml")
+        delete_output_file(entry['region_name'] + ".osm.yaml")
         file = entry.get('merged_output_file', None)
         if file != None:
             delete_output_file(file)
@@ -148,7 +148,7 @@ def commit_changes_in_report_directory():
 def pipeline_basic_entries():
     for entry in get_entries_to_process():
         pipeline(
-            osm_filename = entry['region_name'] + "_all.osm",
+            osm_filename = entry['region_name'] + ".osm",
             website_main_title_part = entry['website_main_title_part'],
             merged_output_file = entry.get('merged_output_file', None),
             language_code = entry.get('language_code', None),
@@ -166,7 +166,7 @@ def get_graticule_region_names():
 def pipeline_graticule_entries():
     for region_name in get_graticule_region_names():
         pipeline(
-            osm_filename = region_name + "_all.osm",
+            osm_filename = region_name + ".osm",
             website_main_title_part = region_name,
             merged_output_file = None,
             language_code = None,

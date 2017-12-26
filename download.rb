@@ -8,7 +8,7 @@ def main()
     name = "Polska"
     area_identifier = area_identifier_by_name(name)
     area_identifier_builder = area_identifier_builder_by_name(name)
-    query = filtered_query_text("['teryt:simc']", area_identifier_builder, area_identifier, true, true, true, false)
+    query = filtered_query_text("['teryt:simc']", area_identifier_builder, area_identifier, false)
     download(query, filepath)
   end
 
@@ -17,7 +17,7 @@ def main()
     name = "Kraków"
     area_identifier = area_identifier_by_name(name)
     area_identifier_builder = area_identifier_builder_by_name(name)
-    query = filtered_query_text("['name']['name:pl'!~'.*']", area_identifier_builder, area_identifier, true, true, true, false)
+    query = filtered_query_text("['name']['name:pl'!~'.*']", area_identifier_builder, area_identifier, false)
     download(query, filepath)
   end
 
@@ -38,8 +38,8 @@ def main()
   region_data.each do |region|
     while true
       name = region['region_name']
-      break if !is_download_necessary_by_name(name, true, true, true, true)
-      result = download_by_name(name, true, true, true, true)
+      break if !is_download_necessary_by_name(name, true)
+      result = download_by_name(name, true)
       if !result
         puts "failed download"
         sleep 300
@@ -78,32 +78,32 @@ QueryBuilder = Struct.new(:timeout, :expand) do
   end
 end
 
-def query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+def query_text(area_identifier_builder, area_identifier, expand)
   builder = QueryBuilder.new(timeout, expand)
   query = builder.query_header
   query += area_identifier_builder if area_identifier_builder != nil
-  query += "node['wikipedia'](#{area_identifier});\n" if nodes
-  query += "way['wikipedia'](#{area_identifier});\n" if ways
-  query += "relation['wikipedia'](#{area_identifier});\n" if relations
-  query += "node['wikidata'](#{area_identifier});\n" if nodes
-  query += "way['wikidata'](#{area_identifier});\n" if ways
-  query += "relation['wikidata'](#{area_identifier});\n" if relations
+  query += "node['wikipedia'](#{area_identifier});\n"
+  query += "way['wikipedia'](#{area_identifier});\n"
+  query += "relation['wikipedia'](#{area_identifier});\n"
+  query += "node['wikidata'](#{area_identifier});\n"
+  query += "way['wikidata'](#{area_identifier});\n"
+  query += "relation['wikidata'](#{area_identifier});\n"
 
-  query += "node[~'wikipedia:.*'~'.*'](#{area_identifier});\n" if nodes
-  query += "way[~'wikipedia:.*'~'.*'](#{area_identifier});\n" if ways
-  query += "relation[~'wikipedia:.*'~'.*'](#{area_identifier});\n" if relations
+  query += "node[~'wikipedia:.*'~'.*'](#{area_identifier});\n"
+  query += "way[~'wikipedia:.*'~'.*'](#{area_identifier});\n"
+  query += "relation[~'wikipedia:.*'~'.*'](#{area_identifier});\n"
 
   query += builder.query_footer()
   return query
 end
 
-def filtered_query_text(filter, area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+def filtered_query_text(filter, area_identifier_builder, area_identifier, expand)
   builder = QueryBuilder.new(timeout, expand)
   query = builder.query_header
   query += area_identifier_builder if area_identifier_builder != nil
-  query += "node" + filter + "(#{area_identifier});\n" if nodes
-  query += "way" + filter + "(#{area_identifier});\n" if ways
-  query += "relation" + filter + "(#{area_identifier});\n" if relations
+  query += "node" + filter + "(#{area_identifier});\n"
+  query += "way" + filter + "(#{area_identifier});\n"
+  query += "relation" + filter + "(#{area_identifier});\n"
   query += builder.query_footer()
   return query
 end
@@ -116,57 +116,57 @@ def area_identifier_by_name(name)
   return 'area.searchArea'
 end
 
-def query_text_by_name(name, nodes, ways, relations, expand)
+def query_text_by_name(name, expand)
   area_identifier = area_identifier_by_name(name)
   area_identifier_builder = area_identifier_builder_by_name(name)
-  query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+  query_text(area_identifier_builder, area_identifier, expand)
 end
 
-def query_text_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+def graticule_bbox(lower_lat, left_lon)
+  return "#{lower_lat},#{left_lon},#{lower_lat+1},#{left_lon+1}"
+end
+
+def query_text_by_graticule(lower_lat, left_lon, expand)
   area_identifier_builder = nil
-  area_identifier = "#{lower_lat},#{left_lon},#{lower_lat+1},#{left_lon+1}"
-  query_text(area_identifier_builder, area_identifier, nodes, ways, relations, expand)
+  area_identifier = graticule_bbox(lower_lat, left_lon)
+  query_text(area_identifier_builder, area_identifier, expand)
 end
 
-def what_is_downloaded_to_text(nodes, ways, relations, expand)
+def what_is_downloaded_to_text(expand)
   returned = ""
-  returned += "_nodes" if nodes
-  returned += "_ways" if ways
-  returned += "_relations" if relations
-  returned = "_all" if nodes && ways && relations
   returned += "_without_geometry" if expand == false
   return returned
 end
 
-def produced_filename_by_name(name, nodes, ways, relations, expand)
+def produced_filename_by_name(name, expand)
   filename = name
-  filename += what_is_downloaded_to_text(nodes, ways, relations, expand)
+  filename += what_is_downloaded_to_text(expand)
   filename += ".osm"
   return download_location+"/"+filename
 end
 
-def produced_filename_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+def produced_filename_by_graticule(lower_lat, left_lon, expand)
   filename = "#{lower_lat}, #{left_lon}"
-  filename += what_is_downloaded_to_text(nodes, ways, relations, expand)
+  filename += what_is_downloaded_to_text(expand)
   filename += ".osm"
   return download_location+"/"+filename
 end
 
-def is_download_necessary_by_name(name, nodes, ways, relations, expand)
-  filename = produced_filename_by_name(name, nodes, ways, relations, expand)
+def is_download_necessary_by_name(name, expand)
+  filename = produced_filename_by_name(name, expand)
   return !File.exists?(filename)
 end
 
-def is_download_necessary_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
-  filename = produced_filename_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+def is_download_necessary_by_graticule(lower_lat, left_lon, expand)
+  filename = produced_filename_by_graticule(lower_lat, left_lon, expand)
   return !File.exists?(filename)
 end
 
 def download_graticule(lower_lat, left_lon)
-  nodes, ways, relations, expand = true, true, true, true
-  query = query_text_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand) 
-  filename = produced_filename_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
-  return true if !is_download_necessary_by_graticule(lower_lat, left_lon, nodes, ways, relations, expand)
+  expand = true
+  query = query_text_by_graticule(lower_lat, left_lon, expand) 
+  filename = produced_filename_by_graticule(lower_lat, left_lon, expand)
+  return true if !is_download_necessary_by_graticule(lower_lat, left_lon, expand)
   return download(query, filename)
 end
 
@@ -209,10 +209,10 @@ def download(query, filename)
   return true
 end
 
-def download_by_name(name, nodes, ways, relations, expand)
-  query = query_text_by_name(name, nodes, ways, relations, expand)
-  filename = produced_filename_by_name(name, nodes, ways, relations, expand)
-  return true if !is_download_necessary_by_name(name, nodes, ways, relations, expand)
+def download_by_name(name, expand)
+  query = query_text_by_name(name, expand)
+  filename = produced_filename_by_name(name, expand)
+  return true if !is_download_necessary_by_name(name, expand)
   return download(query, filename)
 end
 
