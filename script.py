@@ -135,10 +135,12 @@ def get_report_directory():
     return 'OSM-wikipedia-tag-validator-reports'
 
 def commit_changes_in_report_directory():
+    current_working_directory = os.getcwd()
     os.chdir(get_report_directory())
     system_call('git add --all')
     system_call('git commit -m "automatic update of report files"')
     system_call('git diff @~')
+    os.chdir(current_working_directory)
 
 def pipeline_basic_entries():
     for entry in get_entries_to_process():
