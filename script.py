@@ -142,7 +142,6 @@ def commit_changes_in_report_directory():
     os.chdir(get_report_directory())
     system_call('git add --all')
     system_call('git commit -m "automatic update of report files"')
-    system_call('git diff @~')
     os.chdir(current_working_directory)
 
 def pipeline_basic_entries():
