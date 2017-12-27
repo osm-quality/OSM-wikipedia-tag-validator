@@ -6,7 +6,7 @@ import re
 
 import wikipedia_connection
 import common
-from osm_iterator import Data
+from osm_iterator.osm_iterator import Data
 import geopy.distance
 
 present_wikipedia_links = {}

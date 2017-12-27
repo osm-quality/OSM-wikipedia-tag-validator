@@ -1,12 +1,10 @@
 import unittest
 import wikipedia_validator
 import common
-import osm_iterator
 import wikipedia_connection
 import generate_webpage_with_error_output
 import generate_overpass_query_output
 import script
-import osm_iterator
 from tests_of_generate_osm_edits import *
 
 class Tests(unittest.TestCase):
@@ -62,13 +60,6 @@ class Tests(unittest.TestCase):
     def test_detecting_cropp_as_invalid_prinary_link(self):
         wikidata_id = 'Q9196793'
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
-
-    def test_osm_iterator(self):
-        from io import BytesIO
-        some_file_or_file_like_object = BytesIO(b'<?xml version="1.0" encoding="UTF-8"?><osm><node id="17658600" lat="49.8698080" lon="8.6300980"></node></osm>')
-        print(osm_iterator.Data(some_file_or_file_like_object).data)
-        for element in osm_iterator.Data(some_file_or_file_like_object).data.getiterator():
-            print("XXYXYXYXY" + " " + str(element.tag))
 
     def test_overpass_escaping(self):
         before = {'wikipedia:de': "Zapiekle, Pickel's Vorwerk"}
