@@ -75,7 +75,7 @@ def user_agent
 end
 
 def timeout
-  1550
+  2550
 end
 
 def download_location
