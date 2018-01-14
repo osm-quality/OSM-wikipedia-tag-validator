@@ -493,12 +493,21 @@ def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, force
     link = get_best_interwiki_link_by_id(present_wikidata_id, forced_refresh)
     if link == None:
         return None
-    return ErrorReport(
-        error_id = "wikipedia from wikidata tag",
-        error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article",
-        desired_wikipedia_target = link,
-        prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
-        )
+    language_code = wikipedia_connection.get_language_code_from_link(link)
+    if language_code in get_expected_language_codes():
+        return ErrorReport(
+            error_id = "wikipedia from wikidata tag",
+            error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article, article language is not surprising",
+            desired_wikipedia_target = link,
+            prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
+            )
+    else:
+        return ErrorReport(
+            error_id = "wikipedia from wikidata tag, unexpected language",
+            error_message = "without wikipedia tag, without wikipedia:language tags, with wikidata tag present that provides article",
+            desired_wikipedia_target = link,
+            prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
+            )
 
 def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh):
     prerequisite = {'wikipedia': None, 'wikidata': None}

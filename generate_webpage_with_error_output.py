@@ -146,6 +146,7 @@ def for_private_use():
         'wikipedia tag from wikipedia tag in an outdated form',
         'wikipedia wikidata mismatch - follow wikipedia redirect',
         'wikipedia from wikidata tag',
+        'wikipedia from wikidata tag, unexpected language',
         'wikidata tag may be added',
     ]
 
