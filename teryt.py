@@ -34,8 +34,9 @@ def get_linkable_OSM_element(teryt, potential_wikidata_id):
     elif len(teryt_simc_in_OSM[teryt]) == 1:
         osm_element = teryt_simc_in_OSM[teryt][0]
         if osm_element.get_tag_value('wikidata') == None:
-            print()
-            print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link())
+            #everything is OK and ready for edit
+            #print()
+            #print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link())
             return osm_element
         if osm_element.get_tag_value('wikidata') != potential_wikidata_id:
             print()
