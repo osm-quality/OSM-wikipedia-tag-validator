@@ -40,9 +40,12 @@ def get_linkable_OSM_element(teryt, potential_wikidata_id):
             return osm_element
         if osm_element.get_tag_value('wikidata') != potential_wikidata_id:
             print()
-            print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link() + " but there is already a different wikidata value")
+            osm_url = teryt_simc_in_OSM[teryt][0].get_link()
+            print("# teryt code (" + teryt + ") links http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + osm_url)
+            print("#: but OSM object has mismatching wikidata code")
             lang = 'pl'
             article = wikimedia_connection.get_interwiki_article_name_by_id(potential_wikidata_id, lang)
+            print("#: OSM object: " + osm_url)
             print("#: Expected Wikipedia page: " + nullsafe_wikipedia_article_link(lang, article))
             article = wikimedia_connection.get_interwiki_article_name_by_id(osm_element.get_tag_value('wikidata'), lang)
             print("#: Current Wikipedia page: " + nullsafe_wikipedia_article_link(lang, article))
