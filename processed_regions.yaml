@@ -1,4 +1,3 @@
-- {region_name: famous_european_trees, website_main_title_part: 'Famous european trees', hide_bottable_from_public: False}
 - {region_name: Praha, website_main_title_part: 'Praha', merged_output_file: Česko.yaml, language_code: cz, hide_bottable_from_public: False}
 - {region_name: Devon, website_main_title_part: 'Devon, UK', merged_output_file: UK.yaml, language_code: en, hide_bottable_from_public: False}
 - {region_name: Preetz, website_main_title_part: 'Preetz, Deutschland', merged_output_file: Deutschland.yaml, language_code: de, hide_bottable_from_public: False}
