@@ -4,7 +4,7 @@ import argparse
 import yaml
 import re
 
-import wikipedia_connection
+import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
 from osm_iterator.osm_iterator import Data
 import geopy.distance
@@ -98,9 +98,9 @@ def get_problem_for_given_element(element, forced_refresh):
     #if link.find("#") != -1:
     #    return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
 
-    language_code = wikipedia_connection.get_language_code_from_link(link)
-    article_name = wikipedia_connection.get_article_name_from_link(link)
-    wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
+    language_code = wikimedia_connection.get_language_code_from_link(link)
+    article_name = wikimedia_connection.get_article_name_from_link(link)
+    wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
 
     something_reportable = check_is_wikipedia_link_clearly_malformed(link)
     if something_reportable != None:
@@ -162,23 +162,23 @@ def check_is_wikidata_tag_is_misssing(element, present_wikidata_id, wikidata_id)
         return None
 
 def record_wikidata_properties_present(wikidata_id):
-    wikidata = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)
+    wikidata = wikimedia_connection.get_data_from_wikidata_by_id(wikidata_id)
     for property in wikidata['entities'][wikidata_id]['claims']:
         property = str(property)
         record_property_presence(property)
 
 def check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, forced_refresh):
-    page_according_to_wikidata = wikipedia_connection.get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
+    page_according_to_wikidata = wikimedia_connection.get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
     if page_according_to_wikidata != None:
         # assume that wikidata is correct to save downloading page
         return None
-    page = wikipedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
+    page = wikimedia_connection.get_wikipedia_page(language_code, article_name, forced_refresh)
     if page == None:
         return report_failed_wikipedia_page_link(language_code, article_name, wikidata_id, forced_refresh)
 
 def get_best_interwiki_link_by_id(wikidata_id, forced_refresh):
     for potential_language_code in get_expected_language_codes():
-        potential_article_name = wikipedia_connection.get_interwiki_article_name_by_id(wikidata_id, potential_language_code, forced_refresh)
+        potential_article_name = wikimedia_connection.get_interwiki_article_name_by_id(wikidata_id, potential_language_code, forced_refresh)
         if potential_article_name != None:
             return potential_language_code + ':' + potential_article_name
     return None
@@ -201,7 +201,7 @@ def wikidata_data_quality_warning():
 def check_is_object_is_existing(present_wikidata_id):
     if present_wikidata_id == None:
         return None
-    no_longer_existing = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, 'P576')
+    no_longer_existing = wikimedia_connection.get_property_from_wikidata(present_wikidata_id, 'P576')
     if no_longer_existing != None:
         return ErrorReport(
                         error_id = "no longer existing object",
@@ -231,7 +231,7 @@ def decapsulate_wikidata_value(from_wikidata):
     return from_wikidata
 
 def tag_from_wikidata(present_wikidata_id, wikidata_property):
-    from_wikidata = wikipedia_connection.get_property_from_wikidata(present_wikidata_id, wikidata_property)
+    from_wikidata = wikimedia_connection.get_property_from_wikidata(present_wikidata_id, wikidata_property)
     if from_wikidata == None:
         return None
     return decapsulate_wikidata_value(from_wikidata)
@@ -479,9 +479,9 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(
         if link == None:
             conflict = True
             continue
-        language_code = wikipedia_connection.get_language_code_from_link(link)
-        article_name = wikipedia_connection.get_article_name_from_link(link)
-        id_from_link = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
+        language_code = wikimedia_connection.get_language_code_from_link(link)
+        article_name = wikimedia_connection.get_article_name_from_link(link)
+        id_from_link = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
         if wikidata_id != id_from_link:
             conflict = True
 
@@ -510,7 +510,7 @@ def attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id, force
     link = get_best_interwiki_link_by_id(present_wikidata_id, forced_refresh)
     if link == None:
         return None
-    language_code = wikipedia_connection.get_language_code_from_link(link)
+    language_code = wikimedia_connection.get_language_code_from_link(link)
     if language_code in get_expected_language_codes():
         return ErrorReport(
             error_id = "wikipedia from wikidata tag",
@@ -538,9 +538,9 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wiki
             prerequisite = prerequisite,
             )
     wikipedia_link = links[0]
-    lang = wikipedia_connection.get_language_code_from_link(wikipedia_link)
-    article = wikipedia_connection.get_article_name_from_link(wikipedia_link)
-    wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(lang, article)
+    lang = wikimedia_connection.get_language_code_from_link(wikipedia_link)
+    article = wikimedia_connection.get_article_name_from_link(wikipedia_link)
+    wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(lang, article)
     # if wikidata_id is None - some checks will not be done
     # it is considered acceptable as it will not introduce new error in OSM
     # though it skips situation where human maybe would notice it
@@ -559,10 +559,10 @@ def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wiki
 def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys, forced_refresh):
     links = []
     for key in wikipedia_type_keys:
-        language_code = wikipedia_connection.get_text_after_first_colon(key)
+        language_code = wikimedia_connection.get_text_after_first_colon(key)
         article_name = element.get_tag_value(key)
 
-        wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
         if wikidata_id == None:
             links.append(language_code + ":" + article_name)
             continue
@@ -576,10 +576,10 @@ def wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_ty
     return list(set(links))
 
 def get_wikidata_id_after_redirect(wikidata_id):
-    return wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]['id']
+    return wikimedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]['id']
 
 def get_article_name_after_redirect(language_code, article_name):
-    return wikipedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
+    return wikimedia_connection.get_from_wikipedia_api(language_code, "", article_name)['title']
 
 def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh):
     if present_wikidata_id == None:
@@ -589,7 +589,7 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
     if article_name.find("#") != -1:
         article_name_with_section_stripped = re.match('([^:]*)#(.*)', article_name).group(1)
 
-    wikidata_id_from_article = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name_with_section_stripped, forced_refresh)
+    wikidata_id_from_article = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name_with_section_stripped, forced_refresh)
     if present_wikidata_id == wikidata_id_from_article:
         return None
 
@@ -607,7 +607,7 @@ def check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, a
     title_after_possible_redirects = get_article_name_after_redirect(language_code, article_name)
     is_article_redirected = (article_name != title_after_possible_redirects and article_name.find("#") == -1)
     if is_article_redirected:
-        wikidata_id_from_redirect = wikipedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
+        wikidata_id_from_redirect = wikimedia_connection.get_wikidata_object_id_from_article(language_code, title_after_possible_redirects, forced_refresh)
         if present_wikidata_id == wikidata_id_from_redirect:
             message = base_message + ", because wikidata tag points to a redirect that should be followed (" + compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +")"
             new_wikipedia_link = language_code+":"+title_after_possible_redirects
@@ -639,7 +639,7 @@ def is_wikipedia_tag_clearly_broken(link):
     # detects missing language code
     #         unusually long language code
     #         broken language code "pl|"
-    language_code = wikipedia_connection.get_language_code_from_link(link)
+    language_code = wikimedia_connection.get_language_code_from_link(link)
     if language_code is None:
         return True
     if language_code.__len__() > 3:
@@ -660,7 +660,7 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
         if args.additional_debug:
             print(describe_osm_object(element) + " is allowed to have foreign wikipedia link, because " + reason)
         return None
-    correct_article = wikipedia_connection.get_interwiki_article_name(language_code, article_name, expected_language_code, forced_refresh)
+    correct_article = wikimedia_connection.get_interwiki_article_name(language_code, article_name, expected_language_code, forced_refresh)
     if correct_article != None:
         error_message = "wikipedia page in unexpected language - " + expected_language_code + " was expected:"
         good_link = expected_language_code + ":" + correct_article
@@ -707,9 +707,9 @@ def get_list_of_links_from_disambig(wikidata_id, forced_refresh):
     if link == None:
         print("ops, no language code matched for " + wikidata_id)
         return []
-    article_name = wikipedia_connection.get_article_name_from_link(link)
-    language_code = wikipedia_connection.get_language_code_from_link(link)
-    links_from_disambig_page = wikipedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
+    article_name = wikimedia_connection.get_article_name_from_link(link)
+    language_code = wikimedia_connection.get_language_code_from_link(link)
+    links_from_disambig_page = wikimedia_connection.get_from_wikipedia_api(language_code, "&prop=links", article_name)['links']
     returned = []
     for link in links_from_disambig_page:
         if link['ns'] == 0:
@@ -725,7 +725,7 @@ def distance_in_km_to_string(distance_in_km):
 def distance_in_km_of_wikidata_object_from_location(coords_given, wikidata_id):
     if wikidata_id == None:
         return None
-    location_from_wikidata = wikipedia_connection.get_location_from_wikidata(wikidata_id)
+    location_from_wikidata = wikimedia_connection.get_location_from_wikidata(wikidata_id)
     # recommended by https://stackoverflow.com/a/43211266/4130619
     return geopy.distance.vincenty(coords_given, location_from_wikidata).km
 
@@ -746,7 +746,7 @@ def get_list_of_disambig_fixes(location, element_wikidata_id, forced_refresh):
     if links == None:
         return "TODO improve language handling on foreign disambigs"
     for link in links:
-        link_wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(link['language_code'], link['title'])
+        link_wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(link['language_code'], link['title'])
         distance_description = get_distance_description_between_location_and_wikidata_id(location, link_wikidata_id)
         returned += link['title'] + distance_description + "\n"
     return returned
@@ -762,9 +762,9 @@ def get_error_report_if_secondary_wikipedia_tag_should_be_used(wikidata_id):
         return property_error
 
 def get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary(wikidata_id):
-    if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P247') != None:
+    if wikimedia_connection.get_property_from_wikidata(wikidata_id, 'P247') != None:
         return get_should_use_subject_error('a spacecraft', 'name:', wikidata_id)
-    if wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P279') != None:
+    if wikimedia_connection.get_property_from_wikidata(wikidata_id, 'P279') != None:
         return get_should_use_subject_error('an uncoordinable generic object', 'name:', wikidata_id)
 
 def get_all_types_describing_wikidata_object(wikidata_id):
@@ -893,7 +893,7 @@ def get_location_of_this_headquaters(headquarters):
         pass
     try:
         id_of_location = headquarters['mainsnak']['datavalue']['value']['id']
-        return wikipedia_connection.get_location_from_wikidata(id_of_location)
+        return wikimedia_connection.get_location_from_wikidata(id_of_location)
     except KeyError:
         pass
     return (None, None)
@@ -901,7 +901,7 @@ def get_location_of_this_headquaters(headquarters):
 def headquaters_location_indicate_invalid_connection(location, wikidata_id):
     if location == (None, None):
         return None
-    headquarters_location_data = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P159')
+    headquarters_location_data = wikimedia_connection.get_property_from_wikidata(wikidata_id, 'P159')
     if headquarters_location_data == None:
         return None
     for option in headquarters_location_data:
@@ -990,7 +990,7 @@ def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries
     return processed
 
 def get_useful_direct_parents(wikidata_id, forbidden):
-    more_general_list = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P279') #subclass of
+    more_general_list = wikimedia_connection.get_property_from_wikidata(wikidata_id, 'P279') #subclass of
     if more_general_list == None:
         return []
     returned = []
@@ -1019,7 +1019,7 @@ def get_wikidata_label(wikidata_id, language):
     if wikidata_id == None:
         return None
     try:
-        data = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]
+        data = wikimedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]
         return data['labels']['en']['value']
     except KeyError:
         return None
@@ -1028,7 +1028,7 @@ def get_wikidata_explanation(wikidata_id, language):
     if wikidata_id == None:
         return None
     try:
-        data = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]
+        data = wikimedia_connection.get_data_from_wikidata_by_id(wikidata_id)['entities'][wikidata_id]
         return data['descriptions'][language]['value']
     except KeyError:
         return None
@@ -1036,7 +1036,7 @@ def get_wikidata_explanation(wikidata_id, language):
 def get_wikidata_description(wikidata_id, language):
     if wikidata_id == None:
         return None
-    docs = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)
+    docs = wikimedia_connection.get_data_from_wikidata_by_id(wikidata_id)
     returned = ""
     label = get_wikidata_label(wikidata_id, language)
     explanation = get_wikidata_explanation(wikidata_id, language)
@@ -1057,7 +1057,7 @@ def get_wikidata_type_ids_of_entry(wikidata_id):
     types = None
     try:
         forced_refresh = False
-        wikidata_entry = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
+        wikidata_entry = wikimedia_connection.get_data_from_wikidata_by_id(wikidata_id, forced_refresh)
         wikidata_entry = wikidata_entry['entities']
         object_id = list(wikidata_entry)[0]
         types = wikidata_entry[object_id]['claims']['P31']
@@ -1111,7 +1111,7 @@ def why_object_is_allowed_to_have_foreign_language_label(element, wikidata_id, e
     return None
 
 def get_current_countries_by_id(wikidata_id):
-    countries = wikipedia_connection.get_property_from_wikidata(wikidata_id, 'P17')
+    countries = wikimedia_connection.get_property_from_wikidata(wikidata_id, 'P17')
     if countries == None:
         return None
     returned = []
@@ -1185,8 +1185,8 @@ def output_element(element, error_report):
     language_code = None
     article_name = None
     if link != None:
-        language_code = wikipedia_connection.get_language_code_from_link(link)
-        article_name = wikipedia_connection.get_article_name_from_link(link)
+        language_code = wikimedia_connection.get_language_code_from_link(link)
+        article_name = wikimedia_connection.get_article_name_from_link(link)
     lat, lon = get_location_of_element(element)
 
     if (lat, lon) == (None, None):
@@ -1356,7 +1356,7 @@ def print_popular_properties():
                 print("'" + str(property) + "',")
 
 def main():
-    wikipedia_connection.set_cache_location(common.get_file_storage_location())
+    wikimedia_connection.set_cache_location(common.get_file_storage_location())
     if not (args.file):
         parser.error('Provide .osm file')
     osm = Data(common.get_file_storage_location() + "/" + args.file)

@@ -3,7 +3,7 @@ import time
 import argparse
 import common
 import os
-import wikipedia_connection
+import wikimedia_connection.wikimedia_connection as wikimedia_connection
 # docs: http://osmapi.metaodi.ch/
 
 def bot_username():
@@ -186,7 +186,7 @@ def get_and_verify_data(e):
 def handle_follow_wikipedia_redirect(e):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
-    language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
+    language_code = wikimedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
     if language_code != "pl":
         print(e['prerequisite']['wikipedia'] + " is not in the expected language code!")
         return
@@ -207,7 +207,7 @@ def handle_follow_wikipedia_redirect(e):
 def change_to_local_language(e):
     if e['error_id'] != 'wikipedia tag unexpected language':
         return
-    #language_code = wikipedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
+    #language_code = wikimedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
     #if language_code != "pl":
     #    return
     data = get_and_verify_data(e)
@@ -236,7 +236,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     if errors_for_removal == []:
         return
     #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
-    #language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
+    #language_code = wikimedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
     #if language_code != "pl":
     #    return
     automatic_status = fully_automated_description()
@@ -272,7 +272,7 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
     if errors_for_removal == []:
         return
     #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
-    #language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
+    #language_code = wikimedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
     #if language_code != "pl":
     #    return
 
@@ -294,9 +294,9 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
         reason = ", as standard wikipedia tag is better than old style wikipedia tags"
         change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + new + reason
         if e['error_id'] == 'wikipedia tag from wikipedia tag in an outdated form':
-            language_code = wikipedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
-            article_name = wikipedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
-            wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+            language_code = wikimedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
+            article_name = wikimedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
+            wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
             if wikidata_id == None:
                 print(common.wikipedia_url(language_code, article_name) + " from " + e['osm_object_url'] + " has no wikidata entry")
                 continue
@@ -310,7 +310,7 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
     sleep(60)
 
 def main():
-    wikipedia_connection.set_cache_location(common.get_file_storage_location())
+    wikimedia_connection.set_cache_location(common.get_file_storage_location())
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     reported_errors = load_errors()

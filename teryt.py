@@ -1,6 +1,6 @@
 from osm_iterator.osm_iterator import Data
 import csv
-import wikipedia_connection
+import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
 import generate_osm_edits
 import geopy.distance
@@ -41,9 +41,9 @@ def get_linkable_OSM_element(teryt, potential_wikidata_id):
             print()
             print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link() + " but there is already a different wikidata value")
             lang = 'pl'
-            article = wikipedia_connection.get_interwiki_article_name_by_id(potential_wikidata_id, lang)
+            article = wikimedia_connection.get_interwiki_article_name_by_id(potential_wikidata_id, lang)
             print("#: Expected article: " + common.wikipedia_url(lang, article))
-            article = wikipedia_connection.get_interwiki_article_name_by_id(osm_element.get_tag_value('wikidata'), lang)
+            article = wikimedia_connection.get_interwiki_article_name_by_id(osm_element.get_tag_value('wikidata'), lang)
             print("#: Currently linked article: " + common.wikipedia_url(lang, article))
             if osm_element.get_tag_value('place') != None:
                 print("#: place=" + osm_element.get_tag_value('place'))
@@ -76,7 +76,7 @@ def get_changeset_builder():
     return generate_osm_edits.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
 
 def load_data():
-    wikipedia_connection.set_cache_location(common.get_file_storage_location())
+    wikimedia_connection.set_cache_location(common.get_file_storage_location())
     file = "teryt_simc.osm"
     osm = Data(common.get_file_storage_location() + "/" + file)
     osm.iterate_over_data(record_presence)
@@ -123,7 +123,7 @@ def process_pairs(pairs):
             center_location = location
 
         data['tag']['wikidata'] = pair['wikidata_id']
-        wikipedia_in_pl = wikipedia_connection.get_interwiki_article_name_by_id(pair['wikidata_id'], 'pl')
+        wikipedia_in_pl = wikimedia_connection.get_interwiki_article_name_by_id(pair['wikidata_id'], 'pl')
         if wikipedia_in_pl == None:
             continue
         data['tag']['wikipedia'] = "pl:" + wikipedia_in_pl
@@ -149,7 +149,7 @@ def process_pairs(pairs):
 def main():
     pairs = load_data()
     for pair in pairs:
-        wikipedia_in_pl = wikipedia_connection.get_interwiki_article_name_by_id(pair['wikidata_id'], 'pl')
+        wikipedia_in_pl = wikimedia_connection.get_interwiki_article_name_by_id(pair['wikidata_id'], 'pl')
         if wikipedia_in_pl == None:
             print(pair['osm_element'].get_link() + " has no matching entry in pl wikipedia")
     while True:

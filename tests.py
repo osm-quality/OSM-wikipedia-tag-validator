@@ -1,7 +1,7 @@
 import unittest
 import wikipedia_validator
 import common
-import wikipedia_connection
+import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import generate_webpage_with_error_output
 import generate_overpass_query_output
 import script
@@ -9,11 +9,11 @@ from tests_of_generate_osm_edits import *
 
 class Tests(unittest.TestCase):
     def test_rejects_links_to_events(self):
-        wikipedia_connection.set_cache_location(common.get_file_storage_location())
+        wikimedia_connection.set_cache_location(common.get_file_storage_location())
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary('Q134301'))
 
     def test_rejects_links_to_spacecraft(self):
-        wikipedia_connection.set_cache_location(common.get_file_storage_location())
+        wikimedia_connection.set_cache_location(common.get_file_storage_location())
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary('Q2513'))
 
     def test_reject_links_to_humans(self):
@@ -23,7 +23,7 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(None, wikipedia_validator.get_problem_based_on_wikidata_base_types(location, example_artist_id, forced_refresh))
 
     def test_complain_function(self):
-        wikipedia_connection.set_cache_location(common.get_file_storage_location())
+        wikimedia_connection.set_cache_location(common.get_file_storage_location())
         wikipedia_validator.complain_in_stdout_if_wikidata_entry_not_of_known_safe_type('Q824359', "explanation")
 
     def test_get_prerequisite_in_overpass_query_format(self):
@@ -73,7 +73,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary('Q2106892'))
 
     def test_args_depending_code_for_behavior(self):
-        wikipedia_connection.set_cache_location(common.get_file_storage_location())
+        wikimedia_connection.set_cache_location(common.get_file_storage_location())
         #TODO - handle args. in test
         #wikipedia_validator.attempt_to_locate_wikipedia_tag_using_wikidata_id('Q2106892', False)
 

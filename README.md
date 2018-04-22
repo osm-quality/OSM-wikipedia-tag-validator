@@ -3,7 +3,7 @@ OSM-wikipedia-tag-validator
 
 Python script validating Wikipedia tags in OpenStreetMap database by fetching and analysing linked Wikipedia articles.
 
-Dependencies: python3 and unpublished osm_iterator package (TODO: publish osm iterator).
+Dependencies: python3 and unpublished osm_iterator, wikimedia_connection package (TODO: publish osm iterator, wikimedia_connection).
 
 To install: `pip3 install -r requirements.txt`
 
