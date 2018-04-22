@@ -62,7 +62,6 @@ def nullsafe_wikipedia_article_link(lang, article):
 def get_wikidata_OSM_pairs():
     returned = []
     with open(common.get_file_storage_location() + "/" + 'teryt_wikidata.csv', 'r') as csvfile:
-        print(common.get_file_storage_location() + "/" + 'teryt_wikidata.csv')
         reader = csv.reader(csvfile)
         for row in reader:
             wikidata_id = row[0].replace("http://www.wikidata.org/entity/", "")
