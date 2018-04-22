@@ -21,13 +21,6 @@ def main()
     download(query, filepath)
   end
 
-  # around Poland - for making map that shows how nicely stuff was fixed in Poland
-  for lat in 48..55
-    for lon in 14..24
-      download_graticule(lat, lon)
-    end
-  end
-
   filepath = download_location+"/"+'reloaded_Poland.osm'
   query_filepath = download_location+'/reload_querries/reload_Poland.query'
   if !File.exists?(filepath) && File.exists?(query_filepath)
@@ -35,6 +28,12 @@ def main()
     download(query, filepath)
   end
 
+  download_defined_regions
+
+  download_graticules
+end
+
+def download_defined_regions
   region_data = YAML.load_file('processed_regions.yaml')
   region_data.each do |region|
     while true
@@ -47,6 +46,15 @@ def main()
       end
       sleep 300
       break if result
+    end
+  end
+end
+
+def download_graticules
+  # around Poland - for making map that shows how nicely stuff was fixed in Poland (TODO - make that map)
+  for lat in 48..55
+    for lon in 14..24
+      download_graticule(lat, lon)
     end
   end
 end
