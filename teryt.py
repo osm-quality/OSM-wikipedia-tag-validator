@@ -43,9 +43,9 @@ def get_linkable_OSM_element(teryt, potential_wikidata_id):
             print("# " + teryt + " is the same for http://www.wikidata.org/entity/" + potential_wikidata_id + " and " + teryt_simc_in_OSM[teryt][0].get_link() + " but there is already a different wikidata value")
             lang = 'pl'
             article = wikimedia_connection.get_interwiki_article_name_by_id(potential_wikidata_id, lang)
-            print("#: Expected article: " + common.wikipedia_url(lang, article))
+            print("#: Expected Wikipedia page: " + nullsafe_wikipedia_article_link(lang, article))
             article = wikimedia_connection.get_interwiki_article_name_by_id(osm_element.get_tag_value('wikidata'), lang)
-            print("#: Currently linked article: " + common.wikipedia_url(lang, article))
+            print("#: Current Wikipedia page: " + nullsafe_wikipedia_article_link(lang, article))
             if osm_element.get_tag_value('place') != None:
                 print("#: place=" + osm_element.get_tag_value('place'))
             else:
@@ -53,6 +53,11 @@ def get_linkable_OSM_element(teryt, potential_wikidata_id):
         return None
     else:
         assert(False)
+
+def nullsafe_wikipedia_article_link(lang, article):
+    if article == None:
+        return "<none>"
+    return common.wikipedia_url(lang, article)
 
 def get_wikidata_OSM_pairs():
     returned = []
