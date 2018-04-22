@@ -3,25 +3,6 @@ require 'etc'
 require 'yaml'
 
 def main()
-  for lower_lat in 48..55
-    for left_lon in 14..24
-      filepath = download_location+"/locality_graticule_#{lower_lat}_#{left_lon}.osm"
-      area_identifier = graticule_bbox(lower_lat, left_lon)
-      area_identifier_builder = nil
-      query = filtered_query_text("[place=locality][name]", area_identifier_builder, area_identifier, false)
-      download(query, filepath)
-    end
-  end
-
-  europe_bounding_box = '30,-30,75,50'
-  filepath = download_location+"/"+'famous_european_trees.osm'
-  if !File.exists?(filepath)
-    area_identifier = europe_bounding_box
-    area_identifier_builder = nil
-    query = filtered_query_text("[natural=tree][wikipedia]", area_identifier_builder, area_identifier, true)
-    download(query, filepath)
-  end
-
   filepath = download_location+"/"+'teryt_simc.osm'
   if !File.exists?(filepath)
     name = "Polska"
