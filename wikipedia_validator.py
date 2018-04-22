@@ -1356,7 +1356,7 @@ def print_popular_properties():
                 print("'" + str(property) + "',")
 
 def main():
-    wikimedia_connection.set_cache_location(common.get_file_storage_location())
+    wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
     if not (args.file):
         parser.error('Provide .osm file')
     osm = Data(common.get_file_storage_location() + "/" + args.file)

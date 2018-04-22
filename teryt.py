@@ -76,7 +76,7 @@ def get_changeset_builder():
     return generate_osm_edits.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
 
 def load_data():
-    wikimedia_connection.set_cache_location(common.get_file_storage_location())
+    wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
     file = "teryt_simc.osm"
     osm = Data(common.get_file_storage_location() + "/" + file)
     osm.iterate_over_data(record_presence)
