@@ -109,24 +109,24 @@ def get_problem_for_given_element(element, forced_refresh):
                         prerequisite = {'wikipedia': link},
                         )
 
-    wikipedia_page_exists = check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, forced_refresh)
-    if wikipedia_page_exists != None:
-        return wikipedia_page_exists
+    something_reportable = check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, forced_refresh)
+    if something_reportable != None:
+        return something_reportable
 
-    #early to ensure later that passing wikidata_id of article is not going to be confusing
-    collisions = check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh)
-    if collisions != None:
-        return collisions
+    #early to ensure that passing later wikidata_id of article is not going to be confusing
+    something_reportable = check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name, forced_refresh)
+    if something_reportable != None:
+        return something_reportable
 
     #do not pass language_code, article_name
     #acquire from wikidata within function if truly necessary
-    wikipedia_link_issues = get_problem_based_on_wikidata_and_osm_element(element, wikidata_id, forced_refresh)
-    if wikipedia_link_issues != None:
-        return wikipedia_link_issues
+    something_reportable = get_problem_based_on_wikidata_and_osm_element(element, wikidata_id, forced_refresh)
+    if something_reportable != None:
+        return something_reportable
 
-    wikipedia_language_issues = get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id, args.expected_language_code)
-    if wikipedia_language_issues != None:
-        return wikipedia_language_issues
+    something_reportable = get_wikipedia_language_issues(element, language_code, article_name, forced_refresh, wikidata_id, args.expected_language_code)
+    if something_reportable != None:
+        return something_reportable
 
     if present_wikidata_id == None and wikidata_id != None:
         return ErrorReport(
@@ -135,13 +135,13 @@ def get_problem_for_given_element(element, forced_refresh):
                         prerequisite = {'wikipedia': link, 'wikidata': None}
                         )
 
-    existence_check = check_is_object_is_existing(present_wikidata_id)
-    if existence_check != None:
-        return existence_check
+    something_reportable = check_is_object_is_existing(present_wikidata_id)
+    if something_reportable != None:
+        return something_reportable
 
-    new_data = add_data_from_wikidata(element)
-    if new_data != None:
-        return new_data
+    something_reportable = add_data_from_wikidata(element)
+    if something_reportable != None:
+        return something_reportable
 
     if present_wikidata_id != None:
         record_wikidata_properties_present(present_wikidata_id)
