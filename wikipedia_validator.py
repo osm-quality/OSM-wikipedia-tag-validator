@@ -144,11 +144,14 @@ def get_problem_for_given_element(element, forced_refresh):
         return new_data
 
     if present_wikidata_id != None:
-        wikidata = wikipedia_connection.get_data_from_wikidata_by_id(present_wikidata_id)
-        for property in wikidata['entities'][present_wikidata_id]['claims']:
-            property = str(property)
-            record_property_presence(property)
+        record_wikidata_properties_present(present_wikidata_id)
     return None
+
+def record_wikidata_properties_present(wikidata_id):
+    wikidata = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)
+    for property in wikidata['entities'][wikidata_id]['claims']:
+        property = str(property)
+        record_property_presence(property)
 
 def check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, forced_refresh):
     page_according_to_wikidata = wikipedia_connection.get_interwiki_article_name(language_code, article_name, language_code, forced_refresh)
