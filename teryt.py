@@ -48,13 +48,18 @@ def get_linkable_OSM_element(teryt, potential_wikidata_id):
             print("#: Expected Wikipedia page: " + nullsafe_wikipedia_article_link(lang, article))
             article = wikimedia_connection.get_interwiki_article_name_by_id(osm_element.get_tag_value('wikidata'), lang)
             print("#: Current Wikipedia page: " + nullsafe_wikipedia_article_link(lang, article))
-            if osm_element.get_tag_value('place') != None:
-                print("#: place=" + osm_element.get_tag_value('place'))
-            else:
-                print("#: place tag not present")
+            print("#: " + OSM_tag_info(osm_element, 'place'))
+            print("#: " + OSM_tag_info(osm_element, 'name'))
         return None
     else:
         assert(False)
+
+
+def OSM_tag_info(osm_element, tag):
+    if osm_element.get_tag_value(tag) != None:
+        return(tag + "=" + osm_element.get_tag_value(tag))
+    else:
+        return(tag + " tag not present")
 
 def nullsafe_wikipedia_article_link(lang, article):
     if article == None:
