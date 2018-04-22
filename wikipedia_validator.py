@@ -102,12 +102,9 @@ def get_problem_for_given_element(element, forced_refresh):
     article_name = wikipedia_connection.get_article_name_from_link(link)
     wikidata_id = wikipedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
 
-    if is_wikipedia_tag_clearly_broken(link):
-        return ErrorReport(
-                        error_id = "malformed wikipedia tag",
-                        error_message = "malformed wikipedia tag (" + link + ")",
-                        prerequisite = {'wikipedia': link},
-                        )
+    something_reportable = check_is_wikipedia_link_clearly_malformed(link)
+    if something_reportable != None:
+        return something_reportable
 
     something_reportable = check_is_wikipedia_page_existing(language_code, article_name, wikidata_id, forced_refresh)
     if something_reportable != None:
@@ -128,12 +125,9 @@ def get_problem_for_given_element(element, forced_refresh):
     if something_reportable != None:
         return something_reportable
 
-    if present_wikidata_id == None and wikidata_id != None:
-        return ErrorReport(
-                        error_id = "wikidata tag may be added",
-                        error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag",
-                        prerequisite = {'wikipedia': link, 'wikidata': None}
-                        )
+    something_reportable = check_is_wikidata_tag_is_misssing(element, present_wikidata_id, wikidata_id)
+    if something_reportable != None:
+        return something_reportable
 
     something_reportable = check_is_object_is_existing(present_wikidata_id)
     if something_reportable != None:
@@ -146,6 +140,26 @@ def get_problem_for_given_element(element, forced_refresh):
     if present_wikidata_id != None:
         record_wikidata_properties_present(present_wikidata_id)
     return None
+
+def check_is_wikipedia_link_clearly_malformed(link):
+    if is_wikipedia_tag_clearly_broken(link):
+        return ErrorReport(
+                        error_id = "malformed wikipedia tag",
+                        error_message = "malformed wikipedia tag (" + link + ")",
+                        prerequisite = {'wikipedia': link},
+                        )
+    else:
+        return None
+
+def check_is_wikidata_tag_is_misssing(element, present_wikidata_id, wikidata_id):
+    if present_wikidata_id == None and wikidata_id != None:
+        return ErrorReport(
+                        error_id = "wikidata tag may be added",
+                        error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag",
+                        prerequisite = {'wikipedia': element.get_tag_value("wikipedia"), 'wikidata': None}
+                        )
+    else:
+        return None
 
 def record_wikidata_properties_present(wikidata_id):
     wikidata = wikipedia_connection.get_data_from_wikidata_by_id(wikidata_id)
