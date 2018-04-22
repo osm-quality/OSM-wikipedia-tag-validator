@@ -1,4 +1,4 @@
-from osm_iterator import Data
+from osm_iterator.osm_iterator import Data
 import csv
 import wikipedia_connection
 import common
@@ -6,8 +6,9 @@ import generate_osm_edits
 import geopy.distance
 
 # IDEA
-# 21k entries for import
+# entries for import may be obtained by running query in following link:
 # http://88.99.164.208/wikidata/#SELECT%20%3Fitem%20%3Fteryt%20%3FitemLabel%20WHERE%20{%0A%20%3Fitem%20wdt%3AP31%2Fwdt%3AP279*%20wd%3AQ486972%20.%0A%20%3Fitem%20wdt%3AP4046%20%3Fteryt%20.%0A%20FILTER%20NOT%20EXISTS%20{%20%3Fosm1%20osmt%3Awikidata%20%3Fitem%20.%20}%0A%20%0A%20SERVICE%20wikibase%3Alabel%20{%20bd%3AserviceParam%20wikibase%3Alanguage%20"pl%2C[AUTO_LANGUAGE]%2Cen"%20}%0A}
+# and downloading data into teryt_wikidata.csv file located at folder specified by cache_location.config file
 # later also everything with teryt (see https://www.wikidata.org/wiki/Q30910912 )
 # https://wiki.openstreetmap.org/wiki/User_talk:Yurik
 # 2 minutes wasted on matching https://www.openstreetmap.org/node/3009664303
