@@ -1,5 +1,6 @@
 import unittest
 import wikipedia_validator
+import wikidata_processing
 import common
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import generate_webpage_with_error_output
@@ -70,7 +71,13 @@ class Tests(unittest.TestCase):
         self.assertEqual(after, common.tag_dict_to_overpass_query_format(before))
 
     def test_wikidata_structure_unit_test_castle_is_not_event(self):
-        self.assertEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary('Q2106892'))
+        castle_id = 'Q2106892'
+        castle_is_unlinkable = wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(castle_id)
+        if castle_is_unlinkable != None:
+            wikidata_processing.dump_base_types_of_object_in_stdout(castle_id, 'tests')
+            print()
+            print(castle_is_unlinkable.error_message)
+        self.assertEqual(None, castle_is_unlinkable)
 
     def test_args_depending_code_for_behavior(self):
         wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
