@@ -37,10 +37,10 @@ class PopularWikidataPropertiesDetector:
             limit = self.properties[iata_code_property] * 15 + 150
         for property in self.properties.keys():
             if self.properties[property] > limit:
-                if not skip_property(property):
+                if not self.skip_property(property):
                     print("https://www.wikidata.org/wiki/Property:" + str(property))
         for property in self.properties.keys():
             if self.properties[property] > limit:
-                if not skip_property(property):
+                if not self.skip_property(property):
                     print("'" + str(property) + "',")
 
