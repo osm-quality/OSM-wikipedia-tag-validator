@@ -3,6 +3,7 @@ import os
 import yaml
 import generate_webpage_with_error_output
 from subprocess import call
+import pathlib
 
 class ProcessingException(Exception):
     """TODO: documentation, not something so badly generic"""
@@ -110,6 +111,8 @@ def make_query_to_reload_only_affected_objects(input_filename_with_reports, outp
     if not os.path.isfile(input_filepath):
         print("file not found")
         return
+    directory_path = os.path.split(output_filepath)[0]
+    pathlib.Path(directory_path).mkdir(parents=True, exist_ok=True)
     with open(output_filepath, 'w') as query_file:
         all_errors = []
         for e in common.load_data(input_filepath):
