@@ -631,11 +631,14 @@ def get_wikipedia_language_issues(element, language_code, article_name, forced_r
             )
     assert(False)
 
-def should_use_subject_message(type, special_prefix):
+def should_use_subject_message(type, special_prefix, wikidata_id):
+    link = get_best_interwiki_link_by_id(wikidata_id, False)
+    article_name = wikimedia_connection.get_article_name_from_link(link)
+
     special_prefix_text = ""
     if special_prefix != None:
         special_prefix_text = "or " + special_prefix + "wikipedia"
-    message = "article linked in the wikipedia tag is about """ + type + \
+    message = "linked article (" + article_name + ") is about """ + type + \
     ", so it is very unlikely to be correct \n\
     subject:wikipedia=* " + special_prefix_text + " tag would be probably better \
     (see https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links ) \n\
@@ -646,7 +649,7 @@ def should_use_subject_message(type, special_prefix):
 def get_should_use_subject_error(type, special_prefix, wikidata_id):
     return ErrorReport(
         error_id = "should use a secondary wikipedia tag",
-        error_message = should_use_subject_message(type, special_prefix),
+        error_message = should_use_subject_message(type, special_prefix, wikidata_id),
         prerequisite = {'wikidata': wikidata_id},
         )
 
