@@ -6,12 +6,6 @@ import urllib.parse
 class ConfigException(Exception):
     """raised on a configuration problems"""
 
-def wikidata_url(wikidata_id):
-    return "https://www.wikidata.org/wiki/" + wikidata_id
-
-def wikipedia_url(language_code, article_name):
-    return "https://" + language_code + ".wikipedia.org/wiki/" + urllib.parse.quote(article_name)
-
 def parse_yaml_file(filename):
     with open(filename, 'r') as stream:
         try:

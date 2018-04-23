@@ -2,8 +2,8 @@ from osm_iterator.osm_iterator import Data
 import csv
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
-import generate_osm_edits
 import geopy.distance
+import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
 
 # IDEA
 # entries for import may be obtained by running query in following link:
@@ -64,7 +64,7 @@ def OSM_tag_info(osm_element, tag):
 def nullsafe_wikipedia_article_link(lang, article):
     if article == None:
         return "<none>"
-    return common.wikipedia_url(lang, article)
+    return wikimedia_connection.wikipedia_url(lang, article)
 
 def get_wikidata_OSM_pairs():
     returned = []
@@ -82,10 +82,10 @@ def get_wikidata_OSM_pairs():
 def get_changeset_builder():
     affected_objects_description = ""
     comment = "adding wikipedia and wikidata tags based on teryt simc code in OSM (teryt:simc tag) and Wikidata (P4046 property)"
-    automatic_status = generate_osm_edits.fully_automated_description()
+    automatic_status = osm_bot_abstraction_layer.fully_automated_description()
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59926'
     source = "wikidata, OSM"
-    return generate_osm_edits.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    return osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
 
 def load_data():
     wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
@@ -109,7 +109,7 @@ def get_location_of_element(element):
     assert(False)
 
 def get_api():
-    return generate_osm_edits.get_correct_api(get_changeset_builder().automatic_status, get_changeset_builder().discussion_url)
+    return osm_bot_abstraction_layer.get_correct_api(get_changeset_builder().automatic_status, get_changeset_builder().discussion_url)
 
 def process_pairs(pairs):
     api = get_api()
@@ -124,7 +124,7 @@ def process_pairs(pairs):
             continue
 
         edit = generate_edit(pair['osm_element'])
-        data = generate_osm_edits.get_and_verify_data(edit)
+        data = osm_bot_abstraction_layer.get_and_verify_data(edit['osm_object_url'], edit['prerequisite'])
 
         if data == None:
             continue
@@ -144,7 +144,7 @@ def process_pairs(pairs):
         print(edit['osm_object_url'] + ' ' + data['tag']['name'] + ' - adding wikidata=' + data['tag']['wikidata'] + ' wikipedia=' + data['tag']['wikipedia'])
 
         count += 1
-        generate_osm_edits.update_element(api, type, data)
+        osm_bot_abstraction_layer.update_element(api, type, data)
 
         if count >= 500:
             print("closing changeset after reaching limit of 500 items")
@@ -152,10 +152,10 @@ def process_pairs(pairs):
             changeset_opened = False
             center_location = None
             count = 0
-            generate_osm_edits.sleep(60)
+            osm_bot_abstraction_layer.sleep(60)
     if changeset_opened:
         api.ChangesetClose()
-        generate_osm_edits.sleep(60)
+        osm_bot_abstraction_layer.sleep(60)
     return unprocessed
 
 def main():
