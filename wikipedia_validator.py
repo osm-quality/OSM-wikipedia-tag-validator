@@ -634,7 +634,7 @@ def should_use_subject_message(type, special_prefix):
     special_prefix_text = ""
     if special_prefix != None:
         special_prefix_text = "or " + special_prefix + "wikipedia"
-    message = "article linked in wikipedia tag is about """ + type + \
+    message = "article linked in the wikipedia tag is about """ + type + \
     ", so it is very unlikely to be correct \n\
     subject:wikipedia=* " + special_prefix_text + " tag would be probably better \
     (see https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links ) \n\
