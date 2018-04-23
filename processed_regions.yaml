@@ -1,7 +1,3 @@
-- {region_name: Praha, website_main_title_part: 'Praha', merged_output_file: Česko.yaml, language_code: cz, hide_bottable_from_public: False}
-- {region_name: Devon, website_main_title_part: 'Devon, UK', merged_output_file: UK.yaml, language_code: en, hide_bottable_from_public: False}
-- {region_name: Preetz, website_main_title_part: 'Preetz, Deutschland', merged_output_file: Deutschland.yaml, language_code: de, hide_bottable_from_public: False}
-- {region_name: Bremen, website_main_title_part: 'Bremen, Deutschland', merged_output_file: Deutschland.yaml, language_code: de, hide_bottable_from_public: False}
 - {region_name: Kraków, website_main_title_part: 'Kraków', merged_output_file: , language_code: pl, hide_bottable_from_public: True}
 - {region_name: województwo małopolskie, website_main_title_part: 'województwo małopolskie', merged_output_file: 'Polska.yaml', language_code: pl, hide_bottable_from_public: True}
 - {region_name: województwo podkarpackie, website_main_title_part: 'województwo podkarpackie', merged_output_file: 'Polska.yaml', language_code: pl, hide_bottable_from_public: True}
@@ -19,3 +15,7 @@
 - {region_name: województwo opolskie, website_main_title_part: 'województwo opolskie', merged_output_file: 'Polska.yaml', language_code: pl, hide_bottable_from_public: True}
 - {region_name: województwo śląskie, website_main_title_part: 'województwo śląskie', merged_output_file: 'Polska.yaml', language_code: pl, hide_bottable_from_public: True}
 - {region_name: województwo łódzkie, website_main_title_part: 'województwo łódzkie', merged_output_file: 'Polska.yaml', language_code: pl, hide_bottable_from_public: True}
+- {region_name: Praha, website_main_title_part: 'Praha', merged_output_file: Česko.yaml, language_code: cz, hide_bottable_from_public: False}
+- {region_name: Devon, website_main_title_part: 'Devon, UK', merged_output_file: UK.yaml, language_code: en, hide_bottable_from_public: False}
+- {region_name: Preetz, website_main_title_part: 'Preetz, Deutschland', merged_output_file: Deutschland.yaml, language_code: de, hide_bottable_from_public: False}
+- {region_name: Bremen, website_main_title_part: 'Bremen, Deutschland', merged_output_file: Deutschland.yaml, language_code: de, hide_bottable_from_public: False}
