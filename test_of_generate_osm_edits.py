@@ -1,7 +1,6 @@
 import unittest
 import common
 import generate_osm_edits
-import tests_of_generate_osm_edits
 
 class Tests(unittest.TestCase):
     def test_filter_reported_errors_on_empty_input(self):
