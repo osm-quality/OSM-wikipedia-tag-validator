@@ -35,7 +35,7 @@ def wikidata_entries_for_abstract_or_very_broad_concepts():
     'Q386724', 'Q17008256', 'Q11348', 'Q11028', 'Q1260632', 'Q1209283',
     'Q673661', 'Q23008351', 'Q1914636', 'Q17334923', 'Q2221906',
     'Q2324993', 'Q58778', 'Q18340964', 'Q1544281', 'Q2101636',
-    'Q30060700', 'Q3778211',
+    'Q30060700', 'Q3778211', 'Q937228',
     ]
 
 def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries_for_abstract_or_very_broad_concepts(), debug = False, callback = None):
