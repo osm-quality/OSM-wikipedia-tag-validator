@@ -141,6 +141,7 @@ def for_public_use():
 
 def for_private_use():
     return [
+        'blacklisted connection with known replacement',
         'wikipedia tag unexpected language',
         'wikipedia tag from wikipedia tag in an outdated form and wikidata',
         'wikipedia tag from wikipedia tag in an outdated form',

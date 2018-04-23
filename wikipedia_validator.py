@@ -74,7 +74,7 @@ def get_problem_for_given_element(element, forced_refresh):
     if something_reportable != None:
         return something_reportable
 
-    something_reportable = freely_reorderable_issue_reports(element, language_code, article_name, forced_refresh, wikidata_id, args.expected_language_code)
+    something_reportable = freely_reorderable_issue_reports(element, link, forced_refresh, args.expected_language_code)
     if something_reportable != None:
         return something_reportable
 
@@ -83,10 +83,18 @@ def get_problem_for_given_element(element, forced_refresh):
         record_wikidata_properties_present(present_wikidata_id, property_popularity)
     return None
 
-def freely_reorderable_issue_reports(element, language_code, article_name, forced_refresh, wikidata_id, expected_language_code):
+def freely_reorderable_issue_reports(element, link, forced_refresh, expected_language_code):
+    language_code = wikimedia_connection.get_language_code_from_link(link)
+    article_name = wikimedia_connection.get_article_name_from_link(link)
+    wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, forced_refresh)
+
     #wikipedia tag is not malformed
     #wikipedia and wikidata tags are not conflicting
     present_wikidata_id = element.get_tag_value("wikidata")
+
+    something_reportable = get_problem_based_on_wikidata_blacklist(wikidata_id, present_wikidata_id, link)
+    if something_reportable != None:
+        return something_reportable
 
     something_reportable = get_problem_based_on_wikidata_and_osm_element(element, wikidata_id, forced_refresh)
     if something_reportable != None:
@@ -109,6 +117,26 @@ def freely_reorderable_issue_reports(element, language_code, article_name, force
         return something_reportable
 
     return None
+
+def get_problem_based_on_wikidata_blacklist(wikidata_id, present_wikidata_id, link):
+    if wikidata_id == None:
+        wikidata_id = present_wikidata_id
+
+    blacklist = {
+        'Q889624': 'brand:'
+    }
+
+    try:
+        prefix = blacklist[wikidata_id]
+    except KeyError:
+        return None
+
+    return ErrorReport(
+                    error_id = "blacklisted connection with known replacement",
+                    error_message = "it is a typical wrong link and it has an obvious replacement, " + prefix + "wikipedia/" + prefix + "wikidata should be used instead",
+                    prerequisite = {'wikipedia': link, 'wikidata': present_wikidata_id},
+                    extra_data = prefix
+                    )
 
 def check_is_wikipedia_link_clearly_malformed(link):
     if is_wikipedia_tag_clearly_broken(link):
@@ -1007,13 +1035,14 @@ def object_should_be_deleted_not_repaired(element):
         return True
 
 class ErrorReport:
-    def __init__(self, error_message=None, desired_wikipedia_target=None, debug_log=None, error_id=None, prerequisite=None):
+    def __init__(self, error_message=None, desired_wikipedia_target=None, debug_log=None, error_id=None, prerequisite=None, extra_data=None):
         self.error_id = error_id
         self.error_message = error_message
         self.debug_log = debug_log
         self.current_wikipedia_target = None
         self.desired_wikipedia_target = desired_wikipedia_target
         self.prerequisite = prerequisite
+        self.extra_data = extra_data
 
     def bind_to_element(self, element):
         self.current_wikipedia_target = element.get_tag_value("wikipedia") # TODO - save all tags #TODO - how to handle multiple?
@@ -1026,8 +1055,9 @@ class ErrorReport:
             error_message = self.error_message,
             debug_log = self.debug_log,
             osm_object_url = self.osm_object_url,
-            current_wikipedia_target = self.current_wikipedia_target, #TODO - make it generic
-            desired_wikipedia_target = self.desired_wikipedia_target, #TODO - make it generic
+            current_wikipedia_target = self.current_wikipedia_target, #TODO - make it generic (use extra_data)
+            desired_wikipedia_target = self.desired_wikipedia_target, #TODO - make it generic (use extra_data)
+            extra_data = self.extra_data,
             prerequisite = self.prerequisite,
             location = self.location,
         )
