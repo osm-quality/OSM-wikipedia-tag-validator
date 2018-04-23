@@ -2,10 +2,11 @@ import unittest
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
 import wikipedia_validator
+import osm_handling_config.global_config as osm_handling_config
 
 class WikidataTests(unittest.TestCase):
     def is_unlinkable_check(self, type_id):
-        wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
+        wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
         return wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(type_id)
 
     def dump_debug_into_stdout(self, type_id):
@@ -31,7 +32,7 @@ class WikidataTests(unittest.TestCase):
         self.assert_unlinkability('Q134301')
 
     def test_rejects_links_to_spacecraft(self):
-        wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
+        wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary('Q2513'))
 
     def test_reject_links_to_humans(self):

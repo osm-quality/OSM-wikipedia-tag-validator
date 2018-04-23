@@ -11,6 +11,7 @@ import geopy.distance
 import popular_wikidata_property_detector
 import wikidata_processing
 import wikipedia_knowledge
+import osm_handling_config.global_config as osm_handling_config
 
 present_wikipedia_links = {}
 # dictionary contains entries indexed by wikidata_id
@@ -1179,7 +1180,7 @@ def process_repeated_appearances():
             repeated_wikidata_warned_already.append(wikidata_id)
 
 def main():
-    wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
+    wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     if not (args.file):
         parser.error('Provide .osm file')
     osm = Data(common.get_file_storage_location() + "/" + args.file)

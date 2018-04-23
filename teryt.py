@@ -4,6 +4,7 @@ import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
 import geopy.distance
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
+import osm_handling_config.global_config as osm_handling_config
 
 # IDEA
 # entries for import may be obtained by running query in following link:
@@ -88,7 +89,7 @@ def get_changeset_builder():
     return osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
 
 def load_data():
-    wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
+    wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     file = "teryt_simc.osm"
     osm = Data(common.get_file_storage_location() + "/" + file)
     osm.iterate_over_data(record_presence)

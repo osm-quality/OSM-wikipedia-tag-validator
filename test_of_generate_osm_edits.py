@@ -1,5 +1,4 @@
 import unittest
-import common
 import generate_osm_edits
 
 class Tests(unittest.TestCase):

@@ -22,11 +22,6 @@ def get_file_storage_location():
     cache_location_file.close()
     return returned
 
-def get_wikimedia_connection_cache_location():
-    path = get_file_storage_location()
-    upper_directory_path = os.path.split(path)[0]
-    return upper_directory_path
-
 def escape_from_internal_python_string_to_html_ascii(string):
     return str(string).encode('ascii', 'xmlcharrefreplace').decode()
 

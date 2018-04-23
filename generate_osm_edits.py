@@ -3,6 +3,7 @@ import common
 import os
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
+import osm_handling_config.global_config as osm_handling_config
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -192,7 +193,7 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
     osm_bot_abstraction_layer.sleep(60)
 
 def main():
-    wikimedia_connection.set_cache_location(common.get_file_storage_location())
+    wikimedia_connection.set_cache_location(osm_handling_config.get_file_storage_location())
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     reported_errors = load_errors()

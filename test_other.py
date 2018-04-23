@@ -6,10 +6,11 @@ import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import generate_webpage_with_error_output
 import generate_overpass_query_output
 import script
+import osm_handling_config.global_config as osm_handling_config
 
 class Tests(unittest.TestCase):
     def test_complain_function(self):
-        wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
+        wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
         wikipedia_validator.complain_in_stdout_if_wikidata_entry_not_of_known_safe_type('Q824359', "explanation")
 
     def test_get_prerequisite_in_overpass_query_format(self):
@@ -40,7 +41,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(after, common.tag_dict_to_overpass_query_format(before))
 
     def test_args_depending_code_for_behavior(self):
-        wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
+        wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
         #TODO - handle args. in test
         #wikipedia_validator.attempt_to_locate_wikipedia_tag_using_wikidata_id('Q2106892', False)
 
