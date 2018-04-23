@@ -119,9 +119,10 @@ def note_unused_errors(args):
     reported_errors = get_errors(args)
     for e in reported_errors:
         if e['error_id'] not in for_public_use():
-            if e['error_id'] not in for_private_use():
-                if e['error_id'] not in for_tests():
-                    print('"' + e['error_id'] + '" is not appearing in any generated webpage')
+            if e['error_id'] not in for_public_use_boring():
+                if e['error_id'] not in for_private_use():
+                    if e['error_id'] not in for_tests():
+                        print('"' + e['error_id'] + '" is not appearing in any generated webpage')
 
 def for_public_use():
     return [
@@ -135,8 +136,12 @@ def for_public_use():
         'duplicated link - waterway',
         'duplicated link - generic',
         'tag may be added based on wikidata - teryt',
-        'tag may be added based on wikidata - website',
         'duplicated link - place',
+    ]
+
+def for_public_use_boring():
+    return [
+        'tag may be added based on wikidata - website',
     ]
 
 def for_private_use():
@@ -173,6 +178,7 @@ def main():
     args = parsed_args()
     if args.hide_bottable_from_public:
         generate_html_file(args, "", for_public_use(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
+        generate_html_file(args, " - boring", for_public_use_boring(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
         generate_html_file(args, " - private", for_private_use(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
     else:
         generate_html_file(args, "", for_public_use() + for_private_use(), "Remember to check whatever edit makes sense! Reports at this page may require human judgment to verify whatever proposed edit makes sense.")
