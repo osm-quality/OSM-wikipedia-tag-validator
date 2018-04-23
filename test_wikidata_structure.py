@@ -4,43 +4,50 @@ import common
 import wikipedia_validator
 
 class WikidataTests(unittest.TestCase):
-    def assert_linkability(self, type_id):
-        is_unlinkable = wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(type_id)
+    def is_unlinkable_check(self, type_id):
+        wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
+        return wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(type_id)
+
+    def dump_debug_into_stdout(self, type_id):
+        is_unlinkable = self.is_unlinkable_check(type_id)
+        wikipedia_validator.dump_base_types_of_object_in_stdout(type_id, 'tests')
+        print()
         if is_unlinkable != None:
-            wikipedia_validator.dump_base_types_of_object_in_stdout(type_id, 'tests')
-            print()
             print(is_unlinkable.error_message)
+
+    def assert_linkability(self, type_id):
+        is_unlinkable = self.is_unlinkable_check(type_id)
+        if is_unlinkable != None:
+            self.dump_debug_into_stdout(type_id)
         self.assertEqual(None, is_unlinkable)
 
+    def assert_unlinkability(self, type_id):
+        is_unlinkable = self.is_unlinkable_check(type_id)
+        if is_unlinkable == None:
+            self.dump_debug_into_stdout(type_id)
+        self.assertNotEqual(None, is_unlinkable)
+
     def test_rejects_links_to_events(self):
-        wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
-        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary('Q134301'))
+        self.assert_unlinkability('Q134301')
 
     def test_rejects_links_to_spacecraft(self):
         wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary('Q2513'))
 
     def test_reject_links_to_humans(self):
-        example_artist_id = 'Q561127'
-        location = None
-        forced_refresh = False
-        self.assertNotEqual(None, wikipedia_validator.get_problem_based_on_wikidata_base_types(location, example_artist_id, forced_refresh))
+        self.assert_unlinkability('Q561127')
 
     def test_detecting_makro_as_invalid_primary_link(self):
-        wikidata_id = 'Q704606'
-        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
+        self.assert_unlinkability('Q704606')
 
     def test_detecting_tesco_as_invalid_primary_link(self):
-        wikidata_id = 'Q487494'
-        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
+        self.assert_unlinkability('Q487494')
 
     def test_detecting_carrefour_as_invalid_primary_link(self):
-        wikidata_id = 'Q217599'
-        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
+        self.assert_unlinkability('Q217599')
 
     def test_detecting_cropp_as_invalid_primary_link(self):
-        wikidata_id = 'Q9196793'
-        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
+        self.assert_unlinkability('Q9196793')
 
     def test_detecting_castle_as_valid_primary_link(self):
         self.assert_linkability('Q2106892')
