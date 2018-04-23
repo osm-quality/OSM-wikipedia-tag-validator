@@ -46,19 +46,19 @@ class Tests(unittest.TestCase):
         example_artist_id = 'Q561127'
         self.assertEqual(type(""), type(wikipedia_validator.get_distance_description_between_location_and_wikidata_id((50, 20), example_artist_id)))
 
-    def test_detecting_makro_as_invalid_prinary_link(self):
+    def test_detecting_makro_as_invalid_primary_link(self):
         wikidata_id = 'Q704606'
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
 
-    def test_detecting_tesco_as_invalid_prinary_link(self):
+    def test_detecting_tesco_as_invalid_primary_link(self):
         wikidata_id = 'Q487494'
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
 
-    def test_detecting_carrefour_as_invalid_prinary_link(self):
+    def test_detecting_carrefour_as_invalid_primary_link(self):
         wikidata_id = 'Q217599'
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
 
-    def test_detecting_cropp_as_invalid_prinary_link(self):
+    def test_detecting_cropp_as_invalid_primary_link(self):
         wikidata_id = 'Q9196793'
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(wikidata_id))
 
@@ -70,7 +70,7 @@ class Tests(unittest.TestCase):
         print(before)
         self.assertEqual(after, common.tag_dict_to_overpass_query_format(before))
 
-    def test_wikidata_structure_unit_test_castle_is_not_event(self):
+    def test_detecting_castle_as_valid_primary_link(self):
         castle_id = 'Q2106892'
         castle_is_unlinkable = wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(castle_id)
         if castle_is_unlinkable != None:
