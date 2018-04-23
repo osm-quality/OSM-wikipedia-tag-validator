@@ -12,7 +12,7 @@ class Tests(unittest.TestCase):
     def assert_linkability(self, type_id):
         is_unlinkable = wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(type_id)
         if is_unlinkable != None:
-            wikidata_processing.dump_base_types_of_object_in_stdout(type_id, 'tests')
+            wikipedia_validator.dump_base_types_of_object_in_stdout(type_id, 'tests')
             print()
             print(is_unlinkable.error_message)
         self.assertEqual(None, is_unlinkable)

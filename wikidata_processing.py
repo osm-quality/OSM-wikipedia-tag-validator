@@ -38,17 +38,20 @@ def wikidata_entries_for_abstract_or_very_broad_concepts():
     'Q30060700', 'Q3778211',
     ]
 
-def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries_for_abstract_or_very_broad_concepts(), debug = False):
+def get_recursive_all_subclass_of(wikidata_id, banned_parents = wikidata_entries_for_abstract_or_very_broad_concepts(), debug = False, callback = None):
     processed = []
     to_process = [{"id": wikidata_id, "depth": 0}]
     while to_process != []:
         process = to_process.pop()
-        process_id = process["id"]
+        category_id = process["id"]
         depth = process["depth"]
+        callback_text = ""
+        if callback != None:
+            callback_text = callback(category_id)
         if debug:
-            print(" "*depth + wikidata_description(process_id))
-        processed.append(process_id)
-        new_ids = get_useful_direct_parents(process_id, processed + to_process + banned_parents)
+            print(" "*depth + wikidata_description(category_id) + callback_text)
+        processed.append(category_id)
+        new_ids = get_useful_direct_parents(category_id, processed + to_process + banned_parents)
         for parent_id in new_ids:
             to_process.append({"id": parent_id, "depth": depth+1})
     return processed
@@ -129,18 +132,3 @@ def decapsulate_wikidata_value(from_wikidata):
     except KeyError:
         pass
     return from_wikidata
-
-def describe_unexpected_wikidata_type(type_id):
-    # print entire inheritance set
-    for parent_category in get_recursive_all_subclass_of(type_id, wikidata_entries_for_abstract_or_very_broad_concepts(), True):
-        print("if type_id == '" + parent_category + "':")
-        print(wikidata_description(parent_category))
-
-def dump_base_types_of_object_in_stdout(wikidata_id, description_of_source):
-    print("----------------")
-    print(wikidata_id)
-    for type_id in get_wikidata_type_ids_of_entry(wikidata_id):
-        print("------")
-        print(description_of_source)
-        print("type " + type_id)
-        describe_unexpected_wikidata_type(type_id)

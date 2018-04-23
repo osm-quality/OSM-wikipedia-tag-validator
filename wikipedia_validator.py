@@ -716,38 +716,44 @@ def get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary(wiki
 
 def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
     for type_id in wikidata_processing.get_all_types_describing_wikidata_object(wikidata_id):
-        if type_id == 'Q5':
-            return get_should_use_subject_error('a human', 'name:', wikidata_id)
-        if type_id == 'Q18786396' or type_id == 'Q16521':
-            return get_should_use_subject_error('an animal or plant', None, wikidata_id)
-        #valid for example for museums, parishes
-        #if type_id == 'Q43229':
-        #    return get_should_use_subject_error('organization', None)
-        if type_id == 'Q1344':
-            return get_should_use_subject_error('an opera', None, wikidata_id)
-        if type_id == 'Q35127':
-            return get_should_use_subject_error('a website', None, wikidata_id)
-        if type_id == 'Q1190554':
-            return get_should_use_subject_error('an event', None, wikidata_id)
-        if type_id == 'Q5398426':
-            return get_should_use_subject_error('a television series', None, wikidata_id)
-        if type_id == 'Q3026787':
-            return get_should_use_subject_error('a saying', None, wikidata_id)
-        if type_id == 'Q18534542':
-            return get_should_use_subject_error('a restaurant chain', 'brand:', wikidata_id)
-        #some local banks may fit - see https://www.openstreetmap.org/node/2598972915
-        #if type_id == 'Q22687':
-        #    return get_should_use_subject_error('a bank', 'brand:', wikidata_id)
-        if type_id == 'Q507619':
-            return get_should_use_subject_error('a chain store', 'brand:', wikidata_id)
-        # appears in constraints of coordinate property in Wikidata but not applicable to OSM
-        # pl:ArcelorMittal Poland Oddział w Krakowie may be linked
-        #if type_id == 'Q4830453':
-        #    return get_should_use_subject_error('a business enterprise', 'brand:', wikidata_id)
-        if type_id == 'Q202444':
-            return get_should_use_subject_error('a given name', 'name:', wikidata_id)
-        if type_id == 'Q21502408':
-            return get_should_use_subject_error('a mandatory constraint', None, wikidata_id)
+        potential_failure = get_reason_why_type_makes_object_invalid_primary_link(type_id)
+        if potential_failure != None:
+            return get_should_use_subject_error(potential_failure['what'], potential_failure['replacement'], wikidata_id)
+    return None
+
+def get_reason_why_type_makes_object_invalid_primary_link(type_id):
+    if type_id == 'Q5':
+        return {'what': 'a human', 'replacement': 'name:'}
+    if type_id == 'Q18786396' or type_id == 'Q16521':
+        return {'what': 'an animal or plant', 'replacement': None}
+    #valid for example for museums, parishes
+    #if type_id == 'Q43229':
+    #    return {'what': 'an organization', 'replacement': None}
+    if type_id == 'Q1344':
+        return {'what': 'an opera', 'replacement': None}
+    if type_id == 'Q35127':
+        return {'what': 'a website', 'replacement': None}
+    if type_id == 'Q1656682' or type_id == 'Q4026292' or type_id == 'Q3249551' or type_id == 'Q1190554':
+        return {'what': 'an event', 'replacement': None}
+    if type_id == 'Q5398426':
+        return {'what': 'a television series', 'replacement': None}
+    if type_id == 'Q3026787':
+        return {'what': 'a saying', 'replacement': None}
+    if type_id == 'Q18534542':
+        return {'what': 'a restaurant chain', 'replacement': 'brand:'}
+    #some local banks may fit - see https://www.openstreetmap.org/node/2598972915
+    #if type_id == 'Q22687':
+        return {'what': 'a bank', 'replacement': 'brand:'}
+    if type_id == 'Q507619':
+        return {'what': 'a chain store', 'replacement': 'brand:'}
+    # appears in constraints of coordinate property in Wikidata but not applicable to OSM
+    # pl:ArcelorMittal Poland Oddział w Krakowie may be linked
+    #if type_id == 'Q4830453':
+    #    return {'what': 'a business enterprise', 'replacement': 'brand:'}
+    if type_id == 'Q202444':
+        return {'what': 'a given name', 'replacement': 'name:'}
+    if type_id == 'Q21502408':
+        return {'what': 'a mandatory constraint', 'replacement': None}
     return None
 
 def get_error_report_if_wikipedia_target_is_of_unusable_type(location, wikidata_id, forced_refresh):
@@ -852,8 +858,32 @@ def complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, des
     for type_id in wikidata_processing.get_all_types_describing_wikidata_object(wikidata_id):
         if is_wikidata_type_id_recognised_as_OK(type_id):
             return None
-    wikidata_processing.dump_base_types_of_object_in_stdout(wikidata_id, description_of_source)
+    dump_base_types_of_object_in_stdout(wikidata_id, description_of_source)
 
+def dump_base_types_of_object_in_stdout(wikidata_id, description_of_source):
+    print("----------------")
+    print(wikidata_id)
+    for type_id in wikidata_processing.get_wikidata_type_ids_of_entry(wikidata_id):
+        print("------")
+        print(description_of_source)
+        print("type " + type_id)
+        describe_unexpected_wikidata_type(type_id)
+
+def callback_reporting_banned_categories(category_id):
+    ban_reson = get_reason_why_type_makes_object_invalid_primary_link(category_id)
+    if ban_reson != None:
+        return "banned as it is " + ban_reson['what'] + " !!!!!!!!!!!!!!!!!!!!!!!!!!"
+    return ""
+
+def describe_unexpected_wikidata_type(type_id):
+    # print entire inheritance set
+    too_abstract = wikidata_processing.wikidata_entries_for_abstract_or_very_broad_concepts()
+    show_debug = True
+    callback = callback_reporting_banned_categories
+    parent_categories = wikidata_processing.get_recursive_all_subclass_of(type_id, too_abstract, show_debug, callback)
+    #for parent_category in parent_categories:
+    #    print("if type_id == '" + parent_category + "':")
+    #    print(wikidata_processing.wikidata_description(parent_category))
 
 def is_wikidata_type_id_recognised_as_OK(type_id):
     objects_mappable_in_OSM = [
