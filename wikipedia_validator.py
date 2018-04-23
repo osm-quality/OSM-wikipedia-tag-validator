@@ -735,8 +735,9 @@ def get_error_report_if_type_unlinkable_as_primary(wikidata_id):
             return get_should_use_subject_error('a saying', None, wikidata_id)
         if type_id == 'Q18534542':
             return get_should_use_subject_error('a restaurant chain', 'brand:', wikidata_id)
-        if type_id == 'Q22687':
-            return get_should_use_subject_error('a bank', 'brand:', wikidata_id)
+        #some local banks may fit - see https://www.openstreetmap.org/node/2598972915
+        #if type_id == 'Q22687':
+        #    return get_should_use_subject_error('a bank', 'brand:', wikidata_id)
         if type_id == 'Q507619':
             return get_should_use_subject_error('a chain store', 'brand:', wikidata_id)
         # appears in constraints of coordinate property in Wikidata but not applicable to OSM
