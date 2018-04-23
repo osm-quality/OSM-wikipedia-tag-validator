@@ -9,6 +9,14 @@ import script
 from tests_of_generate_osm_edits import *
 
 class Tests(unittest.TestCase):
+    def assert_linkability(self, type_id):
+        is_unlinkable = wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(type_id)
+        if is_unlinkable != None:
+            wikidata_processing.dump_base_types_of_object_in_stdout(type_id, 'tests')
+            print()
+            print(is_unlinkable.error_message)
+        self.assertEqual(None, is_unlinkable)
+
     def test_rejects_links_to_events(self):
         wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
         self.assertNotEqual(None, wikipedia_validator.get_error_report_if_type_unlinkable_as_primary('Q134301'))
@@ -71,13 +79,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(after, common.tag_dict_to_overpass_query_format(before))
 
     def test_detecting_castle_as_valid_primary_link(self):
-        castle_id = 'Q2106892'
-        castle_is_unlinkable = wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(castle_id)
-        if castle_is_unlinkable != None:
-            wikidata_processing.dump_base_types_of_object_in_stdout(castle_id, 'tests')
-            print()
-            print(castle_is_unlinkable.error_message)
-        self.assertEqual(None, castle_is_unlinkable)
+        self.assert_linkability('Q2106892')
 
     def test_args_depending_code_for_behavior(self):
         wikimedia_connection.set_cache_location(common.get_wikimedia_connection_cache_location())
