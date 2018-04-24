@@ -1,17 +1,17 @@
 import unittest
+import wikimedia_link_issue_reporter
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
-import wikipedia_validator
 import osm_handling_config.global_config as osm_handling_config
 
 class WikidataTests(unittest.TestCase):
     def is_unlinkable_check(self, type_id):
         wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
-        return wikipedia_validator.get_error_report_if_type_unlinkable_as_primary(type_id)
+        return wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_error_report_if_type_unlinkable_as_primary(type_id)
 
     def dump_debug_into_stdout(self, type_id):
         is_unlinkable = self.is_unlinkable_check(type_id)
-        wikipedia_validator.dump_base_types_of_object_in_stdout(type_id, 'tests')
+        wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().dump_base_types_of_object_in_stdout(type_id, 'tests')
         print()
         if is_unlinkable != None:
             print(is_unlinkable.error_message)
@@ -33,7 +33,7 @@ class WikidataTests(unittest.TestCase):
 
     def test_rejects_links_to_spacecraft(self):
         wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
-        self.assertNotEqual(None, wikipedia_validator.get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary('Q2513'))
+        self.assertNotEqual(None, wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary('Q2513'))
 
     def test_reject_links_to_humans(self):
         self.assert_unlinkability('Q561127')
