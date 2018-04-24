@@ -193,7 +193,7 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
     osm_bot_abstraction_layer.sleep(60)
 
 def main():
-    wikimedia_connection.set_cache_location(osm_handling_config.get_file_storage_location())
+    wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     reported_errors = load_errors()
