@@ -81,6 +81,8 @@ class WikimediaLinkIssueDetector:
         return None
 
     def freely_reorderable_issue_reports(self, element, link):
+        # IDEA links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
+
         language_code = wikimedia_connection.get_language_code_from_link(link)
         article_name = wikimedia_connection.get_article_name_from_link(link)
         wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, self.forced_refresh)
@@ -239,6 +241,7 @@ class WikimediaLinkIssueDetector:
     def add_name_from_wikidata(self, element):
         present_wikidata_id = element.get_tag_value("wikidata")
         # IDEA - skip former official names ( https://www.wikidata.org/wiki/Q387396 ), skip official_name equal to name
+        # IDEA import name:pl - for example for https://www.wikidata.org/wiki/Q1952
 
         official_name_wikidata = self.tag_from_wikidata(present_wikidata_id, 'P1448')
         name_wikidata = self.tag_from_wikidata(present_wikidata_id, 'P1705')

@@ -191,8 +191,6 @@ def main():
 
     process_repeated_appearances()
 
-    # idea links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
-
     property_popularity.print_popular_properties()
 
 global args #TODO remove global
@@ -203,7 +201,3 @@ if __name__ == "__main__":
     main()
 
 # TODO - search for IDEA note
-# IDEA detect wikidata tag matching subject:wikipedia or operator:wikipedia
-
-# IDEA import name:pl - for example for https://www.wikidata.org/wiki/Q1952
-# IDEA make maproulette and post on https://forum.openstreetmap.org/viewtopic.php?id=59430
