@@ -153,7 +153,7 @@ def for_private_use():
         'wikipedia wikidata mismatch - follow wikipedia redirect',
         'wikipedia from wikidata tag',
         'wikipedia from wikidata tag, unexpected language',
-        'wikidata tag may be added',
+        'wikidata from wikipedia tag',
     ]
 
 def for_tests():

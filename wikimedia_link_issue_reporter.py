@@ -150,7 +150,7 @@ class WikimediaLinkIssueDetector:
     def check_is_wikidata_tag_is_misssing(self, element, present_wikidata_id, wikidata_id):
         if present_wikidata_id == None and wikidata_id != None:
             return ErrorReport(
-                            error_id = "wikidata tag may be added",
+                            error_id = "wikidata from wikipedia tag",
                             error_message = wikidata_id + " may be added as wikidata tag based on wikipedia tag",
                             prerequisite = {'wikipedia': element.get_tag_value("wikipedia"), 'wikidata': None}
                             )
