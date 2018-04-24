@@ -989,7 +989,7 @@ class WikimediaLinkIssueDetector:
 
         country_ids_where_expected_language_will_be_enforced = self.wikidata_ids_of_countries_with_language(self.expected_language_code)
 
-        countries = self.get_current_countries_by_id(wikidata_id)
+        countries = self.get_country_location_from_wikidata_id(wikidata_id)
         if countries == None:
             # TODO locate based on coordinates...
             return None
@@ -1005,8 +1005,8 @@ class WikimediaLinkIssueDetector:
             return "it is at least partially in " + country_name
         return None
 
-    def get_current_countries_by_id(self, wikidata_id):
-        countries = wikimedia_connection.get_property_from_wikidata(wikidata_id, 'P17')
+    def get_country_location_from_wikidata_id(self, object_wikidata_id):
+        countries = wikimedia_connection.get_property_from_wikidata(object_wikidata_id, 'P17')
         if countries == None:
             return None
         returned = []
@@ -1016,10 +1016,11 @@ class WikimediaLinkIssueDetector:
             # it is necessary to avoid gems like
             # "Płock is allowed to have foreign wikipedia link, because it is at least partially in Nazi Germany"
             # P582 indicates the time an item ceases to exist or a statement stops being valid
+            # so statements qualified by P582 refer to the past
             try:
                 country['qualifiers']['P582']
             except KeyError:
-                    #P582 is missing, therefore it is not a statement aplying to the past
+                    #P582 is missing, therefore it is not marked as a statement applying only to the past
                     returned.append(country_id)
         return returned
 
