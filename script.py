@@ -82,6 +82,7 @@ def move_files_to_report_directory(website_main_title_part):
     filenames.append(website_main_title_part + '.html')
     filenames.append(website_main_title_part + ' - obvious.html')
     filenames.append(website_main_title_part + ' - test.html')
+    filenames.append(website_main_title_part + ' - boring.html')
     for filename in filenames:
         if os.path.isfile(filename):
             system_call('mv "' + filename + '" ' + get_report_directory() + '/ -f', False)
