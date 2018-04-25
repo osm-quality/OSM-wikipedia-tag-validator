@@ -117,16 +117,17 @@ class WikimediaLinkIssueDetector:
 
         return None
 
+    def wikidata_connection_blacklist(self):
+        return {
+            'Q889624': {'prefix': 'brand:', 'expected_tags': {'shop': 'doityourself'}}
+        }
+
     def get_problem_based_on_wikidata_blacklist(self, wikidata_id, present_wikidata_id, link):
         if wikidata_id == None:
             wikidata_id = present_wikidata_id
 
-        blacklist = {
-            'Q889624': 'brand:'
-        }
-
         try:
-            prefix = blacklist[wikidata_id]
+            prefix = self.wikidata_connection_blacklist()[wikidata_id]['prefix']
         except KeyError:
             return None
 
