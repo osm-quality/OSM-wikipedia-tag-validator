@@ -3,6 +3,7 @@
 *.html
 *.query
 OSM-wikipedia-tag-validator-reports
+generated_query_for_blacklisted_entries.generated_query
 
 # python
 *.pyc

@@ -25,6 +25,8 @@ def main()
   file_with_query = download_location+'/reload_querries/reload_Poland.query'
   run_query_from_file(file_with_query, target_file)
 
+  run_query_from_file('generated_query_for_blacklisted_entries.generated_query', download_location+"/"+'objects_with_blacklisted_links.osm')
+
   download_defined_regions
 
   download_graticules
