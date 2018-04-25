@@ -60,7 +60,7 @@ def download_graticules
 end
 
 def user_agent
-  "downloader of interesting places, operated by #{Etc.getlogin}, written by Mateusz Konieczny (matkoniecz@gmail.com)"
+  "wikipedia/wikidata tag validator, operated by #{Etc.getlogin}, written by Mateusz Konieczny (matkoniecz@gmail.com)"
 end
 
 def timeout
