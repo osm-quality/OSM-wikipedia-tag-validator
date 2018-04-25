@@ -20,8 +20,6 @@ print('[out:xml][timeout:3600];')
 print('(')
 for wikidata_id, data in blacklist.items():
     print_all_types('[wikidata=' + wikidata_id + ']')
-    #print(wikidata_id, data)
-    #print(data['expected_tags'])
     for potential_language_code in wikipedia_language_list:
         potential_article_name = wikimedia_connection.get_interwiki_article_name_by_id(wikidata_id, potential_language_code)
         if potential_article_name != None:
