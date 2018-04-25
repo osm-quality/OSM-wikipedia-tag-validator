@@ -21,16 +21,25 @@ def main()
     download(query, filepath)
   end
 
-  filepath = download_location+"/"+'reloaded_Poland.osm'
-  query_filepath = download_location+'/reload_querries/reload_Poland.query'
-  if !File.exists?(filepath) && File.exists?(query_filepath)
-    query = File.read(query_filepath)
-    download(query, filepath)
-  end
+  target_file = download_location+"/"+'reloaded_Poland.osm'
+  file_with_query = download_location+'/reload_querries/reload_Poland.query'
+  run_query_from_file(file_with_query, target_file)
 
   download_defined_regions
 
   download_graticules
+end
+
+def run_query_from_file(file_with_query, download_to_filepath)
+  if File.exists?(download_to_filepath)
+    return
+  end
+  if !File.exists?(file_with_query)
+    puts(file_with_query + " is missing")
+    return
+  end
+  query = File.read(file_with_query)
+  download(query, download_to_filepath)
 end
 
 def download_defined_regions
