@@ -58,3 +58,6 @@ class WikidataTests(unittest.TestCase):
 
     def test_detecting_fast_tram_as_valid_primary_link(self):
         self.assert_linkability('Q1814872')
+
+    def test_detecting_high_school_as_valid_primary_link(self):
+        self.assert_linkability('Q9296000')
