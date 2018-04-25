@@ -131,9 +131,12 @@ class WikimediaLinkIssueDetector:
         except KeyError:
             return None
 
+        message = ("it is a typical wrong link and it has an obvious replacement, " +
+            prefix + "wikipedia/" + prefix + "wikidata should be used instead")
+
         return ErrorReport(
                         error_id = "blacklisted connection with known replacement",
-                        error_message = "it is a typical wrong link and it has an obvious replacement, " + prefix + "wikipedia/" + prefix + "wikidata should be used instead",
+                        error_message = message,
                         prerequisite = {'wikipedia': link, 'wikidata': present_wikidata_id},
                         extra_data = prefix
                         )
