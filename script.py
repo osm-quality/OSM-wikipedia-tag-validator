@@ -83,7 +83,7 @@ def move_files_to_report_directory(website_main_title_part, hide_bottable_from_p
     filenames = []
     filenames.append(website_main_title_part + '.html')
     if hide_bottable_from_public:
-        filenames.append(website_main_title_part + ' - private.html')
+        filenames.append(website_main_title_part + ' - obvious.html')
     filenames.append(website_main_title_part + ' - test.html')
     for filename in filenames:
         if os.path.isfile(filename):

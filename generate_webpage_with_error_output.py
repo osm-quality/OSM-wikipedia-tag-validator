@@ -118,13 +118,13 @@ def generate_html_file(args, name_suffix, types, information_header):
 def note_unused_errors(args):
     reported_errors = get_errors(args)
     for e in reported_errors:
-        if e['error_id'] not in for_public_use():
-            if e['error_id'] not in for_public_use_boring():
-                if e['error_id'] not in for_private_use():
+        if e['error_id'] not in for_review():
+            if e['error_id'] not in for_review_boring():
+                if e['error_id'] not in obvious_fixes():
                     if e['error_id'] not in for_tests():
                         print('"' + e['error_id'] + '" is not appearing in any generated webpage')
 
-def for_public_use():
+def for_review():
     return [
         'wikipedia tag in outdated form and wikidata - mismatch',
         'wikipedia tag links to 404',
@@ -139,12 +139,12 @@ def for_public_use():
         'duplicated link - place',
     ]
 
-def for_public_use_boring():
+def for_review_boring():
     return [
         'tag may be added based on wikidata - website',
     ]
 
-def for_private_use():
+def obvious_fixes():
     return [
         'blacklisted connection with known replacement',
         'wikipedia tag unexpected language',
@@ -177,11 +177,11 @@ def for_tests():
 def main():
     args = parsed_args()
     if args.hide_bottable_from_public:
-        generate_html_file(args, "", for_public_use(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
-        generate_html_file(args, " - boring", for_public_use_boring(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
-        generate_html_file(args, " - private", for_private_use(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
+        generate_html_file(args, "", for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
+        generate_html_file(args, " - boring", for_review_boring(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
+        generate_html_file(args, " - obvious", obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
     else:
-        generate_html_file(args, "", for_public_use() + for_private_use(), "Remember to check whatever edit makes sense! Reports at this page may require human judgment to verify whatever proposed edit makes sense.")
+        generate_html_file(args, "", for_review() + obvious_fixes(), "Remember to check whatever edit makes sense! Reports at this page may require human judgment to verify whatever proposed edit makes sense.")
     generate_html_file(args, " - test", for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
     note_unused_errors(args)
 
