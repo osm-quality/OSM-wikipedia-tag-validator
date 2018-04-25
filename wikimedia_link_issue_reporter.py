@@ -126,7 +126,26 @@ class WikimediaLinkIssueDetector:
 
     def wikidata_connection_blacklist(self):
         return {
-            'Q889624': {'prefix': 'brand:', 'expected_tags': {'shop': 'doityourself'}}
+            'Q889624': {'prefix': 'brand:', 'expected_tags': {'shop': 'doityourself'}, 'name': 'Leroy Merlin'},
+            'Q10541151': {'prefix': 'brand:', 'expected_tags': {'shop': 'doityourself'}, 'name': 'Jula'},
+
+            'Q552652': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Netto'},
+            'Q11694239': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Dino'},
+            'Q857182': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Biedronka'},
+            'Q487494': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Tesco'},
+            'Q685967': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Kaufland'},
+
+            'Q1941209': {'prefix': 'brand:', 'expected_tags': {}, 'name': 'Mlekpol'},
+
+            'Q2589061': {'prefix': 'brand:', 'expected_tags': {'shop': 'convenience'}, 'name': 'Żabka'},
+
+            'Q316004': {'prefix': 'brand:', 'expected_tags': {'shop': 'chemist'}, 'name': 'Rossmann'},
+
+            'Q188326': {'prefix': 'brand:', 'expected_tags': {'shop': 'clothes'}, 'name': 'H&M'},
+            'Q701338': {'prefix': 'brand:', 'expected_tags': {'shop': 'clothes'}, 'name': 'C&A'},
+
+            'Q1160928': {'prefix': 'brand:', 'expected_tags': {'amenity': 'bank'}, 'name': 'mBank'},
+            'Q971649': {'prefix': 'brand:', 'expected_tags': {'amenity': 'fuel'}, 'name': 'Orlen'},
         }
 
     def get_problem_based_on_wikidata_blacklist(self, wikidata_id, present_wikidata_id, link):
