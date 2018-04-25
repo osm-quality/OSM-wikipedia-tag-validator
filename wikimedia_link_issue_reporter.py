@@ -594,7 +594,7 @@ class WikimediaLinkIssueDetector:
                     desired_wikipedia_target = new_wikipedia_link,
                     prerequisite = {'wikidata': present_wikidata_id, 'wikipedia': language_code+":"+article_name},
                     )
-        message = (base_message + " (" + 
+        message = (base_message + " (" +
                    self.compare_wikidata_ids(present_wikidata_id, wikidata_id_from_article) +
                    " wikidata from article)")
         if maybe_redirected_wikidata_id != present_wikidata_id:
