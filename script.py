@@ -10,7 +10,7 @@ class ProcessingException(Exception):
 
 def main():
     delete_output_files()
-    pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl", hide_bottable_from_public=True)
+    pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
     pipeline_basic_entries()
     make_websites_for_merged_entries()
     write_index()
@@ -57,14 +57,12 @@ def delete_output_files():
         except FileNotFoundError:
             pass
 
-def make_website(filename_with_report, output_filename_base, hide_bottable_from_public):
+def make_website(filename_with_report, output_filename_base):
     split_human_bot = ""
-    if hide_bottable_from_public == True:
-        split_human_bot = "-hide_bottable_from_public"
     system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '" ' + split_human_bot, False)
 
 
-def pipeline(osm_filename, website_main_title_part, merged_output_file, language_code, hide_bottable_from_public, silent=False):
+def pipeline(osm_filename, website_main_title_part, merged_output_file, language_code, silent=False):
         output_filename_errors = osm_filename + '.yaml'
         if exit_pipeline_due_to_missing_osm_data(osm_filename, silent):
             return
@@ -75,15 +73,14 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
             raise ProcessingException('Unexpected failure')
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
-        make_website(output_filename_errors, website_main_title_part, hide_bottable_from_public)
+        make_website(output_filename_errors, website_main_title_part)
         make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + '.new iteration.query')
-        move_files_to_report_directory(website_main_title_part, hide_bottable_from_public)
+        move_files_to_report_directory(website_main_title_part)
 
-def move_files_to_report_directory(website_main_title_part, hide_bottable_from_public):
+def move_files_to_report_directory(website_main_title_part):
     filenames = []
     filenames.append(website_main_title_part + '.html')
-    if hide_bottable_from_public:
-        filenames.append(website_main_title_part + ' - obvious.html')
+    filenames.append(website_main_title_part + ' - obvious.html')
     filenames.append(website_main_title_part + ' - test.html')
     for filename in filenames:
         if os.path.isfile(filename):
@@ -154,7 +151,6 @@ def pipeline_basic_entries():
             website_main_title_part = entry['website_main_title_part'],
             merged_output_file = entry.get('merged_output_file', None),
             language_code = entry.get('language_code', None),
-            hide_bottable_from_public = entry['hide_bottable_from_public'],
             )
 
 def get_graticule_region_names():
@@ -172,7 +168,6 @@ def pipeline_graticule_entries():
             website_main_title_part = region_name,
             merged_output_file = None,
             language_code = None,
-            hide_bottable_from_public = False,
             silent = True,
             )
 
@@ -183,14 +178,14 @@ def make_websites_for_merged_entries():
             # inherit split status on bottable and nonbottable tasks
             entry = get_entry_contributing_to_merged_file(filename)
             output_filename_base = filename.replace(".yaml", "")
-            make_website(filename, output_filename_base, entry['hide_bottable_from_public'])
+            make_website(filename, output_filename_base)
         else:
             print(filepath + ' is not present [highly surprising]')
             raise ProcessingException('Unexpected failure')
 
     for filename in merged_outputs_list():
         entry = get_entry_contributing_to_merged_file(filename)
-        move_files_to_report_directory(filename.replace('.yaml', ''), entry['hide_bottable_from_public'])
+        move_files_to_report_directory(filename.replace('.yaml', ''))
 
 def write_index():
     with open('index.html', 'w') as index:
