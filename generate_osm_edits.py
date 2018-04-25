@@ -118,10 +118,6 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikidata from wikipedia tag'])
     if errors_for_removal == []:
         return
-    #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
-    #language_code = wikimedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
-    #if language_code != "pl":
-    #    return
     automatic_status = osm_bot_abstraction_layer.fully_automated_description()
     affected_objects_description = ""
     comment = "add wikidata tag based on wikipedia tag"
@@ -138,6 +134,8 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         language_code = wikimedia_connection.get_language_code_from_link(data['tag']['wikipedia'])
         article_name = wikimedia_connection.get_article_name_from_link(data['tag']['wikipedia'])
         wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+        if language_code != "pl":
+            raise "UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url']
         print(e['osm_object_url'])
         print(wikidata_id)
         reason = ", as wikidata tag may be added based on wikipedia tag"
@@ -236,7 +234,7 @@ def main():
     reported_errors = load_errors()
     #requires manual checking is it operating in Poland #add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors)
     #requires manual checking is it operating in Poland #add_wikipedia_tag_from_wikidata_tag(reported_errors)
-    #requires manual checking is it operating in Poland #add_wikidata_tag_from_wikipedia_tag(reported_errors)
+    add_wikidata_tag_from_wikipedia_tag(reported_errors) #self-checking location based on Wikipedia language code
     for e in reported_errors:
         #handle_follow_wikipedia_redirect(e)
         #change_to_local_language(e)
