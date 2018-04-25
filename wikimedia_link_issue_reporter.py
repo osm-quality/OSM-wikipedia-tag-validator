@@ -208,7 +208,11 @@ class WikimediaLinkIssueDetector:
         from_wikidata = wikimedia_connection.get_property_from_wikidata(present_wikidata_id, wikidata_property)
         if from_wikidata == None:
             return None
-        return wikidata_processing.decapsulate_wikidata_value(from_wikidata)
+        returned = wikidata_processing.decapsulate_wikidata_value(from_wikidata)
+        if not isinstance(returned, str):
+            print(present_wikidata_id + " unexpectedly failed within decapsulate_wikidata_value for property " + wikidata_property)
+            return None
+        return returned
 
     def generate_error_report_for_tag_from_wikidata(self, from_wikidata, present_wikidata_id, osm_key, element, id_suffix="", message_suffix = ""):
         if element.get_tag_value(osm_key) == None:
