@@ -37,7 +37,7 @@ def run_query_from_file(file_with_query, download_to_filepath)
     return
   end
   if !File.exists?(file_with_query)
-    puts(file_with_query + " is missing")
+    puts(file_with_query + " is missing, skipping this download")
     return
   end
   query = File.read(file_with_query)
