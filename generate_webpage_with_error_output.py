@@ -133,15 +133,15 @@ def for_review():
         'should use a secondary wikipedia tag',
         'wikipedia from wikipedia tag in outdated form - mismatch',
         'tag may be added based on wikidata',
-        'duplicated link - waterway',
-        'duplicated link - generic',
         'tag may be added based on wikidata - teryt',
-        'duplicated link - place',
     ]
 
 def for_review_boring():
     return [
+        'duplicated link - waterway',
+        'duplicated link - generic',
         'tag may be added based on wikidata - website',
+        'duplicated link - place',
     ]
 
 def obvious_fixes():
