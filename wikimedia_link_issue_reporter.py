@@ -450,6 +450,9 @@ class WikimediaLinkIssueDetector:
         #P4080 - house count
         #P1427 - start point (for routes)
         #P1064 track gauge
+        #P782 - NUT4/NUTS5 administrative area identifier
+        #P2951 Cultural heritage database in Austria ObjektID
+        #P964 identifier of municipal area in Austria
         return None
 
     def attempt_to_locate_wikipedia_tag(self, element):
