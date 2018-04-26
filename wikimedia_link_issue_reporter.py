@@ -51,7 +51,8 @@ class WikimediaLinkIssueDetector:
         present_wikidata_id = element.get_tag_value("wikidata")
 
         if link == None:
-            return self.attempt_to_locate_wikipedia_tag(element)
+            tags = element.get_tag_dictionary()
+            return self.check_is_wikipedia_tag_obtainable(element, tags)
 
         if present_wikidata_id != None:
             something_reportable = self.check_is_wikidata_page_existing(present_wikidata_id)
@@ -455,24 +456,31 @@ class WikimediaLinkIssueDetector:
         #P964 identifier of municipal area in Austria
         return None
 
-    def attempt_to_locate_wikipedia_tag(self, element):
-        present_wikidata_id = element.get_tag_value("wikidata")
-        wikipedia_type_keys = []
-        for key in element.get_keys():
+    def get_old_style_wikipedia_keys(self, tags):
+        old_style_wikipedia_tags = []
+        for key in tags.keys():
             if key.find("wikipedia:") != -1:
-                wikipedia_type_keys.append(key)
+                old_style_wikipedia_tags.append(key)
+        return old_style_wikipedia_tags
 
-        if present_wikidata_id != None and wikipedia_type_keys == []:
-            return self.attempt_to_locate_wikipedia_tag_using_wikidata_id(present_wikidata_id)
+    def check_is_wikipedia_tag_obtainable(self, element, tags):
+        present_wikidata_id = element.get_tag_value("wikidata")
+        if present_wikidata_id != tags.get('wikidata'):
+            raise 'skdkdkddkdk'
 
-        if present_wikidata_id == None and wikipedia_type_keys != []:
-            return self.attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(element, wikipedia_type_keys)
+        old_style_wikipedia_tags = self.get_old_style_wikipedia_keys(tags)
 
-        if present_wikidata_id != None and wikipedia_type_keys != []:
-            return self.attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(element, wikipedia_type_keys, present_wikidata_id)
+        if present_wikidata_id != None and old_style_wikipedia_tags == []:
+            return self.get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(present_wikidata_id)
+
+        if present_wikidata_id == None and old_style_wikipedia_tags != []:
+            return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(element, old_style_wikipedia_tags)
+
+        if present_wikidata_id != None and old_style_wikipedia_tags != []:
+            return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(element, old_style_wikipedia_tags, present_wikidata_id)
         return None
 
-    def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys_and_wikidata(self, element, wikipedia_type_keys, wikidata_id):
+    def get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(self, element, wikipedia_type_keys, wikidata_id):
         assert(wikidata_id != None)
 
         links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys)
@@ -506,8 +514,7 @@ class WikimediaLinkIssueDetector:
                 desired_wikipedia_target = self.get_best_interwiki_link_by_id(wikidata_id),
                 )
 
-
-    def attempt_to_locate_wikipedia_tag_using_wikidata_id(self, present_wikidata_id):
+    def get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(self, present_wikidata_id):
         location = (None, None)
         description = "object with wikidata=" + present_wikidata_id
         problem_indicated_by_wikidata = self.get_problem_based_on_wikidata(present_wikidata_id, description, location)
@@ -533,7 +540,7 @@ class WikimediaLinkIssueDetector:
                 prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
                 )
 
-    def attempt_to_locate_wikipedia_tag_using_old_style_wikipedia_keys(self, element, wikipedia_type_keys):
+    def get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(self, element, wikipedia_type_keys):
         prerequisite = {'wikipedia': None, 'wikidata': None}
         links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys)
         for key in wikipedia_type_keys:
