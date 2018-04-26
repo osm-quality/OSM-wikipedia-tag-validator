@@ -30,7 +30,7 @@ def system_call(call, verbose=True):
 def root():
     return common.get_file_storage_location() + "/"
 
-def delete_output_file(filename):
+def delete_in_storage_folder(filename):
         try:
             os.remove(root() + filename)
         except FileNotFoundError:
@@ -39,13 +39,13 @@ def delete_output_file(filename):
 def delete_output_files():
     for region_name in get_graticule_region_names():
         file_for_deletion = region_name + ".osm.yaml"
-        delete_output_file(file_for_deletion)
+        delete_in_storage_folder(file_for_deletion)
 
     for entry in get_entries_to_process():
-        delete_output_file(entry['region_name'] + ".osm.yaml")
+        delete_in_storage_folder(entry['region_name'] + ".osm.yaml")
         file = entry.get('merged_output_file', None)
         if file != None:
-            delete_output_file(file)
+            delete_in_storage_folder(file)
 
     yaml_output_files = [
         'polska_reloaded.osm.yaml',
