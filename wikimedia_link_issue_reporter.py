@@ -80,15 +80,18 @@ class WikimediaLinkIssueDetector:
         if something_reportable != None:
             return something_reportable
 
-        something_reportable = self.freely_reorderable_issue_reports(element, link)
+        tags = element.get_tag_dictionary()
+        something_reportable = self.freely_reorderable_issue_reports(element, tags, link)
         if something_reportable != None:
             return something_reportable
 
         return None
 
-    def freely_reorderable_issue_reports(self, element, link):
+    def freely_reorderable_issue_reports(self, element, tags, link):
         # IDEA links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
-
+        link_from_tags = tags.get('wikipedia')
+        if link != link_from_tags:
+            raise 'aahahahahah'
         language_code = wikimedia_connection.get_language_code_from_link(link)
         article_name = wikimedia_connection.get_article_name_from_link(link)
         wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, self.forced_refresh)
