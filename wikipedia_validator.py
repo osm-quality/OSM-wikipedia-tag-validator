@@ -50,7 +50,7 @@ def record_wikidata_properties_present(wikidata_id, property_popularity_counter)
             property = str(property)
             property_popularity_counter.record_property_presence(property)
     except KeyError as e:
-        print(wikidata_id, " errored with ", e)
+        print(wikidata_id, " record_wikidata_properties_present failed with KeyError on ", e)
 
 # TODO replace args.expected_language_code where applicable
 def get_expected_language_codes():
