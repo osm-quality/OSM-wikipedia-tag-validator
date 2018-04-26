@@ -31,10 +31,10 @@ class PopularWikidataPropertiesDetector:
         return False
 
     def print_popular_properties(self):
-        limit = 200
+        limit = 400
         iata_code_property = 'P238'
         if iata_code_property in self.properties:
-            limit = self.properties[iata_code_property] * 15 + 150
+            limit = self.properties[iata_code_property] * 15 + 350
         for property in self.properties.keys():
             if self.properties[property] > limit:
                 if not self.skip_property(property):
