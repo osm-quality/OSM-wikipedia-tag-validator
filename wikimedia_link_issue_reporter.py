@@ -879,6 +879,7 @@ class WikimediaLinkIssueDetector:
             return base_type_problem
 
         if self.additional_debug:
+            # TODO, IDEA - run with this parameter enable to start catching more issues
             self.complain_in_stdout_if_wikidata_entry_not_of_known_safe_type(wikidata_id, description)
 
 
