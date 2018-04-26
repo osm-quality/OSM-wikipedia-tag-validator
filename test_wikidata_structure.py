@@ -61,3 +61,6 @@ class WikidataTests(unittest.TestCase):
 
     def test_detecting_high_school_as_valid_primary_link(self):
         self.assert_linkability('Q9296000')
+
+    def test_detecting_fountain_as_valid_primary_link(self):
+        self.assert_linkability('Q992764')
