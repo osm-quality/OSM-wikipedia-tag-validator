@@ -802,6 +802,8 @@ class WikimediaLinkIssueDetector:
             return {'what': 'an opera', 'replacement': None}
         if type_id == 'Q35127':
             return {'what': 'a website', 'replacement': None}
+        if type_id == 'Q17320256':
+            return {'what': 'a physical process', 'replacement': None}
         if type_id == 'Q1656682' or type_id == 'Q4026292' or type_id == 'Q3249551' or type_id == 'Q1190554':
             return {'what': 'an event', 'replacement': None}
         if type_id == 'Q5398426':
@@ -821,6 +823,8 @@ class WikimediaLinkIssueDetector:
         #    return {'what': 'a business enterprise', 'replacement': 'brand:'}
         if type_id == 'Q202444':
             return {'what': 'a given name', 'replacement': 'name:'}
+        if type_id == 'Q29048322':
+            return {'what': ' vehicle model', 'replacement': 'subject:'}
         if type_id == 'Q21502408':
             return {'what': 'a mandatory constraint', 'replacement': None}
         return None
