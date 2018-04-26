@@ -53,6 +53,11 @@ class WikimediaLinkIssueDetector:
         if link == None:
             return self.attempt_to_locate_wikipedia_tag(element)
 
+        if present_wikidata_id != None:
+            something_reportable = self.check_is_wikidata_page_existing(present_wikidata_id)
+            if something_reportable != None:
+                return something_reportable
+
         #TODO - is it OK?
         #if link.find("#") != -1:
         #    return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
@@ -143,6 +148,18 @@ class WikimediaLinkIssueDetector:
                         prerequisite = {'wikipedia': link, 'wikidata': present_wikidata_id},
                         extra_data = prefix
                         )
+
+    def check_is_wikidata_page_existing(self, present_wikidata_id):
+        wikidata = wikimedia_connection.get_data_from_wikidata_by_id(present_wikidata_id)
+        if wikidata != None:
+            return None
+        link = wikimedia_connection.wikidata_url(present_wikidata_id)
+        return ErrorReport(
+                        error_id = "wikidata tag links to 404",
+                        error_message = "wikidata tag present on element points to not existing element (" + link + ")",
+                        prerequisite = {'wikidata': present_wikidata_id},
+                        )
+
 
     def check_is_wikipedia_link_clearly_malformed(self, link):
         if self.is_wikipedia_tag_clearly_broken(link):

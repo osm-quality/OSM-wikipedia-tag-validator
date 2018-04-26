@@ -127,6 +127,7 @@ def for_review():
     return [
         'wikipedia tag in outdated form and wikidata - mismatch',
         'wikipedia tag links to 404',
+        'wikidata tag links to 404',
         'link to an unlinkable article',
         'wikipedia wikidata mismatch',
         'should use a secondary wikipedia tag',

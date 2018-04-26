@@ -45,9 +45,12 @@ def get_problem_for_given_element_and_record_stats(element, forced_refresh):
 
 def record_wikidata_properties_present(wikidata_id, property_popularity_counter):
     wikidata = wikimedia_connection.get_data_from_wikidata_by_id(wikidata_id)
-    for property in wikidata['entities'][wikidata_id]['claims']:
-        property = str(property)
-        property_popularity_counter.record_property_presence(property)
+    try:
+        for property in wikidata['entities'][wikidata_id]['claims']:
+            property = str(property)
+            property_popularity_counter.record_property_presence(property)
+    except KeyError as e:
+        print(wikidata_id, " errored with ", e)
 
 # TODO replace args.expected_language_code where applicable
 def get_expected_language_codes():
