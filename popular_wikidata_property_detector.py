@@ -1,4 +1,4 @@
-import wikidata_processing
+import wikimedia_connection.wikidata_processing as wikidata_processing
 
 class PopularWikidataPropertiesDetector:
     def __init__(self):

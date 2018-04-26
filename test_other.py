@@ -2,7 +2,6 @@ import unittest
 import wikipedia_validator
 import common
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
-import wikidata_processing #validates syntax
 import generate_webpage_with_error_output #validates syntax
 import generate_overpass_query_output #validates syntax
 import generate_osm_edits #validates syntax
