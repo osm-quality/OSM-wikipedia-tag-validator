@@ -111,9 +111,12 @@ class WikimediaLinkIssueDetector:
         if something_reportable != None:
             return something_reportable
 
-        something_reportable = self.add_data_from_wikidata(element)
-        if something_reportable != None:
-            return something_reportable
+        #disabled due to low rate of useful info and high rate of
+        # "unexpectedly failed within decapsulate_wikidata_value for property"
+        # TODO, IDEA: rewrite decapsulate_wikidata_value hack into something proper and reenable
+        #something_reportable = self.add_data_from_wikidata(element)
+        #if something_reportable != None:
+        #    return something_reportable
 
         return None
 
