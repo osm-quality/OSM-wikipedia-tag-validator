@@ -134,6 +134,7 @@ def for_review():
         'wikipedia from wikipedia tag in outdated form - mismatch',
         'tag may be added based on wikidata',
         'tag may be added based on wikidata - teryt',
+        'invalid old-style wikipedia tag',
     ]
 
 def for_review_boring():

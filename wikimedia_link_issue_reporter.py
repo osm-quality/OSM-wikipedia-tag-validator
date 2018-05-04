@@ -3,6 +3,7 @@ import wikimedia_connection.wikidata_processing as wikidata_processing
 import geopy.distance
 import re
 import yaml
+import wikipedia_knowledge
 
 class ErrorReport:
     def __init__(self, error_message=None, desired_wikipedia_target=None, debug_log=None, error_id=None, prerequisite=None, extra_data=None):
@@ -473,6 +474,10 @@ class WikimediaLinkIssueDetector:
 
         old_style_wikipedia_tags = self.get_old_style_wikipedia_keys(tags)
 
+        reportable = self.check_is_invalid_old_style_wikipedia_tag_present(old_style_wikipedia_tags, tags)
+        if reportable:
+            return reportable
+
         if present_wikidata_id != None and old_style_wikipedia_tags == []:
             return self.get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(present_wikidata_id)
 
@@ -482,6 +487,22 @@ class WikimediaLinkIssueDetector:
         if present_wikidata_id != None and old_style_wikipedia_tags != []:
             return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(element, old_style_wikipedia_tags, present_wikidata_id)
         return None
+
+    def check_is_invalid_old_style_wikipedia_tag_present(self, old_style_wikipedia_tags, tags):
+        for key in old_style_wikipedia_tags:
+            if not self.check_is_it_valid_key_for_old_style_wikipedia_tag(key):
+                return ErrorReport(
+                    error_id = "invalid old-style wikipedia tag",
+                    error_message = "wikipedia tag in outdated form (" + key + "), is not using any known language code",
+                    prerequisite = {key: tags[key]},
+                    )
+        return None
+
+    def check_is_it_valid_key_for_old_style_wikipedia_tag(self, key):
+        for lang in wikipedia_knowledge.WikipediaKnowledge.all_wikipedia_language_codes_order_by_importance():
+            if "wikipedia:" + lang == key:
+                return True
+        return False
 
     def get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(self, element, wikipedia_type_keys, wikidata_id):
         assert(wikidata_id != None)

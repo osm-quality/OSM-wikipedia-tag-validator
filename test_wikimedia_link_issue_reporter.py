@@ -38,5 +38,17 @@ class Tests(unittest.TestCase):
     def test_that_completely_broken_wikipedia_tag_detector_has_no_false_positives(self):
         self.assertEqual (False, self.issue_reporter().is_wikipedia_tag_clearly_broken("pl:smok"))
 
+    def test_detector_of_old_style_wikipedia_links_accepts_valid(self):
+        key = 'wikipedia:pl'
+        self.assertEqual (True, self.issue_reporter().check_is_it_valid_key_for_old_style_wikipedia_tag(key))
+        tags = {key: 'Kościół Najświętszego Serca Pana Jezusa'}
+        self.assertEqual (None, self.issue_reporter().check_is_invalid_old_style_wikipedia_tag_present(tags, tags))
+
+    def test_detector_of_old_style_wikipedia_links_refuses_invalid(self):
+        key = 'wikipedia:fixme'
+        self.assertEqual (False, self.issue_reporter().check_is_it_valid_key_for_old_style_wikipedia_tag(key))
+        tags = {key: 'Kościół Najświętszego Serca Pana Jezusa'}
+        self.assertNotEqual (None, self.issue_reporter().check_is_invalid_old_style_wikipedia_tag_present(tags, tags))
+
 if __name__ == '__main__':
     unittest.main()
