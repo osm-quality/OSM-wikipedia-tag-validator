@@ -45,7 +45,9 @@ class WikimediaLinkIssueDetector:
         self.allow_false_positives = allow_false_positives
 
     def get_problem_for_given_element(self, element):
-        if self.object_should_be_deleted_not_repaired(element):
+        tags = element.get_tag_dictionary()
+        object_type = element.get_element().tag
+        if self.object_should_be_deleted_not_repaired(object_type, tags):
             return None
 
         link = element.get_tag_value("wikipedia")
@@ -1103,12 +1105,11 @@ class WikimediaLinkIssueDetector:
             return False
         return True
 
-    def object_should_be_deleted_not_repaired(self, element):
-        if element.get_element().tag == "relation":
-            relation_type = element.get_tag_value("type")
-            if relation_type == "person":
+    def object_should_be_deleted_not_repaired(self, object_type, tags):
+        if object_type == "relation":
+            if tags.get("type") == "person":
                 return True
-        if element.get_tag_value("historic") == "battlefield":
+        if tags.get("historic") == "battlefield":
             return True
 
 
