@@ -190,7 +190,7 @@ def download_graticule(lower_lat, left_lon)
   return download(query, filename)
 end
 
-def download(query, filename)
+def download(query, filepath)
   puts query
   puts "downloading: start"
   url = "http://overpass-api.de/api/interpreter"
@@ -216,13 +216,13 @@ def download(query, filename)
   end
   puts "downloading: end"
 
-  if File.exists?(filename)
+  if File.exists?(filepath)
     puts "deleting old file: start"
-    File.delete(filename)
+    File.delete(filepath)
     puts "deleting old file: end"
   end
   puts "saving new file: start"
-  f = File.new(filename, "w")
+  f = File.new(filepath, "w")
   f.write text
   f.close
   puts "saving new file: end"
