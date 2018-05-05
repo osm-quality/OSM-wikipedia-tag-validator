@@ -3,6 +3,8 @@ require 'etc'
 require 'yaml'
 
 def main()
+  #download_by_wikidata("Q42424277")
+
   filepath = download_location+"/"+'teryt_simc.osm'
   if !File.exists?(filepath)
     name = "Polska"
@@ -30,6 +32,19 @@ def main()
   download_defined_regions
 
   download_graticules
+end
+
+def download_by_wikidata(wikidata)
+  query = '[timeout:25];
+(
+  node["wikidata"="' + wikidata + '"];
+  way["wikidata"="' + wikidata + '"];
+  relation["wikidata"="' + wikidata + '"];
+);
+out body;
+>;
+out skel qt;'
+  download(query, download_location+"/"+"test_case.osm")
 end
 
 def run_query_from_file(file_with_query, download_to_filepath)
