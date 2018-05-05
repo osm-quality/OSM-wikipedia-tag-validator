@@ -50,27 +50,23 @@ class WikimediaLinkIssueDetector:
         if self.object_should_be_deleted_not_repaired(object_type, tags):
             return None
 
-        link = element.get_tag_value("wikipedia")
-        present_wikidata_id = element.get_tag_value("wikidata")
-
-        if link == None:
-            tags = element.get_tag_dictionary()
+        if tags.get("wikipedia") == None:
             return self.check_is_wikipedia_tag_obtainable(element, tags)
 
-        if present_wikidata_id != None:
-            something_reportable = self.check_is_wikidata_page_existing(present_wikidata_id)
+        if tags.get("wikidata") != None:
+            something_reportable = self.check_is_wikidata_page_existing(tags.get("wikidata"))
             if something_reportable != None:
                 return something_reportable
 
         #TODO - is it OK?
-        #if link.find("#") != -1:
+        #if tags.get("wikipedia").find("#") != -1:
         #    return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
 
-        language_code = wikimedia_connection.get_language_code_from_link(link)
-        article_name = wikimedia_connection.get_article_name_from_link(link)
+        language_code = wikimedia_connection.get_language_code_from_link(tags.get("wikipedia"))
+        article_name = wikimedia_connection.get_article_name_from_link(tags.get("wikipedia"))
         wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
 
-        something_reportable = self.check_is_wikipedia_link_clearly_malformed(link)
+        something_reportable = self.check_is_wikipedia_link_clearly_malformed(tags.get("wikipedia"))
         if something_reportable != None:
             return something_reportable
 
@@ -79,31 +75,27 @@ class WikimediaLinkIssueDetector:
             return something_reportable
 
         #early to ensure that passing later wikidata_id of article is not going to be confusing
-        something_reportable = self.check_for_wikipedia_wikidata_collision(present_wikidata_id, language_code, article_name)
+        something_reportable = self.check_for_wikipedia_wikidata_collision(tags.get("wikidata"), language_code, article_name)
         if something_reportable != None:
             return something_reportable
 
-        tags = element.get_tag_dictionary()
-        something_reportable = self.freely_reorderable_issue_reports(element, tags, link)
+        something_reportable = self.freely_reorderable_issue_reports(element, tags)
         if something_reportable != None:
             return something_reportable
 
         return None
 
-    def freely_reorderable_issue_reports(self, element, tags, link):
+    def freely_reorderable_issue_reports(self, element, tags):
         # IDEA links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
-        link_from_tags = tags.get('wikipedia')
-        if link != link_from_tags:
-            raise 'aahahahahah'
-        language_code = wikimedia_connection.get_language_code_from_link(link)
-        article_name = wikimedia_connection.get_article_name_from_link(link)
+
+        language_code = wikimedia_connection.get_language_code_from_link(tags.get('wikipedia'))
+        article_name = wikimedia_connection.get_article_name_from_link(tags.get('wikipedia'))
         wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, self.forced_refresh)
 
         #wikipedia tag is not malformed
         #wikipedia and wikidata tags are not conflicting
-        present_wikidata_id = element.get_tag_value("wikidata")
 
-        something_reportable = self.get_problem_based_on_wikidata_blacklist(wikidata_id, present_wikidata_id, link)
+        something_reportable = self.get_problem_based_on_wikidata_blacklist(wikidata_id, tags.get('wikidata'), tags.get('wikipedia'))
         if something_reportable != None:
             return something_reportable
 
@@ -115,11 +107,11 @@ class WikimediaLinkIssueDetector:
         if something_reportable != None:
             return something_reportable
 
-        something_reportable = self.check_is_wikidata_tag_is_misssing(element, present_wikidata_id, wikidata_id)
+        something_reportable = self.check_is_wikidata_tag_is_misssing(element, tags.get('wikidata'), wikidata_id)
         if something_reportable != None:
             return something_reportable
 
-        something_reportable = self.check_is_object_is_existing(present_wikidata_id)
+        something_reportable = self.check_is_object_is_existing(tags.get('wikidata'))
         if something_reportable != None:
             return something_reportable
 
@@ -470,24 +462,20 @@ class WikimediaLinkIssueDetector:
         return old_style_wikipedia_tags
 
     def check_is_wikipedia_tag_obtainable(self, element, tags):
-        present_wikidata_id = element.get_tag_value("wikidata")
-        if present_wikidata_id != tags.get('wikidata'):
-            raise 'skdkdkddkdk'
-
         old_style_wikipedia_tags = self.get_old_style_wikipedia_keys(tags)
 
         reportable = self.check_is_invalid_old_style_wikipedia_tag_present(old_style_wikipedia_tags, tags)
         if reportable:
             return reportable
 
-        if present_wikidata_id != None and old_style_wikipedia_tags == []:
-            return self.get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(present_wikidata_id)
+        if tags.get('wikidata') != None and old_style_wikipedia_tags == []:
+            return self.get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(tags.get('wikidata'))
 
-        if present_wikidata_id == None and old_style_wikipedia_tags != []:
+        if tags.get('wikidata') == None and old_style_wikipedia_tags != []:
             return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(element, old_style_wikipedia_tags)
 
-        if present_wikidata_id != None and old_style_wikipedia_tags != []:
-            return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(element, old_style_wikipedia_tags, present_wikidata_id)
+        if tags.get('wikidata') != None and old_style_wikipedia_tags != []:
+            return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(element, old_style_wikipedia_tags, tags.get('wikidata'))
         return None
 
     def check_is_invalid_old_style_wikipedia_tag_present(self, old_style_wikipedia_tags, tags):
