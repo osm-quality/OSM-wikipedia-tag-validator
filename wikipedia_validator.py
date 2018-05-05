@@ -90,14 +90,14 @@ def validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_repo
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Validation of wikipedia tag in osm data.')
+    parser.add_argument('-file', '-f',
+                        dest='file',
+                        type=str,
+                        help='location of .osm file (short form of parameter: -f), mandatory parameter')
     parser.add_argument('-expected_language_code', '-l',
                         dest='expected_language_code',
                         type=str,
                         help='expected language code (short form of parameter: -l)')
-    parser.add_argument('-file', '-f',
-                        dest='file',
-                        type=str,
-                        help='location of .osm file (short form of parameter: -f')
     parser.add_argument('-flush_cache',
                         dest='flush_cache',
                         help='adding this parameter will trigger flushing cache',
