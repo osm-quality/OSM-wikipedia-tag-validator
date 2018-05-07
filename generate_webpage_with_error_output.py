@@ -160,16 +160,8 @@ def obvious_fixes():
 def for_tests():
     return [
         'wikipedia wikidata mismatch - follow wikidata redirect',
-        'tag may be added based on wikidata - historic=church',
-        'tag may be added based on wikidata - historic=building',
-        'tag may be added based on wikidata - historic=lighthouse',
-        'tag may be added based on wikidata - historic=park',
-        'tag may be added based on wikidata - postal_code',
-
-        'tag may be added based on wikidata - historic',
         'no longer existing object',
         'tag conflict with wikidata value',
-        'tag may be added based on wikidata - testing',
         'tag conflict with wikidata value - testing',
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',

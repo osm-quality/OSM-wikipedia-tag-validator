@@ -4,7 +4,6 @@ import argparse
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
 from osm_iterator.osm_iterator import Data
-import popular_wikidata_property_detector
 import wikipedia_knowledge
 import osm_handling_config.global_config as osm_handling_config
 import wikimedia_link_issue_reporter
@@ -38,19 +37,6 @@ def get_problem_for_given_element_and_record_stats(element, forced_refresh):
     problems = helper_object.get_problem_for_given_element(element)
     if problems != None:
         return problems
-
-    present_wikidata_id = element.get_tag_value("wikidata")
-    if present_wikidata_id != None:
-        record_wikidata_properties_present(present_wikidata_id, property_popularity)
-
-def record_wikidata_properties_present(wikidata_id, property_popularity_counter):
-    wikidata = wikimedia_connection.get_data_from_wikidata_by_id(wikidata_id)
-    try:
-        for property in wikidata['entities'][wikidata_id]['claims']:
-            property = str(property)
-            property_popularity_counter.record_property_presence(property)
-    except KeyError as e:
-        print(wikidata_id, " record_wikidata_properties_present failed with KeyError on ", e)
 
 # TODO replace args.expected_language_code where applicable
 def get_expected_language_codes():
@@ -194,11 +180,8 @@ def main():
 
     process_repeated_appearances()
 
-    property_popularity.print_popular_properties()
-
 global args #TODO remove global
 args = parsed_args()
-property_popularity = popular_wikidata_property_detector.PopularWikidataPropertiesDetector()
 
 if __name__ == "__main__":
     main()
