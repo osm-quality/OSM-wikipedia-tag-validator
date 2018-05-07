@@ -70,7 +70,7 @@ class WikimediaLinkIssueDetector:
         if something_reportable != None:
             return something_reportable
 
-        something_reportable = self.check_is_wikipedia_page_existing(language_code, article_name, wikidata_id)
+        something_reportable = self.check_is_wikipedia_page_existing(language_code, article_name)
         if something_reportable != None:
             return something_reportable
 
@@ -192,13 +192,14 @@ class WikimediaLinkIssueDetector:
         else:
             return None
 
-    def check_is_wikipedia_page_existing(self, language_code, article_name, wikidata_id):
+    def check_is_wikipedia_page_existing(self, language_code, article_name):
         page_according_to_wikidata = wikimedia_connection.get_interwiki_article_name(language_code, article_name, language_code, self.forced_refresh)
         if page_according_to_wikidata != None:
             # assume that wikidata is correct to save downloading page
             return None
         page = wikimedia_connection.get_wikipedia_page(language_code, article_name, self.forced_refresh)
         if page == None:
+            wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
             return self.report_failed_wikipedia_page_link(language_code, article_name, wikidata_id)
 
     def get_best_interwiki_link_by_id(self, wikidata_id):
