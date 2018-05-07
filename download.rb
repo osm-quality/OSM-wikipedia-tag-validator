@@ -32,6 +32,26 @@ def main()
   download_defined_regions
 
   download_graticules
+
+  download_old_style_wikipedia_links_for_elimination
+end
+
+def download_old_style_wikipedia_links_for_elimination()
+  filepath = download_location+"/"+"old_style_wikipedia_links_for_elimination.osm"
+  if File.exists?(filepath)
+    return
+  end
+  query = '[timeout:25];
+(
+  //"wikipedia:pl"=* and wikipedia!=* and "wikipedia:ru"!=*
+  node["wikipedia:pl"]["wikipedia"!~".*"]["wikipedia:ru"!~".*"]["wikidata"!~".*"];
+  way["wikipedia:pl"]["wikipedia"!~".*"]["wikipedia:ru"!~".*"]["wikidata"!~".*"];
+  relation["wikipedia:pl"]["wikipedia"!~".*"]["wikipedia:ru"!~".*"]["wikidata"!~".*"];
+);
+out body;
+>;
+out skel qt;'
+  download(query, filepath)
 end
 
 def download_by_wikidata(wikidata)
