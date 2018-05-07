@@ -615,7 +615,7 @@ class WikimediaLinkIssueDetector:
 
         article_name_with_section_stripped = article_name
         if article_name.find("#") != -1:
-            article_name_with_section_stripped = re.match('([^:]*)#(.*)', article_name).group(1)
+            article_name_with_section_stripped = re.match('([^#]*)#(.*)', article_name).group(1)
 
         wikidata_id_from_article = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name_with_section_stripped, self.forced_refresh)
         if present_wikidata_id == wikidata_id_from_article:
