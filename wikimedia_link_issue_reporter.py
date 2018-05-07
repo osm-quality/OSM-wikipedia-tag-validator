@@ -491,10 +491,10 @@ class WikimediaLinkIssueDetector:
             return self.get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(tags.get('wikidata'))
 
         if tags.get('wikidata') == None and old_style_wikipedia_tags != []:
-            return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(element, old_style_wikipedia_tags)
+            return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(element, tags)
 
         if tags.get('wikidata') != None and old_style_wikipedia_tags != []:
-            return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(element, old_style_wikipedia_tags, tags.get('wikidata'))
+            return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(element, old_style_wikipedia_tags, tags)
         return None
 
     def check_is_invalid_old_style_wikipedia_tag_present(self, old_style_wikipedia_tags, tags):
@@ -513,14 +513,15 @@ class WikimediaLinkIssueDetector:
                 return True
         return False
 
-    def get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(self, element, wikipedia_type_keys, wikidata_id):
+    def get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(self, element, wikipedia_type_keys, tags):
+        wikidata_id = tags.get('wikidata')
         assert(wikidata_id != None)
 
         links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys)
 
         prerequisite = {'wikidata': wikidata_id}
         for key in wikipedia_type_keys:
-            prerequisite[key] = element.get_tag_value(key)
+            prerequisite[key] = tags.get(key)
 
         conflict = False
         for link in links:
@@ -573,11 +574,12 @@ class WikimediaLinkIssueDetector:
                 prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
                 )
 
-    def get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(self, element, wikipedia_type_keys):
+    def get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(self, element, tags):
+        wikipedia_type_keys = self.get_old_style_wikipedia_keys(tags)
         prerequisite = {'wikipedia': None, 'wikidata': None}
         links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys)
         for key in wikipedia_type_keys:
-            prerequisite[key] = element.get_tag_value(key)
+            prerequisite[key] = tags.get(key)
         if len(links) != 1 or None in links:
             return ErrorReport(
                 error_id = "wikipedia from wikipedia tag in outdated form - mismatch",
