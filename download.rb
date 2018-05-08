@@ -14,6 +14,15 @@ def main()
     download(query, filepath)
   end
 
+  filepath = download_location+"/"+'old_style_wikipedia_links_for_bot_elimination_Polska.osm'
+  if !File.exists?(filepath)
+    name = "Polska"
+    area_identifier = area_identifier_by_name(name)
+    area_identifier_builder = area_identifier_builder_by_name(name)
+    query = filtered_query_text("['wikipedia:en']", area_identifier_builder, area_identifier, false)
+    download(query, filepath)
+  end
+
   filepath = download_location+"/"+'namepl_krk.osm'
   if !File.exists?(filepath)
     name = "Kraków"
@@ -44,9 +53,9 @@ def download_old_style_wikipedia_links_for_elimination()
   query = '[timeout:25];
 (
   //"wikipedia:pl"=* and wikipedia!=* and "wikipedia:ru"!=*
-  node["wikipedia:pl"]["wikipedia"!~".*"]["wikipedia:ru"!~".*"]["wikidata"!~".*"];
-  way["wikipedia:pl"]["wikipedia"!~".*"]["wikipedia:ru"!~".*"]["wikidata"!~".*"];
-  relation["wikipedia:pl"]["wikipedia"!~".*"]["wikipedia:ru"!~".*"]["wikidata"!~".*"];
+  node["wikipedia:pl"]["wikipedia:ru"!~".*"];
+  way["wikipedia:pl"]["wikipedia:ru"!~".*"];
+  relation["wikipedia:pl"]["wikipedia:ru"!~".*"];
 );
 out body;
 >;

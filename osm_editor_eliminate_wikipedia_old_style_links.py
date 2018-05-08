@@ -24,14 +24,29 @@ def eliminate_old_style_links(element):
         #allowing more requires checking whatever links are conflicting
         #in case of missing wikipedia tag - also deciding which language should be linked
         return
-    if tags.get('wikipedia') != None:
-        return
-    if tags.get('wikidata') != None:
-        return
     old_style_link = old_style_links[0]
-    print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
     language_code = wikimedia_connection.get_text_after_first_colon(old_style_link)
     article_name = tags.get(old_style_link)
+
+    wikidata_from_old_style_link = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+    if wikidata_from_old_style_link == None:
+        print("no wikidata issued")
+        return
+    if tags.get('wikipedia') != None:
+        language_code = wikimedia_connection.get_language_code_from_link(tags.get('wikipedia'))
+        article_name = wikimedia_connection.get_article_name_from_link(tags.get('wikipedia'))
+        id_from_wikipedia_tag = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+        if id_from_wikipedia_tag != wikidata_from_old_style_link:
+            print("old-style tags, wikipedia tag mismatch")
+            return
+    if tags.get('wikidata') != None:
+        if tags.get('wikidata') != wikidata_from_old_style_link:
+            print("old-style tags, wikidata tag mismatch")
+            return
+    print()
+    print()
+    print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
+    print()
     issue_checker = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
     missing_page_report = issue_checker.check_is_wikipedia_page_existing(language_code, article_name)
     if missing_page_report != None:
@@ -56,7 +71,9 @@ def make_an_edit(data, link):
     osm_bot_abstraction_layer.make_edit(link, comment, automatic_status, discussion_url, type, data, source, sleep_time)
 
 def main():
-    offending_objects_storage_file = common.get_file_storage_location()+"/"+'old_style_wikipedia_links_for_elimination.osm'
+    filename = 'old_style_wikipedia_links_for_elimination.osm'
+    filename = 'old_style_wikipedia_links_for_bot_elimination_Polska.osm'
+    offending_objects_storage_file = common.get_file_storage_location()+"/"+filename
     print(offending_objects_storage_file)
     os.system('rm "' + offending_objects_storage_file + '"')
     os.system('ruby download.rb')
