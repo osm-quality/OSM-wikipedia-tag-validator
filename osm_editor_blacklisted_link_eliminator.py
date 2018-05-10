@@ -43,8 +43,13 @@ def make_an_edit(data, link, blacklist_entry):
     comment = "fixing a link to Wikipedia. In wikipedia/wikidata tags only entries about given feature should be linked. See https://wiki.openstreetmap.org/wiki/Key:wikipedia"
     discussion_url = None
     type = link.split("/")[3]
-    print(data['tag'])
-    osm_bot_abstraction_layer.make_edit(link, comment, automatic_status, discussion_url, type, data, source, 0)
+
+    special_expected = get_special_expected_tags(data['tag'], blacklist_entry)
+    human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
+    message = "relink to " + blacklist_entry['prefix']
+    print(message + " ? [y/n]")
+    if human_verification_mode.is_human_confirming():
+        osm_bot_abstraction_layer.make_edit(link, comment, automatic_status, discussion_url, type, data, source, 0)
 
 def initial_verification(element):
     global data_cache
@@ -94,13 +99,6 @@ def is_expected_tag_based_on_blacklist_entry(key, value, blacklist_entry):
         if blacklist_entry['name'] == value:
             return True
 
-def request_decision_from_human(data, link, blacklist_entry):
-    wikidata_id = data['tag']['wikidata']
-    message = "relink to " + blacklist_entry['prefix']
-    print(message + " ? [y/n]")
-    if human_verification_mode.is_human_confirming():
-        make_an_edit(data, link, blacklist_entry)
-
 def eliminate_blacklisted_links(element):
     data = initial_verification(element)
     if data == None:
@@ -118,11 +116,12 @@ def eliminate_blacklisted_links(element):
     for tag, expected_value in blacklist_entry['expected_tags'].items():
         if expected_value != data['tag'][tag]:
             print("for " + tag + " " + expected_value + " was expected, got " + data['tag'][tag])
-            request_decision_from_human(data, element.get_link(), blacklist_entry)
-            return
+            print("allow edit anyway? [y/n]")
+            if not human_verification_mode.is_human_confirming():
+                return
 
-    request_decision_from_human(data, element.get_link(), blacklist_entry)
-
+    wikidata_id = data['tag']['wikidata']
+    make_an_edit(data, element.get_link(), blacklist_entry)
 
 def cache_data(element):
     initial_verification(element)
