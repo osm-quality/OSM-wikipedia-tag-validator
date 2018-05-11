@@ -48,8 +48,11 @@ def make_an_edit(data, link, blacklist_entry):
     human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
     message = "relink to " + blacklist_entry['prefix']
     print(message + " ? [y/n]")
+    additional_explanation = {}
+    additional_explanation['armchair_justification'] = 'this edit relies on general knowledge ( like "Żabka (convenience store)" Wikipedia page is not describing single convenience store but chain/brand of convenience store") and is not making changes that require local survey for verification'
+    additional_explanation['armchair_justification_opposite'] = 'for example adding brand tags based solely on name tag would be in my opinion example of wrong, revertable and harmful armchair editing - knowledge whatever shop named "Żabka" is part of Żabka convenience shop chain requires local knowledge'
     if human_verification_mode.is_human_confirming():
-        osm_bot_abstraction_layer.make_edit(link, comment, automatic_status, discussion_url, type, data, source, 0)
+        osm_bot_abstraction_layer.make_edit(link, comment, automatic_status, discussion_url, type, data, source, 0, additional_explanation)
 
 def initial_verification(element):
     global data_cache
