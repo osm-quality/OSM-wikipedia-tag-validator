@@ -9,6 +9,8 @@ import common
 
 def main():
     offending_objects_storage_file = common.get_file_storage_location()+"/"+'objects_with_blacklisted_links.osm'
+    # run twice, initial run may pollute query by reports that some wikidata entries are fetched
+    os.system('python3 generate_query_for_blacklisted_wikimedia_links.py > generated_query_for_blacklisted_entries.generated_query')
     os.system('python3 generate_query_for_blacklisted_wikimedia_links.py > generated_query_for_blacklisted_entries.generated_query')
     os.system('rm "' + offending_objects_storage_file + '"')
     os.system('ruby download.rb')
