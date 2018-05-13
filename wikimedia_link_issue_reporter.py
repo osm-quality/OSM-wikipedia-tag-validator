@@ -283,7 +283,7 @@ class WikimediaLinkIssueDetector:
             return self.get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(tags.get('wikidata'))
 
         if tags.get('wikidata') == None and old_style_wikipedia_tags != []:
-            return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(element, tags)
+            return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(tags)
 
         if tags.get('wikidata') != None and old_style_wikipedia_tags != []:
             return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(old_style_wikipedia_tags, tags)
@@ -366,7 +366,7 @@ class WikimediaLinkIssueDetector:
                 prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
                 )
 
-    def get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(self, element, tags):
+    def get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(self, tags):
         wikipedia_type_keys = self.get_old_style_wikipedia_keys(tags)
         prerequisite = {'wikipedia': None, 'wikidata': None}
         links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(tags, wikipedia_type_keys)
