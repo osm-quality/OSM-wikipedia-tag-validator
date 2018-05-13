@@ -135,4 +135,7 @@ def cache_data(element):
     initial_verification(element)
 
 data_cache = {}
+raise "mess like wikipedia=en:en:Lidl must be handled - issue reporter should be consulted to eliminate total failures"
 main()
+print("all processed - https://en.wikipedia.org/wiki/Starbucks is the new target")
+print("all processed - new ideas are likely to be present at https://taginfo.openstreetmap.org/keys/wikipedia#values")

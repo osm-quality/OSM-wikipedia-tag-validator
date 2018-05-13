@@ -309,7 +309,7 @@ class WikimediaLinkIssueDetector:
         wikidata_id = tags.get('wikidata')
         assert(wikidata_id != None)
 
-        links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys)
+        links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(element, tags, wikipedia_type_keys)
 
         prerequisite = {'wikidata': wikidata_id}
         for key in wikipedia_type_keys:
@@ -369,7 +369,7 @@ class WikimediaLinkIssueDetector:
     def get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(self, element, tags):
         wikipedia_type_keys = self.get_old_style_wikipedia_keys(tags)
         prerequisite = {'wikipedia': None, 'wikidata': None}
-        links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(element, wikipedia_type_keys)
+        links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(element, tags, wikipedia_type_keys)
         for key in wikipedia_type_keys:
             prerequisite[key] = tags.get(key)
         if len(links) != 1 or None in links:
@@ -397,7 +397,7 @@ class WikimediaLinkIssueDetector:
             prerequisite = prerequisite,
             )
 
-    def wikipedia_candidates_based_on_old_style_wikipedia_keys(self, element, wikipedia_type_keys):
+    def wikipedia_candidates_based_on_old_style_wikipedia_keys(self, element, tags, wikipedia_type_keys):
         links = []
         for key in wikipedia_type_keys:
             language_code = wikimedia_connection.get_text_after_first_colon(key)
