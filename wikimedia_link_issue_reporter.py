@@ -77,7 +77,7 @@ class WikimediaLinkIssueDetector:
             return something_reportable
 
         if tags.get("wikipedia") == None:
-            return self.check_is_wikipedia_tag_obtainable(element, tags)
+            return self.check_is_wikipedia_tag_obtainable(tags)
 
         something_reportable = self.freely_reorderable_issue_reports(element, tags)
         if something_reportable != None:
@@ -272,7 +272,7 @@ class WikimediaLinkIssueDetector:
                 old_style_wikipedia_tags.append(key)
         return old_style_wikipedia_tags
 
-    def check_is_wikipedia_tag_obtainable(self, element, tags):
+    def check_is_wikipedia_tag_obtainable(self, tags):
         old_style_wikipedia_tags = self.get_old_style_wikipedia_keys(tags)
 
         reportable = self.check_is_invalid_old_style_wikipedia_tag_present(old_style_wikipedia_tags, tags)
