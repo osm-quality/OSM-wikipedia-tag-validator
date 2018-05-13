@@ -127,6 +127,7 @@ class WikimediaLinkIssueDetector:
             'Q857182': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Biedronka'},
             'Q487494': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Tesco'},
             'Q685967': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Kaufland'},
+            'Q151954': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Lidl'},
 
             'Q1941209': {'prefix': 'brand:', 'expected_tags': {}, 'name': 'Mlekpol'},
 
