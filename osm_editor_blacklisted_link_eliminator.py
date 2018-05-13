@@ -74,12 +74,18 @@ def initial_verification(element):
     for key in element.get_keys():
         prerequisites[key] = element.get_tag_value(key)
 
-    old_style_links = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_old_style_wikipedia_keys(element.get_tag_dictionary())
+    issue_detector = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
+    old_style_links = issue_detector.get_old_style_wikipedia_keys(element.get_tag_dictionary())
     if len(old_style_links) != 0:
         return None
 
     if element.get_link() in data_cache:
         return data_cache[element.get_link()]
+    something_reportable = issue_detector.critical_structural_issue_report(element.get_element().tag, element.get_tag_dictionary())
+    if something_reportable != None:
+        print(something_reportable.error_message)
+        return None
+
     data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
     if data == None:
         return None
@@ -135,7 +141,6 @@ def cache_data(element):
     initial_verification(element)
 
 data_cache = {}
-raise "mess like wikipedia=en:en:Lidl must be handled - issue reporter should be consulted to eliminate total failures"
 main()
 print("all processed - https://en.wikipedia.org/wiki/Starbucks is the new target")
 print("all processed - new ideas are likely to be present at https://taginfo.openstreetmap.org/keys/wikipedia#values")
