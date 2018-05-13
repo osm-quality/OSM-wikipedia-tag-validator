@@ -71,28 +71,35 @@ class WikimediaLinkIssueDetector:
         #if tags.get("wikipedia").find("#") != -1:
         #    return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
 
-        language_code = wikimedia_connection.get_language_code_from_link(tags.get("wikipedia"))
-        article_name = wikimedia_connection.get_article_name_from_link(tags.get("wikipedia"))
-        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-
-        something_reportable = self.check_is_wikipedia_link_clearly_malformed(tags.get("wikipedia"))
-        if something_reportable != None:
-            return something_reportable
-
-        something_reportable = self.check_is_wikipedia_page_existing(language_code, article_name)
-        if something_reportable != None:
-            return something_reportable
-
-        #early to ensure that passing later wikidata_id of article is not going to be confusing
-        something_reportable = self.check_for_wikipedia_wikidata_collision(tags.get("wikidata"), language_code, article_name)
-        if something_reportable != None:
-            return something_reportable
-
         if tags.get("wikipedia") == None:
-            return self.check_is_wikipedia_tag_obtainable(tags)
+            something_reportable = self.check_is_wikipedia_tag_obtainable(tags)
+            if something_reportable != None:
+                return something_reportable
+        else:
+            language_code = wikimedia_connection.get_language_code_from_link(tags.get("wikipedia"))
+            article_name = wikimedia_connection.get_article_name_from_link(tags.get("wikipedia"))
+            wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+
+            something_reportable = self.check_is_wikipedia_link_clearly_malformed(tags.get("wikipedia"))
+            if something_reportable != None:
+                return something_reportable
+
+            something_reportable = self.check_is_wikipedia_page_existing(language_code, article_name)
+            if something_reportable != None:
+                return something_reportable
+
+            #early to ensure that passing later wikidata_id of article is not going to be confusing
+            something_reportable = self.check_for_wikipedia_wikidata_collision(tags.get("wikidata"), language_code, article_name)
+            if something_reportable != None:
+                return something_reportable
+
         return None
 
     def freely_reorderable_issue_reports(self, element, tags):
+        # do not handle bare wikidata (IDEA: hadle also this case)
+        if tags.get('wikipedia') == None:
+            return None
+
         # IDEA links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
 
         language_code = wikimedia_connection.get_language_code_from_link(tags.get('wikipedia'))
