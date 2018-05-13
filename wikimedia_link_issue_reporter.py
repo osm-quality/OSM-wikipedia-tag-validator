@@ -50,9 +50,6 @@ class WikimediaLinkIssueDetector:
         if self.object_should_be_deleted_not_repaired(object_type, tags):
             return None
 
-        if tags.get("wikipedia") == None:
-            return self.check_is_wikipedia_tag_obtainable(element, tags)
-
         if tags.get("wikidata") != None:
             something_reportable = self.check_is_wikidata_page_existing(tags.get("wikidata"))
             if something_reportable != None:
@@ -78,6 +75,9 @@ class WikimediaLinkIssueDetector:
         something_reportable = self.check_for_wikipedia_wikidata_collision(tags.get("wikidata"), language_code, article_name)
         if something_reportable != None:
             return something_reportable
+
+        if tags.get("wikipedia") == None:
+            return self.check_is_wikipedia_tag_obtainable(element, tags)
 
         something_reportable = self.freely_reorderable_issue_reports(element, tags)
         if something_reportable != None:
