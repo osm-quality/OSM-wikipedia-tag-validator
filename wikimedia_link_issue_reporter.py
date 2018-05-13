@@ -47,6 +47,18 @@ class WikimediaLinkIssueDetector:
     def get_problem_for_given_element(self, element):
         tags = element.get_tag_dictionary()
         object_type = element.get_element().tag
+
+        something_reportable = self.critical_structural_issue_report(object_type, tags)
+        if something_reportable != None:
+            return something_reportable
+
+        something_reportable = self.freely_reorderable_issue_reports(element, tags)
+        if something_reportable != None:
+            return something_reportable
+
+        return None
+
+    def critical_structural_issue_report(self, object_type, tags):
         if self.object_should_be_deleted_not_repaired(object_type, tags):
             return None
 
@@ -78,11 +90,6 @@ class WikimediaLinkIssueDetector:
 
         if tags.get("wikipedia") == None:
             return self.check_is_wikipedia_tag_obtainable(tags)
-
-        something_reportable = self.freely_reorderable_issue_reports(element, tags)
-        if something_reportable != None:
-            return something_reportable
-
         return None
 
     def freely_reorderable_issue_reports(self, element, tags):
