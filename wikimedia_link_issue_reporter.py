@@ -286,7 +286,7 @@ class WikimediaLinkIssueDetector:
             return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(element, tags)
 
         if tags.get('wikidata') != None and old_style_wikipedia_tags != []:
-            return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(element, old_style_wikipedia_tags, tags)
+            return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(old_style_wikipedia_tags, tags)
         return None
 
     def check_is_invalid_old_style_wikipedia_tag_present(self, old_style_wikipedia_tags, tags):
@@ -305,7 +305,7 @@ class WikimediaLinkIssueDetector:
                 return True
         return False
 
-    def get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(self, element, wikipedia_type_keys, tags):
+    def get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(self, wikipedia_type_keys, tags):
         wikidata_id = tags.get('wikidata')
         assert(wikidata_id != None)
 
