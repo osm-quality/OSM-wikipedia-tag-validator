@@ -119,8 +119,11 @@ def eliminate_blacklisted_links(element):
     print(element.get_link())
 
     for tag, expected_value in blacklist_entry['expected_tags'].items():
-        if expected_value != data['tag'][tag]:
-            print("for " + tag + " " + expected_value + " was expected, got " + data['tag'][tag])
+        present = data['tag'].get(tag)
+        if expected_value != present:
+            if present == None:
+                present = "<missing value>"
+            print("for " + tag + " " + expected_value + " was expected, got " + present)
             print("allow edit anyway? [y/n]")
             if not human_verification_mode.is_human_confirming():
                 return
