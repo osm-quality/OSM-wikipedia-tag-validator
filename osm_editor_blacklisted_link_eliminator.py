@@ -142,5 +142,5 @@ def cache_data(element):
 
 data_cache = {}
 main()
-print("all processed - https://en.wikipedia.org/wiki/Starbucks is the new target")
+print("all processed - Aldi is the new target")
 print("all processed - new ideas are likely to be present at https://taginfo.openstreetmap.org/keys/wikipedia#values")
