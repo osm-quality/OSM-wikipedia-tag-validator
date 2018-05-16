@@ -21,6 +21,7 @@ def main():
 
     osm = Data(offending_objects_storage_file)
     osm.iterate_over_data(cache_data)
+    print(str(len(data_cache)) + " objects cached")
     osm.iterate_over_data(eliminate_blacklisted_links)
 
 def blacklist():
