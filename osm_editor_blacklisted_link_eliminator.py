@@ -84,6 +84,8 @@ def initial_verification(element):
         return data_cache[element.get_link()]
     something_reportable = issue_detector.critical_structural_issue_report(element.get_element().tag, element.get_tag_dictionary())
     if something_reportable != None:
+        print()
+        print(element.get_link())
         print(something_reportable.error_message)
         return None
 
