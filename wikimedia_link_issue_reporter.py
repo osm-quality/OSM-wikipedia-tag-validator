@@ -48,6 +48,9 @@ class WikimediaLinkIssueDetector:
         tags = element.get_tag_dictionary()
         object_type = element.get_element().tag
 
+        if self.object_should_be_deleted_not_repaired(object_type, tags):
+            return None
+
         something_reportable = self.critical_structural_issue_report(object_type, tags)
         if something_reportable != None:
             return something_reportable
@@ -59,9 +62,6 @@ class WikimediaLinkIssueDetector:
         return None
 
     def critical_structural_issue_report(self, object_type, tags):
-        if self.object_should_be_deleted_not_repaired(object_type, tags):
-            return None
-
         if tags.get("wikidata") != None:
             something_reportable = self.check_is_wikidata_page_existing(tags.get("wikidata"))
             if something_reportable != None:
