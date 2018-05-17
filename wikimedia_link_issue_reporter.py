@@ -55,6 +55,10 @@ class WikimediaLinkIssueDetector:
         if something_reportable != None:
             return something_reportable
 
+        something_reportable = self.add_wikipedia_and_wikidata_based_on_each_other(element, tags)
+        if something_reportable != None:
+            return something_reportable
+
         something_reportable = self.freely_reorderable_issue_reports(element, tags)
         if something_reportable != None:
             return something_reportable
@@ -72,7 +76,7 @@ class WikimediaLinkIssueDetector:
         #    return "link to section (\"only provide links to articles which are 'about the feature'\" - http://wiki.openstreetmap.org/wiki/Key:wikipedia):"
 
         if tags.get("wikipedia") == None:
-            something_reportable = self.check_is_wikipedia_tag_obtainable(tags)
+            something_reportable = self.remove_old_style_wikipedia_tags(tags)
             if something_reportable != None:
                 return something_reportable
         else:
@@ -92,6 +96,18 @@ class WikimediaLinkIssueDetector:
             something_reportable = self.check_for_wikipedia_wikidata_collision(tags.get("wikidata"), language_code, article_name)
             if something_reportable != None:
                 return something_reportable
+
+        return None
+
+    def add_wikipedia_and_wikidata_based_on_each_other(element, tags):
+        something_reportable = self.check_is_wikidata_tag_is_misssing(element, tags.get('wikidata'), wikidata_id)
+        if something_reportable != None:
+            return something_reportable
+
+        old_style_wikipedia_tags = self.get_old_style_wikipedia_keys(tags)
+
+        if tags.get('wikidata') != None and old_style_wikipedia_tags == []:
+            return self.get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(tags.get('wikidata'))
 
         return None
 
@@ -118,10 +134,6 @@ class WikimediaLinkIssueDetector:
             return something_reportable
 
         something_reportable = self.get_wikipedia_language_issues(element, language_code, article_name, wikidata_id)
-        if something_reportable != None:
-            return something_reportable
-
-        something_reportable = self.check_is_wikidata_tag_is_misssing(element, tags.get('wikidata'), wikidata_id)
         if something_reportable != None:
             return something_reportable
 
@@ -191,7 +203,6 @@ class WikimediaLinkIssueDetector:
                         error_message = "wikidata tag present on element points to not existing element (" + link + ")",
                         prerequisite = {'wikidata': present_wikidata_id},
                         )
-
 
     def check_is_wikipedia_link_clearly_malformed(self, link):
         if self.is_wikipedia_tag_clearly_broken(link):
@@ -292,15 +303,12 @@ class WikimediaLinkIssueDetector:
                 old_style_wikipedia_tags.append(key)
         return old_style_wikipedia_tags
 
-    def check_is_wikipedia_tag_obtainable(self, tags):
+    def remove_old_style_wikipedia_tags(self, tags):
         old_style_wikipedia_tags = self.get_old_style_wikipedia_keys(tags)
 
         reportable = self.check_is_invalid_old_style_wikipedia_tag_present(old_style_wikipedia_tags, tags)
         if reportable:
             return reportable
-
-        if tags.get('wikidata') != None and old_style_wikipedia_tags == []:
-            return self.get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(tags.get('wikidata'))
 
         if tags.get('wikidata') == None and old_style_wikipedia_tags != []:
             return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(tags)
@@ -407,9 +415,6 @@ class WikimediaLinkIssueDetector:
         # though it skips situation where human maybe would notice it
         description = "object with " + str(wikipedia_type_keys)
         location = (None, None)
-        problem_indicated_by_wikidata = self.get_problem_based_on_wikidata(wikidata_id, description, location)
-        if problem_indicated_by_wikidata:
-            return problem_indicated_by_wikidata
         return ErrorReport(
             error_id = "wikipedia tag from wikipedia tag in an outdated form",
             error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag",
