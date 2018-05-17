@@ -76,9 +76,6 @@ def initial_verification(element):
         prerequisites[key] = element.get_tag_value(key)
 
     issue_detector = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
-    old_style_links = issue_detector.get_old_style_wikipedia_keys(element.get_tag_dictionary())
-    if len(old_style_links) != 0:
-        return None
 
     if element.get_link() in data_cache:
         return data_cache[element.get_link()]
@@ -88,6 +85,10 @@ def initial_verification(element):
         print(element.get_link())
         print(something_reportable.error_message)
         return None
+
+    old_style_links = issue_detector.get_old_style_wikipedia_keys(element.get_tag_dictionary())
+    if len(old_style_links) != 0:
+        raise 'should be reported already'
 
     data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
     if data == None:

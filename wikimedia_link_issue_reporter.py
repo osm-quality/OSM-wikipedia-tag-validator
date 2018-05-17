@@ -310,9 +310,6 @@ class WikimediaLinkIssueDetector:
         if reportable:
             return reportable
 
-        if tags.get('wikidata') == None and old_style_wikipedia_tags != []:
-            return self.get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(tags)
-
         if tags.get('wikidata') != None and old_style_wikipedia_tags != []:
             return self.get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(old_style_wikipedia_tags, tags)
         return None
@@ -333,39 +330,54 @@ class WikimediaLinkIssueDetector:
                 return True
         return False
 
-    def get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(self, wikipedia_type_keys, tags):
-        wikidata_id = tags.get('wikidata')
-        assert(wikidata_id != None)
-
-        links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(tags, wikipedia_type_keys)
-
-        prerequisite = {'wikidata': wikidata_id}
-        for key in wikipedia_type_keys:
-            prerequisite[key] = tags.get(key)
-
-        conflict = False
+    def is_list_of_links_and_wikidata_id_conflicting(self, links, wikidata_id):
+        normalized_link_form = wikidata_id #may be None
         for link in links:
             if link == None:
-                conflict = True
-                continue
+                return True
             language_code = wikimedia_connection.get_language_code_from_link(link)
             article_name = wikimedia_connection.get_article_name_from_link(link)
             id_from_link = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, self.forced_refresh)
-            if wikidata_id != id_from_link:
-                conflict = True
+            if normalized_link_form == None:
+                normalized_link_form = id_from_link
+            if normalized_link_form != id_from_link:
+                return True
+        return False
 
-        if conflict:
+    def get_wikipedia_from_old_style_wikipedia_and_wikidata_tags(self, wikipedia_type_keys, tags):
+        links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(tags, wikipedia_type_keys)
+        normalized_link_form = None
+
+        if tags.get('wikidata') != None:
+            links_as_wikidata_ids.append(tags.get('wikidata'))
+
+        if tags.get('wikipedia') != None:
+            links.append(tags.get('wikipedia'))
+
+        prerequisite = {}
+        prerequisite['wikidata'] = tags.get('wikidata')
+        prerequisite['wikipedia'] = tags.get('wikipedia')
+        for key in wikipedia_type_keys:
+            prerequisite[key] = tags.get(key)
+
+        if self.is_list_of_links_and_wikidata_id_conflicting(links, wikidata_id):
             return ErrorReport(
-                error_id = "wikipedia tag in outdated form and wikidata - mismatch",
-                error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present. Mismatch happened and requires human judgment to solve.",
+                error_id = "wikipedia tag in outdated form and there is mismatch between links",
+                error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "). Mismatch between different links happened and requires human judgment to solve.",
                 prerequisite = prerequisite,
+                )
+        elif tags.get('wikipedia') == None:
+            return ErrorReport(
+                error_id = "wikipedia tag from wikipedia tag in an outdated form and wikidata",
+                error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), wikipedia tag may be added",
+                prerequisite = prerequisite,
+                desired_wikipedia_target = self.get_best_interwiki_link_by_id(wikidata_id),
                 )
         else:
             return ErrorReport(
-                error_id = "wikipedia tag from wikipedia tag in an outdated form and wikidata",
-                error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia but with wikidata tag present",
+                error_id = "wikipedia tag in an outdated form for removal",
+                error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), with wikipedia and wikidata tag present and may be safely removed",
                 prerequisite = prerequisite,
-                desired_wikipedia_target = self.get_best_interwiki_link_by_id(wikidata_id),
                 )
 
     def get_wikipedia_from_wikidata_assume_no_old_style_wikipedia_tags(self, present_wikidata_id):
@@ -393,34 +405,6 @@ class WikimediaLinkIssueDetector:
                 desired_wikipedia_target = link,
                 prerequisite = {'wikipedia': None, 'wikidata': present_wikidata_id},
                 )
-
-    def get_wikipedia_from_old_style_wikipedia_tags_asssume_no_wikidata(self, tags):
-        wikipedia_type_keys = self.get_old_style_wikipedia_keys(tags)
-        prerequisite = {'wikipedia': None, 'wikidata': None}
-        links = self.wikipedia_candidates_based_on_old_style_wikipedia_keys(tags, wikipedia_type_keys)
-        for key in wikipedia_type_keys:
-            prerequisite[key] = tags.get(key)
-        if len(links) != 1 or None in links:
-            return ErrorReport(
-                error_id = "wikipedia from wikipedia tag in outdated form - mismatch",
-                error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag, human judgement required as algorithm failed to find certain match",
-                prerequisite = prerequisite,
-                )
-        wikipedia_link = links[0]
-        lang = wikimedia_connection.get_language_code_from_link(wikipedia_link)
-        article = wikimedia_connection.get_article_name_from_link(wikipedia_link)
-        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(lang, article)
-        # if wikidata_id is None - some checks will not be done
-        # it is considered acceptable as it will not introduce new error in OSM
-        # though it skips situation where human maybe would notice it
-        description = "object with " + str(wikipedia_type_keys)
-        location = (None, None)
-        return ErrorReport(
-            error_id = "wikipedia tag from wikipedia tag in an outdated form",
-            error_message = "wikipedia tag in outdated form (" + str(wikipedia_type_keys) + "), without wikipedia tag, without wikidata tag",
-            desired_wikipedia_target = wikipedia_link,
-            prerequisite = prerequisite,
-            )
 
     def wikipedia_candidates_based_on_old_style_wikipedia_keys(self, tags, wikipedia_type_keys):
         links = []

@@ -184,7 +184,6 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
 def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
     matching_error_ids = [
                 'wikipedia tag from wikipedia tag in an outdated form and wikidata',
-                'wikipedia tag from wikipedia tag in an outdated form',
                 ]
     errors_for_removal = filter_reported_errors(reported_errors, matching_error_ids)
     if errors_for_removal == []:
@@ -211,13 +210,13 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
         data['tag']['wikipedia'] = new
         reason = ", as standard wikipedia tag is better than old style wikipedia tags"
         change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + new + reason
-        if e['error_id'] == 'wikipedia tag from wikipedia tag in an outdated form':
-            language_code = wikimedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
-            article_name = wikimedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
-            wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-            if wikidata_id == None:
-                print(wikimedia_connection.wikipedia_url(language_code, article_name) + " from " + e['osm_object_url'] + " has no wikidata entry")
-                continue
+        language_code = wikimedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
+        article_name = wikimedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
+        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+        if wikidata_id == None:
+            print(wikimedia_connection.wikipedia_url(language_code, article_name) + " from " + e['osm_object_url'] + " has no wikidata entry")
+            continue
+        elif data['tag'].get('wikdata') == None:
             data['tag']['wikidata'] = wikidata_id
             change_description += " +adding wikidata=" + wikidata_id
         print(change_description)

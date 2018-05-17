@@ -125,13 +125,12 @@ def note_unused_errors(args):
 
 def for_review():
     return [
-        'wikipedia tag in outdated form and wikidata - mismatch',
+        'wikipedia tag in outdated form and there is mismatch between links',
         'wikipedia tag links to 404',
         'wikidata tag links to 404',
         'link to an unlinkable article',
         'wikipedia wikidata mismatch',
         'should use a secondary wikipedia tag',
-        'wikipedia from wikipedia tag in outdated form - mismatch',
         'tag may be added based on wikidata',
         'tag may be added based on wikidata - teryt',
         'invalid old-style wikipedia tag',
@@ -150,11 +149,11 @@ def obvious_fixes():
         'blacklisted connection with known replacement',
         'wikipedia tag unexpected language',
         'wikipedia tag from wikipedia tag in an outdated form and wikidata',
-        'wikipedia tag from wikipedia tag in an outdated form',
         'wikipedia wikidata mismatch - follow wikipedia redirect',
         'wikipedia from wikidata tag',
         'wikipedia from wikidata tag, unexpected language',
         'wikidata from wikipedia tag',
+        'wikipedia tag in an outdated form for removal',
     ]
 
 def for_tests():
