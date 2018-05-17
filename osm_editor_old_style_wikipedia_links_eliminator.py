@@ -5,9 +5,11 @@ import osm_bot_abstraction_layer.human_verification_mode as human_verification_m
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import osm_handling_config.global_config as osm_handling_config
 from osm_iterator.osm_iterator import Data
+from osm_bot_abstraction_layer.split_into_packages import Package
 import wikimedia_link_issue_reporter
 import common
 from termcolor import colored
+import time
 
 def cache_data(element):
     global data_cache
@@ -15,45 +17,67 @@ def cache_data(element):
     data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
     data_cache[element.get_link()] = data
 
-def eliminate_old_style_links(element):
-    prerequisites = {}
-    data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
-    tags = data['tag']
-    old_style_links = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_old_style_wikipedia_keys(tags)
+def splitter(element):
+    global list_of_elements
+    list_of_elements.append(element)
+
+def get_tags_for_removal(tags):
+    issue_checker = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
+    old_style_links = issue_checker.get_old_style_wikipedia_keys(tags)
     if len(old_style_links) != 1:
         #allowing more requires checking whatever links are conflicting
         #in case of missing wikipedia tag - also deciding which language should be linked
-        return
+        return None
+
     old_style_link = old_style_links[0]
     language_code = wikimedia_connection.get_text_after_first_colon(old_style_link)
     article_name = tags.get(old_style_link)
 
     wikidata_from_old_style_link = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
     if wikidata_from_old_style_link == None:
-        print("no wikidata issued")
-        return
+        print("no wikidata issued for Wikipedia article linked in this element")
+        return None
     if tags.get('wikipedia') != None:
         language_code = wikimedia_connection.get_language_code_from_link(tags.get('wikipedia'))
         article_name = wikimedia_connection.get_article_name_from_link(tags.get('wikipedia'))
         id_from_wikipedia_tag = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
         if id_from_wikipedia_tag != wikidata_from_old_style_link:
             print("old-style tags, wikipedia tag mismatch")
-            return
+            return None
     if tags.get('wikidata') != None:
         if tags.get('wikidata') != wikidata_from_old_style_link:
             print("old-style tags, wikidata tag mismatch")
-            return
+            return None
+
+    return [old_style_link]
+
+def eliminate_old_style_links(element):
+    prerequisites = {}
+    data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
+    tags = data['tag']
+
+    for_removal = get_tags_for_removal(tags)
+    if for_removal == None:
+        return
+
+    if len(for_removal) != 1:
+        return
+
+    old_style_link = for_removal[0]
+    language_code = wikimedia_connection.get_text_after_first_colon(old_style_link)
+    article_name = tags.get(old_style_link)
+
     print()
     print()
     print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
     print()
-    issue_checker = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
-    missing_page_report = issue_checker.check_is_wikipedia_page_existing(language_code, article_name)
-    if missing_page_report != None:
-        return
     
     special_expected = {}
-    data['tag']['wikipedia'] = language_code + ":" + article_name
+    expected_wikipedia = language_code + ":" + article_name
+    if data['tag'].get('wikipedia') != None and data['tag'].get('wikipedia') != expected_wikipedia:
+        print("mismatch with wikipedia")
+        return
+    data['tag']['wikipedia'] = expected_wikipedia
     del data['tag'][old_style_link]
     human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
     if human_verification_mode.is_human_confirming():
@@ -67,8 +91,15 @@ def make_an_edit(data, link):
     discussion_url = None
     source = None
     type = link.split("/")[3]
-    sleep_time = 0
-    osm_bot_abstraction_layer.make_edit(link, comment, automatic_status, discussion_url, type, data, source, sleep_time)
+    #osm_bot_abstraction_layer.make_edit(link, comment, automatic_status, discussion_url, type, data, source, sleep_time)
+    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
+    builder = osm_bot_abstraction_layer.ChangesetBuilder(link, comment, automatic_status, discussion_url, source)
+    builder.create_changeset(api)
+    osm_bot_abstraction_layer.update_element(api, type, data)
+    api.ChangesetClose()
+    time.sleep(0.1)
+
+
 
 def main():
     filename = 'old_style_wikipedia_links_for_elimination.osm'
@@ -79,7 +110,27 @@ def main():
     os.system('ruby download.rb')
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
 
+    global list_of_elements
+    list_of_elements = []
+
     osm = Data(offending_objects_storage_file)
     #osm.iterate_over_data(cache_data)
+    osm.iterate_over_data(splitter)
+    print(len(list_of_elements))
+    list_of_elements = list_of_elements[:2000]
+    print(len(list_of_elements))
+    max_count = 5
+    returned = Package.split_into_packages(list_of_elements, max_count)
+    #print(returned)
+    print(len(returned))
+    for package in returned:
+        print(len(package.list))
+    filtered = [p for p in returned if len(p.list) > max_count/3]
+    print(len(filtered))
+    for package in filtered:
+        for element in package.list:
+            print(element.get_link())
+        print()
+        print()
     osm.iterate_over_data(eliminate_old_style_links)
 main()
