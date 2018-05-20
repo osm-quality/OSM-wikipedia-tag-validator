@@ -51,55 +51,54 @@ def get_tags_for_removal(tags):
 
     return [old_style_link]
 
-def eliminate_old_style_links(element):
-    prerequisites = {}
-    data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
-    tags = data['tag']
-
-    for_removal = get_tags_for_removal(tags)
-    if for_removal == None:
-        return
-
-    if len(for_removal) != 1:
-        return
-
-    old_style_link = for_removal[0]
-    language_code = wikimedia_connection.get_text_after_first_colon(old_style_link)
-    article_name = tags.get(old_style_link)
-
-    print()
-    print()
-    print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
-    print()
-    
-    special_expected = {}
-    expected_wikipedia = language_code + ":" + article_name
-    if data['tag'].get('wikipedia') != None and data['tag'].get('wikipedia') != expected_wikipedia:
-        print("mismatch with wikipedia")
-        return
-    data['tag']['wikipedia'] = expected_wikipedia
-    del data['tag'][old_style_link]
-    human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
-    if human_verification_mode.is_human_confirming():
-        make_an_edit(data, element.get_link())
-    print()
-    print()
-
-def make_an_edit(data, link):
+def build_changeset():
     automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
     comment = "changing old-style wikipedia tag to current style, to prevent doubletagging by iD users, make tag more useful and harmonize tagging See https://wiki.openstreetmap.org/wiki/Key:wikipedia"
     discussion_url = None
     source = None
-    type = link.split("/")[3]
-    #osm_bot_abstraction_layer.make_edit(link, comment, automatic_status, discussion_url, type, data, source, sleep_time)
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
-    builder = osm_bot_abstraction_layer.ChangesetBuilder(link, comment, automatic_status, discussion_url, source)
+    affected_objects_description = ""
+    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
     builder.create_changeset(api)
-    osm_bot_abstraction_layer.update_element(api, type, data)
+    return api
+
+def eliminate_old_style_links(package):
+    api = build_changeset()
+    for element in package.list:
+        prerequisites = {}
+        data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
+        tags = data['tag']
+
+        for_removal = get_tags_for_removal(tags)
+        if for_removal == None:
+            continue
+
+        if len(for_removal) != 1:
+            continue
+
+        old_style_link = for_removal[0]
+        language_code = wikimedia_connection.get_text_after_first_colon(old_style_link)
+        article_name = tags.get(old_style_link)
+
+        print()
+        print()
+        print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
+        print()
+
+        special_expected = {}
+        expected_wikipedia = language_code + ":" + article_name
+        if data['tag'].get('wikipedia') != None and data['tag'].get('wikipedia') != expected_wikipedia:
+            print("mismatch with wikipedia")
+            continue
+        data['tag']['wikipedia'] = expected_wikipedia
+        del data['tag'][old_style_link]
+        human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
+        if human_verification_mode.is_human_confirming():
+            osm_bot_abstraction_layer.update_element(api, element.element.tag, data)
+        print()
+        print()
     api.ChangesetClose()
     time.sleep(0.1)
-
-
 
 def main():
     filename = 'old_style_wikipedia_links_for_elimination.osm'
@@ -130,7 +129,7 @@ def main():
     for package in filtered:
         for element in package.list:
             print(element.get_link())
+        eliminate_old_style_links(package)
         print()
         print()
-    osm.iterate_over_data(eliminate_old_style_links)
 main()
