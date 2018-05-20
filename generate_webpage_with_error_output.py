@@ -148,7 +148,7 @@ def obvious_fixes():
     return [
         'blacklisted connection with known replacement',
         'wikipedia tag unexpected language',
-        'wikipedia tag from wikipedia tag in an outdated form and wikidata',
+        'wikipedia tag from wikipedia tag in an outdated form',
         'wikipedia wikidata mismatch - follow wikipedia redirect',
         'wikipedia from wikidata tag',
         'wikipedia from wikidata tag, unexpected language',
