@@ -82,7 +82,7 @@ class WikimediaLinkIssueDetector:
         if tags.get("wikipedia") != None:
             language_code = wikimedia_connection.get_language_code_from_link(tags.get("wikipedia"))
             article_name = wikimedia_connection.get_article_name_from_link(tags.get("wikipedia"))
-            wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+            wikidata_id = wikimedia_connection.get_wikidata_object_id_from_link(tags.get("wikipedia"))
 
             something_reportable = self.check_is_wikipedia_link_clearly_malformed(tags.get("wikipedia"))
             if something_reportable != None:
@@ -118,9 +118,7 @@ class WikimediaLinkIssueDetector:
 
         # IDEA links from buildings to parish are wrong - but from religious admin are OK https://www.wikidata.org/wiki/Q11808149
 
-        language_code = wikimedia_connection.get_language_code_from_link(tags.get('wikipedia'))
-        article_name = wikimedia_connection.get_article_name_from_link(tags.get('wikipedia'))
-        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, self.forced_refresh)
+        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(tags.get('wikipedia'), self.forced_refresh)
 
         #wikipedia tag is not malformed
         #wikipedia and wikidata tags are not conflicting
@@ -133,6 +131,8 @@ class WikimediaLinkIssueDetector:
         if something_reportable != None:
             return something_reportable
 
+        language_code = wikimedia_connection.get_language_code_from_link(tags.get('wikipedia'))
+        article_name = wikimedia_connection.get_article_name_from_link(tags.get('wikipedia'))
         something_reportable = self.get_wikipedia_language_issues(element, language_code, article_name, wikidata_id)
         if something_reportable != None:
             return something_reportable
@@ -337,9 +337,7 @@ class WikimediaLinkIssueDetector:
         for link in links:
             if link == None:
                 return None
-            language_code = wikimedia_connection.get_language_code_from_link(link)
-            article_name = wikimedia_connection.get_article_name_from_link(link)
-            id_from_link = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name, self.forced_refresh)
+            id_from_link = wikimedia_connection.get_wikidata_object_id_from_link(link, self.forced_refresh)
             if normalized_link_form == None:
                 normalized_link_form = id_from_link
             if normalized_link_form != id_from_link:
