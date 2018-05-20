@@ -80,11 +80,6 @@ def eliminate_old_style_links(package):
         language_code = wikimedia_connection.get_text_after_first_colon(old_style_link)
         article_name = tags.get(old_style_link)
 
-        print()
-        print()
-        print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
-        print()
-
         special_expected = {}
         expected_wikipedia = language_code + ":" + article_name
         if data['tag'].get('wikipedia') != None and data['tag'].get('wikipedia') != expected_wikipedia:
@@ -93,6 +88,9 @@ def eliminate_old_style_links(package):
         data['tag']['wikipedia'] = expected_wikipedia
         del data['tag'][old_style_link]
         human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
+        print()
+        print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
+        print()
         if human_verification_mode.is_human_confirming():
             osm_bot_abstraction_layer.update_element(api, element.element.tag, data)
         print()
