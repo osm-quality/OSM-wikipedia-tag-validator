@@ -154,7 +154,7 @@ class WikimediaLinkIssueDetector:
             'Q487494': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Tesco'},
             'Q685967': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Kaufland'},
             'Q151954': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Lidl'},
-            'Q125054': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Aldi'},
+            #'Q125054': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Aldi'}, revert mechanical edit - https://www.openstreetmap.org/changeset/55228278#map=6/40.105/-1.879
             'Q610492': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Spar'},
 
             'Q1941209': {'prefix': 'brand:', 'expected_tags': {}, 'name': 'Mlekpol'},
