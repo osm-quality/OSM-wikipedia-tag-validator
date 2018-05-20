@@ -155,6 +155,7 @@ class WikimediaLinkIssueDetector:
             'Q685967': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Kaufland'},
             'Q151954': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Lidl'},
             'Q125054': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Aldi'},
+            'Q610492': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Spar'},
 
             'Q1941209': {'prefix': 'brand:', 'expected_tags': {}, 'name': 'Mlekpol'},
 
@@ -168,6 +169,7 @@ class WikimediaLinkIssueDetector:
             'Q701338': {'prefix': 'brand:', 'expected_tags': {'shop': 'clothes'}, 'name': 'C&A'},
 
             'Q1160928': {'prefix': 'brand:', 'expected_tags': {'amenity': 'bank'}, 'name': 'mBank'},
+            #Q631047': {'prefix': 'brand:', 'expected_tags': {'amenity': 'bank'}, 'name': 'HDFC Bank'}, - see below, the same issue
             #'Q2003777': {'prefix': 'brand:', 'expected_tags': {'amenity': 'bank'}, 'name': 'Canara Bank'}, - retagged some, asked question on edit introducing them
 
             'Q971649': {'prefix': 'brand:', 'expected_tags': {'amenity': 'fuel'}, 'name': 'Orlen'},

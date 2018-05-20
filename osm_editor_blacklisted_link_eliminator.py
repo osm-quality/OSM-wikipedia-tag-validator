@@ -142,8 +142,7 @@ def cache_data(element):
 
 data_cache = {}
 main()
-print("all processed - HDFC Bank is the new target")
 print("all processed - new ideas are likely to be present at https://taginfo.openstreetmap.org/keys/wikipedia#values")
-print("all processed - maybe try shop=supermarket and wikipedia=* on overpass?")
+print("all processed - maybe try shop=supermarket and wikipedia=* on overpass? http://overpass-turbo.eu/s/yWf ")
 print("all processed - maybe try amenity=bank and wikipedia=* on overpass?")
 print("all processed - maybe try amenity=fuel and wikipedia=* on overpass?")
