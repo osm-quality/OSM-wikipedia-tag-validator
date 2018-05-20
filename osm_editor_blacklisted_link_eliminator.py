@@ -64,7 +64,7 @@ def initial_verification(element):
     # TODO verify whaver it is using old style wikipedia tags
     # TODO verify structural issues like this using validator
     # TODO package getting effective_wikidata into a function
-    effective_wikidata = element.get_tag_value('wikidata')
+    effective_wikidata = get_effective_wikidata(element)
     blacklist_entry = None
     try:
         blacklist_entry = blacklist()[effective_wikidata]
@@ -110,13 +110,19 @@ def is_expected_tag_based_on_blacklist_entry(key, value, blacklist_entry):
         if blacklist_entry['name'] == value:
             return True
 
+def get_effective_wikidata(element):
+    if element.get_tag_value('wikidata') != None:
+        return element.get_tag_value('wikidata')
+    if element.get_tag_value('wikipedia') != None:
+        return wikimedia_connection.get_wikidata_object_id_from_link(element.get_tag_value('wikipedia'))
+    return None
+
 def eliminate_blacklisted_links(element):
     data = initial_verification(element)
     if data == None:
         return
 
-    effective_wikidata = element.get_tag_value('wikidata')
-    blacklist_entry = blacklist()[effective_wikidata]
+    blacklist_entry = blacklist()[get_effective_wikidata(element)]
 
     special_expected = get_special_expected_tags(data['tag'], blacklist_entry)
     human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
@@ -134,7 +140,6 @@ def eliminate_blacklisted_links(element):
             if not human_verification_mode.is_human_confirming():
                 return
 
-    wikidata_id = data['tag']['wikidata']
     make_an_edit(data, element.get_link(), blacklist_entry)
 
 def cache_data(element):
