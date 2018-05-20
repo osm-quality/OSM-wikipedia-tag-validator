@@ -59,11 +59,6 @@ def make_an_edit(data, link, blacklist_entry):
 
 def initial_verification(element):
     global data_cache
-    # TODO support entries without wikidata
-    # TODO verify whatever wikipedia-wikidata matches
-    # TODO verify whaver it is using old style wikipedia tags
-    # TODO verify structural issues like this using validator
-    # TODO package getting effective_wikidata into a function
     effective_wikidata = get_effective_wikidata(element)
     blacklist_entry = None
     try:
