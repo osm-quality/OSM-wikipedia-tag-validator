@@ -82,11 +82,14 @@ def eliminate_old_style_links(package):
 
         special_expected = {}
         expected_wikipedia = language_code + ":" + article_name
-        if data['tag'].get('wikipedia') != None and data['tag'].get('wikipedia') != expected_wikipedia:
-            print("mismatch with wikipedia")
-            continue
-        data['tag']['wikipedia'] = expected_wikipedia
-        del data['tag'][old_style_link]
+        delete_only_complete_duplicates = False
+        if delete_only_complete_duplicates:
+            if data['tag'].get('wikipedia') != None and data['tag'].get('wikipedia') != expected_wikipedia:
+                print(element.get_link())
+                print(data['tag'].get('wikipedia'))
+                print(expected_wikipedia)
+                print("mismatch with wikipedia")
+                continue
         human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
         print()
         print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
