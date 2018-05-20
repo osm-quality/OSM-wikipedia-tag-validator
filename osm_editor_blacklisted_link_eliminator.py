@@ -86,10 +86,6 @@ def initial_verification(element):
         print(something_reportable.error_message)
         return None
 
-    old_style_links = issue_detector.get_old_style_wikipedia_keys(element.get_tag_dictionary())
-    if len(old_style_links) != 0:
-        raise 'should be reported already'
-
     data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
     if data == None:
         return None
