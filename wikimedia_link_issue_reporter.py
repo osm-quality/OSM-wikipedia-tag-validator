@@ -178,7 +178,8 @@ class WikimediaLinkIssueDetector:
             #'Q2003777': {'prefix': 'brand:', 'expected_tags': {'amenity': 'bank'}, 'name': 'Canara Bank'}, - retagged some, asked question on edit introducing them
 
             'Q971649': {'prefix': 'brand:', 'expected_tags': {'amenity': 'fuel'}, 'name': 'Orlen'},
-            #'Q7072824': {'prefix': 'brand:', 'expected_tags': {'amenity': 'fuel'}, 'name': 'Opet'}, - problematic import, do not waste time on it (see watchlist.rb entry)
+            # DWG repinged on 2018-05-27 about problematic import that added this
+            #'Q7072824': {'prefix': 'brand:', 'expected_tags': {'amenity': 'fuel'}, 'name': 'Opet'},
         }
 
     def get_problem_based_on_wikidata_blacklist(self, wikidata_id, present_wikidata_id, link):
