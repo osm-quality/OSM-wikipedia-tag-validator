@@ -154,8 +154,7 @@ class WikimediaLinkIssueDetector:
             'Q487494': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Tesco'},
             'Q685967': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Kaufland'},
 
-            # https://www.openstreetmap.org/changeset/55228418 - reverted
-            # https://www.openstreetmap.org/changeset/55228049 - ready for reverting
+            # reverted, as soon as overpass catches up may be uncommented
             #'Q151954': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Lidl'}, also a mechanical edit https://www.openstreetmap.org/node/4119521789/history
 
             'Q125054': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Aldi'},
