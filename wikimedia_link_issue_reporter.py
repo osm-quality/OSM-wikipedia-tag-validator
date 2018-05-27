@@ -154,15 +154,11 @@ class WikimediaLinkIssueDetector:
             'Q487494': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Tesco'},
             'Q685967': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Kaufland'},
 
-            # 2018-05-26 ping
-            # https://www.openstreetmap.org/user/pedrobv/history
-            # wait for edits after one described "edificios sant cugat"
-            # https://www.openstreetmap.org/changeset/55228418
-            # https://www.openstreetmap.org/changeset/55228049
+            # https://www.openstreetmap.org/changeset/55228418 - reverted
+            # https://www.openstreetmap.org/changeset/55228049 - ready for reverting
             #'Q151954': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Lidl'}, also a mechanical edit https://www.openstreetmap.org/node/4119521789/history
 
-            # reverted, may be uncommented as soon as overpas catches up
-            #'Q125054': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Aldi'}, revert mechanical edit - https://www.openstreetmap.org/changeset/55228278#map=6/40.105/-1.879
+            'Q125054': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Aldi'},
             'Q610492': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Spar'},
 
             'Q1941209': {'prefix': 'brand:', 'expected_tags': {}, 'name': 'Mlekpol'},
