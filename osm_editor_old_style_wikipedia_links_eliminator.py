@@ -17,9 +17,15 @@ def cache_data(element):
     data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
     data_cache[element.get_link()] = data
 
+def remember_available(element):
+    global list_of_elements_within_range
+    list_of_elements_within_range.append(element.get_link())
+
 def splitter(element):
     global list_of_elements
-    list_of_elements.append(element)
+    global list_of_elements_within_range
+    if element.get_link() in list_of_elements_within_range:
+        list_of_elements.append(element)
 
 def get_tags_for_removal(tags):
     issue_checker = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
@@ -114,17 +120,28 @@ def eliminate_old_style_links(package):
 
 def main():
     filename = 'old_style_wikipedia_links_for_elimination.osm'
-    filename = 'old_style_wikipedia_links_for_bot_elimination_Polska.osm'
+    filename = 'old_style_wikipedia_links_for_bot_elimination_Polska_v2.osm'
+    filename_expanded = 'old_style_wikipedia_links_for_elimination.expanded.osm'
+    filename_expanded = 'old_style_wikipedia_links_for_bot_elimination_Polska_v2.expanded.osm'
     offending_objects_storage_file = common.get_file_storage_location()+"/"+filename
+    offending_objects_storage_expanded_file = common.get_file_storage_location()+"/"+filename_expanded
     print(offending_objects_storage_file)
+    print(offending_objects_storage_expanded_file)
     os.system('rm "' + offending_objects_storage_file + '"')
+    os.system('rm "' + offending_objects_storage_expanded_file + '"')
     os.system('ruby download.rb')
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
 
     global list_of_elements
     list_of_elements = []
 
-    osm = Data(offending_objects_storage_file)
+    global list_of_elements_within_range
+    list_of_elements_within_range = []
+
+    data_within_bot_range = Data(offending_objects_storage_file)
+    data_within_bot_range.iterate_over_data(remember_available)
+
+    osm = Data(offending_objects_storage_expanded_file)
     #osm.iterate_over_data(cache_data)
     osm.iterate_over_data(splitter)
     print(len(list_of_elements))

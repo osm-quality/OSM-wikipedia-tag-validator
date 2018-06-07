@@ -14,12 +14,22 @@ def main()
     download(query, filepath)
   end
 
-  filepath = download_location+"/"+'old_style_wikipedia_links_for_bot_elimination_Polska.osm'
+  old_style_filter = '[~"wikipedia:.*"~".*"]'
+  filepath = download_location+"/"+'old_style_wikipedia_links_for_bot_elimination_Polska_v2.osm'
   if !File.exists?(filepath)
     name = "Polska"
     area_identifier = area_identifier_by_name(name)
     area_identifier_builder = area_identifier_builder_by_name(name)
-    query = filtered_query_text("['wikipedia:en']", area_identifier_builder, area_identifier, false)
+    query = filtered_query_text(old_style_filter, area_identifier_builder, area_identifier, false)
+    download(query, filepath)
+  end
+
+  filepath = download_location+"/"+'old_style_wikipedia_links_for_bot_elimination_Polska_v2.expanded.osm'
+  if !File.exists?(filepath)
+    name = "Polska"
+    area_identifier = area_identifier_by_name(name)
+    area_identifier_builder = area_identifier_builder_by_name(name)
+    query = filtered_query_text(old_style_filter, area_identifier_builder, area_identifier, true)
     download(query, filepath)
   end
 
