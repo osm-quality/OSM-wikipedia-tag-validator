@@ -24,10 +24,17 @@ def splitter(element):
 def get_tags_for_removal(tags):
     issue_checker = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
     old_style_links = issue_checker.get_old_style_wikipedia_keys(tags)
-    if len(old_style_links) != 1:
+    if len(old_style_links) == 0:
+        return
+    if len(old_style_links) > 1:
         #allowing more requires checking whatever links are conflicting
         #in case of missing wikipedia tag - also deciding which language should be linked
-        return None
+        if tags.get('wikipedia') == None:
+            print("more than one old style link, no wikipedia tag - language would need to be selected")
+            return None
+        if tags.get('wikipedia') != None:
+            print("more than one old style link - tags should be checked for conflicts")
+            return None
 
     old_style_link = old_style_links[0]
     language_code = wikimedia_connection.get_text_after_first_colon(old_style_link)
