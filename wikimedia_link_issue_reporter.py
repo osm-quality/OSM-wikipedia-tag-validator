@@ -495,15 +495,36 @@ class WikimediaLinkIssueDetector:
         return id1 + " vs " + id2
 
     def is_wikipedia_tag_clearly_broken(self, link):
+        language_code = wikimedia_connection.get_language_code_from_link(link)
+        if self.is_language_code_clearly_broken(language_code):
+            return True
+        article_name = wikimedia_connection.get_article_name_from_link(link)
+        if self.is_article_name_clearly_broken(article_name):
+            return True
+        return False
+
+    def is_article_name_clearly_broken(self, link):
+        # TODO - implement other indicators from https://en.wikipedia.org/wiki/Wikipedia:Naming_conventions_(technical_restrictions)
+        language_code = wikimedia_connection.get_language_code_from_link(link)
+
+        # https://en.wikipedia.org/wiki/Wikipedia:Naming_conventions_(technical_restrictions)#Colons
+        if language_code != None:
+            if language_code in wikipedia_knowledge.WikipediaKnowledge.all_wikipedia_language_codes_order_by_importance():
+                return True
+        return False
+
+
+    def is_language_code_clearly_broken(self, language_code):
         # detects missing language code
         #         unusually long language code
         #         broken language code "pl|"
-        language_code = wikimedia_connection.get_language_code_from_link(link)
         if language_code is None:
             return True
         if language_code.__len__() > 3:
             return True
         if re.search("^[a-z]+\Z",language_code) == None:
+            return True
+        if language_code not in wikipedia_knowledge.WikipediaKnowledge.all_wikipedia_language_codes_order_by_importance():
             return True
         return False
 
