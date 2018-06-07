@@ -43,13 +43,22 @@ def get_tags_for_removal(tags):
             return None
 
     old_style_link = old_style_links[0]
+
     language_code = wikimedia_connection.get_text_after_first_colon(old_style_link)
     article_name = tags.get(old_style_link)
 
-    wikidata_from_old_style_link = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-    if wikidata_from_old_style_link == None:
-        print("no wikidata issued for Wikipedia article linked in this element")
+    if issue_checker.check_is_wikipedia_link_clearly_malformed(language_code+":"+article_name):
+        print("page linked in " + old_style_link + " has malformed link")
         return None
+
+    if issue_checker.check_is_wikipedia_page_existing(language_code, article_name) != None:
+        print("page linked in " + old_style_link + " is not existing")
+        return None
+
+    wikidata_from_old_style_link = wikipedia_page_to_wikidata_id(language_code, article_name)
+    if wikidata_from_old_style_link == None:
+        return None
+
     if tags.get('wikipedia') != None:
         language_code = wikimedia_connection.get_language_code_from_link(tags.get('wikipedia'))
         article_name = wikimedia_connection.get_article_name_from_link(tags.get('wikipedia'))
@@ -63,6 +72,21 @@ def get_tags_for_removal(tags):
             return None
 
     return [old_style_link]
+
+def wikipedia_page_to_wikidata_id(language_code, article_name):
+    issue_checker = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
+    wikidata_from_old_style_link = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+    if wikidata_from_old_style_link == None:
+        print("no wikidata issued for Wikipedia article (" + article_name + " in " + language_code + "wiki ) linked in this element, it may be a redirect")
+        article_name = issue_checker.get_article_name_after_redirect(language_code, article_name)
+        wikidata_after_redirect = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+        if wikidata_after_redirect == None:
+            print("checking for redirects changed nothing")
+            return None
+        else:
+            print("redirects to " + article_name)
+            return None
+    return wikidata_from_old_style_link
 
 def build_changeset():
     automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
