@@ -124,7 +124,7 @@ def main():
     #osm.iterate_over_data(cache_data)
     osm.iterate_over_data(splitter)
     print(len(list_of_elements))
-    list_of_elements = list_of_elements[:2000]
+    #list_of_elements = list_of_elements[:8000]
     print(len(list_of_elements))
     max_count = 5
     returned = Package.split_into_packages(list_of_elements, max_count)
