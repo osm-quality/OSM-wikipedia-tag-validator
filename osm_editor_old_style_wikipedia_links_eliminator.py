@@ -76,8 +76,12 @@ def eliminate_old_style_links(package):
         data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
         tags = data['tag']
 
+        if tags == {}:
+            continue
         for_removal = get_tags_for_removal(tags)
         if for_removal == None:
+            print(element.get_link())
+            print()
             continue
 
         if len(for_removal) != 1:
