@@ -131,10 +131,6 @@ def main():
     #print(returned)
     print(len(returned))
     for package in returned:
-        print(len(package.list))
-    filtered = [p for p in returned if len(p.list) > max_count/3]
-    print(len(filtered))
-    for package in filtered:
         for element in package.list:
             print(element.get_link())
         eliminate_old_style_links(package)
