@@ -11,6 +11,22 @@ import common
 from termcolor import colored
 import time
 
+class EditData():
+    def __init__(self, is_automatic, file_with_data, file_with_expanded_data, discussion_url):
+        self.is_automatic = is_automatic
+        self.file_with_data = file_with_data
+        self.file_with_expanded_data = file_with_expanded_data
+        self.discussion_url = discussion_url
+
+        if self.is_automatic:
+            self.max_items_in_group = 500
+            self.sleep = 60
+            self.automatic_status_description = osm_bot_abstraction_layer.fully_automated_description()
+        else:
+            self.max_items_in_group = 5
+            self.sleep = 0.1
+            self.automatic_status_description = osm_bot_abstraction_layer.manually_reviewed_description()
+
 def cache_data(element):
     global data_cache
     prerequisites = {}
@@ -88,19 +104,23 @@ def wikipedia_page_to_wikidata_id(language_code, article_name):
             return None
     return wikidata_from_old_style_link
 
-def build_changeset():
-    automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
-    comment = "changing old-style wikipedia tag to current style, to prevent doubletagging by iD users, make tag more useful and harmonize tagging See https://wiki.openstreetmap.org/wiki/Key:wikipedia"
-    discussion_url = None
+def build_changeset(config):
+    comment = "changing old-style wikipedia tagging (wikipedia:lang=article) to current style (wikipedia=lang:article), to make tagging more useful and consistent See https://wiki.openstreetmap.org/wiki/Key:wikipedia"
     source = None
-    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
+    api = osm_bot_abstraction_layer.get_correct_api(config.automatic_status_description, config.discussion_url)
     affected_objects_description = ""
-    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder = osm_bot_abstraction_layer.ChangesetBuilder(
+        affected_objects_description,
+        comment,
+        config.automatic_status_description,
+        config.discussion_url,
+        source)
     builder.create_changeset(api)
     return api
 
-def eliminate_old_style_links(package):
-    api = build_changeset()
+def eliminate_old_style_links(package, config):
+    api = build_changeset(config)
+    something_was_changed = False
     for element in package.list:
         prerequisites = {}
         data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
@@ -135,20 +155,36 @@ def eliminate_old_style_links(package):
         print()
         print(old_style_link + "=" + tags.get(old_style_link) + " for removal")
         print()
-        if human_verification_mode.is_human_confirming():
+        if data['tag'].get('wikipedia') == None:
+            data['tag']['wikipedia'] = expected_wikipedia
+        del data['tag'][old_style_link]
+        print()
+        human_verification_mode.smart_print_tag_dictionary(data['tag'], special_expected)
+        if config.is_automatic or human_verification_mode.is_human_confirming():
+            print("editing:")
             osm_bot_abstraction_layer.update_element(api, element.element.tag, data)
+            something_was_changed = True
         print()
         print()
     api.ChangesetClose()
-    time.sleep(0.1)
+    if something_was_changed:
+        time.sleep(config.sleep)
 
 def main():
-    filename = 'old_style_wikipedia_links_for_elimination.osm'
-    filename = 'old_style_wikipedia_links_for_bot_elimination_Polska_v2.osm'
-    filename_expanded = 'old_style_wikipedia_links_for_elimination.expanded.osm'
-    filename_expanded = 'old_style_wikipedia_links_for_bot_elimination_Polska_v2.expanded.osm'
-    offending_objects_storage_file = common.get_file_storage_location()+"/"+filename
-    offending_objects_storage_expanded_file = common.get_file_storage_location()+"/"+filename_expanded
+    poland_bot = EditData(
+        True,
+        'old_style_wikipedia_links_for_bot_elimination_Polska_v2.osm',
+        'old_style_wikipedia_links_for_bot_elimination_Polska_v2.expanded.osm',
+        "https://forum.openstreetmap.org/viewtopic.php?pid=698244")
+    world_manual = EditData(
+        False,
+        'old_style_wikipedia_links_for_elimination.osm',
+        'old_style_wikipedia_links_for_elimination.expanded.osm',
+        None)
+    config = poland_bot
+
+    offending_objects_storage_file = common.get_file_storage_location()+"/"+config.file_with_data
+    offending_objects_storage_expanded_file = common.get_file_storage_location()+"/"+config.file_with_expanded_data
     print(offending_objects_storage_file)
     print(offending_objects_storage_expanded_file)
     os.system('rm "' + offending_objects_storage_file + '"')
@@ -171,14 +207,14 @@ def main():
     print(len(list_of_elements))
     #list_of_elements = list_of_elements[:8000]
     print(len(list_of_elements))
-    max_count = 5
+    max_count = config.max_items_in_group
     returned = Package.split_into_packages(list_of_elements, max_count)
     #print(returned)
     print(len(returned))
     for package in returned:
         for element in package.list:
             print(element.get_link())
-        eliminate_old_style_links(package)
+        eliminate_old_style_links(package, config)
         print()
         print()
 main()
