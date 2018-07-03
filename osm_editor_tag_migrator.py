@@ -74,9 +74,9 @@ def is_element_editable(element):
 def edit_element(tags):
     if tags.get('building') == 'building':
         tags['building'] = 'yes'
-    #tags['tag'].get('wikipedia') != None
-    #tags['tag']['wikipedia'] = expected_wikipedia
-    #del tags['tag'][old_style_link]
+    #tags.get('wikipedia') != None
+    #tags['wikipedia'] = expected_wikipedia
+    #del tags['opening hours:signed']
     return tags
 
 
