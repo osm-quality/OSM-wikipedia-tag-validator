@@ -13,12 +13,11 @@ def splitter_generator(is_element_editable_function):
             list_of_elements.append(element)
     return splitter_generated # returns a callback function
 
-def build_changeset(is_in_manual_mode):
+def build_changeset(is_in_manual_mode, changeset_comment, discussion_url):
     automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
     if is_in_manual_mode == False:
         automatic_status = osm_bot_abstraction_layer.fully_automated_description()
-    comment = get_changeset_comment()
-    discussion_url = get_discussion_url()
+    comment = changeset_comment
     source = None
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
     affected_objects_description = ""
@@ -26,14 +25,14 @@ def build_changeset(is_in_manual_mode):
     builder.create_changeset(api)
     return api
 
-def process_osm_elements_package(package, is_in_manual_mode):
-    api = build_changeset(is_in_manual_mode)
+def process_osm_elements_package(package, is_in_manual_mode, changeset_comment, discussion_url, edit_element_function):
+    api = build_changeset(is_in_manual_mode, changeset_comment, discussion_url)
     for element in package.list:
         prerequisites = {}
         data = osm_bot_abstraction_layer.get_and_verify_data(element.get_link(), prerequisites)
 
         human_verification_mode.smart_print_tag_dictionary(data['tag'])
-        data['tag'] = edit_element(data['tag'])
+        data['tag'] = edit_element_function(data['tag'])
         print()
         human_verification_mode.smart_print_tag_dictionary(data['tag'])
        
@@ -47,14 +46,17 @@ def process_osm_elements_package(package, is_in_manual_mode):
     else:
         time.sleep(5)
 
-def main(max_count_of_elements_in_one_changeset, objects_to_consider_query, objects_to_consider_query_storage_file, is_in_manual_mode):
+def run_simple_retagging_task(max_count_of_elements_in_one_changeset, objects_to_consider_query,
+    objects_to_consider_query_storage_file, is_in_manual_mode,
+    changeset_comment, discussion_url, is_element_editable_checker_function,
+    edit_element_function):
     overpass_downloader.download_overpass_query(objects_to_consider_query, objects_to_consider_query_storage_file)
 
     global list_of_elements
     list_of_elements = []
 
     osm = Data(objects_to_consider_query_storage_file)
-    osm.iterate_over_data(splitter_generator(is_element_editable))
+    osm.iterate_over_data(splitter_generator(is_element_editable_checker_function))
     #print(len(list_of_elements))
     #list_of_elements = list_of_elements[:2000]
     #print(len(list_of_elements))
@@ -62,15 +64,9 @@ def main(max_count_of_elements_in_one_changeset, objects_to_consider_query, obje
     for package in returned:
         for element in package.list:
             print(element.get_link())
-        process_osm_elements_package(package, is_in_manual_mode)
+        process_osm_elements_package(package, is_in_manual_mode, changeset_comment, discussion_url, edit_element_function)
         print()
         print()
-
-def get_changeset_comment():
-    return "building=building to building=yes to eliminate a duplicated tag. it is a discussed automatic edit, see changeset tags for more details"
-
-def get_discussion_url():
-    return "https://lists.openstreetmap.org/pipermail/talk/2018-June/080805.html"
 
 def is_element_editable(element):
     return element.get_tag_value('building') == "building"
@@ -84,8 +80,8 @@ def edit_element(tags):
     return tags
 
 
-main(
-    max_count_of_elements_in_one_changeset = 5,
+run_simple_retagging_task(
+    max_count_of_elements_in_one_changeset = 500,
     objects_to_consider_query = """
 [out:xml][timeout:25];
 (
@@ -99,4 +95,8 @@ out skel qt;
 """,
     objects_to_consider_query_storage_file = '/media/mateusz/5bfa9dfc-ed86-4d19-ac36-78df1060707c/OSM-cache/overpass/tags_for_retagging.osm',
     is_in_manual_mode = False,
+    changeset_comment = "building=building to building=yes to eliminate a duplicated tag. it is a discussed automatic edit, see changeset tags for more details",
+    discussion_url = "https://lists.openstreetmap.org/pipermail/talk/2018-June/080805.html",
+    is_element_editable_checker_function = is_element_editable,
+    edit_element_function = edit_element,
     )
