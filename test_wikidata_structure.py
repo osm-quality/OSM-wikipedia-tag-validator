@@ -1,5 +1,5 @@
 import unittest
-import wikimedia_link_issue_reporter
+from wikibrain import wikimedia_link_issue_reporter
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
 import osm_handling_config.global_config as osm_handling_config

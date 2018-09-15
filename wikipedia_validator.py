@@ -4,9 +4,9 @@ import argparse
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import common
 from osm_iterator.osm_iterator import Data
-import wikipedia_knowledge
 import osm_handling_config.global_config as osm_handling_config
-import wikimedia_link_issue_reporter
+from wikibrain import wikimedia_link_issue_reporter
+from wikibrain import wikipedia_knowledge
 
 present_wikipedia_links = {}
 # dictionary contains entries indexed by wikidata_id
