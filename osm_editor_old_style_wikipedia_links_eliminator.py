@@ -1,4 +1,3 @@
-from termcolor import colored
 import os
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
 import osm_bot_abstraction_layer.human_verification_mode as human_verification_mode
@@ -8,7 +7,6 @@ from osm_iterator.osm_iterator import Data
 from osm_bot_abstraction_layer.split_into_packages import Package
 import wikimedia_link_issue_reporter
 import common
-from termcolor import colored
 import time
 
 class EditData():
