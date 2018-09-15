@@ -159,6 +159,7 @@ class WikimediaLinkIssueDetector:
 
             'Q125054': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Aldi'},
             'Q610492': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Spar'},
+            'Q537781': {'prefix': 'brand:', 'expected_tags': {'shop': 'supermarket'}, 'name': 'Billa'},
 
             'Q1941209': {'prefix': 'brand:', 'expected_tags': {}, 'name': 'Mlekpol'},
 
