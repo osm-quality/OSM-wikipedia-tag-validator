@@ -74,22 +74,6 @@ def download_location
   return File.read('cache_location.config')
 end
 
-QueryBuilder = Struct.new(:timeout, :expand) do
-  def query_header()
-    return "[timeout:#{timeout}];(\n"
-  end
-  def query_footer()
-    returned = ''
-    returned += ');
-    '
-    returned += 'out body;'
-    returned += '>;' if expand
-    returned += "\n"
-    returned += 'out skel qt;'
-    return returned
-  end
-end
-
 def query_text(area_identifier_builder, area_identifier, expand)
   builder = QueryBuilder.new(timeout, expand)
   query = builder.query_header
@@ -107,25 +91,6 @@ def query_text(area_identifier_builder, area_identifier, expand)
 
   query += builder.query_footer()
   return query
-end
-
-def filtered_query_text(filter, area_identifier_builder, area_identifier, expand)
-  builder = QueryBuilder.new(timeout, expand)
-  query = builder.query_header
-  query += area_identifier_builder if area_identifier_builder != nil
-  query += "node" + filter + "(#{area_identifier});\n"
-  query += "way" + filter + "(#{area_identifier});\n"
-  query += "relation" + filter + "(#{area_identifier});\n"
-  query += builder.query_footer()
-  return query
-end
-
-def area_identifier_builder_by_name(name)
-  return "area[name='" + name + "']->.searchArea;\n"
-end
-
-def area_identifier_by_name(name)
-  return 'area.searchArea'
 end
 
 def query_text_by_name(name, expand)
