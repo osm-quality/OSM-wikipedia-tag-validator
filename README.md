@@ -15,6 +15,6 @@ see https://wiki.openstreetmap.org/wiki/Wikipedia_Link_Improvement_Project for s
 
 see also https://wiki.openstreetmap.org/wiki/SPARQL_examples#Quality_Control
 
-to run tests:
+# Running tests
 
 ```nosetests3``` or ```python3 -m unittest```
