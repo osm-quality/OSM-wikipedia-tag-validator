@@ -85,8 +85,9 @@ def get_changeset_builder():
     comment = "adding wikipedia and wikidata tags based on teryt simc code in OSM (teryt:simc tag) and Wikidata (P4046 property)"
     automatic_status = osm_bot_abstraction_layer.fully_automated_description()
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59926'
+    osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_and_wikidata_tags_based_on_teryt:simc_tags_and_Wikidata_in_Poland'
     source = "wikidata, OSM"
-    return osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    return osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
 
 def load_data():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())

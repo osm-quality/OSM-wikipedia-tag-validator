@@ -122,9 +122,10 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
     affected_objects_description = ""
     comment = "add wikidata tag based on wikipedia tag"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59925'
+    osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikidata_tags_based_on_wikipedia_tags_in_Poland'
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
-    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
     builder.create_changeset(api)
 
     for e in errors_for_removal:
@@ -161,9 +162,10 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     affected_objects_description = ""
     comment = "add wikipedia tag based on wikidata tag"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59888'
+    osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_tags_based_on_wikidata_tags_in_Poland'
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
-    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
     builder.create_changeset(api)
 
     for e in errors_for_removal:
@@ -197,9 +199,10 @@ def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
     affected_objects_description = ""
     comment = "adding wikipedia and wikidata tags based on old style wikipedia tags"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59665'
+    osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_and_wikidata_tags_to_elements_with_old-style_Wikipedia_links_in_Poland'
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
-    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, source)
+    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
     builder.create_changeset(api)
 
     for e in errors_for_removal:
