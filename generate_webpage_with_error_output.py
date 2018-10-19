@@ -134,6 +134,7 @@ def for_review():
         'tag may be added based on wikidata',
         'tag may be added based on wikidata - teryt',
         'invalid old-style wikipedia tag',
+        'malformed wikidata tag',
     ]
 
 def for_review_boring():
@@ -154,6 +155,7 @@ def obvious_fixes():
         'wikipedia from wikidata tag, unexpected language',
         'wikidata from wikipedia tag',
         'wikipedia tag in an outdated form for removal',
+        'wikipedia tag from wikipedia tag in an outdated form and wikidata',
     ]
 
 def for_tests():
