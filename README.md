@@ -5,7 +5,7 @@ Python script validating Wikipedia tags in OpenStreetMap database by fetching an
 
 Currently code is poorly documented, partially unpublished and not prepared for reuse. If you want it to change - please open an issue on a bug tracker, it will increase chance that I will work on this.
 
-Dependencies: python 3.5+ and unpublished osm_iterator, wikimedia_connection package, osm_bot_abstraction_layer, wikibrain (TODO: publish osm iterator, wikimedia_connection, osm_bot_abstraction_layer, wikibrain).
+Dependencies: python 3.5+ and unpublished wikimedia_connection package (TODO: publish this package)
 
 It requires also osm_handling_config package with global_config.py containing some configuration functions. (TODO: document it, publish an example)
 
