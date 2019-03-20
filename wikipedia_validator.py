@@ -86,8 +86,7 @@ def parsed_args():
                         dest='allow_false_positives',
                         help='enables validator rules that may report false positives',
                         action='store_true')
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
