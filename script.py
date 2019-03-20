@@ -9,6 +9,7 @@ class ProcessingException(Exception):
     """TODO: documentation, not something so badly generic"""
 
 def main():
+    os.system("ruby download.rb")
     delete_output_files()
     pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
     pipeline_basic_entries()
