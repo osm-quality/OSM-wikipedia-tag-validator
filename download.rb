@@ -1,4 +1,5 @@
 require 'yaml'
+require_relative 'download_shared'
 
 def main()
   #download_by_wikidata("Q42424277")
