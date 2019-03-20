@@ -58,7 +58,8 @@ def parsed_args():
     parser.add_argument('-file', '-f',
                         dest='file',
                         type=str,
-                        help='location of .osm file (short form of parameter: -f), mandatory parameter')
+                        help='location of .osm file (short form of parameter: -f), mandatory parameter',
+                        required=True)
     parser.add_argument('-expected_language_code', '-l',
                         dest='expected_language_code',
                         type=str,
@@ -86,8 +87,6 @@ def parsed_args():
                         help='enables validator rules that may report false positives',
                         action='store_true')
     args = parser.parse_args()
-    if not (args.file):
-        parser.error('Provide .osm file')
     return args
 
 
