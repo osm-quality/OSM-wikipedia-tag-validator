@@ -120,7 +120,7 @@ def make_query_to_reload_only_affected_objects(input_filename_with_reports, outp
         query_file.write(query)
 
 def get_entries_to_process():
-    return common.parse_yaml_file("processed_regions.yaml")
+    return common.parse_yaml_file("regions_processed.yaml")
 
 def merged_outputs_list():
     merged_outputs = []

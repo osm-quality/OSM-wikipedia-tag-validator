@@ -45,7 +45,7 @@ out skel qt;'
 end
 
 def download_defined_regions
-  region_data = YAML.load_file('processed_regions.yaml')
+  region_data = YAML.load_file('regions_processed.yaml')
   region_data.each do |region|
     while true
       name = region['region_name']
