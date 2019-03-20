@@ -8,26 +8,6 @@ import osm_handling_config.global_config as osm_handling_config
 from wikibrain import wikimedia_link_issue_reporter
 from wikibrain import wikipedia_knowledge
 
-present_wikipedia_links = {}
-# dictionary contains entries indexed by wikidata_id
-# each entry is dictionary with entries where key is url to OSM object and value is element
-present_wikidata_links = {}
-# dictionary contains entries indexed by wikidata_id
-# each entry is dictionary with entries where key is url to OSM object and value is element
-def record_presence(element):
-    wikipedia_tag = element.get_tag_value("wikipedia")
-    wikidata_tag = element.get_tag_value("wikidata")
-    osm_object_url = element.get_link()
-    if wikipedia_tag != None:
-        if wikipedia_tag not in present_wikipedia_links:
-            present_wikipedia_links[wikipedia_tag] = {}
-        present_wikipedia_links[wikipedia_tag][osm_object_url] = element
-
-    if wikidata_tag != None:
-        if wikidata_tag not in present_wikidata_links:
-            present_wikidata_links[wikidata_tag] = {}
-        present_wikidata_links[wikidata_tag][osm_object_url] = element
-
 def get_problem_for_given_element_and_record_stats(element, forced_refresh):
     if args.flush_cache:
         forced_refresh = True
@@ -112,73 +92,13 @@ def parsed_args():
     return args
 
 
-def output_message_about_duplication_of_wikidata_id(example_element, wikidata_id, complaint, osm_links_of_affected, id_suffix=""):
-    query = "[out:xml](\n\
-            node[wikidata='" + wikidata_id + "];\n\
-            way[wikidata=" + wikidata_id + "];\n\
-            relation[wikidata=" + wikidata_id + "];\n\
-            );\n\
-            out meta;>;out meta qt;"
-    message = wikidata_id + complaint + str(osm_links_of_affected) + "\n\n\n" + query
-    problem = wikimedia_link_issue_reporter.ErrorReport(
-                        error_id = "duplicated link" + id_suffix,
-                        error_message = message,
-                        prerequisite = {'wikidata': wikidata_id},
-                        )
-    output_element(example_element, problem)
-
-def process_repeated_appearances_for_this_wikidata_id(wikidata_id, entries):
-    example_element = list(entries.values())[0]
-    complaint = None
-    category = None
-    if example_element.get_tag_value('waterway') != None:
-        complaint = " is repeated, should be replaced by wikipedia/wikidata tags on a waterway relation "
-        category = " - waterway"
-    elif example_element.get_tag_value('highway') != None and example_element.get_tag_value('area') == None:
-        return # road may be tagged multiple times and it is OK
-    elif len(entries) > 2:
-        is_about_place = False
-        for element in list(entries.values()):
-            if element.get_tag_value("place") != None:
-                is_about_place = True
-        if is_about_place:
-            if len(entries) <= 10:
-                # place is commonly duplicated on areas and nodes
-                # sometimes there are even multiple relations for the same are
-                # for example city and county having the same area
-                return None
-            complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated "
-            category = " - place"
-        else:
-            complaint = " is repeated, it probably means that some wikidata/wikipedia tags are incorrect or object is duplicated "
-            category = " - generic"
-    else:
-        return
-    output_message_about_duplication_of_wikidata_id(example_element, wikidata_id, complaint, list(entries.keys()), category)
-
-def process_repeated_appearances():
-    # TODO share between runs
-    repeated_wikidata_warned_already = []
-    for wikipedia_link in present_wikipedia_links:
-        pass # IDEA - consider complaining
-
-    for wikidata_id in present_wikidata_links:
-        if len(present_wikidata_links[wikidata_id].keys()) == 1:
-            continue
-        if wikidata_id not in repeated_wikidata_warned_already:
-            process_repeated_appearances_for_this_wikidata_id(wikidata_id, present_wikidata_links[wikidata_id])
-            repeated_wikidata_warned_already.append(wikidata_id)
-
 def main():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     osm = Data(common.get_file_storage_location() + "/" + args.file)
-    osm.iterate_over_data(record_presence)
     if args.flush_cache_for_reported_situations:
         osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
     else:
         osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
-
-    process_repeated_appearances()
 
 global args #TODO remove global
 args = parsed_args()
