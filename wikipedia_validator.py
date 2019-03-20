@@ -9,20 +9,19 @@ from wikibrain import wikimedia_link_issue_reporter
 from wikibrain import wikipedia_knowledge
 
 def get_problem_for_given_element_and_record_stats(element, forced_refresh):
+    # TODO replace args.expected_language_code where applicable
+    user_provided_expected_language_codes = [args.expected_language_code]
     if args.flush_cache:
         forced_refresh = True
     helper_object = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(
-        forced_refresh, args.expected_language_code, get_expected_language_codes(), args.additional_debug,
+        forced_refresh, args.expected_language_code, get_expected_language_codes(user_provided_expected_language_codes), args.additional_debug,
         args.allow_requesting_edits_outside_osm, args.allow_false_positives)
     problems = helper_object.get_problem_for_given_element(element)
     if problems != None:
         return problems
 
-# TODO replace args.expected_language_code where applicable
-def get_expected_language_codes():
-    returned = []
-    if args.expected_language_code != None:
-        returned.append(args.expected_language_code)
+def get_expected_language_codes(user_provided_expected_language_codes):
+    returned = user_provided_expected_language_codes
     return returned + wikipedia_knowledge.WikipediaKnowledge.all_wikipedia_language_codes_order_by_importance()
 
 def output_element(element, error_report):
