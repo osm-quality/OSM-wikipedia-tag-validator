@@ -13,15 +13,6 @@ def main()
     download_and_save(query, filepath)
   end
 
-  filepath = download_location+"/"+'namepl_krk.osm'
-  if !File.exists?(filepath)
-    name = "Kraków"
-    area_identifier = area_identifier_by_name(name)
-    area_identifier_builder = area_identifier_builder_by_name(name)
-    query = filtered_query_text("['name']['name:pl'!~'.*']", area_identifier_builder, area_identifier, false)
-    download_and_save(query, filepath)
-  end
-
   target_file = download_location+"/"+'reloaded_Poland.osm'
   file_with_query = download_location+'/reload_querries/reload_Poland.query'
   run_query_from_file(file_with_query, target_file)
