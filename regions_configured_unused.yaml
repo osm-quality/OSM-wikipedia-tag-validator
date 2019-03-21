@@ -1,4 +1,3 @@
-- {region_name: województwo małopolskie, website_main_title_part: 'województwo małopolskie', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: województwo podkarpackie, website_main_title_part: 'województwo podkarpackie', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: województwo lubelskie, website_main_title_part: 'województwo lubelskie', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: województwo mazowieckie, website_main_title_part: 'województwo mazowieckie', merged_output_file: 'Polska.yaml', language_code: pl}
