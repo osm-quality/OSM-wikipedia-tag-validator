@@ -34,7 +34,7 @@ def output_element(element, error_report):
         article_name = wikimedia_connection.get_article_name_from_link(link)
     position = element.get_coords()
 
-    if position.lat == None or position.lon == None:
+    if position == None or position.lat == None or position.lon == None:
         error_report.debug_log = "Location data missing"
 
     error_report.yaml_output(yaml_report_filepath())
