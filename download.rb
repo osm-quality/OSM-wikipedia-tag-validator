@@ -1,17 +1,36 @@
 require 'yaml'
 require_relative 'download_shared'
+require 'fileutils'
 
 def main()
   #download_by_wikidata("Q42424277")
   download_teryt_data
   target_file = download_location+"/"+'reloaded_Poland.osm'
-  file_with_query = download_location+'/reload_querries/reload_Poland.query'
+  file_with_query = download_location+'/reload_querries/Poland.query'
   run_query_from_file(file_with_query, target_file)
 
-  download_defined_regions
+  unprocessed_suffix = "_unprocessed"
+  reload_suffix = "_reloaded"
+  download_defined_regions(unprocessed_suffix)
+  download_defined_regions_from_reload_querries(reload_suffix)
+  region_data.each do |region|
+      area_name = region['region_name']
+      expand = true
+      unprocessed_data = produced_filename_by_name(area_name, expand, unprocessed_suffix)
+      reload_data = produced_filename_by_name(area_name, expand, reload_suffix)
+      used_data = produced_filename_by_name(area_name, expand, "")
+      if File.exists?(reload_data)
+        puts "copying reloaded file as source for #{area_name}"
+        FileUtils.cp(reload_data, used_data)
+      elsif File.exists?(unprocessed_data)
+        puts "copying unprocessed file with all as source for #{area_name}"
+        FileUtils.cp(unprocessed_data, used_data)
+      else
+        raise "either #{reload_data} or #{used_data} file must exists!"
+      end
+  end
 
-  #download_graticules
-
+  download_graticules
 end
 
 def download_teryt_data
@@ -38,13 +57,42 @@ out skel qt;'
   download_and_save(query, download_location+"/"+"test_case.osm")
 end
 
-def download_defined_regions
-  region_data = YAML.load_file('regions_processed.yaml')
+def region_data
+  return YAML.load_file('regions_processed.yaml')
+end
+
+def get_query_filename_for_reload_of_file(area_name)
+  return download_location + "/" + "reload_querries" + "/" + area_name + ".query"
+end
+
+def download_defined_regions_from_reload_querries(suffix)
+  region_data.each do |region|
+    while true
+      area_name = region['region_name']
+      break if !is_download_necessary_by_name(area_name, true, suffix)
+      filename = produced_filename_by_name(area_name, true, suffix)
+      query = get_query_filename_for_reload_of_file(area_name)
+      if !File.exists?(query)
+        puts "file #{query} is not existing"
+        break
+      end
+      result = run_query_from_file(file_with_query, filename)
+      if !result
+        puts "failed download"
+        sleep 300
+      end
+      sleep 300
+      break if result
+    end
+  end
+end
+
+def download_defined_regions(suffix)
   region_data.each do |region|
     while true
       name = region['region_name']
-      break if !is_download_necessary_by_name(name, true)
-      result = download_by_name(name, true)
+      break if !is_download_necessary_by_name(name, true, suffix)
+      result = download_by_name(name, true, suffix)
       if !result
         puts "failed download"
         sleep 300
@@ -109,10 +157,10 @@ def what_is_downloaded_to_text(expand)
   return returned
 end
 
-def produced_filename_by_name(name, expand)
+def produced_filename_by_name(name, expand, suffix)
   filename = name
   filename += what_is_downloaded_to_text(expand)
-  filename += ".osm"
+  filename += "#{suffix}.osm"
   return download_location+"/"+filename
 end
 
@@ -123,8 +171,8 @@ def produced_filename_by_graticule(lower_lat, left_lon, expand)
   return download_location+"/"+filename
 end
 
-def is_download_necessary_by_name(name, expand)
-  filename = produced_filename_by_name(name, expand)
+def is_download_necessary_by_name(name, expand, suffix)
+  filename = produced_filename_by_name(name, expand, suffix)
   return !File.exists?(filename)
 end
 
@@ -141,10 +189,10 @@ def download_graticule(lower_lat, left_lon)
   return download_and_save(query, filename)
 end
 
-def download_by_name(name, expand)
+def download_by_name(name, expand, suffix)
   query = query_text_by_name(name, expand)
-  filename = produced_filename_by_name(name, expand)
-  return true if !is_download_necessary_by_name(name, expand)
+  filename = produced_filename_by_name(name, expand, suffix)
+  return true if !is_download_necessary_by_name(name, expand, suffix)
   return download_and_save(query, filename)
 end
 

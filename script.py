@@ -9,15 +9,18 @@ class ProcessingException(Exception):
     """TODO: documentation, not something so badly generic"""
 
 def main():
-    os.system("ruby download.rb")
+    download_data()
     delete_output_files()
     pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
-    pipeline_basic_entries()
+    pipeline_entries_from_config_file()
     make_websites_for_merged_entries()
     write_index()
-    make_query_to_reload_only_affected_objects('Polska.yaml', 'reload_Poland.query')
+    make_query_to_reload_only_affected_objects('Polska.yaml', 'Polska.query')
     commit_changes_in_report_directory()
     pipeline_graticule_entries()
+
+def download_data():
+    os.system("ruby download.rb")
 
 def merge(source_yaml, target_yaml):
     root = common.get_file_storage_location() + "/"
@@ -75,7 +78,7 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, website_main_title_part)
-        make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + '.new iteration.query')
+        make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + '.query')
         move_files_to_report_directory(website_main_title_part)
 
 def move_files_to_report_directory(website_main_title_part):
@@ -146,7 +149,7 @@ def commit_changes_in_report_directory():
     system_call('git commit -m "automatic update of report files"')
     os.chdir(current_working_directory)
 
-def pipeline_basic_entries():
+def pipeline_entries_from_config_file():
     for entry in get_entries_to_process():
         pipeline(
             osm_filename = entry['region_name'] + ".osm",
