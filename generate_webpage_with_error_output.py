@@ -135,14 +135,12 @@ def for_review():
         'tag may be added based on wikidata - teryt',
         'invalid old-style wikipedia tag',
         'malformed wikidata tag',
+        'malformed wikipedia tag',
     ]
 
 def for_review_boring():
     return [
-        'duplicated link - waterway',
-        'duplicated link - generic',
         'tag may be added based on wikidata - website',
-        'duplicated link - place',
     ]
 
 def obvious_fixes():
