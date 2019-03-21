@@ -3,7 +3,18 @@ require_relative 'download_shared'
 
 def main()
   #download_by_wikidata("Q42424277")
+  download_teryt_data
+  target_file = download_location+"/"+'reloaded_Poland.osm'
+  file_with_query = download_location+'/reload_querries/reload_Poland.query'
+  run_query_from_file(file_with_query, target_file)
 
+  download_defined_regions
+
+  #download_graticules
+
+end
+
+def download_teryt_data
   filepath = download_location+"/"+'teryt_simc.osm'
   if !File.exists?(filepath)
     name = "Polska"
@@ -12,15 +23,6 @@ def main()
     query = filtered_query_text("['teryt:simc']", area_identifier_builder, area_identifier, false)
     download_and_save(query, filepath)
   end
-
-  target_file = download_location+"/"+'reloaded_Poland.osm'
-  file_with_query = download_location+'/reload_querries/reload_Poland.query'
-  run_query_from_file(file_with_query, target_file)
-
-  download_defined_regions
-
-  download_graticules
-
 end
 
 def download_by_wikidata(wikidata)
