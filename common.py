@@ -72,9 +72,13 @@ def get_prerequisite_in_overpass_query_format(error):
     except KeyError:
         return ""
 
+def ordered_keys(dictionary):
+    keys = list(dictionary.keys())
+    return sorted(keys)
+
 def tag_dict_to_overpass_query_format(tags):
     returned = ""
-    for key in tags.keys():
+    for key in ordered_keys(tags):
         escaped_key = escape_for_overpass(key)
         if tags[key] == None:
             returned += "['" + escaped_key + "'!~'.*']"
@@ -89,7 +93,7 @@ def get_query_for_loading_errors_by_category(filename, printed_error_ids, format
     # josm - xml output
     returned = get_query_header(format)
     reported_errors = load_data(get_write_location()+"/"+filename)
-    for e in reported_errors:
+    for e in sorted(reported_errors, key=lambda error: error['osm_object_url'] ):
         if e['error_id'] in printed_error_ids:
             type = e['osm_object_url'].split("/")[3]
             id = e['osm_object_url'].split("/")[4]

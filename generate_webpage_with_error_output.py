@@ -96,7 +96,7 @@ def generate_html_file(args, name_suffix, types, information_header):
         file.write(table_row( information_header ))
         file.write(table_row( '==========' ))
         reported_errors = get_errors(args)
-        for error_type_id in types:
+        for error_type_id in sorted(types):
             error_count = 0
             for e in reported_errors:
                 if e['error_id'] == error_type_id:
