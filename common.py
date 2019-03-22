@@ -106,12 +106,3 @@ def get_write_location():
     returned = cache_location_file.read()
     cache_location_file.close()
     return returned
-
-def load_data(yaml_report_filepath):
-    with open(yaml_report_filepath, 'r') as stream:
-        try:
-            return yaml.load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-            return None
-    assert(False)
