@@ -13,6 +13,11 @@ def main()
   reload_suffix = "_reloaded"
   download_defined_regions(unprocessed_suffix)
   download_defined_regions_from_reload_querries(reload_suffix)
+  copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix)
+  download_graticules
+end
+
+def copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix)
   region_data.each do |region|
       area_name = region['region_name']
       expand = true
@@ -29,8 +34,6 @@ def main()
         raise "either #{reload_data} or #{used_data} file must exists!"
       end
   end
-
-  download_graticules
 end
 
 def download_teryt_data
