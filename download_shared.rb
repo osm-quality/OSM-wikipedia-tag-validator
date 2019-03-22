@@ -2,10 +2,11 @@ require 'rest-client'
 require 'etc'
 
 QueryBuilder = Struct.new(:timeout, :expand) do
-  def query_header()
+  def query_header
     return "[timeout:#{timeout}];(\n"
   end
-  def query_footer()
+
+  def query_footer
     returned = ''
     returned += ');
     '
@@ -18,10 +19,9 @@ QueryBuilder = Struct.new(:timeout, :expand) do
 end
 
 def run_query_from_file(file_with_query, download_to_filepath)
-  if File.exists?(download_to_filepath)
-    return
-  end
-  if !File.exists?(file_with_query)
+  return if File.exist?(download_to_filepath)
+
+  unless File.exist?(file_with_query)
     puts(file_with_query + " is missing, skipping this download")
     return
   end
@@ -61,23 +61,32 @@ def download(query)
   url = "http://overpass-api.de/api/interpreter"
   start = Time.now.to_i
   begin
-     return RestClient::Request.execute(
-              :method => :post,
-              :url => URI.escape(url),
-              :timeout => timeout,
-              :payload => {'data': query},
-              )
+    return RestClient::Request.execute(
+      method: :post,
+      url: URI.escape(url),
+      timeout: timeout,
+      payload: { 'data': query },
+      user_agent: "matkoniecz@tutanota.com",
+    )
   rescue RestClient::BadRequest => e
     puts url
     puts e
     return nil
   rescue RestClient::Exceptions::ReadTimeout => e
-    puts "timeout after #{Time.now.to_i-start}s, requested timeout #{timeout}"
+    puts "timeout after #{Time.now.to_i - start}s, requested timeout #{timeout}"
     return nil
   rescue RestClient::TooManyRequests => e
     puts "429 error"
     sleep 600
     return nil
+  rescue RestClient::Forbidden => e
+    puts query
+    puts url
+    puts e
+  rescue RestClient::NotFound => e
+    puts query
+    puts url
+    puts e
   end
   puts "downloading: end"
 end
@@ -93,10 +102,10 @@ end
 def filtered_query_text(filter, area_identifier_builder, area_identifier, expand)
   builder = QueryBuilder.new(timeout, expand)
   query = builder.query_header
-  query += area_identifier_builder if area_identifier_builder != nil
+  query += area_identifier_builder unless area_identifier_builder.nil?
   query += "node" + filter + "(#{area_identifier});\n"
   query += "way" + filter + "(#{area_identifier});\n"
   query += "relation" + filter + "(#{area_identifier});\n"
-  query += builder.query_footer()
+  query += builder.query_footer
   return query
 end
