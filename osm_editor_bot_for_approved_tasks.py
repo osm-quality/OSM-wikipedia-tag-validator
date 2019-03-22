@@ -183,58 +183,11 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     api.ChangesetClose()
     osm_bot_abstraction_layer.sleep(60)
 
-def add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors):
-    matching_error_ids = [
-                'wikipedia tag from wikipedia tag in an outdated form and wikidata',
-                ]
-    errors_for_removal = filter_reported_errors(reported_errors, matching_error_ids)
-    if errors_for_removal == []:
-        return
-    #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
-    #language_code = wikimedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
-    #if language_code != "pl":
-    #    return
-
-    automatic_status = osm_bot_abstraction_layer.fully_automated_description()
-    affected_objects_description = ""
-    comment = "adding wikipedia and wikidata tags based on old style wikipedia tags"
-    discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59665'
-    osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_and_wikidata_tags_to_elements_with_old-style_Wikipedia_links_in_Poland'
-    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
-    source = "wikidata, OSM"
-    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
-    builder.create_changeset(api)
-
-    for e in errors_for_removal:
-        data = get_and_verify_data(e)
-        if data == None:
-            continue
-        new = e['desired_wikipedia_target']
-        data['tag']['wikipedia'] = new
-        reason = ", as standard wikipedia tag is better than old style wikipedia tags"
-        change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + new + reason
-        language_code = wikimedia_connection.get_language_code_from_link(e['desired_wikipedia_target'])
-        article_name = wikimedia_connection.get_article_name_from_link(e['desired_wikipedia_target'])
-        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-        if wikidata_id == None:
-            print(wikimedia_connection.wikipedia_url(language_code, article_name) + " from " + e['osm_object_url'] + " has no wikidata entry")
-            continue
-        elif data['tag'].get('wikdata') == None:
-            data['tag']['wikidata'] = wikidata_id
-            change_description += " +adding wikidata=" + wikidata_id
-        print(change_description)
-        type = e['osm_object_url'].split("/")[3]
-        osm_bot_abstraction_layer.update_element(api, type, data)
-
-    api.ChangesetClose()
-    osm_bot_abstraction_layer.sleep(60)
-
 def main():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     reported_errors = load_errors()
-    #requires manual checking is it operating in Poland #add_wikipedia_links_basing_on_old_style_wikipedia_tags(reported_errors)
     #requires manual checking is it operating in Poland #add_wikipedia_tag_from_wikidata_tag(reported_errors)
     add_wikidata_tag_from_wikipedia_tag(reported_errors) #self-checking location based on Wikipedia language code
     for e in reported_errors:
