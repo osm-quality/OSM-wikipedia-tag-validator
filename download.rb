@@ -72,16 +72,25 @@ def download_defined_regions_from_reload_querries(suffix)
   region_data.each do |region|
     while true
       area_name = region['region_name']
-      break if !is_download_necessary_by_name(area_name, true, suffix)
-      filename = produced_filename_by_name(area_name, true, suffix)
-      query = get_query_filename_for_reload_of_file(area_name)
-      if !File.exists?(query)
-        puts "file #{query} is not existing"
+      downloaded_filename = produced_filename_by_name(area_name, true, suffix)
+      query_filepath = get_query_filename_for_reload_of_file(area_name)
+      if !File.exists?(query_filepath)
+        puts "query file #{query_filepath} is not existing"
         break
       end
-      result = run_query_from_file(file_with_query, filename)
+      if File.exists?(downloaded_filename)
+        f = File.new(downloaded_filename)
+        download_timestamp = f.mtime.to_i
+        f.close
+        f = File.new(query_filepath)
+        query_timestamp = f.mtime.to_i
+        f.close
+        break if download_timestamp > query_timestamp
+        File.delete(downloaded_filename)
+      end
+      result = run_query_from_file(query_filepath, downloaded_filename)
       if !result
-        puts "failed download"
+        puts "failed download with query from #{query_filepath}"
         sleep 300
       end
       sleep 300

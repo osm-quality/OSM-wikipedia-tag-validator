@@ -4,6 +4,8 @@ import yaml
 import generate_webpage_with_error_output
 from subprocess import call
 import pathlib
+import datetime
+import shutil
 
 class ProcessingException(Exception):
     """TODO: documentation, not something so badly generic"""
@@ -33,6 +35,12 @@ def system_call(call, verbose=True):
 
 def root():
     return common.get_file_storage_location() + "/"
+
+def copy_file(source, target):
+    shutil.copy2(source, target)
+
+def move_file(source, target):
+    shutil.move(source, target)
 
 def delete_in_storage_folder(filename):
         try:
@@ -88,9 +96,9 @@ def move_files_to_report_directory(website_main_title_part):
     filenames.append(website_main_title_part + ' - test.html')
     filenames.append(website_main_title_part + ' - boring.html')
     for filename in filenames:
-        if os.path.isfile(filename):
-            system_call('mv "' + filename + '" ' + get_report_directory() + '/ -f', False)
-        else:
+        try:
+            move_file(filename, get_report_directory() + '/' + filename)
+        except FileNotFoundError:
             print(filename + ' is not present')
 
 def exit_pipeline_due_to_missing_osm_data(osm_filename, silent):
@@ -115,6 +123,11 @@ def make_query_to_reload_only_affected_objects(input_filename_with_reports, outp
         return
     directory_path = os.path.split(output_filepath)[0]
     pathlib.Path(directory_path).mkdir(parents=True, exist_ok=True)
+    archived_filepath = output_filepath + "-archived-" + str(datetime.datetime.now()) + ".query"
+    try:
+        move_file(output_filepath, archived_filepath)
+    except FileNotFoundError:
+        pass # it is OK, it just means that we are running for the first time or cache was deleted
     with open(output_filepath, 'w') as query_file:
         all_errors = []
         for e in common.load_data(input_filepath):
@@ -210,7 +223,7 @@ def write_index():
                 print(potential_filepath + ' is not present')
         index.write("</html></body>\n")
 
-    system_call('mv index.html ' + get_report_directory() + '/ -f')
+    move_file('index.html', get_report_directory() + '/' + 'index.html')
 
 if __name__ == '__main__':
     main()
