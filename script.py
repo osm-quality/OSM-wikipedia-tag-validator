@@ -210,7 +210,7 @@ def write_index():
         index.write("<html><body>\n")
         index.write(generate_webpage_with_error_output.feedback_header())
         index.write("</br>\n")
-        for filename in merged_outputs_list():
+        for filename in sorted(merged_outputs_list()):
             name = filename.replace('.yaml', '')
             index.write("<a href = " + common.htmlify(name) + ".html>" + common.htmlify(name) + "</a></br>\n")
         for entry in get_entries_to_process():
