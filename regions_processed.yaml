@@ -2,4 +2,17 @@
 - {region_name: województwo małopolskie, website_main_title_part: 'województwo małopolskie', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: województwo podkarpackie, website_main_title_part: 'województwo podkarpackie', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: województwo lubelskie, website_main_title_part: 'województwo lubelskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo mazowieckie, website_main_title_part: 'województwo mazowieckie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo podlaskie, website_main_title_part: 'województwo podlaskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo świętokrzyskie, website_main_title_part: 'województwo świętokrzyskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo warmińsko-mazurskie, website_main_title_part: 'województwo warmińsko-mazurskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo pomorskie, website_main_title_part: 'województwo pomorskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo kujawsko-pomorskie, website_main_title_part: 'województwo kujawsko-pomorskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo zachodniopomorskie, website_main_title_part: 'województwo zachodniopomorskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo lubuskie, website_main_title_part: 'województwo lubuskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo wielkopolskie, website_main_title_part: 'województwo wielkopolskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo dolnośląskie, website_main_title_part: 'województwo dolnośląskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo opolskie, website_main_title_part: 'województwo opolskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo śląskie, website_main_title_part: 'województwo śląskie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo łódzkie, website_main_title_part: 'województwo łódzkie', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: Dublin, website_main_title_part: 'Dublin, Ireland', merged_output_file: Ireland.yaml, language_code: en}
