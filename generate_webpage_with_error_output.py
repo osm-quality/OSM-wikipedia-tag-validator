@@ -95,7 +95,7 @@ def generate_html_file(args, name_suffix, types, information_header):
         file.write(table_row( '==========' ))
         file.write(table_row( information_header ))
         file.write(table_row( '==========' ))
-        reported_errors = get_errors(args)
+        reported_errors = sorted(get_errors(args), key=lambda error: error['osm_object_url'])
         for error_type_id in sorted(types):
             error_count = 0
             for e in reported_errors:
