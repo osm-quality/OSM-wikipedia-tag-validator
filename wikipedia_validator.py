@@ -98,9 +98,10 @@ def main():
         osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems)
 
 global args #TODO remove global
-args = parsed_args()
 
 if __name__ == "__main__":
+    global args #TODO remove global
+    args = parsed_args()
     main()
 
 # TODO - search for IDEA note
