@@ -9,7 +9,7 @@ Dependencies: python 3.5+, unpublished wikimedia_connection package (TODO: publi
 
 It requires also osm_handling_config package with global_config.py containing some configuration functions. (TODO: document it, publish an example)
 
-To install: `pip3 install -r requirements.txt`
+To install: `pip3 install --user -r requirements.txt`
 
 see https://wiki.openstreetmap.org/wiki/Wikipedia_Link_Improvement_Project for something that my be a better implementation but relies on an external service
 
