@@ -145,11 +145,15 @@ def describe_proposed_relinking(e):
 def note_unused_errors(args):
     reported_errors = get_errors(args)
     for e in reported_errors:
-        if e['error_id'] not in for_review():
-            if e['error_id'] not in for_review_boring():
-                if e['error_id'] not in obvious_fixes():
-                    if e['error_id'] not in for_tests():
-                        print('"' + e['error_id'] + '" is not appearing in any generated webpage')
+        if e['error_id'] in for_review():
+            continue
+        if e['error_id'] in for_review_boring():
+            continue
+        if e['error_id'] in obvious_fixes():
+            continue
+        if e['error_id'] in for_tests():
+            continue
+        print('"' + e['error_id'] + '" is not appearing in any generated webpage')
 
 def for_review():
     return [
