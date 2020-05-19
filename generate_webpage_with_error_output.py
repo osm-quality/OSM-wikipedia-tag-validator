@@ -99,9 +99,9 @@ def format_wikipedia_link(string):
 def table_row(text):
     returned = ""
     returned += "<tr>\n"
-    returned += "<td>\n"
-    returned += text
-    returned += "</td>\n"
+    returned += "   <td>\n"
+    returned += "       " + text + "\n"
+    returned += "   </td>\n"
     returned += "</tr>\n"
     return returned
 
