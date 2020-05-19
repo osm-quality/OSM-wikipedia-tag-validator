@@ -2,7 +2,41 @@ import argparse
 import yaml
 import os.path
 import common
+import datetime
 
+def main():
+    args = parsed_args()
+    generate_html_file(args, "", for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
+    generate_html_file(args, " - boring", for_review_boring(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
+    generate_html_file(args, " - obvious", obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
+    generate_html_file(args, " - test", for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
+    note_unused_errors(args)
+
+def generate_html_file(args, name_suffix, types, information_header):
+    with open(args.out + name_suffix + '.html', 'w') as file:
+        file.write(object_list_header())
+        file.write(table_row( '==========' ))
+        file.write(table_row( information_header ))
+        file.write(table_row( '==========' ))
+        reported_errors = sorted(get_errors(args), key=lambda error: error['osm_object_url'])
+        for error_type_id in sorted(types):
+            error_count = 0
+            for e in reported_errors:
+                if e['error_id'] == error_type_id:
+                    if error_count == 0:
+                        file.write(table_row( '<h2>' + error_type_id + '</h2>'))
+                    error_count += 1
+                    file.write(error_description(e))
+            if error_count != 0:
+                file.write(table_row( 'overpass query usable in JOSM that will load all objects with this error type:' ))
+                query = common.get_query_for_loading_errors_by_category(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
+                file.write(table_row(common.escape_from_internal_python_string_to_html_ascii(query)))
+                file.write(table_row( '==========' ))
+
+        file.write("</table>")
+        file.write("</body>")
+        file.write("</html>")
+        
 def contact_url():
     return "https://www.openstreetmap.org/message/new/Mateusz%20Konieczny"
 
@@ -12,16 +46,31 @@ def contact_html_prefix():
 def contact_html_suffix():
     return "</a>"
 
-def feedback_header():
-    return "Feedback? Ideas? Complaints? Suggestions? Request for report about other area? " + contact_html_prefix() + "send me a message" + contact_html_suffix() + "!"
+def send_me_a_message_html():
+    return contact_html_prefix() + "send me a message" + contact_html_suffix()
 
-def html_header():
+def feedback_header():
+    return "Feedback? Ideas? Complaints? Suggestions? Request for report about other area? " + send_me_a_message_html() + "!"
+
+def timestamp():
+    return "This page was generated on " + str(datetime.date.today()) + ". Please, " + send_me_a_message_html() + " if you want it updated!" 
+
+def feedback_request():
+    returned = ""
+    returned += feedback_header()
+    returned += "<br />\n"
+    returned += timestamp()
+    returned += "<br />\n"
+    return returned
+
+def object_list_header():
     returned = ""
     returned += "<html>\n"
     returned += "<body>\n"
-    returned += feedback_header()
+    returned += feedback_request()
     returned += "<br />\n"
     returned += "---------------\n"
+    returned += "<br />\n"
     returned +=  "<table>\n"
     return returned
 
@@ -89,31 +138,6 @@ def describe_proposed_relinking(e):
         returned += table_row( common.escape_from_internal_python_string_to_html_ascii(article_name))
     return returned
 
-def generate_html_file(args, name_suffix, types, information_header):
-    with open(args.out + name_suffix + '.html', 'w') as file:
-        file.write(html_header())
-        file.write(table_row( '==========' ))
-        file.write(table_row( information_header ))
-        file.write(table_row( '==========' ))
-        reported_errors = sorted(get_errors(args), key=lambda error: error['osm_object_url'])
-        for error_type_id in sorted(types):
-            error_count = 0
-            for e in reported_errors:
-                if e['error_id'] == error_type_id:
-                    if error_count == 0:
-                        file.write(table_row( '<h2>' + error_type_id + '</h2>'))
-                    error_count += 1
-                    file.write(error_description(e))
-            if error_count != 0:
-                file.write(table_row( 'overpass query usable in JOSM that will load all objects with this error type:' ))
-                query = common.get_query_for_loading_errors_by_category(filename = args.file, printed_error_ids = [error_type_id], format = "josm")
-                file.write(table_row(common.escape_from_internal_python_string_to_html_ascii(query)))
-                file.write(table_row( '==========' ))
-
-        file.write("</table>")
-        file.write("</body>")
-        file.write("</html>")
-
 def note_unused_errors(args):
     reported_errors = get_errors(args)
     for e in reported_errors:
@@ -165,14 +189,6 @@ def for_tests():
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',
     ]
-
-def main():
-    args = parsed_args()
-    generate_html_file(args, "", for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
-    generate_html_file(args, " - boring", for_review_boring(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
-    generate_html_file(args, " - obvious", obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
-    generate_html_file(args, " - test", for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
-    note_unused_errors(args)
 
 if __name__ == "__main__":
     main()

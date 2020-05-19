@@ -208,7 +208,8 @@ def make_websites_for_merged_entries():
 def write_index():
     with open('index.html', 'w') as index:
         index.write("<html><body>\n")
-        index.write(generate_webpage_with_error_output.feedback_header())
+        index.write(generate_webpage_with_error_output.feedback_request())
+        index.write("</br>\n")
         index.write("</br>\n")
         for filename in sorted(merged_outputs_list()):
             name = filename.replace('.yaml', '')
