@@ -135,7 +135,8 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         language_code = wikimedia_connection.get_language_code_from_link(data['tag']['wikipedia'])
         article_name = wikimedia_connection.get_article_name_from_link(data['tag']['wikipedia'])
         wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-        if language_code != "pl":
+        if language_code != "pl" and data['tag']['wikipedia'] not in []:
+            print("UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url'])
             raise "UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url']
         print(e['osm_object_url'])
         print(wikidata_id)
