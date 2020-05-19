@@ -9,7 +9,7 @@ class ConfigException(Exception):
 def parse_yaml_file(filename):
     with open(filename, 'r') as stream:
         try:
-            return yaml.load(stream)
+            return yaml.full_load(stream)
         except yaml.YAMLError as exc:
             raise(exc)
 
@@ -33,7 +33,7 @@ def htmlify(string):
 def load_data(yaml_report_filepath):
     with open(yaml_report_filepath, 'r') as stream:
         try:
-            return yaml.load(stream)
+            return yaml.full_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
             return None
