@@ -142,7 +142,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         reason = ", as wikidata tag may be added based on wikipedia tag"
         change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + wikidata_id + reason
         print(change_description)
-        osm_bot_abstraction_layer.sleep(25)
+        osm_bot_abstraction_layer.sleep(2)
         data['tag']['wikidata'] = wikidata_id
         type = e['osm_object_url'].split("/")[3]
         osm_bot_abstraction_layer.update_element(api, type, data)
