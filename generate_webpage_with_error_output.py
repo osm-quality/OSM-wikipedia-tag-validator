@@ -13,13 +13,17 @@ def main():
     note_unused_errors(args)
 
 def generate_html_file(args, name_suffix, types, information_header):
+    #print(args.out + name_suffix + '.html')
     with open(args.out + name_suffix + '.html', 'w') as file:
         file.write(object_list_header())
         file.write(table_row( '==========' ))
         file.write(table_row( information_header ))
         file.write(table_row( '==========' ))
+        #print("LOADING ERRORS START")
         reported_errors = sorted(get_errors(args), key=lambda error: error['osm_object_url'])
+        #print("LOADING ERRORS END")
         for error_type_id in sorted(types):
+            #print(error_type_id)
             error_count = 0
             for e in reported_errors:
                 if e['error_id'] == error_type_id:
