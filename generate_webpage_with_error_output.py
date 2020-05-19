@@ -154,12 +154,13 @@ def for_review():
         'wikidata tag links to 404',
         'link to an unlinkable article',
         'wikipedia wikidata mismatch',
-        'should use a secondary wikipedia tag',
         'tag may be added based on wikidata',
         'tag may be added based on wikidata - teryt',
         'invalid old-style wikipedia tag',
         'malformed wikidata tag',
         'malformed wikipedia tag',
+        'should use a secondary wikipedia tag',
+        'link to a list',
     ]
 
 def for_review_boring():
