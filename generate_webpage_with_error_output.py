@@ -22,7 +22,7 @@ def generate_html_file(args, name_suffix, types, information_header):
         #print("LOADING ERRORS START")
         reported_errors = sorted(get_errors(args), key=lambda error: error['osm_object_url'])
         #print("LOADING ERRORS END")
-        for error_type_id in sorted(types):
+        for error_type_id in types:
             #print(error_type_id)
             error_count = 0
             for e in reported_errors:
