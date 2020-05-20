@@ -4,7 +4,7 @@ require 'fileutils'
 
 def main()
   #download_by_wikidata("Q42424277")
-  download_teryt_data
+  #download_teryt_data
   target_file = download_location+"/"+'reloaded_Poland.osm'
   file_with_query = download_location+'/reload_querries/Polska.query'
   run_query_from_file(file_with_query, target_file)
