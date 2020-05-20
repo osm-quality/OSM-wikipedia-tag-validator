@@ -91,9 +91,9 @@ def download_defined_regions_from_reload_querries(suffix)
       result = run_query_from_file(query_filepath, downloaded_filename)
       if !result
         puts "failed download with query from #{query_filepath}"
-        sleep 300
+        sleep 400
       end
-      sleep 300
+      sleep 200 # 300 was working well
       break if result
     end
   end
@@ -107,9 +107,9 @@ def download_defined_regions(suffix)
       result = download_by_name(name, true, suffix)
       if !result
         puts "failed download"
-        sleep 300
+        sleep 400
       end
-      sleep 300
+      sleep 200 # 300 was working well
       break if result
     end
   end
