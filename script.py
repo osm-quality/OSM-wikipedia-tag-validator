@@ -19,7 +19,7 @@ def main():
     write_index()
     make_query_to_reload_only_affected_objects('Polska.yaml', 'Polska.query')
     commit_changes_in_report_directory()
-    pipeline_graticule_entries()
+    #pipeline_graticule_entries()
 
 def download_data():
     os.system("ruby download.rb")

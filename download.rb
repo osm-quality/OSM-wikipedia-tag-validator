@@ -14,7 +14,7 @@ def main()
   download_defined_regions(unprocessed_suffix)
   download_defined_regions_from_reload_querries(reload_suffix)
   copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix)
-  download_graticules
+  #download_graticules
 end
 
 def copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix)
