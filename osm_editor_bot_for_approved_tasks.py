@@ -4,6 +4,7 @@ import os
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
 import osm_handling_config.global_config as osm_handling_config
+from wikibrain import wikimedia_link_issue_reporter
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -47,19 +48,19 @@ def load_errors():
 
 def fit_wikipedia_edit_description_within_character_limit_new(new, reason):
     comment = "adding [wikipedia=" + new + "]" + reason
-    if(len(comment)) > character_limit_of_description():
+    if(len(comment)) > osm_bot_abstraction_layer.character_limit_of_description():
         comment = "adding wikipedia tag " + reason
-    if(len(comment)) > character_limit_of_description():
+    if(len(comment)) > osm_bot_abstraction_layer.character_limit_of_description():
         raise("comment too long")
     return comment
 
 def fit_wikipedia_edit_description_within_character_limit_changed(now, new, reason):
     comment = "[wikipedia=" + now + "] to [wikipedia=" + new + "]" + reason
-    if(len(comment)) > character_limit_of_description():
+    if(len(comment)) > osm_bot_abstraction_layer.character_limit_of_description():
         comment = "changing wikipedia tag to <" + new + ">" + reason
-    if(len(comment)) > character_limit_of_description():
+    if(len(comment)) > osm_bot_abstraction_layer.character_limit_of_description():
         comment = "changing wikipedia tag " + reason
-    if(len(comment)) > character_limit_of_description():
+    if(len(comment)) > osm_bot_abstraction_layer.character_limit_of_description():
         raise("comment too long")
     return comment
 
@@ -82,10 +83,11 @@ def handle_follow_wikipedia_redirect(e):
     comment = fit_wikipedia_edit_description_within_character_limit_changed(now, new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
+    osm_wiki_documentation_page = "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_Poland"
     automatic_status = osm_bot_abstraction_layer.fully_automated_description()
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata, OSM"
-    osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
+    osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, osm_wiki_documentation_page, type, data, source)
 
 def change_to_local_language(e):
     if e['error_id'] != 'wikipedia tag unexpected language':
@@ -102,10 +104,11 @@ def change_to_local_language(e):
     comment = fit_wikipedia_edit_description_within_character_limit_changed(now, new, reason)
     data['tag']['wikipedia'] = e['desired_wikipedia_target']
     discussion_url = None
+    #osm_wiki_documentation_page = 
     automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata, OSM"
-    osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, type, data, source)
+    osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, osm_wiki_documentation_page, type, data, source)
 
 def filter_reported_errors(reported_errors, matching_error_ids):
     errors_for_removal = []
