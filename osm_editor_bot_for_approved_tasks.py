@@ -117,6 +117,23 @@ def filter_reported_errors(reported_errors, matching_error_ids):
             errors_for_removal.append(e)
     return errors_for_removal
 
+def is_edit_allowed(wikidata_id):
+    countries = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_country_location_from_wikidata_id(wikidata_id)
+    if(len(countries) > 0):
+        print("SKIPPED BECAUSE IN MORE THAN ONE COUNTRY " + e['osm_object_url'])
+        return False
+    if(countries != ["pl"]):
+        print("SKIPPED BECAUSE countries was invalid " + countries)
+        return False
+    
+    if data['tag']['wikipedia'] in ["ru:Шешупе", "lt:Šešupė", "lt:Vyžaina", "be:Калонка", "be:Пчолка", "lt:Ingelis", "lt:Gilbietis (ežeras)"]: # workaround for failed country detection
+        return False
+    if language_code != "pl" and data['tag']['wikipedia'] not in ["de:Rastenburger Kleinbahnen"]:
+        print("UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url'])
+        raise "UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url']
+        return False
+    return True
+
 def add_wikidata_tag_from_wikipedia_tag(reported_errors):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikidata from wikipedia tag'])
     if errors_for_removal == []:
@@ -138,9 +155,10 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         language_code = wikimedia_connection.get_language_code_from_link(data['tag']['wikipedia'])
         article_name = wikimedia_connection.get_article_name_from_link(data['tag']['wikipedia'])
         wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-        if language_code != "pl" and data['tag']['wikipedia'] not in ["de:Rastenburger Kleinbahnen"]:
-            print("UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url'])
-            raise "UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url']
+        
+        if is_edit_allowed(wikidata_id) == False:
+            continue
+
         print(e['osm_object_url'])
         print(wikidata_id)
         reason = ", as wikidata tag may be added based on wikipedia tag"
