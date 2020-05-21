@@ -92,9 +92,10 @@ def handle_follow_wikipedia_redirect(e):
 def change_to_local_language(e):
     if e['error_id'] != 'wikipedia tag unexpected language':
         return
-    #language_code = wikimedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
-    #if language_code != "pl":
-    #    return
+    language_code = wikimedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
+    if language_code != "pl":
+        print(e['prerequisite']['wikipedia'] + " is not in the expected language code!")
+        return
     data = get_and_verify_data(e)
     if data == None:
         return None
@@ -117,22 +118,41 @@ def filter_reported_errors(reported_errors, matching_error_ids):
             errors_for_removal.append(e)
     return errors_for_removal
 
-def is_edit_allowed(wikidata_id):
-    countries = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_country_location_from_wikidata_id(wikidata_id)
-    if(len(countries) > 0):
+def is_edit_allowed_object_based_on_location(object_data, target_country):
+    if target_country != "pl":
+        raise "unimplemented"
+    print(object_data)
+
+def is_edit_allowed_object_has_set_wikipedia(object_data, target_country):
+    if target_country != "pl":
+        raise "unimplemented"
+
+    wikipedia_tag = object_data['tag']['wikipedia']
+    language_code = wikimedia_connection.get_language_code_from_link(wikipedia_tag)
+    article_name = wikimedia_connection.get_article_name_from_link(wikipedia_tag)
+    wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
+
+    if wikipedia_tag in ["ru:Шешупе", "lt:Šešupė", "lt:Vyžaina", "be:Калонка", "be:Пчолка", "lt:Ingelis", "lt:Gilbietis (ežeras)"]: # workaround for failed country detection
+        return False
+
+    if language_code == "pl":
+        return True # addumes that Polish Wikipedia code is use only in Poland
+        
+    countries_tagged_in_wikidata = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_country_location_from_wikidata_id(wikidata_id)
+
+    if(len(countries) > 1):
         print("SKIPPED BECAUSE IN MORE THAN ONE COUNTRY " + e['osm_object_url'])
         return False
-    if(countries != ["pl"]):
-        print("SKIPPED BECAUSE countries was invalid " + countries)
-        return False
-    
-    if data['tag']['wikipedia'] in ["ru:Шешупе", "lt:Šešupė", "lt:Vyžaina", "be:Калонка", "be:Пчолка", "lt:Ingelis", "lt:Gilbietis (ežeras)"]: # workaround for failed country detection
-        return False
-    if language_code != "pl" and data['tag']['wikipedia'] not in ["de:Rastenburger Kleinbahnen"]:
+
+    if(countries == [target_country]):
+        return True
+
+    if language_code != "pl" and wikipedia_tag not in ["de:Rastenburger Kleinbahnen"]:
         print("UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url'])
         raise "UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + e['osm_object_url']
         return False
-    return True
+
+    return False
 
 def add_wikidata_tag_from_wikipedia_tag(reported_errors):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikidata from wikipedia tag'])
@@ -152,11 +172,8 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         data = get_and_verify_data(e)
         if data == None:
             continue
-        language_code = wikimedia_connection.get_language_code_from_link(data['tag']['wikipedia'])
-        article_name = wikimedia_connection.get_article_name_from_link(data['tag']['wikipedia'])
-        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-        
-        if is_edit_allowed(wikidata_id) == False:
+
+        if is_edit_allowed_object_has_set_wikipedia(data, "pl") == False and is_edit_allowed_object_based_on_location(data, "pl") == False:
             continue
 
         print(e['osm_object_url'])
