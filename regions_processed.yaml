@@ -14,7 +14,6 @@
 - {region_name: województwo opolskie, website_main_title_part: 'województwo opolskie', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: województwo śląskie, website_main_title_part: 'województwo śląskie', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: województwo łódzkie, website_main_title_part: 'województwo łódzkie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: Dublin, website_main_title_part: 'Dublin, Ireland', merged_output_file: Ireland.yaml, language_code: en}
 - {region_name: Preetz, website_main_title_part: 'Preetz, Deutschland', merged_output_file: Deutschland.yaml, language_code: de}
 - {region_name: Bremen, website_main_title_part: 'Bremen, Deutschland', merged_output_file: Deutschland.yaml, language_code: de}
 - {region_name: Hamburg, website_main_title_part: 'Hamburg, Deutschland', merged_output_file: Deutschland.yaml, language_code: de, requested_by: "Telegram - DE, especially Hamburg region"}

@@ -1,3 +1,4 @@
+- {region_name: Dublin, website_main_title_part: 'Dublin, Ireland', merged_output_file: Ireland.yaml, language_code: en}
 - {region_name: Kraków, website_main_title_part: 'Kraków', merged_output_file: , language_code: pl}
 - {region_name: Praha, website_main_title_part: 'Praha', merged_output_file: Česko.yaml, language_code: cz}
 - {region_name: Devon, website_main_title_part: 'Devon, UK', merged_output_file: UK.yaml, language_code: en}
