@@ -213,8 +213,8 @@ def main():
     #requires manual checking is it operating in Poland #add_wikipedia_tag_from_wikidata_tag(reported_errors)
     add_wikidata_tag_from_wikipedia_tag(reported_errors) #self-checking location based on Wikipedia language code
     for e in reported_errors:
-        #handle_follow_wikipedia_redirect(e)
-        #change_to_local_language(e)
+        handle_follow_wikipedia_redirect(e) #self-checking location based on Wikipedia language code [pl required]
+        #change_to_local_language(e) - discussion missing
         pass
 
 if __name__ == '__main__':
