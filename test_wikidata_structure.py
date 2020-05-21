@@ -70,3 +70,6 @@ class WikidataTests(unittest.TestCase):
 
     def test_detecting_wastewater_plant_as_valid_primary_link(self):
         self.assert_linkability('Q11795812')
+
+    def test_detecting_burough_as_valid_primary_link(self):
+        self.assert_linkability('Q1630')
