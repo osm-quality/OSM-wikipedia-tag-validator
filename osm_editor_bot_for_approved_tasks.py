@@ -140,11 +140,11 @@ def is_edit_allowed_object_has_set_wikipedia(object_data, target_country):
         
     countries_tagged_in_wikidata = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_country_location_from_wikidata_id(wikidata_id)
 
-    if(len(countries) > 1):
+    if(len(countries_tagged_in_wikidata) > 1):
         print("SKIPPED BECAUSE IN MORE THAN ONE COUNTRY " + e['osm_object_url'])
         return False
 
-    if(countries == [target_country]):
+    if(countries_tagged_in_wikidata == [target_country]):
         return True
 
     if language_code != "pl" and wikipedia_tag not in ["de:Rastenburger Kleinbahnen"]:
@@ -175,6 +175,11 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
 
         if is_edit_allowed_object_has_set_wikipedia(data, "pl") == False and is_edit_allowed_object_based_on_location(data, "pl") == False:
             continue
+
+        wikipedia_tag = data['tag']['wikipedia']
+        language_code = wikimedia_connection.get_language_code_from_link(wikipedia_tag)
+        article_name = wikimedia_connection.get_article_name_from_link(wikipedia_tag)
+        wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
 
         print(e['osm_object_url'])
         print(wikidata_id)
