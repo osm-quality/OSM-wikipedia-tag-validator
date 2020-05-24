@@ -13,7 +13,7 @@ class ProcessingException(Exception):
 def main():
     download_data()
     delete_output_files()
-    pipeline(osm_filename = 'reloaded_Poland.osm', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
+    pipeline(region_name = 'reloaded_Poland', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
     pipeline_entries_from_config_file()
     make_websites_for_merged_entries()
     write_index()
@@ -74,11 +74,11 @@ def make_website(filename_with_report, output_filename_base):
     system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '" ' + split_human_bot, False)
 
 
-def pipeline(osm_filename, website_main_title_part, merged_output_file, language_code, silent=False):
-        output_filename_errors = osm_filename + '.yaml'
-        if exit_pipeline_due_to_missing_osm_data(osm_filename, silent):
+def pipeline(region_name, website_main_title_part, merged_output_file, language_code, silent=False):
+        output_filename_errors = region_name + ".osm" + '.yaml'
+        if exit_pipeline_due_to_missing_osm_data(region_name + ".osm", silent):
             return
-        make_report_file(language_code, osm_filename)
+        make_report_file(language_code, region_name + ".osm")
         filepath = root() + output_filename_errors
         if not os.path.isfile(filepath):
             print(filepath + ' is not present [highly surprising]')
@@ -86,7 +86,7 @@ def pipeline(osm_filename, website_main_title_part, merged_output_file, language
         if merged_output_file != None:
             merge(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, website_main_title_part)
-        make_query_to_reload_only_affected_objects(output_filename_errors, website_main_title_part + '.query')
+        make_query_to_reload_only_affected_objects(output_filename_errors, region_name + '.query')
         move_files_to_report_directory(website_main_title_part)
 
 def move_files_to_report_directory(website_main_title_part):
@@ -165,7 +165,7 @@ def commit_changes_in_report_directory():
 def pipeline_entries_from_config_file():
     for entry in get_entries_to_process():
         pipeline(
-            osm_filename = entry['region_name'] + ".osm",
+            region_name = entry['region_name'],
             website_main_title_part = entry['website_main_title_part'],
             merged_output_file = entry.get('merged_output_file', None),
             language_code = entry.get('language_code', None),
@@ -182,7 +182,7 @@ def get_graticule_region_names():
 def pipeline_graticule_entries():
     for region_name in get_graticule_region_names():
         pipeline(
-            osm_filename = region_name + ".osm",
+            region_name = region_name,
             website_main_title_part = region_name,
             merged_output_file = None,
             language_code = None,
