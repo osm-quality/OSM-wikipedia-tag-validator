@@ -43,6 +43,9 @@ def yaml_report_filepath():
     return common.get_file_storage_location()+"/" + args.file + ".yaml"
 
 def validate_wikipedia_link_on_element_and_print_problems(element):
+    link = element.get_tag_value("wikipedia") # TODO: apply this only in Germany
+    if link!=None and "#" in link:
+        return
     problem = get_problem_for_given_element_and_record_stats(element, False)
     if (problem != None):
         output_element(element, problem)
