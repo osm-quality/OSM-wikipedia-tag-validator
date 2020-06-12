@@ -38,6 +38,11 @@ class WikidataTests(unittest.TestCase):
     def test_reject_links_to_humans(self):
         self.assert_unlinkability('Q561127')
 
+    def test_reject_links_to_term_shopping(self):
+        # https://www.openstreetmap.org/way/452123938
+        self.assert_unlinkability('Q830036')
+
+
     def test_detecting_makro_as_invalid_primary_link(self):
         self.assert_unlinkability('Q704606')
 
@@ -73,3 +78,61 @@ class WikidataTests(unittest.TestCase):
 
     def test_detecting_burough_as_valid_primary_link(self):
         self.assert_linkability('Q1630')
+
+    def test_detecting_expressway_as_valid_primary_link(self):
+        self.assert_linkability('Q5055176') # not an event
+
+    def test_detecting_university_as_valid_primary_link(self):
+        self.assert_linkability('Q1887879') # not a website (as "open access publisher" is using website, but is not a website)
+
+    def test_detecting_university_as_valid_primary_link(self):
+        self.assert_linkability('Q1887879') # not an event (via "education")
+
+    def test_train_line_as_valid_primary_link(self):
+        self.assert_linkability('Q3720557') # train service is not a service (Q15141321) defined as "transcation..."
+
+    def test_tide_organ_as_valid_primary_link(self):
+        self.assert_linkability('Q7975291') # art is not sublass of creativity - though it is using creativity. It is also not sublass of a process.
+
+    def test_specific_event_center_as_valid_primary_link(self):
+        self.assert_linkability('Q7414066')
+
+    def test_park_as_valid_primary_link(self):
+        self.assert_linkability('Q1535460')
+        
+    def test_geoglyph_as_valid_primary_link(self):
+        self.assert_linkability('Q7717476') # not an event - via Q12060132 ("hell letter" taht is not a signage, it is product of a signage)
+
+    def test_dunes_as_valid_primary_link(self):
+        self.assert_linkability('Q1130721') # not an event - aeolian landform (Q4687862) is not sublass of aeolian process
+
+    def test_tree_as_valid_primary_link(self):
+        self.assert_linkability('Q6703503') # not an event
+
+    def test_wind_farm_as_valid_primary_link(self):
+        self.assert_linkability('Q4102067') # not an event
+
+    def test_hollywood_sign_as_valid_primary_link(self):
+        self.assert_linkability('Q180376') # not an event (hollywood sign is not an instance of signage)
+
+    def test_railway_segment_as_valid_primary_link(self):
+        self.assert_linkability('Q2581240') # not a physical process
+
+    def test_another_railway_segment_as_valid_primary_link(self):
+        self.assert_linkability('Q1126676') # not a physical process
+
+    def test_country_as_valid_primary_link(self):
+        self.assert_linkability('Q30') # not an event
+
+    def test_aqueduct_as_valid_primary_link(self):
+        self.assert_linkability('Q2859225') # not an event
+
+    def test_public_housing_as_valid_primary_link(self):
+        self.assert_linkability('Q22329573') # not an event - aeolian landform (Q4687862) is not sublass of aeolian process
+
+    def test_dry_lake_as_valid_primary_link(self):
+        self.assert_linkability('Q1780699') # not an event
+
+    def test_industrial_property_as_valid_primary_link(self):
+        self.assert_linkability('Q5001422') # not an event
+
