@@ -98,10 +98,10 @@ def download_defined_regions_from_reload_querries(suffix)
       end
       result = run_query_from_file(query_filepath, downloaded_filename)
       if !result
-        puts "failed download with query from #{query_filepath}"
-        sleep 400
+        puts "failed download with query from #{query_filepath}, after an additional pause download will be retried until it succeeds"
+        sleep 500
       end
-      sleep 200 # 300 was working well
+      sleep 150 # 300 and 200 was working well if it was a sole overpass load
       break if result
     end
   end
@@ -114,10 +114,10 @@ def download_defined_regions(suffix)
       break if !is_download_necessary_by_name(name, true, suffix)
       result = download_by_name(name, true, suffix)
       if !result
-        puts "failed download"
-        sleep 400
+        puts "failed download, after an additional pause download will be retried until it succeeds"
+        sleep 500
       end
-      sleep 200 # 300 was working well
+      sleep 150 # 300 and 200 was working well if it was a sole overpass load
       break if result
     end
   end
