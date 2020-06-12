@@ -17,7 +17,7 @@ def main()
   #download_graticules
 end
 
-def copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix)
+def copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix, debug=false)
   region_data.each do |region|
       area_name = region['region_name']
       expand = true
@@ -26,12 +26,18 @@ def copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, 
       used_data = produced_filename_by_name(area_name, expand, "")
       if File.exists?(reload_data)
         puts "copying reloaded file as source for #{area_name}"
+        puts "(<\"#{reload_data}\"> -> <\"#{used_data}\">)" if debug
         FileUtils.cp(reload_data, used_data)
       elsif File.exists?(unprocessed_data)
         puts "copying unprocessed file with all as source for #{area_name}"
+        puts "(<\"#{unprocessed_data}\"> -> <\"#{used_data}\">)" if debug
         FileUtils.cp(unprocessed_data, used_data)
       else
-        raise "either #{reload_data} or #{used_data} file must exists!"
+        raise "either #{reload_data} or #{unprocessed_data} file must exists!"
+      end
+
+      if File.exists?(used_data) == false
+        raise "copying failed, #{used_data} was supposed to exist!"
       end
   end
 end
