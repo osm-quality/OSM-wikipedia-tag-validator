@@ -84,6 +84,8 @@ def download_defined_regions_from_reload_querries(suffix)
         puts "query file #{query_filepath} is not existing"
         break
       end
+      puts
+      puts "downloading reload query for #{area_name}"
       if File.exists?(downloaded_filename)
         f = File.new(downloaded_filename)
         download_timestamp = f.mtime.to_i
