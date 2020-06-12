@@ -82,10 +82,17 @@ def download(query)
     puts query
     puts url
     puts e
+    return nil
   rescue RestClient::NotFound => e
     puts query
     puts url
     puts e
+    return nil
+  rescue RestClient::GatewayTimeout => e
+    puts query
+    puts url
+    puts e
+    return nil
   end
   puts "downloading: end"
 end
