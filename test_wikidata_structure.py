@@ -98,13 +98,13 @@ class WikidataTests(unittest.TestCase):
         self.assert_linkability('Q7414066')
 
     def test_park_as_valid_primary_link(self):
-        self.assert_linkability('Q1535460')
+        self.assert_linkability('Q1535460') # cultural heritage ( https://www.wikidata.org/w/index.php?title=Q210272&action=history ) is not a subclass of heritage designation, heritage (https://www.wikidata.org/w/index.php?title=Q2434238&offset=&limit=500&action=history) is not subclass of preservation
         
     def test_geoglyph_as_valid_primary_link(self):
-        self.assert_linkability('Q7717476') # not an event - via Q12060132 ("hell letter" taht is not a signage, it is product of a signage)
+        self.assert_linkability('Q7717476') # not an event - via Q12060132 ("hell letter" that is not a signage, it is product of a signage)
 
     def test_dunes_as_valid_primary_link(self):
-        self.assert_linkability('Q1130721') # not an event - aeolian landform (Q4687862) is not sublass of aeolian process
+        self.assert_linkability('Q1130721') # not an event - aeolian landform (Q4687862) is not sublass of aeolian process, natural object is not sublass of natural phenonemon ( https://www.wikidata.org/w/index.php?title=Q29651224&action=history )
 
     def test_tree_as_valid_primary_link(self):
         self.assert_linkability('Q6703503') # not an event
