@@ -3,6 +3,7 @@ require_relative 'download_shared'
 require 'fileutils'
 
 def main()
+  raise "missing #{download_location} folder" unless Dir.exist?(download_location)
   #download_by_wikidata("Q42424277")
   #download_teryt_data
   target_file = download_location+"/"+'reloaded_Poland.osm'
