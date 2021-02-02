@@ -121,7 +121,7 @@ def process_pairs(pairs):
     changeset_opened = False
     for pair in pairs:
         location = get_location_of_element(pair['osm_element'])
-        if geopy.distance.vincenty(center_location, location).km > 80 and center_location != None:
+        if geopy.distance.geodesic(center_location, location).km > 80 and center_location != None:
             unprocessed.append(pair)
             continue
 
