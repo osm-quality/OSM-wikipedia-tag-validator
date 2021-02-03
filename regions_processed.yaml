@@ -18,6 +18,7 @@
 - {region_name: Bremen, website_main_title_part: 'Bremen, Deutschland', merged_output_file: Deutschland.yaml, language_code: de}
 - {region_name: Hamburg, website_main_title_part: 'Hamburg, Deutschland', merged_output_file: Deutschland.yaml, language_code: de, requested_by: "Telegram - DE, especially Hamburg region"}
 
+# https://en.wikipedia.org/wiki/List_of_counties_in_California
 - {region_name: Alameda County, website_main_title_part: 'Alameda County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
 - {region_name: Alpine County, website_main_title_part: 'Alpine County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
 - {region_name: Amador County, website_main_title_part: 'Amador County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
@@ -80,5 +81,15 @@
 - {region_name: Yolo County, website_main_title_part: 'Yolo County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
 - {region_name: Yuba County, website_main_title_part: 'Yuba County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
 
+# California - done by county
 
-# https://en.wikipedia.org/wiki/List_of_counties_in_California
+- {region_name: Alabama, website_main_title_part: 'Alabama, USA', language_code: en}
+- {region_name: Alaska, website_main_title_part: 'Alaska, USA', language_code: en}
+- {region_name: Arizona, website_main_title_part: 'Arizona, USA', language_code: en}
+- {region_name: Arkansas, website_main_title_part: 'Arkansas, USA', language_code: en}
+- {region_name: Arkansas, website_main_title_part: 'Arkansas, USA', language_code: en}
+
+#  Colorado Connecticut Delaware Florida Georgia Hawaii Idaho Illinois Indiana Iowa Kansas Kentucky Louisiana Maine Maryland Massachusetts Michigan Minnesota Mississippi Missouri Montana Nebraska Nevada New Hampshire New Jersey New Mexico New York North Carolina North Dakota Ohio Oklahoma Oregon Pennsylvania Rhode Island South Carolina South Dakota Tennessee Texas Utah Vermont Virginia Washington West Virginia Wisconsin Wyoming
+
+- {region_name: Oregon, website_main_title_part: 'Oregon, USA', language_code: en}
+- {region_name: Nevada, website_main_title_part: 'Nevada, USA', language_code: en}
