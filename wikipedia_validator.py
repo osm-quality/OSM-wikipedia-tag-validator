@@ -2,7 +2,6 @@
 
 import argparse
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
-import common
 from osm_iterator.osm_iterator import Data
 import osm_handling_config.global_config as osm_handling_config
 from wikibrain import wikimedia_link_issue_reporter
@@ -40,7 +39,7 @@ def output_element(element, error_report):
     error_report.yaml_output(yaml_report_filepath())
 
 def yaml_report_filepath():
-    return common.get_file_storage_location()+"/" + args.file + ".yaml"
+    return args.output_filepath
 
 def validate_wikipedia_link_on_element_and_print_problems(element):
     link = element.get_tag_value("wikipedia") # TODO: apply this only in Germany
@@ -58,10 +57,15 @@ def validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_repo
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Validation of wikipedia tag in osm data.')
-    parser.add_argument('-file', '-f',
-                        dest='file',
+    parser.add_argument('-filepath', '-f',
+                        dest='filepath',
                         type=str,
                         help='location of .osm file (short form of parameter: -f), mandatory parameter',
+                        required=True)
+    parser.add_argument('-output_filepath', '-of',
+                        dest='output_filepath',
+                        type=str,
+                        help='location of .osm file (short form of parameter: -of), mandatory parameter',
                         required=True)
     parser.add_argument('-expected_language_code', '-l',
                         dest='expected_language_code',
@@ -94,7 +98,7 @@ def parsed_args():
 
 def main():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
-    osm = Data(common.get_file_storage_location() + "/" + args.file)
+    osm = Data(args.filepath)
     if args.flush_cache_for_reported_situations:
         osm.iterate_over_data(validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported)
     else:

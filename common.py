@@ -13,7 +13,7 @@ def parse_yaml_file(filename):
         except yaml.YAMLError as exc:
             raise(exc)
 
-def get_file_storage_location():
+def __get_file_storage_location():
     cache_location_config_filepath = 'cache_location.config'
     if not os.path.isfile(cache_location_config_filepath):
         raise ConfigException("failed to locate config file, was supposed to be at <" + cache_location_config_filepath + ">")
@@ -21,6 +21,37 @@ def get_file_storage_location():
     returned = cache_location_file.read()
     cache_location_file.close()
     return returned
+
+def reload_querries_location():
+    return __get_file_storage_location() + "/" + "reload_queries"
+
+def downloaded_osm_data_location():
+    return __get_file_storage_location() + "/" + "downloaded_osm_data"
+
+def found_errors_storage_location():
+    return __get_file_storage_location() + "/" + "found_errors"
+
+def verify_folder_structure():
+    required = [
+        __get_file_storage_location(),
+    ]
+    for folder in required:
+        if not os.path.isdir(folder):
+            raise Exception("folder " + folder + " does not exist and must exist")
+
+    creates = [
+        reload_querries_location(),
+        downloaded_osm_data_location(),
+        found_errors_storage_location(),
+    ]
+    for folder in creates:
+        if not os.path.isdir(folder):
+            if os.path.exists(folder):
+                raise Exception(folder + " exists and is not a folder")
+            print("creating", folder)
+            os.mkdir(folder)
+        if not os.path.isdir(folder):
+            raise Exception("folder " + folder + " does not exist and must exist, creation was attempted")
 
 def escape_from_internal_python_string_to_html_ascii(string):
     return str(string).encode('ascii', 'xmlcharrefreplace').decode()
@@ -87,12 +118,15 @@ def tag_dict_to_overpass_query_format(tags):
             returned += "['" + escaped_key + "'='" + escaped_value + "']"
     return returned
 
-def get_query_for_loading_errors_by_category(filename, printed_error_ids, format):
+def get_query_for_loading_errors_by_category(filepath, printed_error_ids, format):
     # accepted formats:
     # maproulette - json output, workarounds for maproulette bugs
     # josm - xml output
+    if os.path.isfile(filepath) == False:
+        raise ValueError("there is no such filepath as " + filepath)
+
     returned = get_query_header(format)
-    reported_errors = load_data(get_write_location()+"/"+filename)
+    reported_errors = load_data(filepath)
     for e in sorted(reported_errors, key=lambda error: error['osm_object_url'] ):
         if e['error_id'] in printed_error_ids:
             type = e['osm_object_url'].split("/")[3]
@@ -102,11 +136,4 @@ def get_query_for_loading_errors_by_category(filename, printed_error_ids, format
                 continue
             returned += type+'('+id+')' + get_prerequisite_in_overpass_query_format(e) + ';' + "\n"
     returned += get_query_footer(format) + "//" + str(printed_error_ids)
-    return returned
-
-def get_write_location():
-    cache_location_config_filepath = 'cache_location.config'
-    cache_location_file = open(cache_location_config_filepath, 'r')
-    returned = cache_location_file.read()
-    cache_location_file.close()
     return returned

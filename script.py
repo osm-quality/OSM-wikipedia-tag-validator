@@ -11,6 +11,7 @@ class ProcessingException(Exception):
     """TODO: documentation, not something so badly generic"""
 
 def main():
+    common.verify_folder_structure()
     download_data()
     delete_output_files()
     pipeline(region_name = 'reloaded_Poland', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
@@ -24,17 +25,14 @@ def main():
 def download_data():
     os.system("ruby download.rb")
 
-def merge(source_yaml, target_yaml):
-    root = common.get_file_storage_location() + "/"
+def add_problen_reports_into_another_file(source_yaml, target_yaml):
+    root = common.found_errors_storage_location() + "/"
     system_call('cat "' + root + source_yaml +'" >> "' + root + target_yaml + '"', False)
 
 def system_call(call, verbose=True):
     if verbose:
         print(call)
     os.system(call)
-
-def root():
-    return common.get_file_storage_location() + "/"
 
 def copy_file(source, target):
     shutil.copy2(source, target)
@@ -44,7 +42,7 @@ def move_file(source, target):
 
 def delete_in_storage_folder(filename):
         try:
-            os.remove(root() + filename)
+            os.remove(common.found_errors_storage_location() + filename)
         except FileNotFoundError:
             return
 
@@ -65,26 +63,28 @@ def delete_output_files():
 
     for filename in yaml_output_files:
         try:
-            os.remove(root() + filename)
+            os.remove(common.found_errors_storage_location() + filename)
         except FileNotFoundError:
             pass
 
 def make_website(filename_with_report, output_filename_base):
     split_human_bot = ""
-    system_call('python3 generate_webpage_with_error_output.py -file "' + filename_with_report + '" -out "' + output_filename_base + '" ' + split_human_bot, False)
+    filepath_to_report = common.found_errors_storage_location() + "/" + filename_with_report
+    system_call('python3 generate_webpage_with_error_output.py -filepath "' + filepath_to_report + '" -out "' + output_filename_base + '" ' + split_human_bot, False)
 
 
 def pipeline(region_name, website_main_title_part, merged_output_file, language_code, silent=False):
         output_filename_errors = region_name + ".osm" + '.yaml'
         if exit_pipeline_due_to_missing_osm_data(region_name + ".osm", silent):
             return
-        make_report_file(language_code, region_name + ".osm")
-        filepath = root() + output_filename_errors
-        if not os.path.isfile(filepath):
-            print(filepath + ' is not present [highly surprising]')
+        osm_filepath = common.downloaded_osm_data_location() + "/" + region_name + ".osm"
+        output_filepath = common.found_errors_storage_location() + "/" + output_filename_errors
+        make_report_file(language_code, osm_filepath, output_filepath)
+        if not os.path.isfile(output_filepath):
+            print(output_filepath + ' is not present [highly surprising]')
             raise ProcessingException('Unexpected failure')
         if merged_output_file != None:
-            merge(output_filename_errors, merged_output_file)
+            add_problen_reports_into_another_file(output_filename_errors, merged_output_file)
         make_website(output_filename_errors, website_main_title_part)
         make_query_to_reload_only_affected_objects(output_filename_errors, region_name + '.query')
         move_files_to_report_directory(website_main_title_part)
@@ -99,25 +99,26 @@ def move_files_to_report_directory(website_main_title_part):
         try:
             move_file(filename, get_report_directory() + '/' + filename)
         except FileNotFoundError:
-            print(filename + ' is not present')
+            print(filename + ' is not present during moving html files')
 
 def exit_pipeline_due_to_missing_osm_data(osm_filename, silent):
-    if os.path.isfile(root() + osm_filename):
+    filepath = common.downloaded_osm_data_location() + "/" + osm_filename
+    if os.path.isfile(filepath):
         return False
     if silent:
         return True
-    print(osm_filename + ' is not present')
+    print(filepath + ' is not present, pipeline will be exited')
     return True
 
-def make_report_file(language_code, osm_filename):
+def make_report_file(language_code, osm_filepath, output_yaml_filepath):
     language_code_parameter = ""
     if language_code != None:
         language_code_parameter = '-expected_language_code ' + language_code
-    system_call('python3 wikipedia_validator.py ' + language_code_parameter + ' -file "' + osm_filename + '"')
+    system_call('python3 wikipedia_validator.py ' + language_code_parameter + ' -filepath "' + osm_filepath + '"'  + ' -output_filepath "' + output_yaml_filepath + '"')
 
 def make_query_to_reload_only_affected_objects(input_filename_with_reports, output_query_filename):
-    input_filepath = common.get_file_storage_location() + "/" + input_filename_with_reports
-    output_filepath = root() + 'reload_querries/' + output_query_filename
+    input_filepath = common.found_errors_storage_location() + "/" + input_filename_with_reports
+    output_filepath = common.reload_querries_location() + "/" + output_query_filename
     if not os.path.isfile(input_filepath):
         print("file not found")
         return
@@ -133,7 +134,7 @@ def make_query_to_reload_only_affected_objects(input_filename_with_reports, outp
         for e in common.load_data(input_filepath):
             if e['error_id'] not in all_errors:
                 all_errors.append(e['error_id'])
-        query = common.get_query_for_loading_errors_by_category(filename = input_filename_with_reports, printed_error_ids = all_errors, format = "josm")
+        query = common.get_query_for_loading_errors_by_category(filepath = input_filepath, printed_error_ids = all_errors, format = "josm")
         query_file.write(query)
 
 def get_entries_to_process():
@@ -191,14 +192,14 @@ def pipeline_graticule_entries():
 
 def make_websites_for_merged_entries():
     for filename in merged_outputs_list():
-        filepath = root() + filename
-        if os.path.isfile(filepath):
+        filepath_to_file_listing_mistakes = common.found_errors_storage_location() + "/" + filename
+        if os.path.isfile(filepath_to_file_listing_mistakes):
             # inherit split status on bottable and nonbottable tasks
             entry = get_entry_contributing_to_merged_file(filename)
             output_filename_base = filename.replace(".yaml", "")
             make_website(filename, output_filename_base)
         else:
-            print(filepath + ' file is not present [highly surprising]')
+            print(filepath_to_file_listing_mistakes + ' file is not present during making website for merged entries [highly surprising]')
             raise ProcessingException('Unexpected failure')
 
     for filename in merged_outputs_list():
@@ -224,7 +225,7 @@ def write_index():
             if os.path.isfile(potential_filepath):
                 index.write('<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + "</a></br>\n")
             else:
-                print(potential_filepath + ' is not present')
+                print(potential_filepath + ' is not present during write_index')
         index.write("</html></body>\n")
 
     move_file('index.html', get_report_directory() + '/' + 'index.html')

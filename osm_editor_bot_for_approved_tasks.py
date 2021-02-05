@@ -57,7 +57,7 @@ def note_or_fixme_review_request_indication(data):
 
 def load_errors():
     args = parsed_args()
-    filepath = common.get_file_storage_location()+"/"+args.file
+    filepath = common.found_errors_storage_location()+"/"+args.file
     if not os.path.isfile(filepath):
         print(filepath + " is not a file, provide an existing file")
         return

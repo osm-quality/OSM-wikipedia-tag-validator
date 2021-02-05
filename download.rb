@@ -5,8 +5,8 @@ require 'fileutils'
 def main()
   raise "missing #{download_location} folder" unless Dir.exist?(download_location)
   #download_by_wikidata("Q42424277")
-  target_file = download_location+"/"+'reloaded_Poland.osm'
-  file_with_query = download_location+'/reload_querries/Polska.query'
+  target_file = download_location + "/" + 'reloaded_Poland.osm'
+  file_with_query = reload_querries_location() + '/Polska.query'
   run_query_from_file(file_with_query, target_file)
 
   unprocessed_suffix = "_unprocessed"
@@ -57,10 +57,6 @@ end
 
 def region_data
   return YAML.load_file('regions_processed.yaml')
-end
-
-def get_query_filename_for_reload_of_file(area_name)
-  return download_location + "/" + "reload_querries" + "/" + area_name + ".query"
 end
 
 def download_defined_regions_from_reload_querries(suffix)
@@ -121,8 +117,20 @@ def download_graticules
   end
 end
 
-def download_location
+def cache_location
   return File.read('cache_location.config')
+end
+
+def download_location()
+  return cache_location() + "/" + "downloaded_osm_data"
+end
+
+def reload_querries_location()
+  return cache_location() + "/" + "reload_querries"
+end
+
+def get_query_filename_for_reload_of_file(area_name)
+  return reload_querries_location() + "/" + area_name + ".query"
 end
 
 def query_text(area_identifier_builder, area_identifier, expand)
