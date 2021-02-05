@@ -5,7 +5,6 @@ require 'fileutils'
 def main()
   raise "missing #{download_location} folder" unless Dir.exist?(download_location)
   #download_by_wikidata("Q42424277")
-  #download_teryt_data
   target_file = download_location+"/"+'reloaded_Poland.osm'
   file_with_query = download_location+'/reload_querries/Polska.query'
   run_query_from_file(file_with_query, target_file)
@@ -40,17 +39,6 @@ def copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, 
       if File.exists?(used_data) == false
         raise "copying failed, #{used_data} was supposed to exist!"
       end
-  end
-end
-
-def download_teryt_data
-  filepath = download_location+"/"+'teryt_simc.osm'
-  if !File.exists?(filepath)
-    name = "Polska"
-    area_identifier = area_identifier_by_name(name)
-    area_identifier_builder = area_identifier_builder_by_name(name)
-    query = filtered_query_text("['teryt:simc']", area_identifier_builder, area_identifier, false)
-    download_and_save(query, filepath)
   end
 end
 
