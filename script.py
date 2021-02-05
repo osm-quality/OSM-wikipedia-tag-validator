@@ -198,7 +198,7 @@ def make_websites_for_merged_entries():
             output_filename_base = filename.replace(".yaml", "")
             make_website(filename, output_filename_base)
         else:
-            print(filepath + ' is not present [highly surprising]')
+            print(filepath + ' file is not present [highly surprising]')
             raise ProcessingException('Unexpected failure')
 
     for filename in merged_outputs_list():
