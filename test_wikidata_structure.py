@@ -136,3 +136,38 @@ class WikidataTests(unittest.TestCase):
     def test_industrial_property_as_valid_primary_link(self):
         self.assert_linkability('Q5001422') # not an event
 
+    def test_cemetery_as_valid_primary_link(self):
+        self.assert_linkability('Q30593659') # not an event
+
+    def test_megaproject_as_valid_primary_link(self):
+        self.assert_linkability('Q782093') # some megaprojects are already existing, project ( https://www.wikidata.org/wiki/Q170584 ) may be already complete
+
+    def test_pilgrim_route_as_valid_primary_link(self):
+        self.assert_linkability('Q829469')
+ 
+    def test_botanical_garden_as_valid_primary_link(self):
+        self.assert_linkability('Q589884')
+       
+    def test_alley_as_valid_primary_link(self):
+        self.assert_linkability('Q3413299')
+
+    def test_zoo_as_valid_primary_link(self):
+        self.assert_linkability('Q1886334')
+
+    def test_public_aquarium_as_valid_primary_link(self):
+        self.assert_linkability('Q4782760')
+
+    def test_grave_as_valid_primary_link(self):
+        self.assert_linkability('Q11789060')
+
+    def test_monument_as_valid_primary_link(self):
+        self.assert_linkability('Q11823211')
+
+    def test_cafe_as_valid_primary_link(self):
+        self.assert_linkability('Q672804')
+
+    def test_religious_admininstrative_area_as_valid_primary_link(self):
+        self.assert_linkability('Q1364786')
+
+    def test_hiking_trail_as_valid_primary_link(self):
+        self.assert_linkability('Q783074')
