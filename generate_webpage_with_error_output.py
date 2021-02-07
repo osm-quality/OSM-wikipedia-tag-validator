@@ -14,11 +14,12 @@ def main():
 
 def generate_html_file(args, name_suffix, types, information_header):
     #print(args.out + name_suffix + '.html')
+    prefix_of_lines = "\t\t\t"
     with open(args.out + name_suffix + '.html', 'w') as file:
         file.write(object_list_header())
-        file.write(table_row( '==========' ))
-        file.write(table_row( information_header ))
-        file.write(table_row( '==========' ))
+        file.write(row( '<hr>', prefix_of_lines=prefix_of_lines))
+        file.write(row( information_header, prefix_of_lines=prefix_of_lines ))
+        file.write(row( '<hr>', prefix_of_lines=prefix_of_lines ))
         #print("LOADING ERRORS START")
         reported_errors = sorted(get_errors(args), key=lambda error: error['osm_object_url'])
         #print("LOADING ERRORS END")
@@ -28,18 +29,16 @@ def generate_html_file(args, name_suffix, types, information_header):
             for e in reported_errors:
                 if e['error_id'] == error_type_id:
                     if error_count == 0:
-                        file.write(table_row( '<h2>' + error_type_id + '</h2>'))
+                        file.write(row( '<h2>' + error_type_id + '</h2>', prefix_of_lines=prefix_of_lines))
                     error_count += 1
-                    file.write(error_description(e))
+                    file.write(error_description(e, prefix_of_lines + "\t"))
             if error_count != 0:
-                file.write(table_row( 'overpass query usable in JOSM that will load all objects with this error type:' ))
+                file.write(row( '<a href="https://overpass-turbo.eu/">overpass query</a> usable in JOSM that will load all objects where this specific eror is present:', prefix_of_lines=prefix_of_lines ))
                 query = common.get_query_for_loading_errors_by_category(filepath = args.filepath, printed_error_ids = [error_type_id], format = "josm")
-                file.write(table_row(common.escape_from_internal_python_string_to_html_ascii(query)))
-                file.write(table_row( '==========' ))
-
-        file.write("</table>")
-        file.write("</body>")
-        file.write("</html>")
+                query_html = "<blockquote>" + common.escape_from_internal_python_string_to_html_ascii(query) + "</blockquote>"
+                file.write(row(query_html, prefix_of_lines=prefix_of_lines))
+                file.write(row( '<hr>', prefix_of_lines=prefix_of_lines ))
+        file.write(html_file_suffix())
         
 def contact_url():
     return "https://www.openstreetmap.org/message/new/Mateusz%20Konieczny"
@@ -67,15 +66,30 @@ def feedback_request():
     returned += "<br />\n"
     return returned
 
-def object_list_header():
+def html_file_header():
     returned = ""
     returned += "<html>\n"
+    returned += "\t<head>\n"
+    returned += '\t\t<link rel="stylesheet" href="https://mapsaregreat.com/style.css" /> <!-- GPLv3 licensed -->\n'
+    returned += "\t</head>\n"
     returned += "<body>\n"
+    returned += "\t<div class=\"inner\">"
+    return returned
+
+def html_file_suffix():
+    returned = ""
+    returned += "\t\t</div>\n"
+    returned += "\t</body>\n"
+    returned +=  "</html>\n"
+    return returned
+
+
+def object_list_header():
+    returned = ""
+    returned += html_file_header()
     returned += feedback_request()
     returned += "<br />\n"
-    returned += "---------------\n"
     returned += "<br />\n"
-    returned +=  "<table>\n"
     return returned
 
 def link_to_osm_object(url):
@@ -96,13 +110,18 @@ def format_wikipedia_link(string):
     article_name = common.escape_from_internal_python_string_to_html_ascii(article_name)
     return '<a href="https://' + language_code + '.wikipedia.org/wiki/' + article_name + '" target="_new">' + language_code+":"+article_name + '</a>'
 
-def table_row(text):
+def row(text, prefix_of_lines):
     returned = ""
-    returned += "<tr>\n"
-    returned += "   <td>\n"
-    returned += "       " + text + "\n"
-    returned += "   </td>\n"
-    returned += "</tr>\n"
+    returned += prefix_of_lines + "</br>\n"
+    returned += prefix_of_lines + text + "\n"
+    return returned
+
+    returned = ""
+    returned += prefix_of_lines + "<tr>\n"
+    returned += prefix_of_lines + "\t<td>\n"
+    returned += prefix_of_lines + "\t\t" + text + "\n"
+    returned += prefix_of_lines + "\t</td>\n"
+    returned += prefix_of_lines + "</tr>\n"
     return returned
 
 def parsed_args():
@@ -121,25 +140,25 @@ def get_errors(args):
         return []
     return common.load_data(filepath)
 
-def error_description(e):
+def error_description(e, prefix_of_lines):
     returned = ""
-    returned += table_row(common.htmlify(e['error_message']))
-    returned += table_row(link_to_osm_object(e['osm_object_url']))
+    returned += row(common.htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
+    returned += row(link_to_osm_object(e['osm_object_url']), prefix_of_lines=prefix_of_lines)
     if e['desired_wikipedia_target'] != None:
-        returned += describe_proposed_relinking(e)
-    returned += table_row( '-------' )
+        returned += describe_proposed_relinking(e, prefix_of_lines)
+    returned += row( '<hr>', prefix_of_lines=prefix_of_lines)
     return returned
 
-def describe_proposed_relinking(e):
+def describe_proposed_relinking(e, prefix_of_lines):
     returned = ""
     current = format_wikipedia_link(e['current_wikipedia_target'])
     to = format_wikipedia_link(e['desired_wikipedia_target'])
     if to == current:
         to = "?"
-    returned += table_row( current + " -> " + to)
+    returned += row( current + " -> " + to, prefix_of_lines=prefix_of_lines)
     if to != "?":
         article_name = article_name_from_wikipedia_string(e['desired_wikipedia_target'])
-        returned += table_row( common.escape_from_internal_python_string_to_html_ascii(article_name))
+        returned += row( common.escape_from_internal_python_string_to_html_ascii(article_name), prefix_of_lines=prefix_of_lines)
     return returned
 
 def note_unused_errors(args):

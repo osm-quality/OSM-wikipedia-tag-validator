@@ -208,7 +208,7 @@ def make_websites_for_merged_entries():
 
 def write_index():
     with open('index.html', 'w') as index:
-        index.write("<html><body>\n")
+        index.write(generate_webpage_with_error_output.html_file_header())
         index.write(generate_webpage_with_error_output.feedback_request())
         index.write("</br>\n")
         index.write("</br>\n")
@@ -226,7 +226,7 @@ def write_index():
                 index.write('<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + "</a></br>\n")
             else:
                 print(potential_filepath + ' is not present during write_index')
-        index.write("</html></body>\n")
+        index.write(generate_webpage_with_error_output.html_file_suffix())
 
     move_file('index.html', get_report_directory() + '/' + 'index.html')
 
