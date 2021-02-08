@@ -186,7 +186,6 @@ def for_review():
         'invalid old-style wikipedia tag',
         'malformed wikidata tag',
         'malformed wikipedia tag',
-        'should use a secondary wikipedia tag',
         'link to a list',
     ]
 
@@ -206,11 +205,12 @@ def obvious_fixes():
         'wikidata from wikipedia tag',
         'wikipedia tag in an outdated form for removal',
         'wikipedia tag from wikipedia tag in an outdated form and wikidata',
+        'wikipedia wikidata mismatch - follow wikidata redirect',
     ]
 
 def for_tests():
     return [
-        'wikipedia wikidata mismatch - follow wikidata redirect',
+        'should use a secondary wikipedia tag', # split in parts? reporting for humans seems reliable or for artworks in general such as memorial=statue / tourism=artwork
         'no longer existing object',
         'tag conflict with wikidata value',
         'tag conflict with wikidata value - testing',
