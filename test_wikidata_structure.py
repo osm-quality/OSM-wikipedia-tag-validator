@@ -31,6 +31,12 @@ class WikidataTests(unittest.TestCase):
     def test_rejects_links_to_events(self):
         self.assert_unlinkability('Q134301')
 
+    def test_rejects_links_to_events_case_of_hinderburg_disaster(self):
+        self.assert_unlinkability('Q3182723')
+
+    def test_rejects_links_to_events_case_of_a_battle(self):
+        self.assert_unlinkability('Q663435')
+
     def test_rejects_links_to_spacecraft(self):
         wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
         self.assertNotEqual(None, wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_error_report_if_property_indicates_that_it_is_unlinkable_as_primary('Q2513'))
@@ -101,7 +107,10 @@ class WikidataTests(unittest.TestCase):
         self.assert_linkability('Q1535460') # cultural heritage ( https://www.wikidata.org/w/index.php?title=Q210272&action=history ) is not a subclass of heritage designation, heritage (https://www.wikidata.org/w/index.php?title=Q2434238&offset=&limit=500&action=history) is not subclass of preservation
         
     def test_geoglyph_as_valid_primary_link(self):
-        self.assert_linkability('Q7717476') # not an event - via Q12060132 ("hell letter" that is not a signage, it is product of a signage)
+        self.assert_linkability('Q7717476') # not an event - via Q12060132 ("hillside letter" that is not a signage, it is product of a signage)
+
+    def test_sign_as_valid_primary_link(self):
+        self.assert_linkability('Q4804421') 
 
     def test_dunes_as_valid_primary_link(self):
         self.assert_linkability('Q1130721') # not an event - aeolian landform (Q4687862) is not sublass of aeolian process, natural object is not sublass of natural phenonemon ( https://www.wikidata.org/w/index.php?title=Q29651224&action=history )
@@ -166,8 +175,49 @@ class WikidataTests(unittest.TestCase):
     def test_cafe_as_valid_primary_link(self):
         self.assert_linkability('Q672804')
 
-    def test_religious_admininstrative_area_as_valid_primary_link(self):
+    def test_religious_administrative_area_as_valid_primary_link(self):
         self.assert_linkability('Q1364786')
+
+    def test_administrative_area_as_valid_primary_link(self):
+        self.assert_linkability('Q1144105')
 
     def test_hiking_trail_as_valid_primary_link(self):
         self.assert_linkability('Q783074')
+
+    def test_milestone_as_valid_primary_link(self):
+        self.assert_linkability('Q83545869')
+
+    def test_peak_as_valid_primary_link(self):
+        self.assert_linkability('Q31792598')
+
+    def test_urban_park_as_valid_primary_link(self):
+        self.assert_linkability('Q98411615')
+
+    def test_protected_landscape_area_as_valid_primary_link(self):
+        self.assert_linkability('Q8465509')
+
+    def test_headquarters_landscape_area_as_valid_primary_link(self):
+        self.assert_linkability('Q5578587')
+
+    def test_wayside_cross_as_valid_primary_link(self):
+        self.assert_linkability('Q63895140')
+
+    def test_museum_as_valid_primary_link(self):
+        self.assert_linkability('Q731126')
+
+    def test_community_garden_as_valid_primary_link(self):
+        self.assert_linkability('Q49493599')
+
+    def test_people_mover_as_valid_primary_link(self):
+        self.assert_linkability('Q2908764')
+
+    def test_maria_column_as_valid_primary_link(self):
+        self.assert_linkability('Q3894014')
+
+    def test_wind_turnine_as_valid_primary_link(self):
+        self.assert_linkability('Q2583657')
+
+    def test_neon_sign_as_valid_primary_link(self):
+        self.assert_linkability('Q11694423')
+
+
