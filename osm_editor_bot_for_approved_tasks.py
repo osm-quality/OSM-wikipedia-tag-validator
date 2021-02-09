@@ -215,7 +215,7 @@ def is_edit_allowed_object_has_set_wikipedia(osm_object_url, object_data, target
         return False
 
     if(len(countries_tagged_in_wikidata) > 1):
-        print("SKIPPED BECAUSE IN MORE THAN ONE COUNTRY " + e['osm_object_url'])
+        print("SKIPPED BECAUSE IN MORE THAN ONE COUNTRY " + osm_object_url)
         return False
 
     if(countries_tagged_in_wikidata == [target_country]):
