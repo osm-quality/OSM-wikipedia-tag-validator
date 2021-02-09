@@ -78,6 +78,7 @@ def html_file_header():
 
 def html_file_suffix():
     returned = ""
+    returned += "<p class=\"small\">files stored at <a href=\"https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/\">https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/</a>\n</p>"
     returned += "\t\t</div>\n"
     returned += "\t</body>\n"
     returned +=  "</html>\n"
