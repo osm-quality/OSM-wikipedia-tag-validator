@@ -6,13 +6,13 @@ def main()
   raise "missing #{download_location} folder" unless Dir.exist?(download_location)
   #download_by_wikidata("Q42424277")
   target_file = download_location + "/" + 'reloaded_Poland.osm'
-  file_with_query = reload_querries_location() + '/Polska.query'
+  file_with_query = reload_queries_location() + '/Polska.query'
   run_query_from_file(file_with_query, target_file)
 
   unprocessed_suffix = "_unprocessed"
   reload_suffix = "_reloaded"
   download_defined_regions(unprocessed_suffix)
-  download_defined_regions_from_reload_querries(reload_suffix)
+  download_defined_regions_from_reload_queries(reload_suffix)
   copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix)
   #download_graticules
 end
@@ -59,7 +59,7 @@ def region_data
   return YAML.load_file('regions_processed.yaml')
 end
 
-def download_defined_regions_from_reload_querries(suffix)
+def download_defined_regions_from_reload_queries(suffix)
   region_data.each do |region|
     while true
       area_name = region['region_name']
@@ -125,12 +125,12 @@ def download_location()
   return cache_location() + "/" + "downloaded_osm_data"
 end
 
-def reload_querries_location()
-  return cache_location() + "/" + "reload_querries"
+def reload_queries_location()
+  return cache_location() + "/" + "reload_queries"
 end
 
 def get_query_filename_for_reload_of_file(area_name)
-  return reload_querries_location() + "/" + area_name + ".query"
+  return reload_queries_location() + "/" + area_name + ".query"
 end
 
 def query_text(area_identifier_builder, area_identifier, expand)

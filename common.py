@@ -22,7 +22,7 @@ def __get_file_storage_location():
     cache_location_file.close()
     return returned
 
-def reload_querries_location():
+def reload_queries_location():
     return __get_file_storage_location() + "/" + "reload_queries"
 
 def downloaded_osm_data_location():
@@ -40,7 +40,7 @@ def verify_folder_structure():
             raise Exception("folder " + folder + " does not exist and must exist")
 
     creates = [
-        reload_querries_location(),
+        reload_queries_location(),
         downloaded_osm_data_location(),
         found_errors_storage_location(),
     ]

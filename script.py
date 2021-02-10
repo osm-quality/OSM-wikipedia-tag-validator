@@ -118,7 +118,7 @@ def make_report_file(language_code, osm_filepath, output_yaml_filepath):
 
 def make_query_to_reload_only_affected_objects(input_filename_with_reports, output_query_filename):
     input_filepath = common.found_errors_storage_location() + "/" + input_filename_with_reports
-    output_filepath = common.reload_querries_location() + "/" + output_query_filename
+    output_filepath = common.reload_queries_location() + "/" + output_query_filename
     if not os.path.isfile(input_filepath):
         print("file not found")
         return

@@ -1,7 +1,7 @@
 import shutil
 import common
 
-folder_for_removal = common.reload_querries_location()
+folder_for_removal = common.reload_queries_location()
 try:
     shutil.rmtree(folder_for_removal)
 except FileNotFoundError:
