@@ -89,7 +89,7 @@ def handle_follow_wikipedia_redirect(e):
         return
     language_code = wikimedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
     if language_code != "pl":
-        print(e['prerequisite']['wikipedia'] + " is not in the expected language code!")
+        print(e['osm_object_url'], " - ", e['prerequisite']['wikipedia'] + " is not in the expected language code!")
         return
     data = get_and_verify_data(e)
     if data == None:
@@ -111,7 +111,7 @@ def change_to_local_language(e):
         return
     language_code = wikimedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
     if language_code != "pl":
-        print(e['prerequisite']['wikipedia'] + " is not in the expected language code!")
+        print(e['osm_object_url'], " - ", e['prerequisite']['wikipedia'] + " is not in the expected language code!")
         return
     data = get_and_verify_data(e)
     if data == None:
