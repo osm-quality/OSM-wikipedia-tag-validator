@@ -109,9 +109,6 @@ class WikidataTests(unittest.TestCase):
     def test_geoglyph_as_valid_primary_link(self):
         self.assert_linkability('Q7717476') # not an event - via Q12060132 ("hillside letter" that is not a signage, it is product of a signage)
 
-    def test_sign_as_valid_primary_link(self):
-        self.assert_linkability('Q4804421') 
-
     def test_dunes_as_valid_primary_link(self):
         self.assert_linkability('Q1130721') # not an event - aeolian landform (Q4687862) is not sublass of aeolian process, natural object is not sublass of natural phenonemon ( https://www.wikidata.org/w/index.php?title=Q29651224&action=history )
 
@@ -184,9 +181,6 @@ class WikidataTests(unittest.TestCase):
     def test_hiking_trail_as_valid_primary_link(self):
         self.assert_linkability('Q783074')
 
-    def test_milestone_as_valid_primary_link(self):
-        self.assert_linkability('Q83545869')
-
     def test_peak_as_valid_primary_link(self):
         self.assert_linkability('Q31792598')
 
@@ -217,7 +211,20 @@ class WikidataTests(unittest.TestCase):
     def test_wind_turnine_as_valid_primary_link(self):
         self.assert_linkability('Q2583657')
 
+    # Blocked upstream, in Wikidata itself
+    def test_cathedral_as_valid_primary_link(self):
+        # see https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&diff=1358272534&oldid=1358269822
+        self.assert_linkability('Q2064095')
+
+    def test_sign_as_valid_primary_link(self):
+        # see https://www.wikidata.org/w/index.php?title=Wikidata%3AProject_chat&type=revision&diff=1358269822&oldid=1358263283
+        self.assert_linkability('Q4804421')
+
     def test_neon_sign_as_valid_primary_link(self):
+        # see link in test_sign_as_valid_primary_link for related discussion about physical signs
         self.assert_linkability('Q11694423')
 
+    def test_milestone_as_valid_primary_link(self):
+        # see link in test_sign_as_valid_primary_link for related discussion about physical signs
+        self.assert_linkability('Q83545869')
 
