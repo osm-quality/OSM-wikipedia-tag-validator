@@ -41,7 +41,7 @@ def generate_html_file(errors, output_file_name, types, information_header):
             for e in reported_errors:
                 if e['error_id'] == error_type_id:
                     if error_count == 0:
-                        file.write(row( '<h2>' + error_type_id + '</h2>', prefix_of_lines=prefix_of_lines))
+                        file.write(row( '<a href="#' + error_type_id + '"><h2 id="' + error_type_id + '">' + error_type_id + '</h2></a>', prefix_of_lines=prefix_of_lines))
                     error_count += 1
                     file.write(error_description(e, prefix_of_lines + "\t"))
             if error_count != 0:
