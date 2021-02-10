@@ -208,8 +208,8 @@ def write_index():
         name = filename.replace('.yaml', '')
         website_html += "<a href = " + common.htmlify(name) + ".html>" + common.htmlify(name) + "</a></br>\n"
     for entry in get_entries_to_process():
-        if "hide" in entry:
-            if entry["hide"] == True:
+        if "hidden" in entry:
+            if entry["hidden"] == True:
                 continue
         website_main_title_part = entry['website_main_title_part']
         filename = website_main_title_part + '.html'
