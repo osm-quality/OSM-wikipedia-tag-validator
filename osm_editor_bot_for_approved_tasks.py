@@ -222,9 +222,8 @@ def is_edit_allowed_object_has_set_wikipedia(osm_object_url, object_data, target
         return True
 
     if language_code != "pl" and wikipedia_tag not in ["de:Rastenburger Kleinbahnen"]:
-        print("UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + osm_object_url)
-        raise "UNEXPECTED LANGUAGE CODE for Wikipedia tag in " + osm_object_url
-        return False
+        print("UNEXPECTED LANGUAGE CODE <" + language_code + "> for Wikipedia tag in " + osm_object_url)
+        raise Exception("UNEXPECTED LANGUAGE CODE <" + language_code + "> for Wikipedia tag in " + osm_object_url)
 
     return False
 
