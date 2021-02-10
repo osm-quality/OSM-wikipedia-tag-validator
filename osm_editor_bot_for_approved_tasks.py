@@ -1,3 +1,4 @@
+import pprint
 import argparse
 import common
 import os
@@ -139,9 +140,27 @@ def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target
     if target_country != "pl":
         raise "unimplemented"
     type = osm_object_url.split("/")[3]
-    if type != "way" and type != "node":
-        print("for now only ways and nodes are attempted to be supported")
-        return False
+
+    nodes_ids_to_verify = []
+    if type != "way" and type != "node" and type != "relation":
+        error = "unexpected type " + str(type)
+        print(error)
+        raise ValueError(error)
+    if type == "relation":
+        for member in object_data["member"]:
+            if member['type'] == 'way':
+                way_url = "https://www.openstreetmap.org/way/" + str(member['ref'])
+                way_data = osm_bot_abstraction_layer.get_and_verify_data(way_url, prerequisites={}, prerequisite_failure_callback=note_or_fixme_review_request_indication)
+                print("recursive calling from " + osm_object_url + " to " + way_url)
+                #pprint.pprint(data)
+                if is_edit_allowed_object_based_on_location(way_url, way_data, target_country) == False:
+                    return False
+            elif member['type'] == 'node':
+                nodes_ids_to_verify.append(member['ref'])
+            elif member['type'] == 'relation':
+                print("for now recursive relations are not supported (handling cycles would be necessary)")
+            #pprint.pprint(member['type'])
+            #pprint.pprint(member['ref'])
     nodes_ids_to_verify = []
     print()
     if type == "node":
