@@ -21,7 +21,6 @@ def main():
         return
     errors = common.load_data(args.filepath)
     generate_html_file(errors, args.out + ".html", for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
-    generate_html_file(errors, args.out + " - boring.html", for_review_boring(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
     generate_html_file(errors, args.out + " - obvious.html", obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
     generate_html_file(errors, args.out + " - test.html", for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
     note_unused_errors(errors)
@@ -163,8 +162,6 @@ def note_unused_errors(reported_errors):
     for e in reported_errors:
         if e['error_id'] in for_review():
             continue
-        if e['error_id'] in for_review_boring():
-            continue
         if e['error_id'] in obvious_fixes():
             continue
         if e['error_id'] in for_tests():
@@ -184,11 +181,6 @@ def for_review():
         'malformed wikidata tag',
         'malformed wikipedia tag',
         'link to a list',
-    ]
-
-def for_review_boring():
-    return [
-        'tag may be added based on wikidata - website',
     ]
 
 def obvious_fixes():
@@ -213,6 +205,7 @@ def for_tests():
         'tag conflict with wikidata value - testing',
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',
+        'tag may be added based on wikidata - website', # dubious copyright
     ]
 
 if __name__ == "__main__":
