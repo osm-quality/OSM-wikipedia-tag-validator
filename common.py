@@ -70,6 +70,13 @@ def load_data(yaml_report_filepath):
             return None
     assert(False)
 
+def merged_outputs_filenames_list():
+    merged_outputs = []
+    for entry in get_entries_to_process():
+        if entry.get('merged_output_file', None) != None:
+            merged_outputs.append(entry['merged_output_file'])
+    return list(set(merged_outputs))
+
 def get_query_header(format):
     header = ""
     if format == "maproulette":
@@ -125,8 +132,11 @@ def get_query_for_loading_errors_by_category(filepath, printed_error_ids, format
     if os.path.isfile(filepath) == False:
         raise ValueError("there is no such filepath as " + filepath)
 
-    returned = get_query_header(format)
     reported_errors = load_data(filepath)
+    return get_query_for_loading_errors_by_category_from_error_data(reported_errors, printed_error_ids, format)
+
+def get_query_for_loading_errors_by_category_from_error_data(reported_errors, printed_error_ids, format):
+    returned = get_query_header(format)
     for e in sorted(reported_errors, key=lambda error: error['osm_object_url'] ):
         if e['error_id'] in printed_error_ids:
             type = e['osm_object_url'].split("/")[3]

@@ -67,12 +67,6 @@ def delete_output_files():
         except FileNotFoundError:
             pass
 
-def make_website(filename_with_report, output_filename_base):
-    split_human_bot = ""
-    filepath_to_report = common.found_errors_storage_location() + "/" + filename_with_report
-    system_call('python3 generate_webpage_with_error_output.py -filepath "' + filepath_to_report + '" -out "' + output_filename_base + '" ' + split_human_bot, False)
-
-
 def pipeline(region_name, website_main_title_part, merged_output_file, language_code, silent=False):
         output_filename_errors = region_name + ".osm" + '.yaml'
         if exit_pipeline_due_to_missing_osm_data(region_name + ".osm", silent):
@@ -140,13 +134,6 @@ def make_query_to_reload_only_affected_objects(input_filename_with_reports, outp
 def get_entries_to_process():
     return common.parse_yaml_file("regions_processed.yaml")
 
-def merged_outputs_list():
-    merged_outputs = []
-    for entry in get_entries_to_process():
-        if entry.get('merged_output_file', None) != None:
-            merged_outputs.append(entry['merged_output_file'])
-    return list(set(merged_outputs))
-
 def get_entry_contributing_to_merged_file(name_of_merged):
     for entry in get_entries_to_process():
         if entry.get('merged_output_file', None) == name_of_merged:
@@ -190,8 +177,13 @@ def pipeline_graticule_entries():
             silent = True,
             )
 
+def make_website(filename_with_report, output_filename_base):
+    split_human_bot = ""
+    filepath_to_report = common.found_errors_storage_location() + "/" + filename_with_report
+    system_call('python3 generate_webpage_with_error_output.py -filepath "' + filepath_to_report + '" -out "' + output_filename_base + '" ' + split_human_bot, False)
+
 def make_websites_for_merged_entries():
-    for filename in merged_outputs_list():
+    for filename in common.merged_outputs_filenames_list():
         filepath_to_file_listing_mistakes = common.found_errors_storage_location() + "/" + filename
         if os.path.isfile(filepath_to_file_listing_mistakes):
             # inherit split status on bottable and nonbottable tasks
@@ -202,32 +194,33 @@ def make_websites_for_merged_entries():
             print(filepath_to_file_listing_mistakes + ' file is not present during making website for merged entries [highly surprising]')
             raise ProcessingException('Unexpected failure')
 
-    for filename in merged_outputs_list():
+    for filename in common.merged_outputs_filenames_list():
         entry = get_entry_contributing_to_merged_file(filename)
         move_files_to_report_directory(filename.replace('.yaml', ''))
 
 def write_index():
+    website_html = ""
+    website_html += generate_webpage_with_error_output.html_file_header() + "\n"
+    website_html += generate_webpage_with_error_output.feedback_request() + "\n"
+    website_html += "</br>\n"
+    website_html += "</br>\n"
+    for filename in sorted(common.merged_outputs_filenames_list()):
+        name = filename.replace('.yaml', '')
+        website_html += "<a href = " + common.htmlify(name) + ".html>" + common.htmlify(name) + "</a></br>\n"
+    for entry in get_entries_to_process():
+        if "hide" in entry:
+            if entry["hide"] == True:
+                continue
+        website_main_title_part = entry['website_main_title_part']
+        filename = website_main_title_part + '.html'
+        potential_filepath = get_report_directory() + '/' + filename
+        if os.path.isfile(potential_filepath):
+            website_html += '<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + "</a></br>\n"
+        else:
+            print(potential_filepath + ' is not present during write_index')
+    website_html += generate_webpage_with_error_output.html_file_suffix()
     with open('index.html', 'w') as index:
-        index.write(generate_webpage_with_error_output.html_file_header())
-        index.write(generate_webpage_with_error_output.feedback_request())
-        index.write("</br>\n")
-        index.write("</br>\n")
-        for filename in sorted(merged_outputs_list()):
-            name = filename.replace('.yaml', '')
-            index.write("<a href = " + common.htmlify(name) + ".html>" + common.htmlify(name) + "</a></br>\n")
-        for entry in get_entries_to_process():
-            if "hide" in entry:
-                if entry["hide"] == True:
-                    continue
-            website_main_title_part = entry['website_main_title_part']
-            filename = website_main_title_part + '.html'
-            potential_filepath = get_report_directory() + '/' + filename
-            if os.path.isfile(potential_filepath):
-                index.write('<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + "</a></br>\n")
-            else:
-                print(potential_filepath + ' is not present during write_index')
-        index.write(generate_webpage_with_error_output.html_file_suffix())
-
+        index.write(website_html)
     move_file('index.html', get_report_directory() + '/' + 'index.html')
 
 if __name__ == '__main__':
