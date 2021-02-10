@@ -81,14 +81,16 @@
 - {region_name: Yolo County, website_main_title_part: 'Yolo County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
 - {region_name: Yuba County, website_main_title_part: 'Yuba County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
 
-# California - done by county
 
 - {region_name: Alabama, website_main_title_part: 'Alabama, USA', language_code: en}
 - {region_name: Alaska, website_main_title_part: 'Alaska, USA', language_code: en}
 - {region_name: Arizona, website_main_title_part: 'Arizona, USA', language_code: en}
 - {region_name: Arkansas, website_main_title_part: 'Arkansas, USA', language_code: en}
+# California - done by county
+- {region_name: Colorado, website_main_title_part: 'Colorado, USA', language_code: en}
+- {region_name: Connecticut, website_main_title_part: 'Connecticut, USA', language_code: en}
 
-#  Colorado Connecticut Delaware Florida Georgia Hawaii Idaho Illinois Indiana Iowa Kansas Kentucky Louisiana Maine Maryland Massachusetts Michigan Minnesota Mississippi Missouri Montana Nebraska Nevada New Hampshire New Jersey New Mexico New York North Carolina North Dakota Ohio Oklahoma Oregon Pennsylvania Rhode Island South Carolina South Dakota Tennessee Texas Utah Vermont Virginia Washington West Virginia Wisconsin Wyoming
+#   Delaware Florida Georgia Hawaii Idaho Illinois Indiana Iowa Kansas Kentucky Louisiana Maine Maryland Massachusetts Michigan Minnesota Mississippi Missouri Montana Nebraska Nevada New Hampshire New Jersey New Mexico New York North Carolina North Dakota Ohio Oklahoma Oregon Pennsylvania Rhode Island South Carolina South Dakota Tennessee Texas Utah Vermont Virginia Washington West Virginia Wisconsin Wyoming
 
 - {region_name: Oregon, website_main_title_part: 'Oregon, USA', language_code: en}
 - {region_name: Nevada, website_main_title_part: 'Nevada, USA', language_code: en}
