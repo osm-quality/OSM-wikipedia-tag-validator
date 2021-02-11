@@ -70,6 +70,9 @@ def load_data(yaml_report_filepath):
             return None
     assert(False)
 
+def get_entries_to_process():
+    return parse_yaml_file("regions_processed.yaml")
+
 def merged_outputs_filenames_list():
     merged_outputs = []
     for entry in get_entries_to_process():

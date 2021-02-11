@@ -51,7 +51,7 @@ def delete_output_files():
         file_for_deletion = region_name + ".osm.yaml"
         delete_in_storage_folder(file_for_deletion)
 
-    for entry in get_entries_to_process():
+    for entry in common.get_entries_to_process():
         delete_in_storage_folder(entry['region_name'] + ".osm.yaml")
         file = entry.get('merged_output_file', None)
         if file != None:
@@ -131,11 +131,8 @@ def make_query_to_reload_only_affected_objects(input_filename_with_reports, outp
         query = common.get_query_for_loading_errors_by_category(filepath = input_filepath, printed_error_ids = all_errors, format = "josm")
         query_file.write(query)
 
-def get_entries_to_process():
-    return common.parse_yaml_file("regions_processed.yaml")
-
 def get_entry_contributing_to_merged_file(name_of_merged):
-    for entry in get_entries_to_process():
+    for entry in common.get_entries_to_process():
         if entry.get('merged_output_file', None) == name_of_merged:
             return entry
     raise ProcessingException("unexpected")
@@ -151,7 +148,7 @@ def commit_changes_in_report_directory():
     os.chdir(current_working_directory)
 
 def pipeline_entries_from_config_file():
-    for entry in get_entries_to_process():
+    for entry in common.get_entries_to_process():
         pipeline(
             region_name = entry['region_name'],
             website_main_title_part = entry['website_main_title_part'],
@@ -207,7 +204,7 @@ def write_index():
     for filename in sorted(common.merged_outputs_filenames_list()):
         name = filename.replace('.yaml', '')
         website_html += "<a href = " + common.htmlify(name) + ".html>" + common.htmlify(name) + "</a></br>\n"
-    for entry in get_entries_to_process():
+    for entry in common.get_entries_to_process():
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
