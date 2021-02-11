@@ -3,22 +3,22 @@
 - {region_name: Shropshire (Ceremonial), website_main_title_part: 'Shropshire (ceremonial county), UK', merged_output_file: UK.yaml, language_code: en, requested_by: "Trigpoint from Discord https://discord.com/channels/413070382636072960/413070502580453387/809045523084214323"}
 - {region_name: Shropshire, website_main_title_part: 'Shropshire (county), UK', merged_output_file: UK.yaml, language_code: en, requested_by: "Trigpoint from Discord https://discord.com/channels/413070382636072960/413070502580453387/809045523084214323"}
 
-- {region_name: województwo małopolskie, website_main_title_part: 'województwo małopolskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo podkarpackie, website_main_title_part: 'województwo podkarpackie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo lubelskie, website_main_title_part: 'województwo lubelskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo mazowieckie, website_main_title_part: 'województwo mazowieckie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo podlaskie, website_main_title_part: 'województwo podlaskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo świętokrzyskie, website_main_title_part: 'województwo świętokrzyskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo warmińsko-mazurskie, website_main_title_part: 'województwo warmińsko-mazurskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo pomorskie, website_main_title_part: 'województwo pomorskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo kujawsko-pomorskie, website_main_title_part: 'województwo kujawsko-pomorskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo zachodniopomorskie, website_main_title_part: 'województwo zachodniopomorskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo lubuskie, website_main_title_part: 'województwo lubuskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo wielkopolskie, website_main_title_part: 'województwo wielkopolskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo dolnośląskie, website_main_title_part: 'województwo dolnośląskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo opolskie, website_main_title_part: 'województwo opolskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo śląskie, website_main_title_part: 'województwo śląskie', merged_output_file: 'Polska.yaml', language_code: pl}
-- {region_name: województwo łódzkie, website_main_title_part: 'województwo łódzkie', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo małopolskie, website_main_title_part: 'województwo małopolskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo podkarpackie, website_main_title_part: 'województwo podkarpackie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo lubelskie, website_main_title_part: 'województwo lubelskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo mazowieckie, website_main_title_part: 'województwo mazowieckie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo podlaskie, website_main_title_part: 'województwo podlaskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo świętokrzyskie, website_main_title_part: 'województwo świętokrzyskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo warmińsko-mazurskie, website_main_title_part: 'województwo warmińsko-mazurskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo pomorskie, website_main_title_part: 'województwo pomorskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo kujawsko-pomorskie, website_main_title_part: 'województwo kujawsko-pomorskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo zachodniopomorskie, website_main_title_part: 'województwo zachodniopomorskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo lubuskie, website_main_title_part: 'województwo lubuskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo wielkopolskie, website_main_title_part: 'województwo wielkopolskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo dolnośląskie, website_main_title_part: 'województwo dolnośląskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo opolskie, website_main_title_part: 'województwo opolskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo śląskie, website_main_title_part: 'województwo śląskie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
+- {region_name: województwo łódzkie, website_main_title_part: 'województwo łódzkie, Polska', merged_output_file: 'Polska.yaml', language_code: pl}
 - {region_name: Preetz, website_main_title_part: 'Preetz, Deutschland', merged_output_file: Deutschland.yaml, language_code: de}
 - {region_name: Bremen, website_main_title_part: 'Bremen, Deutschland', merged_output_file: Deutschland.yaml, language_code: de}
 - {region_name: Hamburg, website_main_title_part: 'Hamburg, Deutschland', merged_output_file: Deutschland.yaml, language_code: de, requested_by: "Telegram - DE, especially Hamburg region"}
