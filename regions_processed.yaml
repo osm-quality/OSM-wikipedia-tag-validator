@@ -100,4 +100,4 @@
 #- {region_name: Oregon, website_main_title_part: 'Oregon, USA', merged_output_file: 'USA (except California).yaml', language_code: en}
 #- {region_name: Nevada, website_main_title_part: 'Nevada, USA', merged_output_file: 'USA (except California).yaml', language_code: en}
 
-- {region_name: Rhode Island, website_main_title_part: 'Rhode Island', merged_output_file: 'USA (except California).yaml', language_code: en, requested_by: "ZeLonewolf from Discord - https://discord.com/channels/413070382636072960/413070502580453387/809052893402890240"}
+- {region_name: Rhode Island, website_main_title_part: 'Rhode Island, USA', merged_output_file: 'USA (except California).yaml', language_code: en, requested_by: "ZeLonewolf from Discord - https://discord.com/channels/413070382636072960/413070502580453387/809052893402890240"}
