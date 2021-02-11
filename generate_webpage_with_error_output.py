@@ -27,6 +27,7 @@ def main():
 
 def generate_html_file(errors, output_file_name, types, information_header):
     prefix_of_lines = "\t\t\t"
+    total_error_count = 0
     with open( output_file_name, 'w') as file:
         file.write(object_list_header())
         file.write(row( '<hr>', prefix_of_lines=prefix_of_lines))
@@ -43,6 +44,7 @@ def generate_html_file(errors, output_file_name, types, information_header):
                     if error_count == 0:
                         file.write(row( '<a href="#' + error_type_id + '"><h2 id="' + error_type_id + '">' + error_type_id + '</h2></a>', prefix_of_lines=prefix_of_lines))
                     error_count += 1
+                    total_error_count += 1
                     file.write(error_description(e, prefix_of_lines + "\t"))
             if error_count != 0:
                 file.write(row( '<a href="https://overpass-turbo.eu/">overpass query</a> usable in JOSM that will load all objects where this specific eror is present:', prefix_of_lines=prefix_of_lines ))
@@ -51,6 +53,7 @@ def generate_html_file(errors, output_file_name, types, information_header):
                 file.write(row(query_html, prefix_of_lines=prefix_of_lines))
                 file.write(row( '<hr>', prefix_of_lines=prefix_of_lines ))
         file.write(html_file_suffix())
+    return total_error_count
         
 def contact_url():
     return "https://www.openstreetmap.org/message/new/Mateusz%20Konieczny"
