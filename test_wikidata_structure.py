@@ -193,9 +193,6 @@ class WikidataTests(unittest.TestCase):
     def test_headquarters_landscape_area_as_valid_primary_link(self):
         self.assert_linkability('Q5578587')
 
-    def test_wayside_cross_as_valid_primary_link(self):
-        self.assert_linkability('Q63895140')
-
     def test_museum_as_valid_primary_link(self):
         self.assert_linkability('Q731126')
 
@@ -205,19 +202,16 @@ class WikidataTests(unittest.TestCase):
     def test_people_mover_as_valid_primary_link(self):
         self.assert_linkability('Q2908764')
 
-    def test_maria_column_as_valid_primary_link(self):
-        self.assert_linkability('Q3894014')
-
-    def test_wind_turnine_as_valid_primary_link(self):
+    def test_wind_turbine_as_valid_primary_link(self):
         self.assert_linkability('Q2583657')
 
-    # Blocked upstream, in Wikidata itself
     def test_cathedral_as_valid_primary_link(self):
         # see https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&diff=1358272534&oldid=1358269822
         self.assert_linkability('Q2064095')
 
     def test_sign_as_valid_primary_link(self):
         # see https://www.wikidata.org/w/index.php?title=Wikidata%3AProject_chat&type=revision&diff=1358269822&oldid=1358263283
+        # https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&diff=prev&oldid=1359638515
         self.assert_linkability('Q4804421')
 
     def test_neon_sign_as_valid_primary_link(self):
@@ -227,4 +221,12 @@ class WikidataTests(unittest.TestCase):
     def test_milestone_as_valid_primary_link(self):
         # see link in test_sign_as_valid_primary_link for related discussion about physical signs
         self.assert_linkability('Q83545869')
+
+    def test_maria_column_as_valid_primary_link(self):
+        # https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&oldid=1359739358#How_to_prevent_Maria_column_from_being_classified_as_a_process?
+        self.assert_linkability('Q3894014')
+
+    def test_wayside_cross_as_valid_primary_link(self):
+        # see test_maria_column_as_valid_primary_link for a discussion link
+        self.assert_linkability('Q63895140')
 
