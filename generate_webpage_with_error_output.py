@@ -28,6 +28,7 @@ def main():
 def generate_html_file(errors, output_file_name, types, information_header):
     prefix_of_lines = "\t\t\t"
     total_error_count = 0
+    added_reports = {}
     with open( output_file_name, 'w') as file:
         file.write(object_list_header())
         file.write(row( '<hr>', prefix_of_lines=prefix_of_lines))
@@ -43,9 +44,17 @@ def generate_html_file(errors, output_file_name, types, information_header):
                 if e['error_id'] == error_type_id:
                     if error_count == 0:
                         file.write(row( '<a href="#' + error_type_id + '"><h2 id="' + error_type_id + '">' + error_type_id + '</h2></a>', prefix_of_lines=prefix_of_lines))
+                    error_text = error_description(e, prefix_of_lines + "\t")
+                    if error_text in added_reports:
+                        print("duplicated error!")
+                        print(error_text)
+                        print(error_type_id)
+                        print(output_file_name)
+                        continue
+                    added_reports[error_text] = "added!"
                     error_count += 1
                     total_error_count += 1
-                    file.write(error_description(e, prefix_of_lines + "\t"))
+                    file.write(error_text)
             if error_count != 0:
                 file.write(row( '<a href="https://overpass-turbo.eu/">overpass query</a> usable in JOSM that will load all objects where this specific eror is present:', prefix_of_lines=prefix_of_lines ))
                 query = common.get_query_for_loading_errors_by_category_from_error_data(errors, printed_error_ids = [error_type_id], format = "josm")
