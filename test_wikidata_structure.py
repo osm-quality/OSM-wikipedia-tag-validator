@@ -230,3 +230,13 @@ class WikidataTests(unittest.TestCase):
         # see test_maria_column_as_valid_primary_link for a discussion link
         self.assert_linkability('Q63895140')
 
+    def test_submarine_cable_as_valid_primary_link(self):
+        # see test_maria_column_as_valid_primary_link for a discussion link
+        self.assert_linkability('Q7197229')
+
+    def collosal_statue_as_valid_primary_link(self):
+        self.assert_linkability('Q805442')
+
+    def air_force_academy_as_valid_primary_link(self):
+        self.assert_linkability('Q2015914')
+
