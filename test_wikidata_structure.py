@@ -234,9 +234,18 @@ class WikidataTests(unittest.TestCase):
         # see test_maria_column_as_valid_primary_link for a discussion link
         self.assert_linkability('Q7197229')
 
-    def collosal_statue_as_valid_primary_link(self):
+    def test_collosal_statue_as_valid_primary_link(self):
         self.assert_linkability('Q805442')
 
-    def air_force_academy_as_valid_primary_link(self):
+    def test_air_force_academy_as_valid_primary_link(self):
         self.assert_linkability('Q2015914')
+
+    def test_pipeline_as_valid_primary_link(self):
+        self.assert_linkability('Q7700085')
+
+    def test_country_club_as_valid_primary_link(self):
+        self.assert_linkability('Q2669978')
+
+    def test_tennis_court_as_valid_primary_link(self):
+        self.assert_linkability('Q52454')
 
