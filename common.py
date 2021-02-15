@@ -31,6 +31,12 @@ def downloaded_osm_data_location():
 def found_errors_storage_location():
     return __get_file_storage_location() + "/" + "found_errors"
 
+def output_filepath_for_raw_report_data_from_file_name(file_name):
+    return found_errors_storage_location() + "/" + file_name
+
+def output_filepath_for_raw_report_data_from_region_name(region_name):
+    return output_filepath_for_raw_report_data_from_file_name(region_name + ".osmXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + '.yaml')
+
 def verify_folder_structure():
     required = [
         __get_file_storage_location(),

@@ -14,20 +14,27 @@ def main():
     common.verify_folder_structure()
     download_data()
     delete_output_files()
-    pipeline(region_name = 'reloaded_Poland', website_main_title_part = 'reloaded_Poland', merged_output_file = None, language_code = "pl")
+    region_name = 'reloaded_Poland'
+    pipeline(
+        region_name = region_name,
+        website_main_title_part = region_name,
+        merged_output_file = None, language_code = "pl"
+        )
     pipeline_entries_from_config_file()
     make_websites_for_merged_entries()
     write_index()
-    make_query_to_reload_only_affected_objects('Polska.yaml', 'Polska.query')
+    make_query_to_reload_only_affected_objects(common.found_errors_storage_location() + "/" + 'Polska.yaml', 'Polska.query')
     commit_changes_in_report_directory()
     #pipeline_graticule_entries()
 
 def download_data():
     os.system("ruby download.rb")
 
-def add_problen_reports_into_another_file(source_yaml, target_yaml):
+def add_problen_reports_into_another_file(raw_reports_data_filepath, target_yaml):
     root = common.found_errors_storage_location() + "/"
-    system_call('cat "' + root + source_yaml +'" >> "' + root + target_yaml + '"', False)
+    if os.path.isfile(raw_reports_data_filepath) == False:
+        raise "missing file " + raw_reports_data_filepath
+    system_call('cat "' + raw_reports_data_filepath +'" >> "' + root + target_yaml + '"', False)
 
 def system_call(call, verbose=True):
     if verbose:
@@ -40,47 +47,48 @@ def copy_file(source, target):
 def move_file(source, target):
     shutil.move(source, target)
 
-def delete_in_storage_folder(filename):
+def delete_filepath(filepath):
         try:
-            os.remove(common.found_errors_storage_location() + filename)
+            os.remove(filepath)
         except FileNotFoundError:
             return
 
 def delete_output_files():
     for region_name in get_graticule_region_names():
         file_for_deletion = region_name + ".osm.yaml"
-        delete_in_storage_folder(file_for_deletion)
+        filepath = common.output_filepath_for_raw_report_data_from_file_name(file_for_deletion)
+        delete_filepath(filepath)
 
     for entry in common.get_entries_to_process():
-        delete_in_storage_folder(entry['region_name'] + ".osm.yaml")
-        file = entry.get('merged_output_file', None)
-        if file != None:
-            delete_in_storage_folder(file)
+        filepath = common.output_filepath_for_raw_report_data_from_region_name(entry['region_name'])
+        delete_filepath(filepath)
+        file_for_deletion = entry.get('merged_output_file', None)
+        if file_for_deletion != None:
+            filepath = common.output_filepath_for_raw_report_data_from_file_name(file_for_deletion)
+            delete_filepath(filepath)
 
     yaml_output_files = [
         'polska_reloaded.osm.yaml',
     ]
 
     for filename in yaml_output_files:
-        try:
-            os.remove(common.found_errors_storage_location() + filename)
-        except FileNotFoundError:
-            pass
+        filepath = common.output_filepath_for_raw_report_data_from_file_name(filename)
+        delete_filepath(filepath)
 
 def pipeline(region_name, website_main_title_part, merged_output_file, language_code, silent=False):
-        output_filename_errors = region_name + ".osm" + '.yaml'
+        raw_reports_data_filepath = common.output_filepath_for_raw_report_data_from_region_name(region_name)
         if exit_pipeline_due_to_missing_osm_data(region_name + ".osm", silent):
             return
         osm_filepath = common.downloaded_osm_data_location() + "/" + region_name + ".osm"
-        output_filepath = common.found_errors_storage_location() + "/" + output_filename_errors
-        make_report_file(language_code, osm_filepath, output_filepath)
-        if not os.path.isfile(output_filepath):
-            print(output_filepath + ' is not present [highly surprising]')
-            raise ProcessingException('Unexpected failure')
+        make_report_file(language_code, osm_filepath, raw_reports_data_filepath)
+        if not os.path.isfile(raw_reports_data_filepath):
+            error = raw_reports_data_filepath + ' is not present [highly surprising]'
+            print(error)
+            raise ProcessingException('Unexpected failure ' + error)
         if merged_output_file != None:
-            add_problen_reports_into_another_file(output_filename_errors, merged_output_file)
-        make_website(output_filename_errors, website_main_title_part)
-        make_query_to_reload_only_affected_objects(output_filename_errors, region_name + '.query')
+            add_problen_reports_into_another_file(raw_reports_data_filepath, merged_output_file)
+        make_website(raw_reports_data_filepath, website_main_title_part)
+        make_query_to_reload_only_affected_objects(raw_reports_data_filepath, region_name + '.query')
         move_files_to_report_directory(website_main_title_part)
 
 def move_files_to_report_directory(website_main_title_part):
@@ -109,11 +117,11 @@ def make_report_file(language_code, osm_filepath, output_yaml_filepath):
         language_code_parameter = '-expected_language_code ' + language_code
     system_call('python3 wikipedia_validator.py ' + language_code_parameter + ' -filepath "' + osm_filepath + '"'  + ' -output_filepath "' + output_yaml_filepath + '"')
 
-def make_query_to_reload_only_affected_objects(input_filename_with_reports, output_query_filename):
-    input_filepath = common.found_errors_storage_location() + "/" + input_filename_with_reports
+def make_query_to_reload_only_affected_objects(raw_reports_data_filepath, output_query_filename):
+    input_filepath = raw_reports_data_filepath
     output_filepath = common.reload_queries_location() + "/" + output_query_filename
     if not os.path.isfile(input_filepath):
-        print("file not found")
+        print(input_filepath + " file not found, reload query generation is skipped")
         return
     directory_path = os.path.split(output_filepath)[0]
     pathlib.Path(directory_path).mkdir(parents=True, exist_ok=True)
@@ -173,10 +181,9 @@ def pipeline_graticule_entries():
             silent = True,
             )
 
-def make_website(filename_with_report, output_filename_base):
-    split_human_bot = ""
-    filepath_to_report = common.found_errors_storage_location() + "/" + filename_with_report
-    system_call('python3 generate_webpage_with_error_output.py -filepath "' + filepath_to_report + '" -out "' + output_filename_base + '" ' + split_human_bot, False)
+def make_website(raw_reports_data_filepath, output_filename_base):
+    main_error_count = generate_webpage_with_error_output.generate_output_for_given_area(raw_reports_data_filepath, output_filename_base)
+    return main_error_count
 
 def make_websites_for_merged_entries():
     for filename in common.merged_outputs_filenames_list():
@@ -185,7 +192,8 @@ def make_websites_for_merged_entries():
             # inherit split status on bottable and nonbottable tasks
             entry = get_entry_contributing_to_merged_file(filename)
             output_filename_base = filename.replace(".yaml", "")
-            make_website(filename, output_filename_base)
+            filepath_to_report = common.found_errors_storage_location() + "/" + filename
+            make_website(filepath_to_report, output_filename_base)
         else:
             print(filepath_to_file_listing_mistakes + ' file is not present during making website for merged entries [highly surprising]')
             raise ProcessingException('Unexpected failure')
@@ -194,26 +202,59 @@ def make_websites_for_merged_entries():
         entry = get_entry_contributing_to_merged_file(filename)
         move_files_to_report_directory(filename.replace('.yaml', ''))
 
+def main_report_count_in_report_file(reports_filepath):
+    reports_data = common.load_data(reports_filepath)
+    count = 0
+    for error_type_id in generate_webpage_with_error_output.for_review():
+        for e in reports_data:
+                if e['error_id'] == error_type_id:
+                    count += 1
+    return count
+
+def problem_count_string(reports_filepath):
+    report_count = main_report_count_in_report_file(reports_filepath)
+    if report_count == 1:
+        return '(found ' + str(report_count) + ' problem)</br>'
+    return '(found ' + str(report_count) + ' problems)</br>'
+
 def write_index():
     website_html = ""
     website_html += generate_webpage_with_error_output.html_file_header() + "\n"
     website_html += generate_webpage_with_error_output.feedback_request() + "\n"
     website_html += "</br>\n"
     website_html += "</br>\n"
+
+    completed = ""
+
     for filename in sorted(common.merged_outputs_filenames_list()):
         name = filename.replace('.yaml', '')
-        website_html += "<a href = " + common.htmlify(name) + ".html>" + common.htmlify(name) + "</a></br>\n"
+        reports_filepath = common.found_errors_storage_location() + "/" + filename
+        website_html += '<a href = "' + common.htmlify(name) + '.html">' + common.htmlify(name) + '</a> ' + problem_count_string(reports_filepath) + '\n'
     for entry in common.get_entries_to_process():
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
         website_main_title_part = entry['website_main_title_part']
+
+
+        reports_filepath = common.output_filepath_for_raw_report_data_from_region_name(entry['region_name'])
+        report_count = main_report_count_in_report_file(reports_filepath)
+
         filename = website_main_title_part + '.html'
         potential_filepath = get_report_directory() + '/' + filename
         if os.path.isfile(potential_filepath):
-            website_html += '<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + "</a></br>\n"
+            line = '<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + '</a> ' + problem_count_string(potential_filepath) + '\n'
+            if report_count != 0:
+                website_html += line
+            else:
+                completed += line
         else:
             print(potential_filepath + ' is not present during write_index')
+    website_html += "<br>\n"
+    website_html += "<h1>Finished, congratulations :)</h1>\n"
+    if completed == "":
+        completed = "<p>nothing for now :(<p>\n"
+    website_html += completed
     website_html += generate_webpage_with_error_output.html_file_suffix()
     with open('index.html', 'w') as index:
         index.write(website_html)
