@@ -243,9 +243,27 @@ class WikidataTests(unittest.TestCase):
     def test_pipeline_as_valid_primary_link(self):
         self.assert_linkability('Q7700085')
 
+    def test_submarine_cable_as_valid_primary_link(self):
+        self.assert_linkability('Q7118902')
+
     def test_country_club_as_valid_primary_link(self):
         self.assert_linkability('Q2669978')
 
     def test_tennis_court_as_valid_primary_link(self):
         self.assert_linkability('Q52454')
+
+    def test_house_later_housing_area_as_valid_primary_link(self):
+        self.assert_linkability('Q6906313')
+
+    def test_artwork_as_valid_primary_link(self):
+        self.assert_linkability('Q57838673')
+
+    def test_gate_as_valid_primary_link(self):
+        self.assert_linkability('Q26317425')
+
+    def test_cricket_club_as_valid_primary_link(self):
+        self.assert_linkability('Q3195284')
+
+    def test_meridian_as_valid_primary_link(self):
+        self.assert_linkability('Q131108')
 
