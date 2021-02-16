@@ -183,6 +183,18 @@ def for_review():
         'malformed wikidata tag',
         'malformed wikipedia tag',
         'link to a list',
+        'should use a secondary wikipedia tag - linking to a human',
+        'should use a secondary wikipedia tag - linking to an animal or plant',
+        'should use a secondary wikipedia tag - linking to a physical process',
+        'should use a secondary wikipedia tag - linking to a website',
+        'should use a secondary wikipedia tag - linking to a television series',
+        'should use a secondary wikipedia tag - linking to a saying',
+        'should use a secondary wikipedia tag - linking to a website',
+        'should use a secondary wikipedia tag - linking to a restaurant chain',
+        'should use a secondary wikipedia tag - linking to a chain store',
+        'should use a secondary wikipedia tag - linking to a given name',
+        'should use a secondary wikipedia tag - linking to a vehicle model',
+        'should use a secondary wikipedia tag - linking to a company that has multiple locations',
     ]
 
 def obvious_fixes():
@@ -201,7 +213,10 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag', # split in parts? reporting for humans seems reliable or for artworks in general such as memorial=statue / tourism=artwork
+        'should use a secondary wikipedia tag - linking to an opera',
+        'should use a secondary wikipedia tag - linking to an event',
+        'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
+        'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'no longer existing object',
         'tag conflict with wikidata value',
         'tag conflict with wikidata value - testing',
