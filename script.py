@@ -14,12 +14,6 @@ def main():
     common.verify_folder_structure()
     download_data()
     delete_output_files()
-    region_name = 'reloaded_Poland'
-    pipeline(
-        region_name = region_name,
-        website_main_title_part = region_name,
-        merged_output_file = None, language_code = "pl"
-        )
     pipeline_entries_from_config_file()
     make_websites_for_merged_entries()
     write_index()

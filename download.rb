@@ -5,10 +5,6 @@ require 'fileutils'
 def main()
   raise "missing #{download_location} folder" unless Dir.exist?(download_location)
   #download_by_wikidata("Q42424277")
-  target_file = download_location + "/" + 'reloaded_Poland.osm'
-  file_with_query = reload_queries_location() + '/Polska.query'
-  run_query_from_file(file_with_query, target_file)
-
   unprocessed_suffix = "_unprocessed"
   reload_suffix = "_reloaded"
   download_defined_regions(unprocessed_suffix)
