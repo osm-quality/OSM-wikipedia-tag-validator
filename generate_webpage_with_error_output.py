@@ -3,6 +3,7 @@ import yaml
 import os.path
 import common
 import datetime
+import pprint
 
 def generate_output_for_given_area(raw_reports_data_filepath, main_output_name_part):
     if not os.path.isfile(raw_reports_data_filepath):
@@ -115,8 +116,11 @@ def object_list_header():
     returned += "<br />\n"
     return returned
 
-def link_to_osm_object(url):
-    return '<a href="' + url + '" target="_new">Affected OSM element that may be improved</a>'
+def link_to_osm_object(url, tags):
+    name = "an affected OSM element that may be improved"
+    if "name" in tags:
+        name = tags["name"] + " - " + name
+    return '<a href="' + url + '" target="_new">' + name + '</a>'
 
 def article_name_from_wikipedia_string(string):
     return string[string.find(":")+1:]
@@ -150,7 +154,36 @@ def row(text, prefix_of_lines):
 def error_description(e, prefix_of_lines):
     returned = ""
     returned += row(common.htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
-    returned += row(link_to_osm_object(e['osm_object_url']), prefix_of_lines=prefix_of_lines)
+    returned += row(link_to_osm_object(e['osm_object_url'], e['tags']), prefix_of_lines=prefix_of_lines)
+    desired_deprecated_form = e['desired_wikipedia_target']
+    current_deprecated_form = e['current_wikipedia_target']
+    desired = None
+    current = None
+    if e['proposed_tagging_changes'] != None:
+        for change in e['proposed_tagging_changes']:
+            if "wikipedia" in change["to"]:
+                if desired != None:
+                    raise ValueError("multiple incoming replacements of the same tag")
+                if current != None:
+                    raise ValueError("multiple original replacements of the same tag (may make sense)")
+                desired = change["to"]["wikipedia"]
+                current = change["from"]["wikipedia"]
+    if desired_deprecated_form != desired:
+        for _ in range(100):
+            print("+++++++++++++++++++++++++++++++++++++++")
+        print("MISMATCH on desired")
+        pprint.pprint(e)
+        pprint.pprint(['proposed_tagging_changes'])
+        pprint.pprint(['desired_wikipedia_target'])
+    if e['desired_wikipedia_target'] != None:
+        if current_deprecated_form != current:
+            for _ in range(100):
+                print("+++++++++++++++++++++++++++++++++++++++")
+            print("MISMATCH on current")
+            pprint.pprint(e)
+            pprint.pprint(['proposed_tagging_changes'])
+            pprint.pprint(['current_wikipedia_target'])
+
     if e['desired_wikipedia_target'] != None:
         returned += describe_proposed_relinking(e, prefix_of_lines)
     returned += row( '<hr>', prefix_of_lines=prefix_of_lines)
