@@ -198,6 +198,9 @@ def make_websites_for_merged_entries():
 
 def main_report_count_in_report_file(reports_filepath):
     reports_data = common.load_data(reports_filepath)
+    if reports_data == None:
+        print(reports_filepath + " has no data")
+        raise ValueError(reports_filepath + " has no data")
     count = 0
     for error_type_id in generate_webpage_with_error_output.for_review():
         for e in reports_data:
