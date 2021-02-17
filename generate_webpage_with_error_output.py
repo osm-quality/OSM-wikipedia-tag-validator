@@ -202,7 +202,6 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a chain store',
         'should use a secondary wikipedia tag - linking to a given name',
         'should use a secondary wikipedia tag - linking to a vehicle model',
-        'should use a secondary wikipedia tag - linking to a company that has multiple locations',
     ]
 
 def obvious_fixes():
@@ -221,6 +220,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a company that has multiple locations', # https://www.openstreetmap.org/way/203508108
         'should use a secondary wikipedia tag - linking to an opera',
         'should use a secondary wikipedia tag - linking to an event',
         'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
