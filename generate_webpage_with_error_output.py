@@ -34,6 +34,9 @@ def generate_html_file(errors, output_file_name, types, information_header):
                 if e['error_id'] == error_type_id:
                     if error_count == 0:
                         file.write(row( '<a href="#' + error_type_id + '"><h2 id="' + error_type_id + '">' + error_type_id + '</h2></a>', prefix_of_lines=prefix_of_lines))
+                        if e['error_general_intructions'] != None:
+                            instructions = common.htmlify(e['error_general_intructions'])
+                            file.write(row(instructions, prefix_of_lines=prefix_of_lines))
                     error_text = error_description(e, prefix_of_lines + "\t")
                     if error_text in added_reports:
                         print("duplicated error!")
