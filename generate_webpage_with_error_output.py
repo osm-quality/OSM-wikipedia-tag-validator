@@ -95,7 +95,12 @@ def html_file_header():
 
 def html_file_suffix():
     returned = ""
-    returned += "<p class=\"small\">files stored at <a href=\"https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/\">https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/</a>\n</p>"
+    returned += "<h1>Other useful resources</h1>"
+    returned += '<p>JOSM <a href="https://josm.openstreetmap.de/wiki/Help/Plugin/Wikipedia">Wikipedia plugin</a></p>'
+    returned += "<br />\n"
+    website = 'https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports'
+    stored = 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports'
+    returned += '<p class="small">Note to self: online version hosted at <a href="' + website + '">' + website + '</a>, files are stored at <a href="' + stored + '">' + stored + '</a>.'
     returned += "\t\t</div>\n"
     returned += "\t</body>\n"
     returned +=  "</html>\n"
