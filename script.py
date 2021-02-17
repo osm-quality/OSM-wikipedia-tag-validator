@@ -245,11 +245,12 @@ def write_index():
 
         reports_filepath = common.output_filepath_for_raw_report_data_from_region_name(entry['region_name'])
         report_count = main_report_count_in_report_file(reports_filepath)
+        report_count_string = problem_count_string(reports_filepath)
 
         filename = website_main_title_part + '.html'
         potential_filepath = get_report_directory() + '/' + filename
         if os.path.isfile(potential_filepath):
-            line = '<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + '</a> ' + problem_count_string(potential_filepath) + '\n'
+            line = '<a href = "' + common.htmlify(filename) + '">' + common.htmlify(website_main_title_part) + '</a> ' + report_count_string + '\n'
             if report_count != 0:
                 website_html += line
             else:
