@@ -267,6 +267,9 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
 
         if is_edit_allowed_object_has_set_wikipedia(e['osm_object_url'], data, "pl") == False and is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl") == False:
             print("Skipping object, apparently not within catchment area")
+            print(e['osm_object_url'])
+            print()
+            print()
             continue
 
         wikipedia_tag = data['tag']['wikipedia']
