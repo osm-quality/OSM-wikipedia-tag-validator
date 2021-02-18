@@ -4,3 +4,66 @@
 - {region_name: Kraków, website_main_title_part: 'Kraków', merged_output_file: , language_code: pl}
 - {region_name: Praha, website_main_title_part: 'Praha', merged_output_file: Česko.yaml, language_code: cz}
 - {region_name: Devon, website_main_title_part: 'Devon, UK', merged_output_file: UK.yaml, language_code: en}
+
+# https://en.wikipedia.org/wiki/List_of_counties_in_California
+- {region_name: Alameda County, website_main_title_part: 'Alameda County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Alpine County, website_main_title_part: 'Alpine County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Amador County, website_main_title_part: 'Amador County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Butte County, website_main_title_part: 'Butte County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Calaveras County, website_main_title_part: 'Butte County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Colusa County, website_main_title_part: 'Colusa County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Contra Costa County, website_main_title_part: 'Contra Costa County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Del Norte County, website_main_title_part: 'Del Norte County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: El Dorado County, website_main_title_part: 'El Dorado County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Fresno County, website_main_title_part: 'Fresno County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Glenn County, website_main_title_part: 'Glenn County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Humboldt County, website_main_title_part: 'Humboldt County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Imperial County, website_main_title_part: 'Imperial County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Inyo County, website_main_title_part: 'Inyo County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Kern County, website_main_title_part: 'Kern County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Kings County, website_main_title_part: 'Kings County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+# problematic, will explode due to lack of specificness - not included in Califoria
+#- {region_name: Lake County, website_main_title_part: 'Lake County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Lake County, website_main_title_part: 'Lake County, all of them, USA', language_code: en, requested_by: "Adamant1 via PM"}
+#
+- {region_name: Lassen County, website_main_title_part: 'Lasse County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Los Angeles, website_main_title_part: 'Los Angeles, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Madera County, website_main_title_part: 'Madera County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Marin County, website_main_title_part: 'Marin County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Mariposa County, website_main_title_part: 'Mariposa County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Mendocino County, website_main_title_part: 'Mendocino County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Merced County, website_main_title_part: 'Merced County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Modoc County, website_main_title_part: 'Modoc County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Mono County, website_main_title_part: 'Mono County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Monterey County, website_main_title_part: 'Monterey County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Napa County, website_main_title_part: 'Napa County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Nevada County, website_main_title_part: 'Nevada County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Orange County, website_main_title_part: 'Orange County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Placer County, website_main_title_part: 'Placer County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Plumas County, website_main_title_part: 'Plumas County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Riverside County, website_main_title_part: 'Riverside County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Sacramento County, website_main_title_part: 'Sacramento County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: San Benito County, website_main_title_part: 'San Benito County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: San Bernardino County, website_main_title_part: 'San Bernardino County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: San Diego County, website_main_title_part: 'San Diego County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: San Francisco, website_main_title_part: 'San Francisco, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: San Joaquin, website_main_title_part: 'San Joaquin, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: San Luis Obispo, website_main_title_part: 'San Luis Obispo, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: San Mateo, website_main_title_part: 'San Mateo, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Santa Barbara, website_main_title_part: 'Santa Barbara, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Santa Clara, website_main_title_part: 'Santa Clara, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Santa Cruz, website_main_title_part: 'Santa Cruz, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Shasta County, website_main_title_part: 'Shasta County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Sierra County, website_main_title_part: 'Sierra County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Siskiyou County, website_main_title_part: 'Siskiyou County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Solano County, website_main_title_part: 'Solano County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Sonoma County, website_main_title_part: 'Sonoma County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Stanislaus County, website_main_title_part: 'Stanislaus County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Sutter County, website_main_title_part: 'Sutter County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Tehama County, website_main_title_part: 'Tehama County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Trinity County, website_main_title_part: 'Trinity County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Tulare County, website_main_title_part: 'Tulare County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Tuolumne County, website_main_title_part: 'Tuolumne County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Ventura County, website_main_title_part: 'Tuolumne County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Yolo County, website_main_title_part: 'Yolo County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
+- {region_name: Yuba County, website_main_title_part: 'Yuba County, California, USA', merged_output_file: California.yaml,  hidden: true, language_code: en, requested_by: "Adamant1 via PM"}
