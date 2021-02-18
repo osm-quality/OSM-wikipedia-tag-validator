@@ -16,6 +16,7 @@ def generate_output_for_given_area(raw_reports_data_filepath, main_output_name_p
     note_unused_errors(reports_data)
     return main_report_count
 
+# TODO: errors -> reports here, and later elsewhere
 def generate_html_file(errors, output_file_name, types, information_header):
     prefix_of_lines = "\t\t\t"
     total_error_count = 0
