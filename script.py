@@ -17,7 +17,6 @@ def main():
     pipeline_entries_from_config_file()
     make_websites_for_merged_entries()
     write_index()
-    make_query_to_reload_only_affected_objects(common.found_errors_storage_location() + "/" + 'Polska.yaml', 'Polska.query')
     commit_changes_in_report_directory()
     #pipeline_graticule_entries()
 
@@ -60,14 +59,6 @@ def delete_output_files():
         if file_for_deletion != None:
             filepath = common.output_filepath_for_raw_report_data_from_file_name(file_for_deletion)
             delete_filepath(filepath)
-
-    yaml_output_files = [
-        'polska_reloaded.osm.yaml',
-    ]
-
-    for filename in yaml_output_files:
-        filepath = common.output_filepath_for_raw_report_data_from_file_name(filename)
-        delete_filepath(filepath)
 
 def pipeline(region_name, website_main_title_part, merged_output_file, language_code, silent=False):
         raw_reports_data_filepath = common.output_filepath_for_raw_report_data_from_region_name(region_name)
