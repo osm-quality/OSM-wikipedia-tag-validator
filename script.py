@@ -18,7 +18,6 @@ def main():
     make_websites_for_merged_entries()
     write_index()
     commit_changes_in_report_directory()
-    #pipeline_graticule_entries()
 
 def download_data():
     os.system("ruby download.rb")
@@ -47,11 +46,6 @@ def delete_filepath(filepath):
             return
 
 def delete_output_files():
-    for region_name in get_graticule_region_names():
-        file_for_deletion = region_name + ".osm.yaml"
-        filepath = common.output_filepath_for_raw_report_data_from_file_name(file_for_deletion)
-        delete_filepath(filepath)
-
     for entry in common.get_entries_to_process():
         filepath = common.output_filepath_for_raw_report_data_from_region_name(entry['region_name'])
         delete_filepath(filepath)
@@ -156,15 +150,6 @@ def get_graticule_region_names():
             returned.append(region_name)
     return returned
 
-def pipeline_graticule_entries():
-    for region_name in get_graticule_region_names():
-        pipeline(
-            region_name = region_name,
-            website_main_title_part = region_name,
-            merged_output_file = None,
-            language_code = None,
-            silent = True,
-            )
 
 def make_website(raw_reports_data_filepath, output_filename_base):
     main_error_count = generate_webpage_with_error_output.generate_output_for_given_area(raw_reports_data_filepath, output_filename_base)

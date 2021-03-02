@@ -10,7 +10,6 @@ def main()
   download_defined_regions(unprocessed_suffix)
   download_defined_regions_from_reload_queries(reload_suffix)
   copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix)
-  #download_graticules
 end
 
 def copy_files_into_positions_expected_by_processing_script(unprocessed_suffix, reload_suffix, debug=false)
@@ -104,15 +103,6 @@ def download_defined_regions(suffix)
   end
 end
 
-def download_graticules
-  # around Poland - for making map that shows how nicely stuff was fixed in Poland (TODO - make that map)
-  for lat in 48..55
-    for lon in 14..24
-      download_graticule(lat, lon)
-    end
-  end
-end
-
 def cache_location
   return File.read('cache_location.config')
 end
@@ -154,16 +144,6 @@ def query_text_by_name(name, expand)
   query_text(area_identifier_builder, area_identifier, expand)
 end
 
-def graticule_bbox(lower_lat, left_lon)
-  return "#{lower_lat},#{left_lon},#{lower_lat+1},#{left_lon+1}"
-end
-
-def query_text_by_graticule(lower_lat, left_lon, expand)
-  area_identifier_builder = nil
-  area_identifier = graticule_bbox(lower_lat, left_lon)
-  query_text(area_identifier_builder, area_identifier, expand)
-end
-
 def what_is_downloaded_to_text(expand)
   returned = ""
   returned += "_without_geometry" if expand == false
@@ -177,29 +157,9 @@ def produced_filename_by_name(name, expand, suffix)
   return download_location+"/"+filename
 end
 
-def produced_filename_by_graticule(lower_lat, left_lon, expand)
-  filename = "#{lower_lat}, #{left_lon}"
-  filename += what_is_downloaded_to_text(expand)
-  filename += ".osm"
-  return download_location+"/"+filename
-end
-
 def is_download_necessary_by_name(name, expand, suffix)
   filename = produced_filename_by_name(name, expand, suffix)
   return !File.exists?(filename)
-end
-
-def is_download_necessary_by_graticule(lower_lat, left_lon, expand)
-  filename = produced_filename_by_graticule(lower_lat, left_lon, expand)
-  return !File.exists?(filename)
-end
-
-def download_graticule(lower_lat, left_lon)
-  expand = true
-  query = query_text_by_graticule(lower_lat, left_lon, expand) 
-  filename = produced_filename_by_graticule(lower_lat, left_lon, expand)
-  return true if !is_download_necessary_by_graticule(lower_lat, left_lon, expand)
-  return download_and_save(query, filename)
 end
 
 def download_by_name(name, expand, suffix)
