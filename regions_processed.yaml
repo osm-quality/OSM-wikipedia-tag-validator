@@ -32,23 +32,23 @@
 - {region_name: Shropshire, website_main_title_part: 'Shropshire (county), UK', merged_output_file: 'UK.yaml', identifier: {'name': 'Shropshire'}, language_code: en, requested_by: 'Trigpoint from Discord https://discord.com/channels/413070382636072960/413070502580453387/809045523084214323'}
 
 # USA (United States)
-- {region_name: Alabama, website_main_title_part: 'Alabama, USA', merged_output_file: 'USA (except California).yaml', identifier: {'name': 'Alabama'}, language_code: en}
-- {region_name: Alaska, website_main_title_part: 'Alaska, USA', merged_output_file: 'USA (except California).yaml', identifier: {'name': 'Alaska'}, language_code: en}
-- {region_name: Arizona, website_main_title_part: 'Arizona, USA', merged_output_file: 'USA (except California).yaml', identifier: {'name': 'Arizona'}, language_code: en}
-- {region_name: Arkansas, website_main_title_part: 'Arkansas, USA', merged_output_file: 'USA (except California).yaml', identifier: {'name': 'Arkansas'}, language_code: en}
+- {region_name: Alabama, website_main_title_part: 'Alabama, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'Alabama'}, language_code: en}
+- {region_name: Alaska, website_main_title_part: 'Alaska, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'Alaska'}, language_code: en}
+- {region_name: Arizona, website_main_title_part: 'Arizona, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'Arizona'}, language_code: en}
+- {region_name: Arkansas, website_main_title_part: 'Arkansas, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'Arkansas'}, language_code: en}
 
  # split by county in regions_configured_unused.yaml, useful for computers with lower memory
 - {region_name: California, website_main_title_part: 'California, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'California'}, language_code: en, requested_by: 'Adamant1 via PM'}
-- {region_name: Colorado, website_main_title_part: 'Colorado, USA', merged_output_file: 'USA (except California).yaml', identifier: {'name': 'Colorado'}, language_code: en}
+- {region_name: Colorado, website_main_title_part: 'Colorado, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'Colorado'}, language_code: en}
 # Connecticut Delaware Florida Georgia Hawaii Idaho Illinois
 # Indiana Iowa Kansas Kentucky Louisiana Maine Maryland Massachusetts Michigan Minnesota Mississippi Missouri Montana Nebraska Nevada
 # New Hampshire
 # New Jersey
 # New Mexico
-- {region_name: New York, website_main_title_part: 'New York, USA', merged_output_file: 'USA (except California).yaml', identifier: {'name': 'New York'}, language_code: en, requested_by: 'ke9tv via PM, https://www.openstreetmap.org/messages/924617'}
+- {region_name: New York, website_main_title_part: 'New York, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'New York'}, language_code: en, requested_by: 'ke9tv via PM, https://www.openstreetmap.org/messages/924617'}
 # North Carolina
 #  North Dakota Ohio Oklahoma Oregon Pennsylvania Rhode Island South Carolina South Dakota Tennessee Texas Utah Vermont Virginia 
-- {region_name: Rhode Island, website_main_title_part: 'Rhode Island, USA', merged_output_file: 'USA (except California).yaml', identifier: {'name': 'Rhode Island'}, language_code: en, requested_by: 'ZeLonewolf from Discord - https://discord.com/channels/413070382636072960/413070502580453387/809052893402890240'}
-- {region_name: Texas, website_main_title_part: 'Texas, USA', merged_output_file: 'USA (except California).yaml', identifier: {'name': 'Texas'}, language_code: en, requested_by: 'skquinn (OSM user name) via PM https://www.openstreetmap.org/messages/924460'}
-- {region_name: Washington, website_main_title_part: 'Washington, USA', merged_output_file: 'USA (except California).yaml', identifier: {'ISO3166-2': 'US-WA'}, language_code: en, requested_by: 'Glassman (OSM user name) via PM https://www.openstreetmap.org/messages/924490'}
+- {region_name: Rhode Island, website_main_title_part: 'Rhode Island, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'Rhode Island'}, language_code: en, requested_by: 'ZeLonewolf from Discord - https://discord.com/channels/413070382636072960/413070502580453387/809052893402890240'}
+- {region_name: Texas, website_main_title_part: 'Texas, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'Texas'}, language_code: en, requested_by: 'skquinn (OSM user name) via PM https://www.openstreetmap.org/messages/924460'}
+- {region_name: Washington, website_main_title_part: 'Washington, USA', merged_output_file: 'USA.yaml', identifier: {'ISO3166-2': 'US-WA'}, language_code: en, requested_by: 'Glassman (OSM user name) via PM https://www.openstreetmap.org/messages/924490'}
 #  West Virginia Wisconsin Wyoming
