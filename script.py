@@ -12,12 +12,7 @@ class ProcessingException(Exception):
     """TODO: documentation, not something so badly generic"""
 
 def main():
-    helper_object = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(False, None, None, False, False, False)
-    for entry in common.get_entries_to_process():
-        if 'language_code' in entry:
-            print(dir(wikimedia_link_issue_reporter))
-            helper_object.wikidata_ids_of_countries_with_language(entry['language_code'])
-
+    detect_missing_data_in_used_library()
     common.verify_folder_structure()
     download_data()
     delete_output_files()
@@ -25,6 +20,15 @@ def main():
     make_websites_for_merged_entries()
     write_index()
     commit_changes_in_report_directory()
+
+def detect_missing_data_in_used_library():
+    # trigger what is likely to crash later,
+    # rather than doing after expensive and long setup
+    helper_object = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(False, None, None, False, False, False)
+    for entry in common.get_entries_to_process():
+        if 'language_code' in entry:
+            print(dir(wikimedia_link_issue_reporter))
+            helper_object.wikidata_ids_of_countries_with_language(entry['language_code'])
 
 def download_data():
     os.system("ruby download.rb")
