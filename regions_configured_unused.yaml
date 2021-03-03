@@ -1,3 +1,12 @@
+# to convert into new format following code may be useful
+for entry in common.get_entries_to_process():
+    extra = ""
+    if "requested_by" in entry:
+        extra = ", requested_by: '" + entry['requested_by'] + "'"
+    print("- {region_name: " + entry["region_name"] + ", website_main_title_part: '" + entry["website_main_title_part"] + "', merged_output_file: '" + entry["merged_output_file"] + "', identifier: {name: '" + entry["region_name"] + "'}, language_code: " + entry["language_code"] + extra + "}")
+return
+
+
 - {region_name: Preetz, website_main_title_part: 'Preetz, Deutschland', merged_output_file: Deutschland.yaml, language_code: de}
 - {region_name: Bremen, website_main_title_part: 'Bremen, Deutschland', merged_output_file: Deutschland.yaml, language_code: de}
 - {region_name: Dublin, website_main_title_part: 'Dublin, Ireland', merged_output_file: Ireland.yaml, language_code: en}
