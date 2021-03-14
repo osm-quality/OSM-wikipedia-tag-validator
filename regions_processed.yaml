@@ -23,7 +23,7 @@
 - {region_name: województwo łódzkie, website_main_title_part: 'województwo łódzkie, Polska', merged_output_file: 'Polska.yaml', identifier: {'name': 'województwo łódzkie'}, language_code: pl}
 
 - {region_name: Hamburg, website_main_title_part: 'Hamburg, Deutschland', merged_output_file: 'Deutschland.yaml', identifier: {'name': 'Hamburg'}, language_code: de, requested_by: 'Telegram - DE, especially Hamburg region'}
-- {region_name: România, website_main_title_part: 'România (Romania, Rumunia)', merged_output_file: 'R.yaml', identifier: {'name': 'România'}, language_code: ro, requested_by: 'baditaflorin, in PM https://www.openstreetmap.org/messages/924899'}
+- {region_name: România, website_main_title_part: 'România (Romania, Rumunia)', identifier: {'name': 'România'}, language_code: ro, requested_by: 'baditaflorin, in PM https://www.openstreetmap.org/messages/924899'}
 
 # UK (United Kingdom)
 - {region_name: Thanet, website_main_title_part: 'Thanet, UK', merged_output_file: 'UK.yaml', identifier: {'name': 'Thanet'}, language_code: en, requested_by: 'JayTurnr from Discord https://discord.com/channels/413070382636072960/413070502580453387/809044029437902899'}
