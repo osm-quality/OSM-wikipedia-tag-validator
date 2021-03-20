@@ -6,17 +6,20 @@ from subprocess import call
 import pathlib
 import datetime
 import shutil
+import time
 from wikibrain import wikimedia_link_issue_reporter
+from osm_bot_abstraction_layer.overpass_downloader import download_overpass_query
+from osm_bot_abstraction_layer import overpass_query_maker
 
 class ProcessingException(Exception):
     """TODO: documentation, not something so badly generic"""
 
 def main():
+    script_run_start_time = datetime.datetime.now()
     detect_missing_data_in_used_library()
     common.verify_folder_structure()
-    download_data()
-    delete_output_files()
-    pipeline_entries_from_config_file()
+    delete_merged_output_files()
+    pipeline_entries_from_config_file(script_run_start_time)
     make_websites_for_merged_entries()
     write_index()
     commit_changes_in_report_directory()
@@ -27,11 +30,7 @@ def detect_missing_data_in_used_library():
     helper_object = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(False, None, None, False, False, False)
     for entry in common.get_entries_to_process():
         if 'language_code' in entry:
-            print(dir(wikimedia_link_issue_reporter))
             helper_object.wikidata_ids_of_countries_with_language(entry['language_code'])
-
-def download_data():
-    os.system("ruby download.rb")
 
 def add_problen_reports_into_another_file(raw_reports_data_filepath, target_yaml):
     root = common.found_errors_storage_location() + "/"
@@ -56,17 +55,17 @@ def delete_filepath(filepath):
         except FileNotFoundError:
             return
 
-def delete_output_files():
+def delete_merged_output_files():
     for entry in common.get_entries_to_process():
-        filepath = common.output_filepath_for_raw_report_data_from_region_name(entry['region_name'])
-        delete_filepath(filepath)
         file_for_deletion = entry.get('merged_output_file', None)
         if file_for_deletion != None:
             filepath = common.output_filepath_for_raw_report_data_from_file_name(file_for_deletion)
             delete_filepath(filepath)
 
-def pipeline(region_name, website_main_title_part, merged_output_file, language_code, silent=False):
+def pipeline(region_name, website_main_title_part, merged_output_file, language_code, identifier_of_region, script_run_start_time, silent=False):
+        download_entry(region_name, identifier_of_region)
         raw_reports_data_filepath = common.output_filepath_for_raw_report_data_from_region_name(region_name)
+        delete_filepath(raw_reports_data_filepath) # do it smarter to avoid data loss in case of interrupted process
         if exit_pipeline_due_to_missing_osm_data(region_name + ".osm", silent):
             return
         osm_filepath = common.downloaded_osm_data_location() + "/" + region_name + ".osm"
@@ -78,7 +77,7 @@ def pipeline(region_name, website_main_title_part, merged_output_file, language_
         if merged_output_file != None:
             add_problen_reports_into_another_file(raw_reports_data_filepath, merged_output_file)
         make_website(raw_reports_data_filepath, website_main_title_part)
-        make_query_to_reload_only_affected_objects(raw_reports_data_filepath, region_name + '.query')
+        make_query_to_reload_only_affected_objects(raw_reports_data_filepath, region_name + '.query', script_run_start_time, identifier_of_region)
         move_files_to_report_directory(website_main_title_part)
 
 def move_files_to_report_directory(website_main_title_part):
@@ -107,7 +106,7 @@ def make_report_file(language_code, osm_filepath, output_yaml_filepath):
         language_code_parameter = '-expected_language_code ' + language_code
     system_call('python3 wikipedia_validator.py ' + language_code_parameter + ' -filepath "' + osm_filepath + '"'  + ' -output_filepath "' + output_yaml_filepath + '"')
 
-def make_query_to_reload_only_affected_objects(raw_reports_data_filepath, output_query_filename):
+def make_query_to_reload_only_affected_objects(raw_reports_data_filepath, output_query_filename, script_run_start_time, identifier_of_region):
     input_filepath = raw_reports_data_filepath
     output_filepath = common.reload_queries_location() + "/" + output_query_filename
     if not os.path.isfile(input_filepath):
@@ -125,7 +124,15 @@ def make_query_to_reload_only_affected_objects(raw_reports_data_filepath, output
         for e in common.load_data(input_filepath):
             if e['error_id'] not in all_errors:
                 all_errors.append(e['error_id'])
-        query = common.get_query_for_loading_errors_by_category(filepath = input_filepath, printed_error_ids = all_errors, format = "josm")
+        
+        date = overpass_query_maker.datetime_to_overpass_data_format(script_run_start_time)
+        area_name_in_query = "searchArea"
+        area_identifier = 'area.' + area_name_in_query
+        area_finder_string = area_finder(identifier_of_region, area_name_in_query)
+        extra_query_part = "\n" + area_finder_string + "\n"
+        extra_query_part += 'nwr[wikidata](newer:"' + date + '")(' + area_identifier+ ');\n'
+        extra_query_part += 'nwr[wikipedia](newer:"' + date + '")(' + area_identifier+ ');\n'
+        query = common.get_query_for_loading_errors_by_category(filepath = input_filepath, printed_error_ids = all_errors, format = "josm", extra_query_part=extra_query_part)
         query_file.write(query)
 
 def get_entry_contributing_to_merged_file(name_of_merged):
@@ -144,23 +151,96 @@ def commit_changes_in_report_directory():
     system_call('git commit -m "automatic update of report files"')
     os.chdir(current_working_directory)
 
-def pipeline_entries_from_config_file():
+def pipeline_entries_from_config_file(script_run_start_time):
     for entry in common.get_entries_to_process():
         pipeline(
             region_name = entry['region_name'],
             website_main_title_part = entry['website_main_title_part'],
             merged_output_file = entry.get('merged_output_file', None),
             language_code = entry.get('language_code', None),
+            identifier_of_region=entry['identifier'],
+            script_run_start_time = script_run_start_time,
             )
 
-def get_graticule_region_names():
-    returned = []
-    for lat in range(-180, 180+1):
-        for lon in range(-180, 180+1):
-            region_name = str(lat) + ", " + str(lon)
-            returned.append(region_name)
+
+def download_entry(area_name, identifier_of_region):
+    suffix = "_reloaded"
+    # todo: avoid destructive downloads,
+    # at the same time avoid overloading disk
+    downloaded_filename = downloaded_file_with_osm_data(area_name, suffix)
+    query_filepath = get_query_filename_for_reload_of_file(area_name)
+    if pathlib.Path(query_filepath).is_file():
+        with open(query_filepath, 'r') as query_file:
+            query = query_file.read()
+            print("downloading reload query for", area_name)
+            download_overpass_query(query, downloaded_filename, timeout=timeout())
+            print("copying to", downloaded_file_with_osm_data(area_name, ""))
+            copy_file(source=downloaded_filename, target=downloaded_file_with_osm_data(area_name, ""))
+            return
+    suffix = "_unprocessed"
+    downloaded_filename = downloaded_file_with_osm_data(area_name, suffix)
+    if pathlib.Path(downloaded_filename).is_file():
+        print("full data file is downloaded already")
+    else:
+        print("there is no reload query for ", area_name, "full data needs to be obtained")
+        area_name_in_query = "searchArea"
+        area_finder_string = area_finder(identifier_of_region, area_name_in_query)
+        query = query_text(area_finder_string, area_name_in_query)
+        download_overpass_query(query, downloaded_filename, timeout=timeout())
+    print("copying to", downloaded_file_with_osm_data(area_name, ""))
+    copy_file(source=downloaded_filename, target=downloaded_file_with_osm_data(area_name, ""))
+
+def area_finder(identifier_tag_dictionary, name_of_area):
+    for key in identifier_tag_dictionary.keys():
+        if "'" in key:
+            raise "escaping not implemented for ' character"
+        if "'" in identifier_tag_dictionary[key]:
+            raise "escaping not implemented for ' character"
+    if len(identifier_tag_dictionary) == 0:
+        raise "unexpectedly empty"
+    returned = "area"
+    for key in identifier_tag_dictionary.keys():
+        value = identifier_tag_dictionary[key]
+        returned += "['" + key + "'='" + value + "']"
+    returned += "->." + name_of_area + ";\n"
     return returned
 
+def query_text(area_finder_string, area_name):
+    area_identifier = 'area.' + area_name
+
+    query = "[timeout:" + str(timeout()) + "];\n"
+    query += "(\n"
+    query += area_finder_string 
+    query += "node['wikipedia'](" + area_identifier+ ");\n"
+    query += "way['wikipedia'](" + area_identifier+ ");\n"
+    query += "relation['wikipedia'](" + area_identifier+ ");\n"
+    query += "node['wikidata'](" + area_identifier+ ");\n"
+    query += "way['wikidata'](" + area_identifier+ ");\n"
+    query += "relation['wikidata'](" + area_identifier+ ");\n"
+
+    query += "node[~'wikipedia:.*'~'.*'](" + area_identifier+ ");\n"
+    query += "way[~'wikipedia:.*'~'.*'](" + area_identifier+ ");\n"
+    query += "relation[~'wikipedia:.*'~'.*'](" + area_identifier+ ");\n"
+
+    query += ');\n'
+    query += "out body;\n"
+    query += ">;\n" # expanding
+    query += 'out skel qt;'
+    return query
+
+def timeout():
+  return 2550
+
+
+# TODO: synchronize with make_query_to_reload_only_affected_objects calls
+# to ensure name synchronization
+def get_query_filename_for_reload_of_file(area_name):
+  return common.reload_queries_location() + "/" + area_name + ".query"
+
+def downloaded_file_with_osm_data(name, suffix):
+  filename = name
+  filename += suffix + ".osm"
+  return common.downloaded_osm_data_location() + "/" + filename
 
 def make_website(raw_reports_data_filepath, output_filename_base):
     main_error_count = generate_webpage_with_error_output.generate_output_for_given_area(raw_reports_data_filepath, output_filename_base)

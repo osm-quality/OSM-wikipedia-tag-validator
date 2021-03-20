@@ -1,7 +1,12 @@
-
-# region_name is used (among other places) in
-# area[name="New York"]->.searchArea;
-# type of query to download relevant data
+- {region_name: Ukraine, website_main_title_part: 'Україна (Ukraine)', identifier: {'ISO3166-1': 'UA'}, language_code: uk, requested_by: 'https://t.me/OpenStreetMapOrg/73857 Alex Riabstev'}
+- {region_name: Nederland, website_main_title_part: 'Nederland (Holandia)', identifier: {'ISO3166-1': 'NL'}, language_code: nl, requested_by: 'Casper het spook, in Discord https://discord.com/channels/@me/812445542973571124/815545212498739220'}
+- {region_name: Vatican, website_main_title_part: 'Civitas Vaticana (Vatican, Watykan)', identifier: {'ISO3166-1': 'VA'}, language_code: it} # , merged_output_file: 'Italy + Vatican + San Marino.yaml'
+- {region_name: Iran, website_main_title_part: 'ایران (Iran)', identifier: {'ISO3166-1': 'IR'}, language_code: fa, requested_by: 'Claudius Henrichs via Telegram (private message)'}
+- {region_name: Nederland, website_main_title_part: 'Nederland (Holandia)', identifier: {'ISO3166-1': 'NL'}, language_code: nl, requested_by: 'Casper het spook, in Discord https://discord.com/channels/@me/812445542973571124/815545212498739220'}
+- {region_name: Montenegro, website_main_title_part: 'Crna Gora - Црна Гора (Montenegro, Czarnogóra)', identifier: {'ISO3166-1': 'ME'}, language_code: sr, requested_by: 'Komadinovic Vanja, in PM https://www.openstreetmap.org/messages/928133'}
+- {region_name: Serbia, website_main_title_part: 'Србија (Serbia)', identifier: {'ISO3166-1': 'RS'}, language_code: sr, requested_by: 'Komadinovic Vanja, in PM https://www.openstreetmap.org/messages/928133'}
+- {region_name: Bulgaria, website_main_title_part: 'Бългaрия (Bulgaria, Bułgaria)', identifier: {'ISO3166-1': 'BG'}, language_code: bg, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819954835142475786 Dimitar155 [BG]'}
+- {region_name: Turkey, website_main_title_part: 'Türkiye (Turkey, Turcja)', identifier: {'ISO3166-1': 'TR'}, language_code: tr, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819955226877624370 mappinglander'}
 
 # Poland
 #- {region_name: Polska, website_main_title_part: 'Polska', language_code: pl}

@@ -134,7 +134,7 @@ def tag_dict_to_overpass_query_format(tags):
             returned += "['" + escaped_key + "'='" + escaped_value + "']"
     return returned
 
-def get_query_for_loading_errors_by_category(filepath, printed_error_ids, format):
+def get_query_for_loading_errors_by_category(filepath, printed_error_ids, format, extra_query_part=""):
     # accepted formats:
     # maproulette - json output, workarounds for maproulette bugs
     # josm - xml output
@@ -142,9 +142,9 @@ def get_query_for_loading_errors_by_category(filepath, printed_error_ids, format
         raise ValueError("there is no such filepath as " + filepath)
 
     reported_errors = load_data(filepath)
-    return get_query_for_loading_errors_by_category_from_error_data(reported_errors, printed_error_ids, format)
+    return get_query_for_loading_errors_by_category_from_error_data(reported_errors, printed_error_ids, format, extra_query_part)
 
-def get_query_for_loading_errors_by_category_from_error_data(reported_errors, printed_error_ids, format):
+def get_query_for_loading_errors_by_category_from_error_data(reported_errors, printed_error_ids, format, extra_query_part=""):
     returned = get_query_header(format)
     for e in sorted(reported_errors, key=lambda error: error['osm_object_url'] ):
         if e['error_id'] in printed_error_ids:
@@ -154,5 +154,6 @@ def get_query_for_loading_errors_by_category_from_error_data(reported_errors, pr
                 #relations skipped due to https://github.com/maproulette/maproulette2/issues/259
                 continue
             returned += type+'('+id+')' + get_prerequisite_in_overpass_query_format(e) + ';' + "\n"
+    returned += extra_query_part
     returned += get_query_footer(format) + "//" + str(printed_error_ids)
     return returned
