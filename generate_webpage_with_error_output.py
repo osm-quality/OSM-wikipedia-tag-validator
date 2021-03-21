@@ -156,8 +156,8 @@ def error_description(e, prefix_of_lines):
     returned = ""
     returned += row(common.htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
     returned += row(link_to_osm_object(e['osm_object_url'], e['tags']), prefix_of_lines=prefix_of_lines)
-    desired_deprecated_form = e['desired_wikipedia_target']
-    current_deprecated_form = e['current_wikipedia_target']
+    desired_deprecated_form = e['desired_wikipedia_target'] #TODO - eliminate use of deprecated form, starting from bot
+    current_deprecated_form = e['current_wikipedia_target'] #TODO - eliminate use of deprecated form, starting from bot
     desired = None
     current = None
     if e['proposed_tagging_changes'] != None:
