@@ -1,3 +1,5 @@
+# TODO: replace use of region_name by website_main_title_part where unique titles are needed
+# remove region_name from regions processed
 import common
 import os
 import yaml
