@@ -236,10 +236,12 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a chain store',
         'should use a secondary wikipedia tag - linking to a given name',
         'should use a secondary wikipedia tag - linking to a vehicle model',
+        'mismatching teryt:simc codes in wikidata and in osm element',
     ]
 
 def obvious_fixes():
     return [
+        "wikipedia needs to be updated based on wikidata code and teryt:simc identifier",
         'blacklisted connection with known replacement',
         'wikipedia tag unexpected language',
         'wikipedia tag from wikipedia tag in an outdated form',
