@@ -236,6 +236,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a chain store',
         'should use a secondary wikipedia tag - linking to a given name',
         'mismatching teryt:simc codes in wikidata and in osm element',
+        "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
     ]
 
 def obvious_fixes():
