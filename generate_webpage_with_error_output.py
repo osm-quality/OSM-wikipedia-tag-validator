@@ -258,7 +258,7 @@ def for_tests():
     return [
         'should use a secondary wikipedia tag - linking to an event',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
-        'should use a secondary wikipedia tag - linking to a vehicle model',
+        'should use a secondary wikipedia tag - linking to a vehicle model or class',
         'should use a secondary wikipedia tag - linking to a company that has multiple locations', # https://www.openstreetmap.org/way/203508108
         'should use a secondary wikipedia tag - linking to an opera',
         'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
