@@ -57,3 +57,6 @@
 - {region_name: Texas, website_main_title_part: 'Texas, USA', merged_output_file: 'USA.yaml', identifier: {'name': 'Texas'}, language_code: en, requested_by: 'skquinn (OSM user name) via PM https://www.openstreetmap.org/messages/924460'}
 - {region_name: Washington, website_main_title_part: 'Washington, USA', merged_output_file: 'USA.yaml', identifier: {'ISO3166-2': 'US-WA'}, language_code: en, requested_by: 'Glassman (OSM user name) via PM https://www.openstreetmap.org/messages/924490'}
 #  West Virginia Wisconsin Wyoming
+
+- {region_name: Brzezinka, website_main_title_part: 'Brzezinka', identifier: {'name': 'Brzezinka'}, language_code: pl, requested_by: 'debugging'}
+
