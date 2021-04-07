@@ -3,10 +3,14 @@ OSM-wikipedia-tag-validator
 
 # Quick summary
 
-* `python3 script.py`
-* `bash osm_editor_run_bot_in_regions.sh`
-* `pip3 install --user -r requirements.txt`
-* `python3 -m unittest`
+* regenerate reports:
+* * `python3 script.py`
+* launch bot edits:
+* * `bash osm_editor_run_bot_in_regions.sh`
+* install dependencies:
+* * `pip3 install --user -r requirements.txt`
+* Run tests:
+* * `python3 -m unittest`
 
 # Story behing this tool
 
