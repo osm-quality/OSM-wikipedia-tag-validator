@@ -1,4 +1,5 @@
-- {region_name: Ukraine, website_main_title_part: 'Україна (Ukraine)', identifier: {'ISO3166-1': 'UA'}, language_code: uk, requested_by: 'https://t.me/OpenStreetMapOrg/73857 Alex Riabstev'}
+- {region_name: Kijów, website_main_title_part: 'Київ (Kiev, Kijów)', merged_output_file: 'Ukraine.yaml', identifier: {'ISO3166-2': 'UA-30'}, language_code: uk, requested_by: 'https://t.me/OpenStreetMapOrg/73857 Alex Riabstev - reduce on my own to much smaller area'}
+#- {region_name: Ukraine, website_main_title_part: 'Україна (Ukraine)', identifier: {'ISO3166-1': 'UA'}, language_code: uk, requested_by: 'https://t.me/OpenStreetMapOrg/73857 Alex Riabstev'}
 - {region_name: Nederland, website_main_title_part: 'Nederland (Holandia)', identifier: {'ISO3166-1': 'NL'}, language_code: nl, requested_by: 'Casper het spook, in Discord https://discord.com/channels/@me/812445542973571124/815545212498739220'}
 - {region_name: Vatican, website_main_title_part: 'Civitas Vaticana (Vatican, Watykan)', identifier: {'ISO3166-1': 'VA'}, language_code: it} # , merged_output_file: 'Italy + Vatican + San Marino.yaml'
 - {region_name: Iran, website_main_title_part: 'ایران (Iran)', identifier: {'ISO3166-1': 'IR'}, language_code: fa, requested_by: 'Claudius Henrichs via Telegram (private message)'}
