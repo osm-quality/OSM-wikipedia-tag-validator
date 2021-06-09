@@ -246,6 +246,12 @@ def is_edit_allowed_object_has_set_wikipedia(osm_object_url, object_data, target
 
     return False
 
+def announce_skipping_object_as_outside_area(osm_object_url):
+    print("Skipping object", osm_object_url, "- apparently not within catchment area")
+    print("---------------------------------")
+    print()
+    print()
+
 def add_wikidata_tag_from_wikipedia_tag(reported_errors):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikidata from wikipedia tag'])
     if errors_for_removal == []:
@@ -266,10 +272,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
             continue
 
         if is_edit_allowed_object_has_set_wikipedia(e['osm_object_url'], data, "pl") == False and is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl") == False:
-            print("Skipping object, apparently not within catchment area")
-            print(e['osm_object_url'])
-            print()
-            print()
+            announce_skipping_object_as_outside_area(e['osm_object_url'])
             continue
 
         wikipedia_tag = data['tag']['wikipedia']
@@ -314,7 +317,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
             continue
 
         if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl") == False:
-            print("Skipping object, apparently not within catchment area")
+            announce_skipping_object_as_outside_area(e['osm_object_url'])
             continue
 
         new = e['desired_wikipedia_target']
