@@ -51,7 +51,7 @@ def generate_html_file(errors, output_file_name, types, information_header):
                     total_error_count += 1
                     file.write(error_text)
             if error_count != 0:
-                file.write(row( '<a href="https://overpass-turbo.eu/">overpass query</a> usable in JOSM that will load all objects where this specific eror is present:', prefix_of_lines=prefix_of_lines ))
+                file.write(row( '<a href="https://overpass-turbo.eu/">overpass query</a> usable in JOSM that will load all objects where this specific error is present:', prefix_of_lines=prefix_of_lines ))
                 query = common.get_query_for_loading_errors_by_category_from_error_data(errors, printed_error_ids = [error_type_id], format = "josm")
                 query_html = "<blockquote>" + common.escape_from_internal_python_string_to_html_ascii(query) + "</blockquote>"
                 file.write(row(query_html, prefix_of_lines=prefix_of_lines))

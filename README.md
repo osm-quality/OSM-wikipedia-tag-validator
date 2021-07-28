@@ -26,7 +26,7 @@ But it got derailed by people doing things like tagging `wikipedia=en:Oak` ([exa
 
 It ended with extracting validator into a separate project and publishing reports, so other mappers may fix detected problems.
 
-So problems were common and relatively easy to fix, so now my [bot account](https://www.openstreetmap.org/user/Mateusz Konieczny - bot account) can automatically handle cases of Wikipedia editors deciding to rename articles of all villages in Poland and other similar chores.
+So problems were common and relatively easy to fix, so now my [bot account](https://www.openstreetmap.org/user/Mateusz%20Konieczny%20-%20bot%20account) can automatically handle cases of Wikipedia editors deciding to rename articles of all villages in Poland and other similar chores.
 
 But many errors require human to fix them, so I invite you to visit https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/ 
 
