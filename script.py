@@ -14,9 +14,6 @@ from wikibrain import wikimedia_link_issue_reporter
 from osm_bot_abstraction_layer.overpass_downloader import download_overpass_query
 from osm_bot_abstraction_layer import overpass_query_maker
 
-class ProcessingException(Exception):
-    """TODO: documentation, not something so badly generic"""
-
 def main():
     script_run_start_time = datetime.datetime.now()
     detect_missing_data_in_used_library()
@@ -38,7 +35,7 @@ def detect_missing_data_in_used_library():
 def add_problen_reports_into_another_file(raw_reports_data_filepath, target_yaml):
     root = common.found_errors_storage_location() + "/"
     if os.path.isfile(raw_reports_data_filepath) == False:
-        raise "missing file " + raw_reports_data_filepath
+        raise Exception("missing file " + raw_reports_data_filepath)
     system_call('cat "' + raw_reports_data_filepath +'" >> "' + root + target_yaml + '"', False)
 
 def system_call(call, verbose=True):
@@ -76,7 +73,7 @@ def pipeline(region_name, website_main_title_part, merged_output_file, language_
         if not os.path.isfile(raw_reports_data_filepath):
             error = raw_reports_data_filepath + ' is not present [highly surprising]'
             print(error)
-            raise ProcessingException('Unexpected failure ' + error)
+            raise Exception('Unexpected failure ' + error)
         if merged_output_file != None:
             add_problen_reports_into_another_file(raw_reports_data_filepath, merged_output_file)
         make_website(raw_reports_data_filepath, website_main_title_part)
@@ -142,7 +139,7 @@ def get_entry_contributing_to_merged_file(name_of_merged):
     for entry in common.get_entries_to_process():
         if entry.get('merged_output_file', None) == name_of_merged:
             return entry
-    raise ProcessingException("unexpected")
+    raise Exception("unexpected")
 
 def get_report_directory():
     return 'OSM-wikipedia-tag-validator-reports'
@@ -198,11 +195,11 @@ def download_entry(area_name, identifier_of_region):
 def area_finder(identifier_tag_dictionary, name_of_area):
     for key in identifier_tag_dictionary.keys():
         if "'" in key:
-            raise "escaping not implemented for ' character"
+            raise NotImplementedError("escaping not implemented for ' character")
         if "'" in identifier_tag_dictionary[key]:
-            raise "escaping not implemented for ' character"
+            raise NotImplementedError("escaping not implemented for ' character")
     if len(identifier_tag_dictionary) == 0:
-        raise "unexpectedly empty"
+        raise Exception("unexpectedly empty")
     returned = "area"
     for key in identifier_tag_dictionary.keys():
         value = identifier_tag_dictionary[key]
@@ -265,7 +262,7 @@ def make_websites_for_merged_entries():
             make_website(filepath_to_report, output_filename_base)
         else:
             print(filepath_to_file_listing_mistakes + ' file is not present during making website for merged entries [highly surprising]')
-            raise ProcessingException('Unexpected failure')
+            raise Exception('Unexpected failure')
 
     for filename in common.merged_outputs_filenames_list():
         entry = get_entry_contributing_to_merged_file(filename)
