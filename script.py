@@ -15,6 +15,14 @@ from osm_bot_abstraction_layer.overpass_downloader import download_overpass_quer
 from osm_bot_abstraction_layer import overpass_query_maker
 
 def main():
+    invalid_characters = ["\\", "/"]
+    for entry in common.get_entries_to_process():
+        for name in ['website_main_title_part', 'region_name']:
+            for invalid_character in invalid_characters:
+                if invalid_character in entry[name]:
+                    error = invalid_character + " is in " + name + " in region config! This is not allowed!"
+                    print(error)
+                    raise ValueError(error)
     script_run_start_time = datetime.datetime.now()
     detect_missing_data_in_used_library()
     common.verify_folder_structure()
