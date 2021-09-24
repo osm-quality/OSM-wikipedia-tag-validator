@@ -1,3 +1,8 @@
+- {region_name: Valais or Wallis, website_main_title_part: 'Valais or Wallis (in Swizerland)', merged_output_file: 'Switzerland (merged).yaml', identifier: {'wikidata': 'Q834'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
+- {region_name: Bern, website_main_title_part: 'Bern (Brno)', merged_output_file: 'Switzerland (merged).yaml', identifier: {'wikidata': 'Q70'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718 - reduced on my own to much smaller area'}
+- {region_name: Vaud, website_main_title_part: 'Vaud (in Swizerland)', merged_output_file: 'Switzerland (merged).yaml', identifier: {'wikidata': 'Q12771'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
+- {region_name: Switzerland, website_main_title_part: 'Schweiz - Suisse - Svizzera - Svizra (Szwajcaria)', identifier: {'wikidata': 'Q39'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
+
 - {region_name: Kijów, website_main_title_part: 'Київ (Kiev, Kijów)', merged_output_file: 'Ukraine.yaml', identifier: {'ISO3166-2': 'UA-30'}, language_code: uk, requested_by: 'https://t.me/OpenStreetMapOrg/73857 Alex Riabstev - reduce on my own to much smaller area'}
 #- {region_name: Ukraine, website_main_title_part: 'Україна (Ukraine)', identifier: {'ISO3166-1': 'UA'}, language_code: uk, requested_by: 'https://t.me/OpenStreetMapOrg/73857 Alex Riabstev'}
 - {region_name: Nederland, website_main_title_part: 'Nederland (Holandia)', identifier: {'ISO3166-1': 'NL'}, language_code: nl, requested_by: 'Casper het spook, in Discord https://discord.com/channels/@me/812445542973571124/815545212498739220'}
