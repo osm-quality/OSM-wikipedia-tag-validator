@@ -184,7 +184,7 @@ def download_entry(area_name, identifier_of_region):
         with open(query_filepath, 'r') as query_file:
             query = query_file.read()
             print("downloading reload query for", area_name)
-            download_overpass_query(query, downloaded_filename, timeout=timeout(), user_agent=user_agent())
+            download_overpass_query(query, downloaded_filename, user_agent=user_agent())
             print("copying to", downloaded_file_with_osm_data(area_name, ""))
             copy_file(source=downloaded_filename, target=downloaded_file_with_osm_data(area_name, ""))
             return
@@ -197,7 +197,7 @@ def download_entry(area_name, identifier_of_region):
         area_name_in_query = "searchArea"
         area_finder_string = area_finder(identifier_of_region, area_name_in_query)
         query = query_text(area_finder_string, area_name_in_query)
-        download_overpass_query(query, downloaded_filename, timeout=timeout(), user_agent=user_agent())
+        download_overpass_query(query, downloaded_filename, user_agent=user_agent())
     print("copying to", downloaded_file_with_osm_data(area_name, ""))
     copy_file(source=downloaded_filename, target=downloaded_file_with_osm_data(area_name, ""))
 
