@@ -229,9 +229,9 @@ def query_text(area_finder_string, area_name):
     query += "way['wikidata'](" + area_identifier+ ");\n"
     query += "relation['wikidata'](" + area_identifier+ ");\n"
 
-    query += "node[~'wikipedia:.*'~'.*'](" + area_identifier+ ");\n"
-    query += "way[~'wikipedia:.*'~'.*'](" + area_identifier+ ");\n"
-    query += "relation[~'wikipedia:.*'~'.*'](" + area_identifier+ ");\n"
+    query += 'node[~"wikipedia:.*"~".*"](' + area_identifier+ ");\n"
+    query += 'way[~"wikipedia:.*"~".*"](' + area_identifier+ ");\n"
+    query += 'relation[~"wikipedia:.*"~".*"](' + area_identifier+ ");\n"
 
     query += ');\n'
     query += "out body;\n"
