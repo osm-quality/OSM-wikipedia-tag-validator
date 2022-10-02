@@ -140,6 +140,7 @@ def make_query_to_reload_only_affected_objects(raw_reports_data_filepath, output
         extra_query_part = "\n" + area_finder_string + "\n"
         extra_query_part += 'nwr[wikidata](newer:"' + date + '")(' + area_identifier+ ');\n'
         extra_query_part += 'nwr[wikipedia](newer:"' + date + '")(' + area_identifier+ ');\n'
+        extra_query_part += 'nwr[~"wikipedia:.*"~".*"](newer:"' + date + '")(' + area_identifier+ ');\n'
         query = common.get_query_for_loading_errors_by_category(filepath = input_filepath, printed_error_ids = all_errors, format = "josm", extra_query_part=extra_query_part)
         query_file.write(query)
 
