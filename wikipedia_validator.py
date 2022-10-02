@@ -23,7 +23,7 @@ def get_expected_language_codes(user_provided_expected_language_codes):
     returned = user_provided_expected_language_codes
     return returned + wikipedia_knowledge.WikipediaKnowledge.all_wikipedia_language_codes_order_by_importance()
 
-def output_element(element, error_report, arguments):
+def output_element(element, error_report, output_filepath):
     error_report.bind_to_element(element)
     link = element.get_tag_value("wikipedia")
     language_code = None
@@ -36,10 +36,7 @@ def output_element(element, error_report, arguments):
     if position == None or position.lat == None or position.lon == None:
         error_report.debug_log = "Location data missing"
 
-    error_report.yaml_output(yaml_report_filepath(arguments))
-
-def yaml_report_filepath(arguments):
-    return arguments.output_filepath
+    error_report.yaml_output(output_filepath)
 
 def validate_wikipedia_link_on_element_and_print_problems(element):
     arguments = args # called by OSM iterator so inelgible for more arguments to be provided for function
@@ -48,7 +45,7 @@ def validate_wikipedia_link_on_element_and_print_problems(element):
         return
     problem = get_problem_for_given_element_and_record_stats(element, False, arguments)
     if (problem != None):
-        output_element(element, problem, arguments)
+        output_element(element, problem, arguments.output_filepath)
 
 def validate_wikipedia_link_on_element_and_print_problems_refresh_cache_for_reported(element):
     arguments = args # called by OSM iterator so inelgible for more arguments to be provided for function
