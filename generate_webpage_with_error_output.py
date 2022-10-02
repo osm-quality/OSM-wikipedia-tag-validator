@@ -271,4 +271,4 @@ def for_tests():
     ]
 
 if __name__ == "__main__":
-    main()
+    raise "unsupported, expected to be used as a library"
