@@ -1,6 +1,5 @@
 import pprint
 import argparse
-import common
 import os
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
@@ -8,6 +7,8 @@ import osm_handling_config.global_config as osm_handling_config
 from wikibrain import wikimedia_link_issue_reporter
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
+import sqlite3
+import json
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -56,13 +57,17 @@ def note_or_fixme_review_request_indication(data):
         return text_dump
     return None
 
-def load_errors():
-    args = parsed_args()
-    filepath = common.found_errors_storage_location()+"/"+args.file
-    if not os.path.isfile(filepath):
-        print(filepath + " is not a file, provide an existing file")
-        return
-    return common.load_data(filepath)
+def load_errors(processed_area):
+    connection = sqlite3.connect('test.db')
+    cursor = connection.cursor()
+    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> '' AND area_identifier == :area_identifier", {"area_identifier": processed_area})
+    returned = []
+    for entry in cursor.fetchall():
+        rowid, object_type, id, lat, lon, tags, area_identifier, updated, validator_complaint = entry
+        tags = json.loads(tags)
+        validator_complaint = json.loads(validator_complaint)
+        returned.append(validator_complaint)
+    return returned
 
 def fit_wikipedia_edit_description_within_character_limit_new(new, reason):
     comment = "adding [wikipedia=" + new + "]" + reason
@@ -83,6 +88,8 @@ def fit_wikipedia_edit_description_within_character_limit_changed(now, new, reas
     return comment
 
 def get_and_verify_data(e):
+    print(e)
+    print(e['osm_object_url'])
     return osm_bot_abstraction_layer.get_and_verify_data(e['osm_object_url'], e['prerequisite'], prerequisite_failure_callback=note_or_fixme_review_request_indication)
 
 def handle_follow_wikipedia_redirect(e):
@@ -338,13 +345,14 @@ def main():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
-    reported_errors = load_errors()
-    add_wikipedia_tag_from_wikidata_tag(reported_errors) # check with is_edit_allowed_object_based_on_location function
-    add_wikidata_tag_from_wikipedia_tag(reported_errors) # self-checking location based on Wikipedia language code
-    for e in reported_errors:
-        handle_follow_wikipedia_redirect(e) # self-checking location based on Wikipedia language code [pl required]
-        #change_to_local_language(e) - discussion missing
-        pass
+    for area in ["Kraków", "Warszawa", "Wrocław"]:
+        reported_errors = load_errors(area)
+        add_wikipedia_tag_from_wikidata_tag(reported_errors) # check with is_edit_allowed_object_based_on_location function
+        add_wikidata_tag_from_wikipedia_tag(reported_errors) # self-checking location based on Wikipedia language code
+        for e in reported_errors:
+            handle_follow_wikipedia_redirect(e) # self-checking location based on Wikipedia language code [pl required]
+            #change_to_local_language(e) - discussion missing
+            pass
 
 if __name__ == '__main__':
     main()

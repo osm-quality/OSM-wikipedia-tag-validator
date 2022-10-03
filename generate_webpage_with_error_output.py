@@ -1,15 +1,11 @@
-import argparse
+import html
 import yaml
 import os.path
 import common
 import datetime
 import pprint
 
-def generate_output_for_given_area(raw_reports_data_filepath, main_output_name_part):
-    if not os.path.isfile(raw_reports_data_filepath):
-        print(raw_reports_data_filepath + " is not a file, provide an existing file")
-        return
-    reports_data = common.load_data(raw_reports_data_filepath)
+def generate_output_for_given_area(main_output_name_part, reports_data):
     main_report_count = generate_html_file(reports_data, main_output_name_part + ".html", for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
     generate_html_file(reports_data, main_output_name_part + " - obvious.html", obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
     generate_html_file(reports_data, main_output_name_part + " - test.html", for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
@@ -37,7 +33,7 @@ def generate_html_file(errors, output_file_name, types, information_header):
                     if error_count == 0:
                         file.write(row( '<a href="#' + error_type_id + '"><h2 id="' + error_type_id + '">' + error_type_id + '</h2></a>', prefix_of_lines=prefix_of_lines))
                         if e['error_general_intructions'] != None:
-                            instructions = common.htmlify(e['error_general_intructions'])
+                            instructions = htmlify(e['error_general_intructions'])
                             file.write(row(instructions, prefix_of_lines=prefix_of_lines))
                     error_text = error_description(e, prefix_of_lines + "\t")
                     if error_text in added_reports:
@@ -52,8 +48,8 @@ def generate_html_file(errors, output_file_name, types, information_header):
                     file.write(error_text)
             if error_count != 0:
                 file.write(row( '<a href="https://overpass-turbo.eu/">overpass query</a> usable in JOSM that will load all objects where this specific error is present:', prefix_of_lines=prefix_of_lines ))
-                query = common.get_query_for_loading_errors_by_category_from_error_data(errors, printed_error_ids = [error_type_id], format = "josm")
-                query_html = "<blockquote>" + common.escape_from_internal_python_string_to_html_ascii(query) + "</blockquote>"
+                query = get_query_for_loading_errors_by_category_from_error_data(errors, printed_error_ids = [error_type_id], format = "josm")
+                query_html = "<blockquote>" + escape_from_internal_python_string_to_html_ascii(query) + "</blockquote>"
                 file.write(row(query_html, prefix_of_lines=prefix_of_lines))
                 file.write(row( '<hr>', prefix_of_lines=prefix_of_lines ))
         file.write(html_file_suffix())
@@ -123,20 +119,20 @@ def link_to_osm_object(url, tags):
         name = tags["name"] + " - " + name
     return '<a href="' + url + '" target="_new">' + name + '</a>'
 
+def format_wikipedia_link(string):
+    if string == None:
+        return "?"
+    language_code = language_code_from_wikipedia_string(string)
+    language_code = escape_from_internal_python_string_to_html_ascii(language_code)
+    article_name = article_name_from_wikipedia_string(string)
+    article_name = escape_from_internal_python_string_to_html_ascii(article_name)
+    return '<a href="https://' + language_code + '.wikipedia.org/wiki/' + article_name + '" target="_new">' + language_code+":"+article_name + '</a>'
+
 def article_name_from_wikipedia_string(string):
     return string[string.find(":")+1:]
 
 def language_code_from_wikipedia_string(string):
     return string[0:string.find(":")]
-
-def format_wikipedia_link(string):
-    if string == None:
-        return "?"
-    language_code = language_code_from_wikipedia_string(string)
-    language_code = common.escape_from_internal_python_string_to_html_ascii(language_code)
-    article_name = article_name_from_wikipedia_string(string)
-    article_name = common.escape_from_internal_python_string_to_html_ascii(article_name)
-    return '<a href="https://' + language_code + '.wikipedia.org/wiki/' + article_name + '" target="_new">' + language_code+":"+article_name + '</a>'
 
 def row(text, prefix_of_lines):
     returned = ""
@@ -154,7 +150,7 @@ def row(text, prefix_of_lines):
 
 def error_description(e, prefix_of_lines):
     returned = ""
-    returned += row(common.htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
+    returned += row(htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
     returned += row(link_to_osm_object(e['osm_object_url'], e['tags']), prefix_of_lines=prefix_of_lines)
     desired_deprecated_form = e['desired_wikipedia_target'] #TODO - eliminate use of deprecated form, starting from bot
     current_deprecated_form = e['current_wikipedia_target'] #TODO - eliminate use of deprecated form, starting from bot
@@ -199,7 +195,7 @@ def describe_proposed_relinking(e, prefix_of_lines):
     returned += row( current + " -> " + to, prefix_of_lines=prefix_of_lines)
     if to != "?":
         article_name = article_name_from_wikipedia_string(e['desired_wikipedia_target'])
-        returned += row( common.escape_from_internal_python_string_to_html_ascii(article_name), prefix_of_lines=prefix_of_lines)
+        returned += row( escape_from_internal_python_string_to_html_ascii(article_name), prefix_of_lines=prefix_of_lines)
     return returned
 
 def note_unused_errors(reported_errors):
@@ -269,6 +265,76 @@ def for_tests():
         'tag conflict with wikidata value - boring',
         'tag may be added based on wikidata - website', # dubious copyright
     ]
+
+def htmlify(string):
+    escaped = html.escape(string)
+    escaped_ascii = escape_from_internal_python_string_to_html_ascii(escaped)
+    return escaped_ascii.replace("\n", "<br />")
+
+def escape_from_internal_python_string_to_html_ascii(string):
+    return str(string).encode('ascii', 'xmlcharrefreplace').decode()
+
+def get_query_for_loading_errors_by_category_from_error_data(reported_errors, printed_error_ids, format, extra_query_part=""):
+    returned = get_query_header(format)
+    for e in sorted(reported_errors, key=lambda error: error['osm_object_url'] ):
+        if e['error_id'] in printed_error_ids:
+            type = e['osm_object_url'].split("/")[3]
+            id = e['osm_object_url'].split("/")[4]
+            if type == "relation" and format == "maproulette":
+                #relations skipped due to https://github.com/maproulette/maproulette2/issues/259
+                continue
+            returned += type+'('+id+')' + get_prerequisite_in_overpass_query_format(e) + ';' + "\n"
+    returned += extra_query_part
+    returned += get_query_footer(format) + "//" + str(printed_error_ids)
+    return returned
+
+def get_query_header(format):
+    header = ""
+    if format == "maproulette":
+        header+= '[out:json]'
+    elif format == "josm":
+        header += '[out:xml]'
+    else:
+        assert(False)
+    header += "[timeout:3600]"
+    header += ";"
+    header += "\n"
+    header += '('
+    header += "\n"
+    return header
+
+def get_query_footer(format):
+    if format == "maproulette":
+        return '); out body geom qt;'
+    elif format == "josm":
+        return '); (._;>;); out meta qt;'
+    else:
+        assert(False)
+
+def escape_for_overpass(text):
+    text = text.replace("\\", "\\\\")
+    return text.replace("'", "\\'")
+
+def get_prerequisite_in_overpass_query_format(error):
+    try:
+        return tag_dict_to_overpass_query_format(error['prerequisite'])
+    except KeyError:
+        return ""
+
+def tag_dict_to_overpass_query_format(tags):
+    returned = ""
+    for key in ordered_keys(tags):
+        escaped_key = escape_for_overpass(key)
+        if tags[key] == None:
+            returned += "['" + escaped_key + "'!~'.*']"
+        else:
+            escaped_value = escape_for_overpass(tags[key])
+            returned += "['" + escaped_key + "'='" + escaped_value + "']"
+    return returned
+
+def ordered_keys(dictionary):
+    keys = list(dictionary.keys())
+    return sorted(keys)
 
 if __name__ == "__main__":
     raise "unsupported, expected to be used as a library"

@@ -1,0 +1,4 @@
+{
+ wikimedia_connection_library_cache: '/media/mateusz/OSM_cache',
+ downloaded_osm_file_storage_location: '/media/mateusz/OSM_cache/cache-for-wikipedia-validator'
+}

@@ -1,4 +1,6 @@
 # downloaded/generated files
+*.db
+*.db-journal
 *.osm
 *.html
 *.query
