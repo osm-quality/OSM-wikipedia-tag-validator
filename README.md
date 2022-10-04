@@ -66,9 +66,13 @@ Code is GNU GPLv3 licensed.
 
 # Configuration
 
+## Regions
+
 `regions_processed.yaml`
 
 It requires also osm_handling_config package with global_config.py containing some configuration functions. (TODO: document it, publish an example)
+
+## Passwords
 
 `secret.json` contains account info necessary to run fixing edits.
 
