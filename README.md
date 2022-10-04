@@ -12,7 +12,7 @@ OSM-wikipedia-tag-validator
 * Run tests:
 * * `python3 -m unittest`
 
-# Story behing this tool
+# Story behind this tool
 
 I tried to implement tool to recommend interesting places for visit as a tourist.
 
