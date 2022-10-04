@@ -3,3 +3,4 @@ pathlib==1.0.1
 osm_iterator
 osm_bot_abstraction_layer
 wikibrain
+sqlite3
