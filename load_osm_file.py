@@ -1,6 +1,7 @@
 from osm_iterator.osm_iterator import Data
 import sqlite3
 import json
+import config
 
 def load_osm_data(element):
     global cursor
@@ -30,7 +31,7 @@ def load_osm_file(osm_file_filepath, identifier_of_region):
     global identifier
     identifier = identifier_of_region
 
-    connection = sqlite3.connect('test.db')
+    connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
 
     osm = Data(osm_file_filepath)

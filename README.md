@@ -72,6 +72,10 @@ Code is GNU GPLv3 licensed.
 
 It requires also osm_handling_config package with global_config.py containing some configuration functions. (TODO: document it, publish an example)
 
+### Generate internal divisions
+
+See `generate_internal_divisions_for_regions_processed.py`
+
 ## Passwords
 
 `secret.json` contains account info necessary to run fixing edits.

@@ -7,15 +7,7 @@ import load_osm_file
 import json
 import sqlite3
 import generate_webpage_with_error_output
-
-"""
-next steps:
-
-- commit code
-- run update across many territories
-- refactor and commit code
-- implement sane updates
-"""
+import os
 
 def existing_tables(cursor):
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -49,7 +41,7 @@ def main():
         allow_false_positives=False
         )
 
-    connection = sqlite3.connect('test.db')
+    connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     create_table_if_needed(cursor)
     wikimedia_connection.set_cache_location(config.get_wikimedia_connection_cache_location())
@@ -58,21 +50,20 @@ def main():
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
-        region_name = entry['region_name']
+        internal_region_name = entry['internal_region_name']
         website_main_title_part = entry['website_main_title_part']
         merged_output_file = entry.get('merged_output_file', None)
         language_code = entry.get('language_code', None)
         identifier_of_region_for_overpass_query=entry['identifier']
-        downloaded_filepath = download.download_entry(region_name, identifier_of_region_for_overpass_query)
-        load_osm_file.load_osm_file(downloaded_filepath, region_name)
+        downloaded_filepath = download.download_entry(internal_region_name, identifier_of_region_for_overpass_query)
+        load_osm_file.load_osm_file(downloaded_filepath, internal_region_name)
 
-        connection = sqlite3.connect('test.db')
         cursor = connection.cursor()
-        print(region_name)
-        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated FROM osm_data WHERE area_identifier = :identifier", {"identifier": region_name})
+        print(internal_region_name)
+        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier", {"identifier": internal_region_name})
         returned = cursor.fetchall()
         for entry in returned:
-            rowid, object_type, id, lat, lon, tags, area_identifier, updated = entry
+            rowid, object_type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint = entry
             object_description = object_type + "/" + str(id)
             tags = json.loads(tags)
             location = (lat, lon)
@@ -84,26 +75,30 @@ def main():
                 data['tags'] = tags # TODO eliminate need for this
                 data = json.dumps(data)
                 cursor.execute("UPDATE osm_data SET validator_complaint = :validator_complaint WHERE rowid = :rowid", {"validator_complaint": data, "rowid": rowid})
-                print(json.dumps(reported.data(), sort_keys=True, indent=4))
-                print(entry)
-                print(tags)
             else:
                 cursor.execute("UPDATE osm_data SET validator_complaint = :validator_complaint WHERE rowid = :rowid", {"validator_complaint": "", "rowid": rowid})
         connection.commit()
 
-        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": region_name})
+        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
         returned = cursor.fetchall()
         reports = []
         for entry in returned:
-            rowid, object_type, id, lat, lon, tags, area_identifier, updated, validator_complaint = entry
+            rowid, object_type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint = entry
             tags = json.loads(tags)
             validator_complaint = json.loads(validator_complaint)
-            print(validator_complaint['osm_object_url'])
-            print(validator_complaint['tags'])
-            print(error_description(validator_complaint, "prefix"))
             reports.append(validator_complaint)
-        print(len(returned))
         generate_webpage_with_error_output.generate_output_for_given_area(website_main_title_part, reports)
+    generate_webpage_with_error_output.write_index(cursor)
     connection.close()
+    commit_changes_in_report_directory()
+
+def commit_changes_in_report_directory():
+    current_working_directory = os.getcwd()
+    os.chdir(config.get_report_directory())
+    system_call('git add index.html')
+    system_call('git commit -m "automatic update of index.html"')
+    system_call('git add --all')
+    system_call('git commit -m "automatic update of report files"')
+    os.chdir(current_working_directory)
 
 main()

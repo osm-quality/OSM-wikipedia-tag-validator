@@ -1,14 +1,21 @@
 import html
 import yaml
 import os.path
-import common
 import datetime
 import pprint
+import json
+
+import config
 
 def generate_output_for_given_area(main_output_name_part, reports_data):
-    main_report_count = generate_html_file(reports_data, main_output_name_part + ".html", for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
-    generate_html_file(reports_data, main_output_name_part + " - obvious.html", obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
-    generate_html_file(reports_data, main_output_name_part + " - test.html", for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
+    file = config.get_report_directory() + '/' + main_output_name_part + ".html"
+    main_report_count = generate_html_file(reports_data, file, for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
+
+    file = config.get_report_directory() + '/' + main_output_name_part + " - obvious.html"
+    generate_html_file(reports_data, file, obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
+
+    file = config.get_report_directory() + '/' + main_output_name_part + " - test.html"
+    generate_html_file(reports_data, file, for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
     note_unused_errors(reports_data)
     return main_report_count
 
@@ -335,6 +342,83 @@ def tag_dict_to_overpass_query_format(tags):
 def ordered_keys(dictionary):
     keys = list(dictionary.keys())
     return sorted(keys)
+
+def write_index(cursor):
+    website_html = ""
+    website_html += html_file_header() + "\n"
+    website_html += '<p>This page lists OpenStreetMap objects that have <a href="https://wiki.openstreetmap.org/wiki/Key:wikipedia">wikipedia</a> / <a href="https://wiki.openstreetmap.org/wiki/Key:wikipedia">wikidata</a> tags with some problems.</p>'
+    website_html += '<p>For example, it allows to detect cases where <a href="https://www.openstreetmap.org/way/693854629/history">an incorrect object was linked</a>, a link leads to a deleted page or there is some other issue.</p>\n'
+    website_html += '<p>This tool is an <a href="https://github.com/matkoniecz/OSM-wikipedia-tag-validator#story-behing-this-tool">unexpected result</a> of creating a detector of interesting places based on OSM Data and Wikipedia. It turned out to require a filter to avoid invalid links. As detected links can be often fixed and it is better to remove invalid rather than keep them, I am sharing this tool.</p>\n'
+    website_html += "</hr>\n"
+    website_html += "</br>\n"
+    website_html += feedback_request() + "\n"
+    website_html += "</br>\n"
+    website_html += "</hr>\n"
+    """
+    website_html += '<p></p>\n'
+    """
+    website_html += "</br>\n"
+
+    completed = ""
+
+    merged_outputs = {}
+    for entry in config.get_entries_to_process():
+        if entry.get('merged_output', None) != None:
+            index = entry['merged_output']
+            if index not in merged_outputs:
+                merged_outputs[index] = []
+            merged_outputs[index].append(entry)
+
+
+
+    for merged_code in merged_outputs.keys():
+        merged_reports = []
+        for component in merged_outputs[merged_code]:
+            if "hidden" in component:
+                if component["hidden"] == True:
+                    continue
+            cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": component['internal_region_name']})
+            returned = cursor.fetchall()
+            for entry in returned:
+                rowid, object_type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint = entry
+                tags = json.loads(tags)
+                validator_complaint = json.loads(validator_complaint)
+                merged_reports.append(validator_complaint)
+        generate_output_for_given_area(merged_code, merged_reports)
+        
+        website_html += '<a href = "' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(len(merged_reports)) + '\n'
+
+    for entry in config.get_entries_to_process():
+        if "hidden" in entry:
+            if entry["hidden"] == True:
+                continue
+        website_main_title_part = entry['website_main_title_part']
+
+        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": entry['internal_region_name']})
+        returned = cursor.fetchall()
+        report_count = len(returned) # TODO VERIFY
+
+        report_count_string = problem_count_string(report_count)
+
+        filename = website_main_title_part + '.html'
+        line = '<a href = "' + htmlify(filename) + '">' + htmlify(website_main_title_part) + '</a> ' + report_count_string + '\n'
+        if report_count != 0:
+            website_html += line
+        else:
+            completed += line
+    website_html += "<br>\n"
+    website_html += "<h1>Finished, congratulations :)</h1>\n"
+    if completed == "":
+        completed = "<p>nothing for now :(<p>\n"
+    website_html += completed
+    website_html += html_file_suffix()
+    with open(config.get_report_directory() + '/' + 'index.html', 'w') as index:
+        index.write(website_html)
+
+def problem_count_string(report_count):
+    if report_count == 1:
+        return '(found ' + str(report_count) + ' problem)</br>'
+    return '(found ' + str(report_count) + ' problems)</br>'
 
 if __name__ == "__main__":
     raise "unsupported, expected to be used as a library"

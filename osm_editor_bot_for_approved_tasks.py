@@ -9,6 +9,7 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import sqlite3
 import json
+import config
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -58,7 +59,7 @@ def note_or_fixme_review_request_indication(data):
     return None
 
 def load_errors(processed_area):
-    connection = sqlite3.connect('test.db')
+    connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> '' AND area_identifier == :area_identifier", {"area_identifier": processed_area})
     returned = []
