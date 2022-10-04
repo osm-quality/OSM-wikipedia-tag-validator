@@ -74,7 +74,7 @@ It requires also osm_handling_config package with global_config.py containing so
 
 # Running tests
 
-```nosetests3``` or ```python3 -m unittest```
+`python3 -m unittest`
 
 # Alternatives
 
