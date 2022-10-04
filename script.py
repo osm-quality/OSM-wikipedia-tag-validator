@@ -104,6 +104,6 @@ def main():
             reports.append(validator_complaint)
         print(len(returned))
         generate_webpage_with_error_output.generate_output_for_given_area(website_main_title_part, reports)
-        connection.close()
+    connection.close()
 
 main()
