@@ -2,7 +2,8 @@
 # entire coutry was failing on dowload, splitting into provinces
 # https://en.wikipedia.org/wiki/Provinces_of_the_Netherlands
 - {region_name: Noord-Brabant, website_main_title_part: 'Noord-Brabant - Nederland (Brabanca Północna - Holandia)', identifier: {'ISO3166-2': 'NL-NB'}, language_code: nl, merged_output_file: 'Netherlands (merged).yaml', requested_by: 'Casper het spook, in Discord https://discord.com/channels/@me/812445542973571124/815545212498739220'}
-
+- {region_name: Japan, website_main_title_part: '日本 (Japan - Japonia)', identifier: {'ISO3166-1': 'JP'}, language_code: ja, requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'}
+#- {region_name: Sweden, website_main_title_part: 'Sverige (Sweden - Szwecja)', identifier: {'ISO3166-1': 'SE'}, language_code: sv, requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'} # disabled for now - not sure are they actually going to fix this issues
 - {region_name: Valais or Wallis, website_main_title_part: 'Valais or Wallis (in Swizerland)', merged_output_file: 'Switzerland (merged).yaml', identifier: {'wikidata': 'Q834'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
 - {region_name: Bern, website_main_title_part: 'Bern (Brno)', merged_output_file: 'Switzerland (merged).yaml', identifier: {'wikidata': 'Q70'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718 - reduced on my own to much smaller area'}
 - {region_name: Vaud, website_main_title_part: 'Vaud (in Swizerland)', merged_output_file: 'Switzerland (merged).yaml', identifier: {'wikidata': 'Q12771'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
