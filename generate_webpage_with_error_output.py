@@ -396,7 +396,12 @@ def write_index(cursor):
 
         cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": entry['internal_region_name']})
         returned = cursor.fetchall()
-        report_count = len(returned) # TODO VERIFY
+        report_count = 0
+        for entry in returned:
+            rowid, object_type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint = entry
+            validator_complaint = json.loads(validator_complaint)
+            if(validator_complaint['error_id'] in for_review()):
+                report_count += 1
 
         report_count_string = problem_count_string(report_count)
 
