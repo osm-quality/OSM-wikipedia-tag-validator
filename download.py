@@ -59,7 +59,5 @@ def download_query_text(area_finder_string, area_name):
     query += 'relation[~"wikipedia:.*"~".*"](' + area_identifier+ ");\n"
 
     query += ');\n'
-    query += "out body;\n"
-    query += ">;\n" # expanding
-    query += 'out skel qt;'
+    query += "out center;"
     return query
