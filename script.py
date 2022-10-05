@@ -63,13 +63,13 @@ def main():
         cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier", {"identifier": internal_region_name})
         returned = cursor.fetchall()
         for entry in returned:
-            rowid, object_type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint = entry
-            object_description = object_type + "/" + str(id)
+            rowid, object_type, object_id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint = entry
+            object_description = object_type + "/" + str(object_id)
             tags = json.loads(tags)
             location = (lat, lon)
             reported = issue_detector.get_the_most_important_problem_generic(tags, location, object_type, object_description)
             if reported != None:
-                link = "https://openstreetmap.org/" + object_type + "/" + str(id)
+                link = "https://openstreetmap.org/" + object_type + "/" + str(object_id)
                 data = reported.data()
                 data['osm_object_url'] = link # TODO eliminate need for this
                 data['tags'] = tags # TODO eliminate need for this
