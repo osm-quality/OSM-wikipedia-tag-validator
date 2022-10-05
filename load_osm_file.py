@@ -30,7 +30,7 @@ def load_osm_file(osm_file_filepath, identifier_of_region):
                         continue
                     lat = float(tag.attrib['lat'])
                     lon = float(tag.attrib['lon'])
-                    record(cursor, osm_type, osm_type, lat, lon, osm_tags, identifier_of_region)
+                    record(cursor, osm_type, osm_id, lat, lon, osm_tags, identifier_of_region)
     for v in nodes_iter:
         osm_tags = {}
         for tag in v:
@@ -44,7 +44,7 @@ def load_osm_file(osm_file_filepath, identifier_of_region):
             osm_id = v.attrib['id']
             lat = float(v.attrib['lat'])
             lon = float(v.attrib['lon'])
-            record(cursor, osm_type, osm_type, lat, lon, osm_tags, identifier_of_region)
+            record(cursor, osm_type, osm_id, lat, lon, osm_tags, identifier_of_region)
     connection.commit()
     connection.close()
 
