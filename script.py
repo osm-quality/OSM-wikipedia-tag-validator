@@ -95,10 +95,10 @@ def main():
 def commit_changes_in_report_directory():
     current_working_directory = os.getcwd()
     os.chdir(config.get_report_directory())
-    system_call('git add index.html')
-    system_call('git commit -m "automatic update of index.html"')
-    system_call('git add --all')
-    system_call('git commit -m "automatic update of report files"')
+    os.system('git add index.html')
+    os.system('git commit -m "automatic update of index.html"')
+    os.system('git add --all')
+    os.system('git commit -m "automatic update of report files"')
     os.chdir(current_working_directory)
 
 main()
