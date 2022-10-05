@@ -47,10 +47,11 @@ def main():
     wikimedia_connection.set_cache_location(config.get_wikimedia_connection_cache_location())
 
     for entry in config.get_entries_to_process():
+        internal_region_name = entry['internal_region_name']
+        print(internal_region_name)
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
-        internal_region_name = entry['internal_region_name']
         website_main_title_part = entry['website_main_title_part']
         merged_output_file = entry.get('merged_output_file', None)
         language_code = entry.get('language_code', None)
@@ -59,7 +60,6 @@ def main():
         load_osm_file.load_osm_file(downloaded_filepath, internal_region_name)
 
         cursor = connection.cursor()
-        print(internal_region_name)
         cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier", {"identifier": internal_region_name})
         returned = cursor.fetchall()
         for entry in returned:
