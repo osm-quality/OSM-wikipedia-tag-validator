@@ -373,6 +373,7 @@ def write_index(cursor):
 
     for merged_code in merged_outputs.keys():
         merged_reports = []
+        primary_report_count = 0
         for component in merged_outputs[merged_code]:
             if "hidden" in component:
                 if component["hidden"] == True:
@@ -384,9 +385,11 @@ def write_index(cursor):
                 tags = json.loads(tags)
                 validator_complaint = json.loads(validator_complaint)
                 merged_reports.append(validator_complaint)
+                if(validator_complaint['error_id'] in for_review()):
+                    primary_report_count += 1
         generate_output_for_given_area(merged_code, merged_reports)
         
-        website_html += '<a href = "' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(len(merged_reports)) + '\n'
+        website_html += '<a href = "' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count) + '\n'
 
     for entry in config.get_entries_to_process():
         if "hidden" in entry:
