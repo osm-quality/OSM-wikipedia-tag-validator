@@ -28,7 +28,7 @@ def create_table_if_needed(cursor):
         #
         # right now for "checked, no error" I plan to use empty string but I am not too happy
         cursor.execute('''CREATE TABLE osm_data
-                    (type text, id number, lat float, lon float, tags text, area_identifier text, osm_data_updated date, validator_complaint text)''')
+                    (type text, id number, lat float, lon float, tags text, area_identifier text, download_timestamp integer, validator_complaint text)''')
     if "osm_data_update_log" in existing_tables(cursor):
         print("osm_data_update_log table exists already, delete file with database to recreate")
     else:
@@ -72,7 +72,8 @@ def process_given_area(connection, entry):
     merged_output_file = entry.get('merged_output_file', None) # TODO! support this!
     identifier_of_region_for_overpass_query=entry['identifier']
     downloaded_filepath = download.download_entry(entry['internal_region_name'], identifier_of_region_for_overpass_query)
-    load_osm_file.load_osm_file(downloaded_filepath, entry['internal_region_name'])
+    timestamp_when_file_was_downloaded = "1970" # TODO fix fake timestamp
+    load_osm_file.load_osm_file(downloaded_filepath, entry['internal_region_name'], timestamp_when_file_was_downloaded)
 
     cursor = connection.cursor()
     update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None))

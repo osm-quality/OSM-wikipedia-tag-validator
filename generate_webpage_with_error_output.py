@@ -383,10 +383,10 @@ def write_index(cursor):
             if "hidden" in component:
                 if component["hidden"] == True:
                     continue
-            cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": component['internal_region_name']})
+            cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": component['internal_region_name']})
             returned = cursor.fetchall()
             for entry in returned:
-                rowid, object_type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint = entry
+                rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
                 tags = json.loads(tags)
                 validator_complaint = json.loads(validator_complaint)
                 merged_reports.append(validator_complaint)
@@ -402,11 +402,11 @@ def write_index(cursor):
                 continue
         website_main_title_part = entry['website_main_title_part']
 
-        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": entry['internal_region_name']})
+        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": entry['internal_region_name']})
         returned = cursor.fetchall()
         report_count = 0
         for entry in returned:
-            rowid, object_type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint = entry
+            rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
             validator_complaint = json.loads(validator_complaint)
             if(validator_complaint['error_id'] in for_review()):
                 report_count += 1

@@ -3,10 +3,36 @@ import sqlite3
 import json
 import config
 
-def load_osm_file(osm_file_filepath, identifier_of_region):
+def load_osm_file(osm_file_filepath, identifier_of_region, timestamp_when_file_was_downloaded):
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
+    for entry in xml_streaming_of_osm_file(osm_file_filepath):
+        record(cursor, entry, identifier_of_region, timestamp_when_file_was_downloaded)
+    connection.commit()
+    connection.close()
 
+def record(cursor, entry, identifier_of_region, timestamp):
+    if entry["osm_tags"] == {}:
+        return
+
+    relevant = False
+    for key in entry["osm_tags"].keys():
+        if "wikidata" in key or "wikipedia" in key:
+            relevant = True
+    if relevant:
+        cursor.execute("SELECT download_timestamp FROM osm_data WHERE type = :type and id = :id", {'type': entry["osm_type"], 'id': entry["osm_id"]})
+        data = cursor.fetchall()
+        if len(data) > 1:
+            raise "unexpected" # TODO store old data in osm_data or move it to somewhere else to record statistics
+        if len(data) == 1:
+            present_already_timestamp = data[0][0]
+            print("currently stored data has timestamp", present_already_timestamp)
+            # TODO do not always delete, only when needed
+            cursor.execute("DELETE FROM osm_data WHERE type = :type and id = :id", {'type': entry["osm_type"], 'id': entry["osm_id"]})
+
+        cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': entry["osm_type"], 'id': entry["osm_id"], 'lat': entry["lat"], 'lon': entry["lon"], "tags": json.dumps(entry["osm_tags"]), "area_identifier": identifier_of_region, "download_timestamp": timestamp, "validator_complaint": None})
+
+def xml_streaming_of_osm_file(osm_file_filepath):
     # based on https://github.com/sopherapps/xml_stream/issues/6 and osm_iterator
     nodes_iter = xml_stream.read_xml_file(osm_file_filepath, records_tag="node")
     ways_iter = xml_stream.read_xml_file(osm_file_filepath, records_tag="way")
@@ -30,7 +56,7 @@ def load_osm_file(osm_file_filepath, identifier_of_region):
                         continue
                     lat = float(tag.attrib['lat'])
                     lon = float(tag.attrib['lon'])
-                    record(cursor, osm_type, osm_id, lat, lon, osm_tags, identifier_of_region)
+                    yield({"osm_type": osm_type, "osm_id": osm_id, "lat": lat, "lon": lon, "osm_tags": osm_tags})
     for v in nodes_iter:
         osm_tags = {}
         for tag in v:
@@ -44,18 +70,4 @@ def load_osm_file(osm_file_filepath, identifier_of_region):
             osm_id = v.attrib['id']
             lat = float(v.attrib['lat'])
             lon = float(v.attrib['lon'])
-            record(cursor, osm_type, osm_id, lat, lon, osm_tags, identifier_of_region)
-    connection.commit()
-    connection.close()
-
-
-def record(cursor, object_type, object_number, lat, lon, tags, identifier_of_region):
-    if tags == {}:
-        return
-
-    relevant = False
-    for key in tags.keys():
-        if "wikidata" in key or "wikipedia" in key:
-            relevant = True
-    if relevant:
-        cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :osm_data_updated, :validator_complaint)", {'type': object_type, 'id': object_number, 'lat': lat, 'lon': lon, "tags": json.dumps(tags), "area_identifier": identifier_of_region, "osm_data_updated": "2022-12-01", "validator_complaint": None})
+            yield({"osm_type": osm_type, "osm_id": osm_id, "lat": lat, "lon": lon, "osm_tags": osm_tags})

@@ -61,7 +61,7 @@ def note_or_fixme_review_request_indication(data):
 def load_errors(processed_area):
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
-    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, osm_data_updated, validator_complaint FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> '' AND area_identifier == :area_identifier", {"area_identifier": processed_area})
+    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> '' AND area_identifier == :area_identifier", {"area_identifier": processed_area})
     returned = []
     for entry in cursor.fetchall():
         rowid, object_type, id, lat, lon, tags, area_identifier, updated, validator_complaint = entry
