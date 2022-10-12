@@ -269,7 +269,6 @@ def for_tests():
         'information board with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'should use a secondary wikipedia tag - linking to a vehicle model or class',
-        'should use a secondary wikipedia tag - linking to a company that has multiple locations', # https://www.openstreetmap.org/way/203508108
         'should use a secondary wikipedia tag - linking to an opera',
         'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
         'no longer existing object',
@@ -291,6 +290,7 @@ def ignored():
     return [
         'should use a secondary wikipedia tag - linking to an event',
         'link to a list', # even I am not really convinced it is a problem
+        'should use a secondary wikipedia tag - linking to a company that has multiple locations', # too many mistakes. TODO: just remove it (or maybe keep as a reminder?)
     ]
 
 def htmlify(string):
