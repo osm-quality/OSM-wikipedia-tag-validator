@@ -2,6 +2,7 @@ import config
 from osm_bot_abstraction_layer.overpass_downloader import download_overpass_query
 import pathlib
 import shutil
+import time
 
 def downloaded_file_with_osm_data(name, suffix):
   filename = name
@@ -24,6 +25,8 @@ def download_entry(area_name, identifier_of_region):
         query = download_query_text(area_finder_string, area_name_in_query)
         download_overpass_query(query, work_filepath, user_agent=config.user_agent())
         shutil.move(work_filepath, downloaded_filepath) # this helps in cases where download was interupted and left empty file behind
+        print("sleeping extra time to prevent inevitable quota exhaustion")
+        time.sleep(60)
     return downloaded_filepath
 
 def area_finder(identifier_tag_dictionary, name_of_area):
