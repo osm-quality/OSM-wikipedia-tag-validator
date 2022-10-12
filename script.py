@@ -121,8 +121,12 @@ def get_wikimedia_link_issue_reporter_object(language_code):
         )
 
 def generate_website_file_for_given_area(cursor, entry):
+    reports = reports_for_given_area(cursor, entry['internal_region_name'])
     website_main_title_part = entry['website_main_title_part']
-    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": entry['internal_region_name']})
+    generate_webpage_with_error_output.generate_output_for_given_area(website_main_title_part, reports)
+
+def reports_for_given_area(cursor, internal_region_name):
+    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
     returned = cursor.fetchall()
     reports = []
     for entry in returned:
@@ -130,7 +134,7 @@ def generate_website_file_for_given_area(cursor, entry):
         tags = json.loads(tags)
         validator_complaint = json.loads(validator_complaint)
         reports.append(validator_complaint)
-    generate_webpage_with_error_output.generate_output_for_given_area(website_main_title_part, reports)
+    return reports
 
 def commit_changes_in_report_directory():
     current_working_directory = os.getcwd()
