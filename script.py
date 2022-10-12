@@ -2,8 +2,7 @@ from wikibrain import wikimedia_link_issue_reporter
 from wikibrain import wikipedia_knowledge
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import config
-import download
-import load_osm_file
+import obtain_from_overpass
 import json
 import sqlite3
 import generate_webpage_with_error_output
@@ -66,21 +65,35 @@ def main():
 
 
 def process_given_area(connection, entry):
-    # TODO: properly update by fetching new info about entries which were modified and entries currently carrying reports (as wikipedia tag could be simply removed!)
     merged_output_file = entry.get('merged_output_file', None) # TODO! support this!
     identifier_of_region_for_overpass_query=entry['identifier']
-    downloaded_filepath = download.download_entry(entry['internal_region_name'], identifier_of_region_for_overpass_query)
-    timestamp_when_file_was_downloaded = "1970" # TODO fix fake timestamp
-    load_osm_file.load_osm_file(downloaded_filepath, entry['internal_region_name'], timestamp_when_file_was_downloaded)
+    timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(entry['internal_region_name'], identifier_of_region_for_overpass_query)
 
+    # properly update by fetching new info about entries which were 
+    # - not present in file so with outdated timestamps
+    # - entries currently are carrying reports
+    # (as wikipedia tag could be simply removed!)
+    #
+    # if we do no worry about archival data in this case it is fine to simply delete such data
+    # as tag without wikidata and wikipedua tags will not be reported in wikipedia report tool
+    # TODO: verify this assumption!
     cursor = connection.cursor()
+    cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND download_timestamp < :timestamp_when_file_was_downloaded AND validator_complaint IS NOT NULL AND validator_complaint <> "" """, {"identifier": entry['internal_region_name'], "timestamp_when_file_was_downloaded": timestamp_when_file_was_downloaded})
+    returned = cursor.fetchall()
+    for entry in returned:
+        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
+        print(object_type, object_id, "is outdated, not in the report so its entry is being deleted:", tags)
+        cursor.execute("DELETE FROM osm_data WHERE type = :type and id = :id", {'type': object_type, 'id': object_id})
+
     update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None))
     connection.commit()
     generate_website_file_for_given_area(cursor, entry)
 
 def update_validator_reports_for_given_area(cursor, internal_region_name, language_code):
     issue_detector = get_wikimedia_link_issue_reporter_object(language_code)
-    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier", {"identifier": internal_region_name})
+    # will recheck reported errors
+    # will not recheck entries that previously were free of errors
+    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint =""', {"identifier": internal_region_name})
     returned = cursor.fetchall()
     for entry in returned:
         rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry

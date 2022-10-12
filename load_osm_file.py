@@ -3,13 +3,9 @@ import sqlite3
 import json
 import config
 
-def load_osm_file(osm_file_filepath, identifier_of_region, timestamp_when_file_was_downloaded):
-    connection = sqlite3.connect(config.database_filepath())
-    cursor = connection.cursor()
+def load_osm_file(cursor, osm_file_filepath, identifier_of_region, timestamp_when_file_was_downloaded):
     for entry in xml_streaming_of_osm_file(osm_file_filepath):
         record(cursor, entry, identifier_of_region, timestamp_when_file_was_downloaded)
-    connection.commit()
-    connection.close()
 
 def record(cursor, entry, identifier_of_region, timestamp):
     if entry["osm_tags"] == {}:

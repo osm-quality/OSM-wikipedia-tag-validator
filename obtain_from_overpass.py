@@ -4,6 +4,8 @@ import pathlib
 import shutil
 import time
 import sqlite3
+import load_osm_file
+
 
 def filepath_to_downloaded_osm_data(name, suffix):
   filename = name
@@ -13,7 +15,7 @@ def filepath_to_downloaded_osm_data(name, suffix):
 def timeout():
   return 2550
 
-def download_entry(internal_region_name, identifier_of_region):
+def download_entry(internal_region_name, identifier_data_for_overpass):
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed")
@@ -24,22 +26,42 @@ def download_entry(internal_region_name, identifier_of_region):
         returned = cursor.fetchall()
         if len(returned) == 0:
             print("it is not recorded when this data was downloaded!")
+            print("at this point update should be run")
+            print("TODO! redownload old ones") # TODO
+            #os.remove(downloaded_filepath)
+            #return download_entry(internal_region_name, identifier_data_for_overpass)
+            return 0
+        print("area_identifier, filename, download_type, download_timestamp")
+        latest_download_timestamp = None
         for entry in returned:
             print(entry)
             area_identifier, filename, download_type, download_timestamp = entry
             print(area_identifier, filename, download_type, download_timestamp)
+            if latest_download_timestamp != None:
+                raise "which timestamp is greater?" # TODO handle
+            latest_download_timestamp = download_timestamp
+        current_timestamp = int(time.time())
+        age_of_data_in_seconds = current_timestamp - latest_download_timestamp
+        print("age_of_data_in_seconds", age_of_data_in_seconds, "age_of_data_in_hours", int(age_of_data_in_seconds/60/60))
+        print("at this point update should be run")
+        return latest_download_timestamp
     else:
         timestamp = int(time.time())
         area_name_in_query = "searchArea"
-        area_finder_string = area_finder(identifier_of_region, area_name_in_query)
+        area_finder_string = area_finder(identifier_data_for_overpass, area_name_in_query)
         query = download_query_text(area_finder_string, area_name_in_query)
         download_overpass_query(query, work_filepath, user_agent=config.user_agent())
         shutil.move(work_filepath, downloaded_filepath) # this helps in cases where download was interupted and left empty file behind
+
+        load_osm_file.load_osm_file(cursor, downloaded_filepath, internal_region_name, timestamp)
+
+        # done AFTER data us safely loaded, committed together
+        # this way we avoid problems with data downloaded and only partially loaded in database
         cursor.execute("INSERT INTO osm_data_update_log VALUES (:area_identifier, :filename, :download_type, :download_timestamp)", {"area_identifier": internal_region_name, "filename": downloaded_filepath, "download_type": "initial_full_data", "download_timestamp": timestamp})
         connection.commit()
         print("sleeping extra time to prevent inevitable quota exhaustion")
         time.sleep(60)
-    return downloaded_filepath
+    return timestamp
 
 def area_finder(identifier_tag_dictionary, name_of_area):
     for key in identifier_tag_dictionary.keys():
