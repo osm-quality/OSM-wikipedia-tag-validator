@@ -408,7 +408,11 @@ def write_index(cursor):
                     primary_report_count += 1
         generate_output_for_given_area(merged_code, merged_reports)
         
-        website_html += '<a href = "' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count) + '\n'
+        line = '<a href = "' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count) + '\n'
+        if primary_report_count > 0:
+            website_html += line
+        else:
+            completed += line
 
     for entry in config.get_entries_to_process():
         if "hidden" in entry:
