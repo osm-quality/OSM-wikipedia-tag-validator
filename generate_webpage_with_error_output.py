@@ -265,6 +265,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'information board with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'should use a secondary wikipedia tag - linking to a vehicle model or class',
         'should use a secondary wikipedia tag - linking to a company that has multiple locations', # https://www.openstreetmap.org/way/203508108
