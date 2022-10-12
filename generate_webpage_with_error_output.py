@@ -234,7 +234,6 @@ def for_review():
         'invalid old-style wikipedia tag',
         'malformed wikidata tag',
         'malformed wikipedia tag',
-        'link to a list',
         'should use a secondary wikipedia tag - linking to a human',
         'should use a secondary wikipedia tag - linking to an animal or plant',
         'should use a secondary wikipedia tag - linking to a physical process',
@@ -289,6 +288,7 @@ def ignored():
     # https://wiki.openstreetmap.org/wiki/Talk:Data_items#Broken_Wikidata_ontology
     return [
         'should use a secondary wikipedia tag - linking to an event',
+        'link to a list', # even I am not really convinced it is a problem
     ]
 
 def htmlify(string):
