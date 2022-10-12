@@ -265,6 +265,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'wikipedia/wikidata type tag that is incorrect according to not:* tag',
         'information board with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'should use a secondary wikipedia tag - linking to a vehicle model or class',
