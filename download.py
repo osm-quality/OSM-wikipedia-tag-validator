@@ -62,17 +62,9 @@ def download_query_text(area_finder_string, area_name):
     query = "[timeout:" + str(timeout()) + "];\n"
     query += "(\n"
     query += area_finder_string 
-    query += "node['wikipedia'](" + area_identifier+ ");\n"
-    query += "way['wikipedia'](" + area_identifier+ ");\n"
-    query += "relation['wikipedia'](" + area_identifier+ ");\n"
-    query += "node['wikidata'](" + area_identifier+ ");\n"
-    query += "way['wikidata'](" + area_identifier+ ");\n"
-    query += "relation['wikidata'](" + area_identifier+ ");\n"
-
-    query += 'node[~"wikipedia:.*"~".*"](' + area_identifier+ ");\n"
-    query += 'way[~"wikipedia:.*"~".*"](' + area_identifier+ ");\n"
-    query += 'relation[~"wikipedia:.*"~".*"](' + area_identifier+ ");\n"
-
+    query += 'node[~"wikipedia.*"~".*"](' + area_identifier+ ");\n"
+    query += 'way[~"wikipedia.*"~".*"](' + area_identifier+ ");\n"
+    query += 'relation[~"wikipedia.*"~".*"](' + area_identifier+ ");\n"
     query += ');\n'
     query += "out center;"
     return query
