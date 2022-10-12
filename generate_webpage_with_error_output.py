@@ -218,6 +218,8 @@ def note_unused_errors(reported_errors):
             continue
         if e['error_id'] in for_tests():
             continue
+        if e['error_id'] in ignored():
+            continue
         print('"' + e['error_id'] + '" is not appearing in any generated webpage')
 
 def for_review():
@@ -264,7 +266,6 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to an event',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'should use a secondary wikipedia tag - linking to a vehicle model or class',
         'should use a secondary wikipedia tag - linking to a company that has multiple locations', # https://www.openstreetmap.org/way/203508108
@@ -276,6 +277,18 @@ def for_tests():
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',
         'tag may be added based on wikidata - website', # dubious copyright
+    ]
+
+def ignored():
+    # I am not so interested in Wikidata, and want to be less interested
+    #
+    # Wikidata community is also not interested
+    #
+    # https://www.wikidata.org/wiki/Wikidata_talk:WikiProject_Ontology
+    # https://www.wikidata.org/wiki/Wikidata:Project_chat/Archive/2022/08#Subclass_trees
+    # https://wiki.openstreetmap.org/wiki/Talk:Data_items#Broken_Wikidata_ontology
+    return [
+        'should use a secondary wikipedia tag - linking to an event',
     ]
 
 def htmlify(string):
