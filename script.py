@@ -29,7 +29,18 @@ def create_table_if_needed(cursor):
         # right now for "checked, no error" I plan to use empty string but I am not too happy
         cursor.execute('''CREATE TABLE osm_data
                     (type text, id number, lat float, lon float, tags text, area_identifier text, osm_data_updated date, validator_complaint text)''')
-
+    if "osm_data_update_log" in existing_tables(cursor):
+        print("osm_data_update_log table exists already, delete file with database to recreate")
+    else:
+        # register when data was downloaded so update can be done without downloading
+        # and processing the entire dataset
+        #
+        # instead just entries that were changed since then
+        # - and carry *(wikipedia|wikidata)* tags
+        # - that previously had problem reported about them
+        # should be downloaded
+        cursor.execute('''CREATE TABLE osm_data_update_log
+                    (area_identifier text, filename text, download_type text, download_timestamp integer)''')
 
 def main():
     issue_detector = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(
