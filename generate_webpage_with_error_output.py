@@ -178,13 +178,20 @@ def error_description(e, prefix_of_lines):
         pprint.pprint(e['proposed_tagging_changes'])
         pprint.pprint(e['desired_wikipedia_target'])
         pprint.pprint(e)
-    if e['desired_wikipedia_target'] != None:
+        raise
+    if current_deprecated_form != None:
         if current_deprecated_form != current:
             for _ in range(30):
                 print("++++++++++++++ MISMATCH on current +++++++++++++++++++++++++")
             pprint.pprint(e['proposed_tagging_changes'])
             pprint.pprint(e['current_wikipedia_target'])
             pprint.pprint(e)
+            raise
+        for _ in range(30):
+            print("++++++++++++++ deprecated current form exists at all, why? +++++++++++++++++++++++++")
+        pprint.pprint(e['proposed_tagging_changes'])
+        pprint.pprint(e['current_wikipedia_target'])
+        pprint.pprint(e)
 
     if e['desired_wikipedia_target'] != None:
         returned += describe_proposed_relinking(e, prefix_of_lines)
