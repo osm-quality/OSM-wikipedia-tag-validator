@@ -49,7 +49,11 @@ def main():
     connection.commit()
     wikimedia_connection.set_cache_location(config.get_wikimedia_connection_cache_location())
 
+    total_entry_count = len(config.get_entries_to_process())
+    processed_entries = 0
     for entry in config.get_entries_to_process():
+        print(processed_entries, "/", total_entry_count)
+        processed_entries += 1
         internal_region_name = entry['internal_region_name']
         print(internal_region_name)
         if "hidden" in entry:
