@@ -92,7 +92,7 @@ def update_validator_reports_for_given_area(cursor, internal_region_name, langua
     issue_detector = get_wikimedia_link_issue_reporter_object(language_code)
     # will recheck reported errors
     # will not recheck entries that previously were free of errors
-    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint =""', {"identifier": internal_region_name})
+    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NULL', {"identifier": internal_region_name})
     returned = cursor.fetchall()
     for entry in returned:
         rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
