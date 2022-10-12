@@ -59,13 +59,12 @@ def main():
             if entry["hidden"] == True:
                 continue
         process_given_area(connection, entry)
-    generate_webpage_with_error_output.write_index(cursor)
+        generate_webpage_with_error_output.write_index_and_merged_entries(cursor) # update after each run
     connection.close()
     commit_changes_in_report_directory()
 
 
 def process_given_area(connection, entry):
-    merged_output_file = entry.get('merged_output_file', None) # TODO! support this!
     identifier_of_region_for_overpass_query=entry['identifier']
     timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(entry['internal_region_name'], identifier_of_region_for_overpass_query)
 

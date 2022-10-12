@@ -362,7 +362,7 @@ def ordered_keys(dictionary):
     keys = list(dictionary.keys())
     return sorted(keys)
 
-def write_index(cursor):
+def write_index_and_merged_entries(cursor):
     website_html = ""
     website_html += html_file_header() + "\n"
     website_html += '<p>This page lists OpenStreetMap objects that have <a href="https://wiki.openstreetmap.org/wiki/Key:wikipedia">wikipedia</a> / <a href="https://wiki.openstreetmap.org/wiki/Key:wikipedia">wikidata</a> tags with some problems.</p>'
