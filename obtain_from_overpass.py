@@ -42,7 +42,7 @@ def download_entry(internal_region_name, identifier_data_for_overpass):
             latest_download_timestamp = download_timestamp
         current_timestamp = int(time.time())
         age_of_data_in_seconds = current_timestamp - latest_download_timestamp
-        print("age_of_data_in_seconds", age_of_data_in_seconds, "age_of_data_in_hours", int(age_of_data_in_seconds/60/60))
+        print("age_of_data_in_seconds", age_of_data_in_seconds, "age_of_data_in_hours", int(age_of_data_in_seconds/60/60 + 0.5))
         print("at this point update should be run")
         return latest_download_timestamp
     else:
