@@ -45,8 +45,6 @@ def create_table_if_needed(cursor):
 def main():
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
-    if "osm_data" in existing_tables(cursor):
-        cursor.execute("DROP TABLE osm_data") # TODO: start using what is available to actually update data!
     create_table_if_needed(cursor)
     connection.commit()
     wikimedia_connection.set_cache_location(config.get_wikimedia_connection_cache_location())
