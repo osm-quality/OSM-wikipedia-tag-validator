@@ -8,6 +8,7 @@ import sqlite3
 import load_osm_file
 from datetime import datetime
 import osm_bot_abstraction_layer
+import os
 
 def filepath_to_downloaded_osm_data(name, suffix):
   filename = name
@@ -27,12 +28,9 @@ def download_entry(internal_region_name, identifier_data_for_overpass):
         cursor.execute("SELECT area_identifier, filename, download_type, download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp", {"area_identifier": internal_region_name})
         returned = cursor.fetchall()
         if len(returned) == 0:
-            print("it is not recorded when this data was downloaded!")
-            print("at this point update should be run")
-            print("TODO! redownload old ones") # TODO
-            #os.remove(downloaded_filepath)
-            #return download_entry(internal_region_name, identifier_data_for_overpass)
-            return 0
+            print("it is not recorded when this data was downloaded! Throwing it away and fetching new.")
+            os.remove(downloaded_filepath)
+            return download_entry(internal_region_name, identifier_data_for_overpass)
         print("area_identifier, filename, download_type, download_timestamp")
         latest_download_timestamp = None
         for entry in returned:

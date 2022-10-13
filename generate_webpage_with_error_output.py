@@ -44,10 +44,11 @@ def generate_html_file(errors, output_file_name, types, information_header):
                             file.write(row(instructions, prefix_of_lines=prefix_of_lines))
                     error_text = error_description(e, prefix_of_lines + "\t")
                     if error_text in added_reports:
-                        print("duplicated error!")
-                        print(error_text)
-                        print(error_type_id)
-                        print(output_file_name)
+                        #normal in merged entries
+                        #print("duplicated error!")
+                        #print(error_text)
+                        #print(error_type_id)
+                        #print(output_file_name)
                         continue
                     added_reports[error_text] = "added!"
                     error_count += 1
@@ -267,6 +268,7 @@ def for_tests():
     return [
         'wikipedia/wikidata type tag that is incorrect according to not:* tag',
         'information board with wikipedia tag, not subject:wikipedia',
+        'city limit sign with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'should use a secondary wikipedia tag - linking to a vehicle model or class',
         'should use a secondary wikipedia tag - linking to an opera',
