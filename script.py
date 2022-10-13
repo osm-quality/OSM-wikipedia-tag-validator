@@ -119,7 +119,7 @@ def get_wikimedia_link_issue_reporter_object(language_code):
     return wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(
         forced_refresh=False,
         expected_language_code=language_code, # may be None
-        languages_ordered_by_preference=[],
+        languages_ordered_by_preference=[language_code],
         additional_debug=False,
         allow_requesting_edits_outside_osm=False,
         allow_false_positives=False
