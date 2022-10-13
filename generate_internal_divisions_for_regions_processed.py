@@ -1,5 +1,6 @@
 import osm_bot_abstraction_layer.world_data as world_data
 import yaml
+import json
 
 def main():
     returned = ""
@@ -7,7 +8,7 @@ def main():
     processed = [
         {
         'code': 'JP',
-        'parent': "日本 (Japan - Japonia)",
+        'parent': ["日本 (Japan - Japonia)"],
         'extra_part_of_name': "日本 (Japan - Japonia)",
         'extra_part_of_internal_name': "Japonia",
         'language_code': "ja",
@@ -16,7 +17,7 @@ def main():
         },
         {
         'code': 'US-TX',
-        'parent': "USA",
+        'parent': ["USA", "Texas"],
         'extra_part_of_name': "Texas",
         'extra_part_of_internal_name': "Texas",
         'language_code': "en",
@@ -66,12 +67,12 @@ def generate_entry_for_specific_subregion(source, osm_data):
     region_data = {
         "internal_region_name": internal_name,
         "website_main_title_part": website_main_title_part,
-        "merged_output": source["parent"],
+        "merged_into": source["parent"],
         "identifier": {'wikidata': osm_data["wikidata"]},
         "language_code": source['language_code'],
         "requested_by": source['requested_by'],
         }
     #return "-" + yaml.dump(region_data)
-    return "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', merged_output: '" + source["parent"] + "', identifier: {'wikidata': '" + osm_data["wikidata"] + "'}, language_code: '" + source['language_code'] + "', requested_by: '" + source["requested_by"] + "'}"
+    return "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', merged_into: '" + json.dump(source["parent"]) + "', identifier: {'wikidata': '" + osm_data["wikidata"] + "'}, language_code: '" + source['language_code'] + "', requested_by: '" + source["requested_by"] + "'}"
 
 main()

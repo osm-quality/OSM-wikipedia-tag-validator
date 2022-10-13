@@ -383,11 +383,11 @@ def write_index_and_merged_entries(cursor):
 
     merged_outputs = {}
     for entry in config.get_entries_to_process():
-        if entry.get('merged_output', None) != None:
-            index = entry['merged_output']
-            if index not in merged_outputs:
-                merged_outputs[index] = []
-            merged_outputs[index].append(entry)
+        if entry.get('merged_into', None) != None:
+            for parent in entry['merged_into']:
+                if parent not in merged_outputs:
+                    merged_outputs[parent] = []
+                merged_outputs[parent].append(entry)
 
 
 
