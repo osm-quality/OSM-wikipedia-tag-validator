@@ -5,8 +5,8 @@ import os
 wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
 
 forced_refresh = True
-#forced_refresh = False
-print(wikimedia_connection.get_data_from_wikidata("en", "Manchester Street Generating Station", forced_refresh))
+forced_refresh = False
+wikimedia_connection.get_data_from_wikidata("en", "Manchester Street Generating Station", forced_refresh)
 
 kill = ["Q107642474"]
 for id in kill:
