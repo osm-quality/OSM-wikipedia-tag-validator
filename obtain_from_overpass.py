@@ -1,11 +1,13 @@
 import config
 from osm_bot_abstraction_layer.overpass_downloader import download_overpass_query
+from osm_bot_abstraction_layer import overpass_query_maker
 import pathlib
 import shutil
 import time
 import sqlite3
 import load_osm_file
-
+from datetime import datetime
+import osm_bot_abstraction_layer
 
 def filepath_to_downloaded_osm_data(name, suffix):
   filename = name
@@ -44,6 +46,10 @@ def download_entry(internal_region_name, identifier_data_for_overpass):
         age_of_data_in_seconds = current_timestamp - latest_download_timestamp
         print("age_of_data_in_seconds", age_of_data_in_seconds, "age_of_data_in_hours", int(age_of_data_in_seconds/60/60 + 0.5))
         print("at this point update should be run")
+        print("https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example#Users_and_old_data")
+        print("osm_bot_abstraction_layer.datetime_to_overpass_data_format")
+        dt_object = datetime.fromtimestamp(latest_download_timestamp)
+        print(overpass_query_maker.datetime_to_overpass_data_format(dt_object))
         return latest_download_timestamp
     else:
         timestamp = int(time.time())
