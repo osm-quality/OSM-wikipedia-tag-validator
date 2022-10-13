@@ -28,6 +28,9 @@ def create_table_if_needed(cursor):
         # right now for "checked, no error" I plan to use empty string but I am not too happy
         cursor.execute('''CREATE TABLE osm_data
                     (type text, id number, lat float, lon float, tags text, area_identifier text, download_timestamp integer, validator_complaint text)''')
+
+        # magnificent speedup
+        cursor.execute("""CREATE INDEX idx_osm_data_area_identifier ON osm_data (area_identifier);""")
     if "osm_data_update_log" in existing_tables(cursor):
         print("osm_data_update_log table exists already, delete file with database to recreate")
     else:
