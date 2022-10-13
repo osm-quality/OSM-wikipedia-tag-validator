@@ -3,32 +3,44 @@ import yaml
 
 def main():
     returned = ""
-    # "ISO3166-1", "ISO3166-1:alpha2", "ISO3166-2" tags can be used
-    for ISO3166 in []: # 'JP', 'IR', 'PL'
-        returned += "\n"
-        returned += "\n"
-        print(world_data.list_of_area_divisions_data(ISO3166, 4, ["name", "wikidata"], '/tmp/boundary_data.osm'))
-
+    # for code "ISO3166-1", "ISO3166-1:alpha2", "ISO3166-2" tags can be used
     processed = [
+        {
+        'code': 'JP',
+        'parent': "日本 (Japan - Japonia)",
+        'extra_part_of_name': "日本 (Japan - Japonia)",
+        'extra_part_of_internal_name': "Japonia",
+        'language_code': "ja",
+        'requested_by': 'https://www.openstreetmap.org/messages/1054938 Bman',
+        'admin_level': 4
+        },
         {
         'code': 'US-TX',
         'parent': "USA",
         'extra_part_of_name': "Texas",
+        'extra_part_of_internal_name': "Texas",
         'language_code': "en",
         'requested_by': 'skquinn via PM in https://www.openstreetmap.org/messages/924460 and Bman via PM in https://www.openstreetmap.org/messages/1054938',
+        'admin_level': 6
         }
     ]
-    for source in processed: # 'JP', 'IR', 'PL'
-        returned += "\n"
-        returned += "\n"
-        ISO3166 = source['code']
-        data = world_data.list_of_area_divisions_data(ISO3166, 6, ["name", "wikidata", "name:pl", "name:en"], '/tmp/boundary_data.osm')
-        for osm_data in data:
-            returned += generate_osm_data_in_region_list(source, osm_data)
-            returned += "\n"
+    for source in processed:
+        returned += generate_subregion_list(source, source['admin_level'])
     print(returned)
 
-def generate_osm_data_in_region_list(source, osm_data):
+def generate_subregion_list(source, admin_level):
+    returned = ""
+    returned += "\n"
+    returned += "\n"
+    ISO3166 = source['code']
+    data = world_data.list_of_area_divisions_data(ISO3166, admin_level, ["name", "wikidata", "name:pl", "name:en"], '/tmp/boundary_data.osm')
+    for osm_data in data:
+        returned += generate_entry_for_specific_subregion(source, osm_data)
+        returned += "\n"
+    print(returned)
+    return returned
+
+def generate_entry_for_specific_subregion(source, osm_data):
     print(source)
     print(osm_data)
     internal_name = None
@@ -46,9 +58,9 @@ def generate_osm_data_in_region_list(source, osm_data):
             shown_extra_names.append(name)
     website_main_title_part = osm_data["name"]
     if len(shown_extra_names) > 0:
-        website_main_title_part += "(" + ", ".join(shown_extra_names) + ")"
+        website_main_title_part += " (" + ", ".join(shown_extra_names) + ")"
     if "extra_part_of_name" in source:
-        internal_name = source["extra_part_of_name"] + ": " + internal_name
+        internal_name = source["extra_part_of_internal_name"] + ": " + internal_name
         website_main_title_part = source["extra_part_of_name"] + ": " + website_main_title_part
 
     region_data = {
