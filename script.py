@@ -79,7 +79,7 @@ def process_given_area(connection, entry):
     # (as wikipedia tag could be simply removed!)
     #
     # if we do no worry about archival data in this case it is fine to simply delete such data
-    # as tag without wikidata and wikipedua tags will not be reported in wikipedia report tool
+    # as tag without wikidata and wikipedia tags will not be reported in wikipedia report tool
     # TODO: verify this assumption!
     cursor = connection.cursor()
     cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND download_timestamp < :timestamp_when_file_was_downloaded AND validator_complaint IS NOT NULL AND validator_complaint <> "" """, {"identifier": entry['internal_region_name'], "timestamp_when_file_was_downloaded": timestamp_when_file_was_downloaded})
