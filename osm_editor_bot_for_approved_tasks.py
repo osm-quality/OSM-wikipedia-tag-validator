@@ -346,14 +346,15 @@ def main():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
-    for area in ["Kraków", "Warszawa", "Wrocław"]:
-        reported_errors = load_errors(area)
-        add_wikipedia_tag_from_wikidata_tag(reported_errors) # check with is_edit_allowed_object_based_on_location function
-        add_wikidata_tag_from_wikipedia_tag(reported_errors) # self-checking location based on Wikipedia language code
-        for e in reported_errors:
-            handle_follow_wikipedia_redirect(e) # self-checking location based on Wikipedia language code [pl required]
-            #change_to_local_language(e) - discussion missing
-            pass
+    for entry in config.get_entries_to_process():
+        if entry.get('language_code', None) == "pl":
+            reported_errors = load_errors(entry["internal_region_name"])
+            add_wikipedia_tag_from_wikidata_tag(reported_errors) # check with is_edit_allowed_object_based_on_location function
+            add_wikidata_tag_from_wikipedia_tag(reported_errors) # self-checking location based on Wikipedia language code
+            for e in reported_errors:
+                handle_follow_wikipedia_redirect(e) # self-checking location based on Wikipedia language code [pl required]
+                #change_to_local_language(e) - discussion missing
+                pass
 
 if __name__ == '__main__':
     main()
