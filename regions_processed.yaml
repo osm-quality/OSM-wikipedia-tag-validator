@@ -3,6 +3,7 @@
 # https://en.wikipedia.org/wiki/Provinces_of_the_Netherlands
 - {internal_region_name: Noord-Brabant, website_main_title_part: 'Noord-Brabant - Nederland (Brabanca Północna - Holandia)', identifier: {'ISO3166-2': 'NL-NB'}, language_code: nl, merged_into: ['Netherlands (merged)'], requested_by: 'Casper het spook, in Discord https://discord.com/channels/@me/812445542973571124/815545212498739220'}
 #- {internal_region_name: Japan, website_main_title_part: '日本 (Japan - Japonia)', identifier: {'ISO3166-1': 'JP'}, language_code: ja, requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'}
+# Japan failed download
 #- {internal_region_name: Sweden, website_main_title_part: 'Sverige (Sweden - Szwecja)', identifier: {'ISO3166-1': 'SE'}, language_code: sv, requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'} # disabled for now - not sure are they actually going to fix this issues
 - {internal_region_name: Valais or Wallis, website_main_title_part: 'Valais or Wallis (in Swizerland)', merged_into: ['Switzerland (merged)'], identifier: {'wikidata': 'Q834'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
 - {internal_region_name: Bern, website_main_title_part: 'Bern (Brno)', merged_into: ['Switzerland (merged)'], identifier: {'wikidata': 'Q70'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718 - reduced on my own to much smaller area'}
@@ -53,8 +54,8 @@
 - {internal_region_name: Arizona, website_main_title_part: 'Arizona, USA', merged_into: ['USA'], identifier: {'name': 'Arizona'}, language_code: en}
 - {internal_region_name: Arkansas, website_main_title_part: 'Arkansas, USA', merged_into: ['USA'], identifier: {'name': 'Arkansas'}, language_code: en}
 
- # split by county in regions_configured_unused, useful for computers with lower memory
-- {internal_region_name: California, website_main_title_part: 'California, USA', merged_into: ['USA'], identifier: {'name': 'California'}, language_code: en, requested_by: 'Adamant1 via PM'}
+# too large to fetch with Overpass in one go
+#- {internal_region_name: California, website_main_title_part: 'California, USA', merged_into: ['USA'], identifier: {'name': 'California'}, language_code: en, requested_by: 'Adamant1 via PM'}
 - {internal_region_name: Colorado, website_main_title_part: 'Colorado, USA', merged_into: ['USA'], identifier: {'name': 'Colorado'}, language_code: en}
 - {internal_region_name: Connecticut, website_main_title_part: 'Connecticut, USA', merged_into: ['USA'], identifier: {'name': 'Connecticut'}, language_code: en}
 - {internal_region_name: Delaware, website_main_title_part: 'Delaware, USA', merged_into: ['USA'], identifier: {'name': 'Delaware'}, language_code: en}
