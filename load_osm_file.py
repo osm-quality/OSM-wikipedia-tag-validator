@@ -16,7 +16,12 @@ def record(cursor, entry, identifier_of_region, timestamp):
         if "wikidata" in key or "wikipedia" in key:
             relevant = True
     if relevant:
-        cursor.execute("SELECT download_timestamp FROM osm_data WHERE type = :type and id = :id", {'type': entry["osm_type"], 'id': entry["osm_id"]})
+        # note that object may cross border and be in area with multiple area_identifier
+        # what should be done in such case?
+        # note that object may be moved...
+        # but we do not want to delete/recrate object constantly...
+        # TODO
+        cursor.execute("SELECT download_timestamp FROM osm_data WHERE type = :type and id = :id and area_identifier = :area_identifier", {'type': entry["osm_type"], 'id': entry["osm_id"], "area_identifier": identifier_of_region})
         data = cursor.fetchall()
         if len(data) > 1:
             raise "unexpected" # TODO store old data in osm_data or move it to somewhere else to record statistics
