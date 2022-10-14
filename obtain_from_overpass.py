@@ -59,7 +59,7 @@ def download_entry(internal_region_name, identifier_data_for_overpass):
 
         load_osm_file.load_osm_file(cursor, downloaded_filepath, internal_region_name, timestamp)
 
-        # done AFTER data us safely loaded, committed together
+        # done AFTER data was safely loaded, committed together
         # this way we avoid problems with data downloaded and only partially loaded in database
         cursor.execute("INSERT INTO osm_data_update_log VALUES (:area_identifier, :filename, :download_type, :download_timestamp)", {"area_identifier": internal_region_name, "filename": downloaded_filepath, "download_type": "initial_full_data", "download_timestamp": timestamp})
         connection.commit()
