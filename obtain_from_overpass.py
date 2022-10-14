@@ -23,7 +23,7 @@ def download_entry(internal_region_name, identifier_data_for_overpass):
     cursor = connection.cursor()
     downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed")
     work_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_download_in_progress")
-    if pathlib.Path(downloaded_filepath).is_file():
+    if pathlib.Path(downloaded_filepath).is_file(): # load location from database instead, maybe? TODO
         print("full data file is downloaded already")
         cursor.execute("SELECT area_identifier, filename, download_type, download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp", {"area_identifier": internal_region_name})
         returned = cursor.fetchall()
