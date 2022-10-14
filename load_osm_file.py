@@ -4,8 +4,11 @@ import json
 import config
 
 def load_osm_file(cursor, osm_file_filepath, identifier_of_region, timestamp_when_file_was_downloaded):
+    update_count = 0
     for entry in xml_streaming_of_osm_file(osm_file_filepath):
-        record(cursor, entry, identifier_of_region, timestamp_when_file_was_downloaded)
+        if record(cursor, entry, identifier_of_region, timestamp_when_file_was_downloaded):
+            update_count += 1
+    print(update_count, "relevant objects were updated/added")
 
 def record(cursor, entry, identifier_of_region, timestamp):
     if entry["osm_tags"] == {}:
@@ -33,9 +36,11 @@ def record(cursor, entry, identifier_of_region, timestamp):
                 cursor.execute("DELETE FROM osm_data WHERE type = :type and id = :id", {'type': entry["osm_type"], 'id': entry["osm_id"]})
             else:
                 print("so skipping")
-                return
+                return False
 
         cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': entry["osm_type"], 'id': entry["osm_id"], 'lat': entry["lat"], 'lon': entry["lon"], "tags": json.dumps(entry["osm_tags"]), "area_identifier": identifier_of_region, "download_timestamp": timestamp, "validator_complaint": None})
+        return True
+    return False
 
 def xml_streaming_of_osm_file(osm_file_filepath):
     # based on https://github.com/sopherapps/xml_stream/issues/6 and osm_iterator
