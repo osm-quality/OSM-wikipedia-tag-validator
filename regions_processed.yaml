@@ -64,7 +64,16 @@
 - {internal_region_name: Idaho, website_main_title_part: 'Idaho, USA', merged_into: ['USA'], identifier: {'name': 'Idaho'}, language_code: en}
 - {internal_region_name: Idaho, website_main_title_part: 'Idaho, USA', merged_into: ['USA'], identifier: {'name': 'Idaho'}, language_code: en}
 - {internal_region_name: Illinois, website_main_title_part: 'Illinois, USA', merged_into: ['USA'], identifier: {'name': 'Illinois'}, language_code: en}
-# Indiana Iowa Kansas Kentucky Louisiana Maine Maryland Massachusetts Michigan Minnesota Mississippi Missouri Montana Nebraska Nevada
+- {internal_region_name: Indiana, website_main_title_part: 'Indiana, USA', merged_into: ['USA'], identifier: {'name': 'Indiana'}, language_code: en}
+- {internal_region_name: Iowa, website_main_title_part: 'Iowa, USA', merged_into: ['USA'], identifier: {'name': 'Iowa'}, language_code: en}
+- {internal_region_name: Kansas, website_main_title_part: 'Kansas, USA', merged_into: ['USA'], identifier: {'name': 'Kansas'}, language_code: en}
+- {internal_region_name: Kentucky, website_main_title_part: 'Kentucky, USA', merged_into: ['USA'], identifier: {'name': 'Kentucky'}, language_code: en}
+- {internal_region_name: Louisiana, website_main_title_part: 'Louisiana, USA', merged_into: ['USA'], identifier: {'name': 'Louisiana'}, language_code: en}
+- {internal_region_name: Maine, website_main_title_part: 'Maine, USA', merged_into: ['USA'], identifier: {'name': 'Maine'}, language_code: en}
+- {internal_region_name: Maryland, website_main_title_part: 'Maryland, USA', merged_into: ['USA'], identifier: {'name': 'Maryland'}, language_code: en}
+- {internal_region_name: Massachusetts, website_main_title_part: 'Massachusetts, USA', merged_into: ['USA'], identifier: {'name': 'Massachusetts'}, language_code: en}
+- {internal_region_name: Michigan, website_main_title_part: 'Michigan, USA', merged_into: ['USA'], identifier: {'name': 'Michigan'}, language_code: en}
+#Minnesota Mississippi Missouri Montana Nebraska Nevada
 # New Hampshire
 # New Jersey
 # New Mexico
