@@ -245,6 +245,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a restaurant chain',
         'should use a secondary wikipedia tag - linking to a chain store',
         'should use a secondary wikipedia tag - linking to a given name',
+        'information board with wikipedia tag, not subject:wikipedia',
         'mismatching teryt:simc codes in wikidata and in osm element',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
     ]
@@ -267,7 +268,6 @@ def obvious_fixes():
 def for_tests():
     return [
         'wikipedia/wikidata type tag that is incorrect according to not:* tag',
-        'information board with wikipedia tag, not subject:wikipedia',
         'city limit sign with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'should use a secondary wikipedia tag - linking to a vehicle model or class',
