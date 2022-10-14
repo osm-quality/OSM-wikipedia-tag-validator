@@ -25,4 +25,4 @@ def user_agent():
   "wikipedia/wikidata tag validator, operated by " + pwd.getpwuid(os.getuid()).pw_name + " username, written by Mateusz Konieczny (matkoniecz@gmail.com)"
 
 def get_report_directory():
-    return 'OSM-wikipedia-tag-validator-reports'
+    return parse_yaml_file("cache_config.yaml")['validator_report_repository_location']
