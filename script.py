@@ -64,15 +64,16 @@ def main():
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
-        process_given_area(connection, entry)
+        process_given_area(cursor, entry)
+        connection.commit()
         generate_webpage_with_error_output.write_index_and_merged_entries(cursor) # update after each run
     connection.close()
     commit_changes_in_report_directory()
 
 
-def process_given_area(connection, entry):
+def process_given_area(cursor, entry):
     identifier_of_region_for_overpass_query=entry['identifier']
-    timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(entry['internal_region_name'], identifier_of_region_for_overpass_query)
+    timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(cursor, entry['internal_region_name'], identifier_of_region_for_overpass_query)
 
     # properly update by fetching new info about entries which were 
     # - not present in file so with outdated timestamps
@@ -82,7 +83,6 @@ def process_given_area(connection, entry):
     # if we do no worry about archival data in this case it is fine to simply delete such data
     # as tag without wikidata and wikipedia tags will not be reported in wikipedia report tool
     # TODO: verify this assumption!
-    cursor = connection.cursor()
     cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint
     FROM osm_data
     WHERE
@@ -101,7 +101,6 @@ def process_given_area(connection, entry):
         cursor.execute("DELETE FROM osm_data WHERE type = :type and id = :id", {'type': object_type, 'id': object_id})
 
     update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None))
-    connection.commit()
     generate_website_file_for_given_area(cursor, entry)
 
 def update_validator_reports_for_given_area(cursor, internal_region_name, language_code):

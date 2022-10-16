@@ -18,9 +18,7 @@ def filepath_to_downloaded_osm_data(name, suffix):
 def timeout():
   return 2550
 
-def download_entry(internal_region_name, identifier_data_for_overpass):
-    connection = sqlite3.connect(config.database_filepath())
-    cursor = connection.cursor()
+def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
     downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed")
     work_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_download_in_progress")
     if pathlib.Path(downloaded_filepath).is_file(): # load location from database instead, maybe? TODO
@@ -30,7 +28,7 @@ def download_entry(internal_region_name, identifier_data_for_overpass):
         if len(returned) == 0:
             print("it is not recorded when this data was downloaded! Throwing it away and fetching new.")
             os.remove(downloaded_filepath)
-            return download_entry(internal_region_name, identifier_data_for_overpass)
+            return download_entry(cursor, internal_region_name, identifier_data_for_overpass)
         print("area_identifier, filename, download_type, download_timestamp")
         latest_download_timestamp = None
         for entry in returned:
@@ -65,7 +63,6 @@ def download_entry(internal_region_name, identifier_data_for_overpass):
         # done AFTER data was safely loaded, committed together
         # this way we avoid problems with data downloaded and only partially loaded in database
         cursor.execute("INSERT INTO osm_data_update_log VALUES (:area_identifier, :filename, :download_type, :download_timestamp)", {"area_identifier": internal_region_name, "filename": downloaded_filepath, "download_type": "update_since_previous_download", "download_timestamp": timestamp})
-        connection.commit()
         print("sleeping extra time to prevent inevitable quota exhaustion")
         time.sleep(60)
         return timestamp
@@ -84,7 +81,6 @@ def download_entry(internal_region_name, identifier_data_for_overpass):
         # done AFTER data was safely loaded, committed together
         # this way we avoid problems with data downloaded and only partially loaded in database
         cursor.execute("INSERT INTO osm_data_update_log VALUES (:area_identifier, :filename, :download_type, :download_timestamp)", {"area_identifier": internal_region_name, "filename": downloaded_filepath, "download_type": "initial_full_data", "download_timestamp": timestamp})
-        connection.commit()
         print("sleeping extra time to prevent inevitable quota exhaustion")
         time.sleep(60)
     return timestamp
