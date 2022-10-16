@@ -76,8 +76,8 @@
 #Minnesota Mississippi Missouri Montana Nebraska Nevada
 # New Hampshire
 # New Jersey
-# New Mexico
-- {internal_region_name: New York, website_main_title_part: 'New York, USA', merged_into: ['USA'], identifier: {'name': 'New York'}, language_code: en, requested_by: 'ke9tv via PM, https://www.openstreetmap.org/messages/924617'}
+- {internal_region_name: New Mexico, website_main_title_part: 'New Mexico, USA', merged_into: ['USA'], identifier: {'name': 'New Mexico'}, language_code: en}
+#- {internal_region_name: New York, website_main_title_part: 'New York, USA', merged_into: ['USA'], identifier: {'name': 'New York'}, language_code: en, requested_by: 'ke9tv via PM, https://www.openstreetmap.org/messages/924617'} # too large
 # North Carolina
 #  North Dakota Ohio Oklahoma Oregon Pennsylvania Rhode Island South Carolina South Dakota Tennessee Texas Utah Vermont Virginia 
 - {internal_region_name: Rhode Island, website_main_title_part: 'Rhode Island, USA', merged_into: ['USA'], identifier: {'name': 'Rhode Island'}, language_code: en, requested_by: 'ZeLonewolf from Discord - https://discord.com/channels/413070382636072960/413070502580453387/809052893402890240'}
