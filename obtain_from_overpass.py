@@ -28,6 +28,10 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
         if len(returned) == 0:
             print("it is not recorded when this data was downloaded! Throwing it away and fetching new.")
             os.remove(downloaded_filepath)
+            # there could be old entries which are no longer valid and not present anymore in fetched data
+            # because elements are deleted or without wikidata/wikipedia tags
+            # so lets delete all of them
+            cursor.execute("""DELETE FROM osm_data WHERE area_identifier = :identifier""", {"identifier": internal_region_name})
             return download_entry(cursor, internal_region_name, identifier_data_for_overpass)
         print("area_identifier, filename, download_type, download_timestamp")
         latest_download_timestamp = None
