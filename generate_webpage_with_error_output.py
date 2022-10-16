@@ -411,7 +411,7 @@ def write_index_and_merged_entries(cursor):
                     primary_report_count += 1
         generate_output_for_given_area(merged_code, merged_reports)
         
-        line = '<a href = "' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count) + '\n'
+        line = '<a href = "./' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count) + '\n'
         if primary_report_count > 0:
             website_html += line
         else:
@@ -435,7 +435,7 @@ def write_index_and_merged_entries(cursor):
         report_count_string = problem_count_string(report_count)
 
         filename = website_main_title_part + '.html'
-        line = '<a href = "' + htmlify(filename) + '">' + htmlify(website_main_title_part) + '</a> ' + report_count_string + '\n'
+        line = '<a href = "./' + htmlify(filename) + '">' + htmlify(website_main_title_part) + '</a> ' + report_count_string + '\n'
         if report_count != 0:
             website_html += line
         else:
