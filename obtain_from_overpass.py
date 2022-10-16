@@ -23,7 +23,7 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
     work_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_download_in_progress")
     if pathlib.Path(downloaded_filepath).is_file(): # load location from database instead, maybe? TODO
         print("full data file is downloaded already")
-        cursor.execute("SELECT area_identifier, filename, download_type, download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp", {"area_identifier": internal_region_name})
+        cursor.execute("SELECT area_identifier, filename, download_type, download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name})
         returned = cursor.fetchall()
         if len(returned) == 0:
             print("it is not recorded when this data was downloaded! Throwing it away and fetching new.")
@@ -53,8 +53,6 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
         area_name_in_query = "searchArea"
         area_finder_string = area_finder(identifier_data_for_overpass, area_name_in_query)
         query = download_update_query_text(area_finder_string, area_name_in_query, latest_download_timestamp)
-        print(query)
-        """
         timestamp = int(time.time())
         download_overpass_query(query, work_filepath, user_agent=config.user_agent())
         downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_update_" + timestamp_formatted)
@@ -66,8 +64,6 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
         print("sleeping extra time to prevent inevitable quota exhaustion")
         time.sleep(60)
         return timestamp
-        """
-        return latest_download_timestamp
     else:
         timestamp = int(time.time())
         area_name_in_query = "searchArea"

@@ -7,6 +7,8 @@ import json
 import sqlite3
 import generate_webpage_with_error_output
 import os
+import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
+import time
 
 def existing_tables(cursor):
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -76,12 +78,12 @@ def process_given_area(cursor, entry):
     timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(cursor, entry['internal_region_name'], identifier_of_region_for_overpass_query)
 
     # properly update by fetching new info about entries which were 
-    # - not present in file so with outdated timestamps
-    # - entries currently are carrying reports
+    # - entries currently are carrying reports and with outdated timestamps
     # (as wikipedia tag could be simply removed!)
     #
-    # if we do no worry about archival data in this case it is fine to simply delete such data
-    # as tag without wikidata and wikipedia tags will not be reported in wikipedia report tool
+    # - entries without current wikidata/wikipedia tags may be outdated AND without active reports are safe
+    #   - will not generate valid report
+    #   - will not be false positives
     # TODO: verify this assumption!
     cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint
     FROM osm_data
@@ -95,10 +97,24 @@ def process_given_area(cursor, entry):
     validator_complaint <> ""
     """, {"identifier": entry['internal_region_name'], "timestamp_when_file_was_downloaded": timestamp_when_file_was_downloaded})
     returned = cursor.fetchall()
-    for entry in returned:
-        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
-        print(object_type, object_id, "is outdated, not in the report so its entry is being deleted:", tags)
-        cursor.execute("DELETE FROM osm_data WHERE type = :type and id = :id", {'type': object_type, 'id': object_id})
+    for outdated_objects in returned:
+        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = outdated_objects
+        data = osm_bot_abstraction_layer.get_data(object_id, object_type)
+        timestamp = int(time.time())
+        #print(json.dumps(returned, default=str, indent=3))
+        new_tags = "was deleted"
+        cursor.execute("""DELETE FROM osm_data WHERE type = :type AND id = :id AND area_identifier = :identifier""", {"type": object_type, "id": object_id, "identifier": entry['internal_region_name']})
+        if data != None: # None means that it was deleted
+            new_tags =  json.dumps(data["tag"], indent=3)
+            new_lat = lat
+            new_lon = lon
+            if object_type == "node":
+                new_lat = data["lat"]
+                new_lon = data["lon"]
+                # what about ways and relations?
+            #print(data)
+            cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': object_type, 'id': object_id, 'lat': new_lat, 'lon': new_lon, "tags": json.dumps(data["tag"]), "area_identifier": entry['internal_region_name'], "download_timestamp": timestamp, "validator_complaint": None})
+        print(object_type, object_id, "is outdated, not in the report so its entry needs to be updated:", tags, new_tags)
 
     update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None))
     generate_website_file_for_given_area(cursor, entry)
