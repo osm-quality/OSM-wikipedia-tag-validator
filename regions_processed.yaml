@@ -2,6 +2,8 @@
 # https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/Noord-Brabant%20-%20Nederland%20(Brabanca%20P%C3%B3%C5%82nocna%20-%20Holandia).html is regenerated again (let me know if you are not interested anymore)
 # https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/ has list in general, feel free to request more or report broken reports
 
+# too large to fetch from Overpass
+#- {internal_region_name: Australia, website_main_title_part: 'Australia', identifier: {'ISO3166-1': 'AU'}, language_code: en, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/1031511358694502470'}
 - {internal_region_name: Australia Capital Territory, website_main_title_part: 'Australia Capital Territory', identifier: {'ISO3166-2': 'AU-ACT'}, language_code: en, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/1031511358694502470'}
 #- {internal_region_name: Nederland, website_main_title_part: 'Nederland (Holandia)', identifier: {'ISO3166-1': 'NL'}, language_code: nl, requested_by: 'Casper het spook, in Discord https://discord.com/channels/@me/812445542973571124/815545212498739220'}
 # entire coutry was failing on download, splitting into provinces
