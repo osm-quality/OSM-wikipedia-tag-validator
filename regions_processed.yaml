@@ -350,5 +350,5 @@
 - {internal_region_name: Wisconsin, website_main_title_part: 'Wisconsin, USA', merged_into: ['USA'], identifier: {'name': 'Wisconsin'}, language_code: en}
 - {internal_region_name: Wyoming, website_main_title_part: 'Wyoming, USA', merged_into: ['USA'], identifier: {'name': 'Wyoming'}, language_code: en}
 
-- {internal_region_name: Brzezinka, website_main_title_part: 'Brzezinka', identifier: {'name': 'Brzezinka'}, language_code: pl, requested_by: 'debugging'}
+#- {internal_region_name: Brzezinka, website_main_title_part: 'Brzezinka', identifier: {'name': 'Brzezinka'}, language_code: pl, requested_by: 'debugging'}
 
