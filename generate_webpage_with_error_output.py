@@ -282,17 +282,21 @@ def for_tests():
     ]
 
 def ignored():
-    # I am not so interested in Wikidata, and want to be less interested
-    #
-    # Wikidata community is also not interested
-    #
-    # https://www.wikidata.org/wiki/Wikidata_talk:WikiProject_Ontology
-    # https://www.wikidata.org/wiki/Wikidata:Project_chat/Archive/2022/08#Subclass_trees
-    # https://wiki.openstreetmap.org/wiki/Talk:Data_items#Broken_Wikidata_ontology
     return [
+        # too many mistakes. TODO: just remove it (or maybe keep as a reminder?)
+        'should use a secondary wikipedia tag - linking to a company that has multiple locations',
+
+        # I am not so interested in Wikidata, and want to be less interested
+        #
+        # Wikidata community is also not strongly interested, but there is an occasional person that can be feed
+        # start from processing known reports in the wikidata structure test cases
+        #
+        # https://www.wikidata.org/wiki/Wikidata_talk:WikiProject_Ontology
+        # https://www.wikidata.org/wiki/Wikidata:Project_chat/Archive/2022/08#Subclass_trees
+        # https://wiki.openstreetmap.org/wiki/Talk:Data_items#Broken_Wikidata_ontology
         'should use a secondary wikipedia tag - linking to an event',
+
         'link to a list', # even I am not really convinced it is a problem
-        'should use a secondary wikipedia tag - linking to a company that has multiple locations', # too many mistakes. TODO: just remove it (or maybe keep as a reminder?)
     ]
 
 def htmlify(string):
