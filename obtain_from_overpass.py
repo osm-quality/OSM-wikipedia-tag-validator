@@ -49,12 +49,10 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
         age_of_data_in_seconds = current_timestamp - latest_download_timestamp
         age_of_data_in_hours = age_of_data_in_seconds/60/60
         print("age_of_data_in_seconds", age_of_data_in_seconds, "age_of_data_in_hours", int(age_of_data_in_hours + 0.5))
-        if age_of_data_in_hours < 24:
-            print("not old enough, this data is fine")
-            return latest_download_timestamp
         print("at this point update should be run")
         print("https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example#Users_and_old_data")
         print("osm_bot_abstraction_layer.datetime_to_overpass_data_format")
+
         dt_object = datetime.fromtimestamp(latest_download_timestamp)
         timestamp_formatted = overpass_query_maker.datetime_to_overpass_data_format(dt_object)
         area_name_in_query = "searchArea"

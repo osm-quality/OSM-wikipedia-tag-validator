@@ -54,13 +54,27 @@ def main():
     connection.commit()
     wikimedia_connection.set_cache_location(config.get_wikimedia_connection_cache_location())
 
-    total_entry_count = len(config.get_entries_to_process())
-    processed_entries = 0
+    entries_with_age = []
     for entry in config.get_entries_to_process():
+        internal_region_name = entry['internal_region_name']
+        timestamp = obtain_from_overpass.get_data_timestamp(cursor, internal_region_name)
+        print(internal_region_name, timestamp)
+        entries_with_age.append({"data": entry, "data_timestamp": timestamp})
+    entries_with_age = sorted(entries_with_age, key=lambda entry: entry["data_timestamp"])
+    
+    total_entry_count = len(config.get_entries_to_process())
+    total_processed_entry_count = 10
+    processed_entries = 0
+    for selected_processing_entry in entries_with_age[:10]:
+        entry = selected_processing_entry['data']
+        print(entry['internal_region_name'])
+
+    for selected_processing_entry in entries_with_age[:10]:
         print()
         print()
-        print(processed_entries, "/", total_entry_count)
+        print(processed_entries, "/", total_processed_entry_count, '/', total_entry_count)
         processed_entries += 1
+        entry = selected_processing_entry['data']
         internal_region_name = entry['internal_region_name']
         print(internal_region_name)
         if "hidden" in entry:
