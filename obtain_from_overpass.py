@@ -18,14 +18,25 @@ def filepath_to_downloaded_osm_data(name, suffix):
 def timeout():
   return 2550
 
-def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
-    downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed")
-    work_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_download_in_progress")
-    if pathlib.Path(downloaded_filepath).is_file(): # load location from database instead, maybe? TODO
+def get_data_timestamp(cursor, internal_region_name):
+    downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed") # load location from database instead, maybe? TODO
+    if pathlib.Path(downloaded_filepath).is_file():
         print("full data file is downloaded already")
-        cursor.execute("SELECT area_identifier, filename, download_type, download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name})
+        cursor.execute("SELECT download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name})
         returned = cursor.fetchall()
         if len(returned) == 0:
+            return 0
+        else:
+            return returned[0][0]
+    return 0
+
+def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
+    downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed") # load location from database instead, maybe? TODO
+    work_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_download_in_progress")
+    if pathlib.Path(downloaded_filepath).is_file():
+        print("full data file is downloaded already")
+        latest_download_timestamp = get_data_timestamp(cursor, internal_region_name)
+        if latest_download_timestamp == 0:
             print("it is not recorded when this data was downloaded! Throwing it away and fetching new.")
             os.remove(downloaded_filepath)
             # there could be old entries which are no longer valid and not present anymore in fetched data
@@ -34,14 +45,6 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
             cursor.execute("""DELETE FROM osm_data WHERE area_identifier = :identifier""", {"identifier": internal_region_name})
             return download_entry(cursor, internal_region_name, identifier_data_for_overpass)
         print("area_identifier, filename, download_type, download_timestamp")
-        latest_download_timestamp = None
-        for entry in returned:
-            print(entry)
-            area_identifier, filename, download_type, download_timestamp = entry
-            print(area_identifier, filename, download_type, download_timestamp)
-            if latest_download_timestamp != None:
-                raise "which timestamp is greater?" # TODO handle
-            latest_download_timestamp = download_timestamp
         current_timestamp = int(time.time())
         age_of_data_in_seconds = current_timestamp - latest_download_timestamp
         age_of_data_in_hours = age_of_data_in_seconds/60/60
