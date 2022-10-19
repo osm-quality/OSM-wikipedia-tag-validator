@@ -225,7 +225,6 @@ def note_unused_errors(reported_errors):
 
 def for_review():
     return [
-        'wikipedia tag in outdated form and there is mismatch between links',
         'wikipedia tag links to 404',
         'wikidata tag links to 404',
         'link to an unlinkable article',
@@ -248,6 +247,7 @@ def for_review():
         'information board with wikipedia tag, not subject:wikipedia',
         'mismatching teryt:simc codes in wikidata and in osm element',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
+        'wikipedia tag in outdated form and there is mismatch between links',
     ]
 
 def obvious_fixes():
