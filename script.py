@@ -60,19 +60,23 @@ def main():
         timestamp = obtain_from_overpass.get_data_timestamp(cursor, internal_region_name)
         print(internal_region_name, timestamp)
         entries_with_age.append({"data": entry, "data_timestamp": timestamp})
-    entries_with_age = sorted(entries_with_age, key=lambda entry: entry["data_timestamp"])
+    current_timestamp = int(time.time())
+    entries_with_age = sorted(entries_with_age, key=lambda entry: -(current_timestamp - entry["data_timestamp"]) * entry.get("priority_multiplier", 1))
     
     total_entry_count = len(config.get_entries_to_process())
-    total_processed_entry_count = 10
+    total_processed_entry_count = len(entries_with_age)
     processed_entries = 0
-    for selected_processing_entry in entries_with_age[:10]:
+    for selected_processing_entry in entries_with_age[:total_processed_entry_count]:
         entry = selected_processing_entry['data']
-        print(entry['internal_region_name'])
+        print(entry['internal_region_name'], entry.get("priority_multiplier", 1))
 
-    for selected_processing_entry in entries_with_age[:10]:
+    for selected_processing_entry in entries_with_age[:total_processed_entry_count]:
         print()
         print()
-        print(processed_entries, "/", total_processed_entry_count, '/', total_entry_count)
+        if (total_processed_entry_count != total_entry_count):
+            print(processed_entries, "/", total_processed_entry_count, '/', total_entry_count)
+        else:
+            print(processed_entries, "/", total_entry_count)
         processed_entries += 1
         entry = selected_processing_entry['data']
         internal_region_name = entry['internal_region_name']
