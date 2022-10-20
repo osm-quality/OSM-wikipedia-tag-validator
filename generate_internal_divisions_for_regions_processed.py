@@ -69,11 +69,14 @@ def generate_entry_for_specific_subregion(source, osm_data):
         "website_main_title_part": website_main_title_part,
         "merged_into": source["group_name"],
         "identifier": {'wikidata': osm_data["wikidata"]},
-        "language_code": source['language_code'],
         "requested_by": source['requested_by'],
         }
+    language_code_section = ""
+    if source['language_code'] != None:
+        region_data['language_code'] = source['language_code']
+        language_code_section = "language_code: '" + source['language_code'] + "', "
     #return "-" + yaml.dump(region_data)
     print(source["group_name"])
-    return "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', merged_into: '" + json.dumps(source["group_name"]) + "', identifier: {'wikidata': '" + osm_data["wikidata"] + "'}, language_code: '" + source['language_code'] + "', requested_by: '" + source["requested_by"] + "'}"
+    return "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', merged_into: '" + json.dumps(source["group_name"]) + "', identifier: {'wikidata': '" + osm_data["wikidata"] + "'}, " + language_code_section + "requested_by: '" + source["requested_by"] + "'}"
 
 main()
