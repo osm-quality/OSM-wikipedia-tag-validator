@@ -7,6 +7,25 @@ def main():
     # for code "ISO3166-1", "ISO3166-1:alpha2", "ISO3166-2" tags can be used
     processed = [
         {
+        'code': 'AU',
+        'group_name': ["Australia"],
+        'extra_part_of_name': "Australia",
+        'extra_part_of_internal_name': "Australia",
+        'language_code': None, # not touching this quagmire
+        'requested_by': 'https://discord.com/channels/413070382636072960/413070502580453387/1031511358694502470',
+        'admin_level': 4
+        },
+    ]
+    region_data = {
+        "internal_region_name": "internal_name",
+        "website_main_title_part": "website_main_title_part",
+        "merged_into": ["Australia"],
+        "identifier": {'wikidata': "Q72727272727272872"},
+        "requested_by": '$USERNAME',
+        }
+    print(generate_yaml_row_text(region_data))
+    done_already = [
+        {
         'code': 'JP',
         'group_name': ["日本 (Japan - Japonia)"],
         'extra_part_of_name': "日本 (Japan - Japonia)",
@@ -71,12 +90,18 @@ def generate_entry_for_specific_subregion(source, osm_data):
         "identifier": {'wikidata': osm_data["wikidata"]},
         "requested_by": source['requested_by'],
         }
-    language_code_section = ""
     if source['language_code'] != None:
         region_data['language_code'] = source['language_code']
-        language_code_section = "language_code: '" + source['language_code'] + "', "
-    #return "-" + yaml.dump(region_data)
-    print(source["group_name"])
-    return "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', merged_into: '" + json.dumps(source["group_name"]) + "', identifier: {'wikidata': '" + osm_data["wikidata"] + "'}, " + language_code_section + "requested_by: '" + source["requested_by"] + "'}"
+    return generate_yaml_row_text(region_data)
+
+def generate_yaml_row_text(region_data):
+    language_code_section = ""
+    if 'language_code' in region_data:
+        language_code_section = "language_code: '" + region_data['language_code'] + "', "
+    raw_yaml = "-" + yaml.dump(region_data)
+    manual = "- {internal_region_name: '" + region_data['internal_region_name'] + "', website_main_title_part: '" + region_data['website_main_title_part'] + "', merged_into: " + str(json.dumps(region_data["merged_into"])) + ", identifier: {'wikidata': '" + region_data["identifier"]["wikidata"] + "'}, " + language_code_section + "requested_by: '" + region_data["requested_by"] + "'}"
+    print(raw_yaml)
+    print(manual)
+    return manual
 
 main()
