@@ -90,38 +90,23 @@ def main():
     connection.close()
     commit_changes_in_report_directory()
 
-
 def process_given_area(cursor, entry):
     identifier_of_region_for_overpass_query=entry['identifier']
     timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(cursor, entry['internal_region_name'], identifier_of_region_for_overpass_query)
 
-    # properly update by fetching new info about entries which were 
-    # - entries currently are carrying reports and with outdated timestamps
-    # (as wikipedia tag could be simply removed!)
-    #
-    # - entries without current wikidata/wikipedia tags may be outdated AND without active reports are safe
-    #   - will not generate valid report
-    #   - will not be false positives
-    # TODO: verify this assumption!
-    cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint
-    FROM osm_data
-    WHERE
-    area_identifier = :identifier
-    AND
-    download_timestamp < :timestamp_when_file_was_downloaded
-    AND
-    validator_complaint IS NOT NULL
-    AND
-    validator_complaint <> ""
-    """, {"identifier": entry['internal_region_name'], "timestamp_when_file_was_downloaded": timestamp_when_file_was_downloaded})
-    returned = cursor.fetchall()
-    for outdated_objects in returned:
-        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = outdated_objects
+    # properly update by fetching new info about entries which also must be updated and could be missed
+    outdated_objects = outdated_entries_in_area_that_must_be_updated(cursor, entry['internal_region_name'], timestamp_when_file_was_downloaded)
+    for outdated in outdated_objects:
+        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = outdated
         data = osm_bot_abstraction_layer.get_data(object_id, object_type)
         timestamp = int(time.time())
         #print(json.dumps(returned, default=str, indent=3))
         new_tags = "was deleted"
-        cursor.execute("""DELETE FROM osm_data WHERE type = :type AND id = :id AND area_identifier = :identifier""", {"type": object_type, "id": object_id, "identifier": entry['internal_region_name']})
+        cursor.execute("""
+        DELETE FROM osm_data
+        WHERE
+        type = :type AND id = :id AND area_identifier = :identifier
+        """, {"type": object_type, "id": object_id, "identifier": entry['internal_region_name']})
         if data != None: # None means that it was deleted
             new_tags =  json.dumps(data["tag"], indent=3)
             new_lat = lat
@@ -136,6 +121,27 @@ def process_given_area(cursor, entry):
 
     update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None))
     generate_website_file_for_given_area(cursor, entry)
+
+def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, timestamp_when_file_was_downloaded):
+    # - entries currently are carrying reports and with outdated timestamps
+    # (as wikipedia tag could be simply removed!)
+    #
+    # - entries without current wikidata/wikipedia tags may be outdated AND without active reports are safe
+    #   - will not generate valid report
+    #   - will not be false positives
+
+    cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint
+    FROM osm_data
+    WHERE
+    area_identifier = :identifier
+    AND
+    download_timestamp < :timestamp_when_file_was_downloaded
+    AND
+    validator_complaint IS NOT NULL
+    AND
+    validator_complaint <> ""
+    """, {"identifier": internal_region_name, "timestamp_when_file_was_downloaded": timestamp_when_file_was_downloaded})
+    return cursor.fetchall()
 
 def update_validator_reports_for_given_area(cursor, internal_region_name, language_code):
     issue_detector = get_wikimedia_link_issue_reporter_object(language_code)
