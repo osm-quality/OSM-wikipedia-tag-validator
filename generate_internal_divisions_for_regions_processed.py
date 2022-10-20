@@ -73,6 +73,6 @@ def generate_entry_for_specific_subregion(source, osm_data):
         "requested_by": source['requested_by'],
         }
     #return "-" + yaml.dump(region_data)
-    return "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', merged_into: '" + json.dump(source["parent"]) + "', identifier: {'wikidata': '" + osm_data["wikidata"] + "'}, language_code: '" + source['language_code'] + "', requested_by: '" + source["requested_by"] + "'}"
+    return "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', merged_into: '" + json.dumps(source["parent"]) + "', identifier: {'wikidata': '" + osm_data["wikidata"] + "'}, language_code: '" + source['language_code'] + "', requested_by: '" + source["requested_by"] + "'}"
 
 main()
