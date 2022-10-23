@@ -61,7 +61,7 @@ def main():
         print(internal_region_name, timestamp)
         entries_with_age.append({"data": entry, "data_timestamp": timestamp})
     current_timestamp = int(time.time())
-    entries_with_age = sorted(entries_with_age, key=lambda entry: -(current_timestamp - entry["data_timestamp"]) * entry.get("priority_multiplier", 1))
+    entries_with_age = sorted(entries_with_age, key=lambda entry: -(current_timestamp - entry["data_timestamp"]) * entry["data"].get("priority_multiplier", 1))
     
     total_entry_count = len(config.get_entries_to_process())
     total_processed_entry_count = len(entries_with_age)
