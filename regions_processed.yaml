@@ -91,6 +91,8 @@
 - {internal_region_name: Bulgaria, website_main_title_part: 'Бългaрия (Bulgaria, Bułgaria)', identifier: {'ISO3166-1': 'BG'}, language_code: bg, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819954835142475786 Dimitar155 [BG] (pinged 2022-10-17)', priority_multiplier: 10}
 - {internal_region_name: Turkey, website_main_title_part: 'Türkiye (Turkey, Turcja)', identifier: {'ISO3166-1': 'TR'}, language_code: tr, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819955226877624370 mappinglander'}
 
+- {internal_region_name: Litwa, website_main_title_part: 'Lietuva (Lithuania - Litwa)', identifier: {'ISO3166-1': 'LT'}, requested_by: 'https://www.openstreetmap.org/user/Aurimas%20Fi%C5%A1eras in https://www.openstreetmap.org/messages/1060679'}
+
 # Poland
 #- {internal_region_name: Polska, website_main_title_part: 'Polska', language_code: pl}
 - {internal_region_name: województwo małopolskie, website_main_title_part: 'województwo małopolskie, Polska', merged_into: ['Polska'], identifier: {'name': 'województwo małopolskie'}, language_code: pl, priority_multiplier: 20}
