@@ -58,9 +58,7 @@ def note_or_fixme_review_request_indication(data):
         return text_dump
     return None
 
-def load_errors(processed_area):
-    connection = sqlite3.connect(config.database_filepath())
-    cursor = connection.cursor()
+def load_errors(cursor, processed_area):
     cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> '' AND area_identifier == :area_identifier", {"area_identifier": processed_area})
     returned = []
     for entry in cursor.fetchall():
@@ -344,11 +342,13 @@ def link_to_point(lat, lon):
 
 def main():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
+    connection = sqlite3.connect(config.database_filepath())
+    cursor = connection.cursor()
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     for entry in config.get_entries_to_process():
         if entry.get('language_code', None) == "pl":
-            reported_errors = load_errors(entry["internal_region_name"])
+            reported_errors = load_errors(cursor, entry["internal_region_name"])
             add_wikipedia_tag_from_wikidata_tag(reported_errors) # check with is_edit_allowed_object_based_on_location function
             add_wikidata_tag_from_wikipedia_tag(reported_errors) # self-checking location based on Wikipedia language code
             for e in reported_errors:
