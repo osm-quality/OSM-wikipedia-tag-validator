@@ -13,7 +13,7 @@ def main():
         'extra_part_of_internal_name': "Australia",
         'language_code': None, # not touching this quagmire
         'requested_by': 'https://discord.com/channels/413070382636072960/413070502580453387/1031511358694502470',
-        'admin_level': 4
+        'admin_level': 4,
         },
     ]
     region_data = {
@@ -32,7 +32,7 @@ def main():
         'extra_part_of_internal_name': "Japonia",
         'language_code': "ja",
         'requested_by': 'https://www.openstreetmap.org/messages/1054938 Bman',
-        'admin_level': 4
+        'admin_level': 4,
         },
         {
         'code': 'US-TX',
@@ -41,7 +41,7 @@ def main():
         'extra_part_of_internal_name': "Texas",
         'language_code': "en",
         'requested_by': 'skquinn via PM in https://www.openstreetmap.org/messages/924460 and Bman via PM in https://www.openstreetmap.org/messages/1054938',
-        'admin_level': 6
+        'admin_level': 6,
         }
     ]
     for source in processed:
