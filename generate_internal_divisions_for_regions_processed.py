@@ -6,6 +6,26 @@ def main():
     returned = ""
     # for code "ISO3166-1", "ISO3166-1:alpha2", "ISO3166-2" tags can be used
     processed = [
+        { # Germany https://www.openstreetmap.org/relation/51477
+        'code': 'DE',
+        'group_name': ["Deutschland (Germany - Niemcy)"],
+        'extra_part_of_name': "Deutschland (Germany)",
+        'extra_part_of_internal_name': "Niemcy",
+        'language_code': 'de',
+        'requested_by': 'https://www.openstreetmap.org/messages/1060670',
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
+        { # China https://www.openstreetmap.org/relation/270056
+        'code': 'CN',
+        'group_name': ["中国 (China - Chiny)"],
+        'extra_part_of_name': "中国 (China)",
+        'extra_part_of_internal_name': "Chiny",
+        'language_code': None, # not touching this quagmire
+        'requested_by': 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/issues/1',
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
         {
         'code': 'AU',
         'group_name': ["Australia"],
@@ -82,6 +102,8 @@ def generate_entry_for_specific_subregion(source, osm_data):
         "identifier": {'wikidata': osm_data["wikidata"]},
         "requested_by": source['requested_by'],
         }
+    if "generated_commented_out" in source:
+        region_data["generated_commented_out"] = source["generated_commented_out"],
     if source['language_code'] != None:
         region_data['language_code'] = source['language_code']
     return generate_yaml_row_text(region_data)
@@ -90,10 +112,15 @@ def generate_yaml_row_text(region_data):
     language_code_section = ""
     if 'language_code' in region_data:
         language_code_section = "language_code: '" + region_data['language_code'] + "', "
-    raw_yaml = "-" + yaml.dump(region_data)
+    dumped = region_data.copy()
+    dumped.pop("generated_commented_out", None)
+    raw_yaml = "-" + yaml.dump(dumped)
     manual = "- {internal_region_name: '" + region_data['internal_region_name'] + "', website_main_title_part: '" + region_data['website_main_title_part'] + "', merged_into: " + str(json.dumps(region_data["merged_into"])) + ", identifier: {'wikidata': '" + region_data["identifier"]["wikidata"] + "'}, " + language_code_section + "requested_by: '" + region_data["requested_by"] + "'}"
     print(raw_yaml)
     print(manual)
-    return manual
+    returned = manual
+    if region_data["generated_commented_out"]:
+        returned = "#" + returned
+    return returned
 
 main()
