@@ -16,14 +16,6 @@ def main():
         'admin_level': 4,
         },
     ]
-    region_data = {
-        "internal_region_name": "internal_name",
-        "website_main_title_part": "website_main_title_part",
-        "merged_into": ["Australia"],
-        "identifier": {'wikidata': "Q72727272727272872"},
-        "requested_by": '$USERNAME',
-        }
-    print(generate_yaml_row_text(region_data))
     done_already = [
         {
         'code': 'JP',
