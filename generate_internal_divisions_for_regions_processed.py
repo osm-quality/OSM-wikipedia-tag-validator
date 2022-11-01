@@ -6,6 +6,18 @@ def main():
     returned = ""
     # for code "ISO3166-1", "ISO3166-1:alpha2", "ISO3166-2" tags can be used
     processed = [
+        { # Ukraine
+        'code': 'UA',
+        'group_name': ["Ukraine"],
+        'extra_part_of_name': "Україна (Ukraine, Ukraina)",
+        'extra_part_of_internal_name': "Ukraina",
+        'language_code': 'ua',
+        'requested_by': 'https://t.me/OpenStreetMapOrg/73857 Alex Riabstev && https://www.openstreetmap.org/messages/1061122 michael_ua',
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
+    ]
+    done_already = [
         { # Germany https://www.openstreetmap.org/relation/51477
         'code': 'DE',
         'group_name': ["Deutschland (Germany - Niemcy)"],
@@ -35,8 +47,6 @@ def main():
         'requested_by': 'https://discord.com/channels/413070382636072960/413070502580453387/1031511358694502470',
         'admin_level': 4,
         },
-    ]
-    done_already = [
         {
         'code': 'JP',
         'group_name': ["日本 (Japan - Japonia)"],
