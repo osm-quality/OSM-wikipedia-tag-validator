@@ -202,13 +202,15 @@
 - {internal_region_name: Massachusetts, website_main_title_part: 'Massachusetts, USA', merged_into: ['USA'], identifier: {'name': 'Massachusetts'}, language_code: en}
 - {internal_region_name: Michigan, website_main_title_part: 'Michigan, USA', merged_into: ['USA'], identifier: {'name': 'Michigan'}, language_code: en}
 #Minnesota Mississippi Missouri Montana Nebraska Nevada
-# New Hampshire
-# New Jersey
+- {internal_region_name: New Hampshire, website_main_title_part: 'New Hampshire, USA', merged_into: ['USA'], identifier: {'name': 'New Hampshire'}, language_code: en, requested_by: 'ke9tv via PM, https://www.openstreetmap.org/messages/924617'}
+- {internal_region_name: New Jersey, website_main_title_part: 'New Jersey, USA', merged_into: ['USA'], identifier: {'name': 'New Jersey'}, language_code: en, requested_by: 'ke9tv via PM, https://www.openstreetmap.org/messages/924617'}
 - {internal_region_name: New Mexico, website_main_title_part: 'New Mexico, USA', merged_into: ['USA'], identifier: {'name': 'New Mexico'}, language_code: en}
 #- {internal_region_name: New York, website_main_title_part: 'New York, USA', merged_into: ['USA'], identifier: {'name': 'New York'}, language_code: en, requested_by: 'ke9tv via PM, https://www.openstreetmap.org/messages/924617'} # too large
 # North Carolina
-#  North Dakota Ohio Oklahoma Oregon Pennsylvania Rhode Island South Carolina South Dakota Tennessee Texas Utah Vermont Virginia 
+#  North Dakota Ohio Oklahoma Oregon Pennsylvania 
 - {internal_region_name: Rhode Island, website_main_title_part: 'Rhode Island, USA', merged_into: ['USA'], identifier: {'name': 'Rhode Island'}, language_code: en, requested_by: 'ZeLonewolf from Discord - https://discord.com/channels/413070382636072960/413070502580453387/809052893402890240'}
+# South Carolina South Dakota Tennessee Texas Utah Vermont
+- {internal_region_name: Virginia, website_main_title_part: 'Virginia, USA', merged_into: ['USA'], identifier: {'name': 'Virginia'}, language_code: en}
 #- {internal_region_name: Texas, website_main_title_part: 'Texas, USA', merged_into: ['USA'], identifier: {'name': 'Texas'}, language_code: en, requested_by: 'skquinn (OSM user name) via PM https://www.openstreetmap.org/messages/924460'}
 - {internal_region_name: 'Texas: Hays County', website_main_title_part: 'Texas: Hays County', merged_into: ['USA', 'Texas'], identifier: {'wikidata': 'Q27018'}, language_code: 'en', requested_by: 'skquinn via PM in https://www.openstreetmap.org/messages/924460 and Bman via PM in https://www.openstreetmap.org/messages/1054938'}
 - {internal_region_name: 'Texas: Comal County', website_main_title_part: 'Texas: Comal County', merged_into: ['USA', 'Texas'], identifier: {'wikidata': 'Q109204'}, language_code: 'en', requested_by: 'skquinn via PM in https://www.openstreetmap.org/messages/924460 and Bman via PM in https://www.openstreetmap.org/messages/1054938'}
