@@ -66,6 +66,9 @@ def main():
     total_entry_count = len(config.get_entries_to_process())
     total_processed_entry_count = len(entries_with_age)
     processed_entries = 0
+    print()
+    print()
+    print()
     for selected_processing_entry in entries_with_age[:total_processed_entry_count]:
         entry = selected_processing_entry['data']
         print(entry['internal_region_name'], entry.get("priority_multiplier", 1))
