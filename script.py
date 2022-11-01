@@ -52,6 +52,15 @@ def main():
     cursor = connection.cursor()
     create_table_if_needed(cursor)
     connection.commit()
+
+    for entry in config.get_entries_to_process():
+        if "hidden" in entry:
+            if entry["hidden"] == True:
+                continue
+        generate_website_file_for_given_area(cursor, entry)
+    generate_webpage_with_error_output.write_index_and_merged_entries(cursor)
+    commit_changes_in_report_directory()
+
     wikimedia_connection.set_cache_location(config.get_wikimedia_connection_cache_location())
 
     entries_with_age = []
