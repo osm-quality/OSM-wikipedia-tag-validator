@@ -151,12 +151,27 @@ def update_validator_reports_for_given_area(cursor, internal_region_name, langua
     # will recheck reported errors
     # will not recheck entries that previously were free of errors
     cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NULL', {"identifier": internal_region_name})
-    returned = cursor.fetchall()
-    for entry in returned:
+    entries = cursor.fetchall()
+    update_problem_for_all_entries(issue_detector, cursor, entries)
+
+    issue_detector_refreshing_cache = get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=True)
+    # recheck reported with request to fetch cache
+    # done separately to avoid refetching over and over again where everything is fine
+    # (say, tags on a road/river)
+    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ""', {"identifier": internal_region_name})
+    entries = cursor.fetchall()
+    update_problem_for_all_entries(issue_detector_refreshing_cache, cursor, entries)
+
+def update_problem_for_all_entries(issue_detector, cursor, entries):
+    for entry in entries:
         rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
-        object_description = object_type + "/" + str(object_id)
         tags = json.loads(tags)
         location = (lat, lon)
+        object_description = object_type + "/" + str(object_id)
+        update_problem_for_entry(issue_detector, cursor, tags, location, object_type, object_id, object_description, rowid)
+
+def update_problem_for_entry(issue_detector, cursor, tags, location, object_type, object_id, object_description, rowid):
+        object_description = object_type + "/" + str(object_id)
         reported = issue_detector.get_the_most_important_problem_generic(tags, location, object_type, object_description)
         if reported != None:
             link = "https://openstreetmap.org/" + object_type + "/" + str(object_id)
@@ -168,9 +183,9 @@ def update_validator_reports_for_given_area(cursor, internal_region_name, langua
         else:
             cursor.execute("UPDATE osm_data SET validator_complaint = :validator_complaint WHERE rowid = :rowid", {"validator_complaint": "", "rowid": rowid})
 
-def get_wikimedia_link_issue_reporter_object(language_code):
+def get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=False):
     return wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(
-        forced_refresh=False,
+        forced_refresh=forced_refresh,
         expected_language_code=language_code, # may be None
         languages_ordered_by_preference=[language_code],
         additional_debug=False,
