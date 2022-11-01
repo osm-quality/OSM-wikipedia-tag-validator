@@ -249,6 +249,8 @@ def for_review():
         'mismatching teryt:simc codes in wikidata and in osm element',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
         'wikipedia tag in outdated form and there is mismatch between links',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not',
+        'wikipedia/wikidata type tag that is incorrect according to not:* tag',
     ]
 
 def obvious_fixes():
@@ -268,7 +270,6 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'wikipedia/wikidata type tag that is incorrect according to not:* tag',
         'city limit sign with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'should use a secondary wikipedia tag - linking to a vehicle model or class',
