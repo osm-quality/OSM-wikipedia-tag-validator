@@ -5,6 +5,13 @@ import json
 def main():
     returned = ""
     # for code "ISO3166-1", "ISO3166-1:alpha2", "ISO3166-2" tags can be used
+
+    # private note:
+    # in case of adding a new language remember to do following
+    # codium /home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published/wikibrain/wikimedia_link_issue_reporter.py
+    # and update wikidata_ids_of_countries_with_language
+    # and then reinstall using script in 
+    # /home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published
     processed = [
         { # Ukraine
         'code': 'UA',
