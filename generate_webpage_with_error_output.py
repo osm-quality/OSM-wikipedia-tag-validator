@@ -236,7 +236,7 @@ def for_review():
         'malformed wikidata tag',
         'malformed wikipedia tag',
         'should use a secondary wikipedia tag - linking to a human',
-        'should use a secondary wikipedia tag - linking to an animal or plant',
+        'should use a secondary wikipedia tag - linking to an animal or plant (and not an individual one)',
         'should use a secondary wikipedia tag - linking to a physical process',
         'should use a secondary wikipedia tag - linking to a website',
         'should use a secondary wikipedia tag - linking to a television series',
