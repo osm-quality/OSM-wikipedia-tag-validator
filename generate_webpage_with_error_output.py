@@ -173,13 +173,14 @@ def error_description(e, prefix_of_lines):
                     raise ValueError("multiple original replacements of the same tag (may make sense)")
                 desired = change["to"]["wikipedia"]
                 current = change["from"]["wikipedia"]
-    if desired_deprecated_form != desired:
-        for _ in range(30):
-            print("+++++++++++++++++ MISMATCH on desired ++++++++++++++++++++++")
-        pprint.pprint(e['proposed_tagging_changes'])
-        pprint.pprint(e['desired_wikipedia_target'])
-        pprint.pprint(e)
-        raise
+    if desired_deprecated_form != None:
+        if desired_deprecated_form != desired:
+            for _ in range(30):
+                print("+++++++++++++++++ MISMATCH on desired ++++++++++++++++++++++")
+            pprint.pprint(e['proposed_tagging_changes'])
+            pprint.pprint(e['desired_wikipedia_target'])
+            pprint.pprint(e)
+            raise
     if current_deprecated_form != None:
         if current_deprecated_form != current:
             for _ in range(30):
