@@ -61,9 +61,8 @@ Code is GNU GPLv3 licensed.
 
 ## Dependencies
 * Python 3.5+
-* * unpublished wikimedia_connection package (TODO: publish this package, open issue if you want me to work on that)
 * packages published on pypi, specified in `requirements.txt`
-
+** This includes https://github.com/matkoniecz/wikibrain#installation that sadly has unfortunate not standard way of installing it
 # Configuration
 
 ## Regions
