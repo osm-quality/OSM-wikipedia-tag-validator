@@ -8,10 +8,11 @@ def main():
 
     # private note:
     # in case of adding a new language remember to do following
-    # codium /home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published/wikibrain/wikimedia_link_issue_reporter.py
+    # codium "/home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published/wikibrain/wikimedia_link_issue_reporter.py"
     # and update wikidata_ids_of_countries_with_language
     # and then reinstall using script in 
     # /home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published
+    # cd "/home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published" && bash reinstall.sh && cd -
     processed = [
         { # Ukraine
         'code': 'UA',
