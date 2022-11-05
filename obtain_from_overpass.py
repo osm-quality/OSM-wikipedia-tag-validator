@@ -109,7 +109,7 @@ def download_update_query_text(area_finder_string, area_name, timestamp):
     query = "[timeout:" + str(timeout()) + "];\n"
     query += area_finder_string 
     query += "(\n"
-    query += 'nwr[~"wikipedia.*"~".*"](' + area_identifier+ ')(newer:"' + timestamp_formatted + '");\n'
+    query += 'nwr[~"(wikipedia|wikidata).*"~".*"](' + area_identifier+ ')(newer:"' + timestamp_formatted + '");\n'
     query += ');\n'
     query += "out center;"
     return query
@@ -120,7 +120,7 @@ def download_query_text(area_finder_string, area_name):
     query = "[timeout:" + str(timeout()) + "];\n"
     query += area_finder_string 
     query += "(\n"
-    query += 'nwr[~"wikipedia.*"~".*"](' + area_identifier+ ");\n"
+    query += 'nwr[~"(wikipedia|wikidata).*"~".*"](' + area_identifier+ ");\n"
     query += ');\n'
     query += "out center;"
     return query
