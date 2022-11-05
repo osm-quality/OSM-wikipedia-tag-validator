@@ -156,6 +156,11 @@ def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, 
     return cursor.fetchall()
 
 def update_validator_reports_for_given_area(cursor, internal_region_name, language_code):
+    detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code)
+    print("NOW CHECKING WHAT WAS REPORTED WITHOUT USING CACHE!")
+    verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code)
+
+def detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code):
     issue_detector = get_wikimedia_link_issue_reporter_object(language_code)
     # will recheck reported errors
     # will not recheck entries that previously were free of errors
@@ -163,6 +168,7 @@ def update_validator_reports_for_given_area(cursor, internal_region_name, langua
     entries = cursor.fetchall()
     update_problem_for_all_entries(issue_detector, cursor, entries)
 
+def verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code):
     issue_detector_refreshing_cache = get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=True)
     # recheck reported with request to fetch cache
     # done separately to avoid refetching over and over again where everything is fine
