@@ -14,6 +14,28 @@ def main():
     # /home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published
     # cd "/home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published" && bash reinstall.sh && cd -
     processed = [
+        { # Ireland https://www.openstreetmap.org/relation/62273
+        'code': 'IE',
+        'group_name': ["Ireland / Éire (Irlandia)"],
+        'extra_part_of_name': "Ireland / Éire (Irlandia)",
+        'extra_part_of_internal_name': "Irlandia",
+        'language_code': 'en',
+        'requested_by': 'mailing list, but giving with massive delay',
+        'admin_level': 5,
+        'generated_commented_out': True,
+        },
+        {
+        'code': 'LV',
+        'group_name': ["Latvija (Latvia, Łotwa)"],
+        'extra_part_of_name': "Latvija (Latvia, Łotwa",
+        'extra_part_of_internal_name': "Łotwa",
+        'language_code': 'lv',
+        'requested_by': 'https://signal.group/#CjQKIBQDZFRYENhgTzY0czaSnYxt6-NCXdW5Rp2o6144bO4wEhCUSXKPmsjKnTbzUgLj0MpL',
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
+    ]
+    done_already = [
         { # Ukraine
         'code': 'UA',
         'group_name': ["Ukraine"],
@@ -24,8 +46,6 @@ def main():
         'admin_level': 4,
         'generated_commented_out': True,
         },
-    ]
-    done_already = [
         { # Germany https://www.openstreetmap.org/relation/51477
         'code': 'DE',
         'group_name': ["Deutschland (Germany - Niemcy)"],

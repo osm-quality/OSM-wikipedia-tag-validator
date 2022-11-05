@@ -176,6 +176,18 @@
 - {internal_region_name: województwo śląskie, website_main_title_part: 'województwo śląskie, Polska', merged_into: ['Polska'], identifier: {'name': 'województwo śląskie'}, language_code: pl, priority_multiplier: 12}
 - {internal_region_name: województwo łódzkie, website_main_title_part: 'województwo łódzkie, Polska', merged_into: ['Polska'], identifier: {'name': 'województwo łódzkie'}, language_code: pl, priority_multiplier: 12}
 
+
+- {internal_region_name: 'Irlandia: Connacht', website_main_title_part: 'Ireland - Éire (Irlandia): Connacht', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q164421'}, language_code: 'en', requested_by: 'mailing list, but giving with massive delay'}
+#- {internal_region_name: 'Irlandia: Leinster', website_main_title_part: 'Ireland - Éire (Irlandia): Leinster', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q159736'}, language_code: 'en', requested_by: 'mailing list, but giving with massive delay'}
+#- {internal_region_name: 'Irlandia: Munster', website_main_title_part: 'Ireland - Éire (Irlandia): Munster', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q131438'}, language_code: 'en', requested_by: 'mailing list, but giving with massive delay'}
+#- {internal_region_name: 'Irlandia: Ulster', website_main_title_part: 'Ireland - Éire (Irlandia): Ulster', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q93195'}, language_code: 'en', requested_by: 'mailing list, but giving with massive delay'}
+
+
+- {internal_region_name: 'Łotwa: Semigalia', website_main_title_part: 'Latvija (Latvia, Łotwa: Zemgale (Semigalia)', merged_into: ["Latvija (Latvia, \u0141otwa)"], identifier: {'wikidata': 'Q215389'}, language_code: 'lv', requested_by: 'https://signal.group/#CjQKIBQDZFRYENhgTzY0czaSnYxt6-NCXdW5Rp2o6144bO4wEhCUSXKPmsjKnTbzUgLj0MpL', priority_multiplier: 1.1}
+#- {internal_region_name: 'Łotwa: Kurlandia', website_main_title_part: 'Latvija (Latvia, Łotwa: Kurzeme (Courland, Kurlandia)', merged_into: ["Latvija (Latvia, \u0141otwa)"], identifier: {'wikidata': 'Q185072'}, language_code: 'lv', requested_by: 'https://signal.group/#CjQKIBQDZFRYENhgTzY0czaSnYxt6-NCXdW5Rp2o6144bO4wEhCUSXKPmsjKnTbzUgLj0MpL'}
+#- {internal_region_name: 'Łotwa: Łatgalia', website_main_title_part: 'Latvija (Latvia, Łotwa: Latgale (Łatgalia)', merged_into: ["Latvija (Latvia, \u0141otwa)"], identifier: {'wikidata': 'Q208113'}, language_code: 'lv', requested_by: 'https://signal.group/#CjQKIBQDZFRYENhgTzY0czaSnYxt6-NCXdW5Rp2o6144bO4wEhCUSXKPmsjKnTbzUgLj0MpL'}
+#- {internal_region_name: 'Łotwa: Liwonia', website_main_title_part: 'Latvija (Latvia, Łotwa: Vidzeme (Liwonia)', merged_into: ["Latvija (Latvia, \u0141otwa)"], identifier: {'wikidata': 'Q745303'}, language_code: 'lv', requested_by: 'https://signal.group/#CjQKIBQDZFRYENhgTzY0czaSnYxt6-NCXdW5Rp2o6144bO4wEhCUSXKPmsjKnTbzUgLj0MpL'}
+
 - {internal_region_name: Hamburg, website_main_title_part: 'Hamburg, Deutschland', merged_into: ['Deutschland'], identifier: {'name': 'Hamburg'}, language_code: de, requested_by: 'Telegram - DE, especially Hamburg region'}
 - {internal_region_name: 'Niemcy: Meklemburgia-Pomorze Przednie', website_main_title_part: 'Deutschland: Mecklenburg-Vorpommern (Meklemburgia-Pomorze Przednie)', merged_into: ["Deutschland"], identifier: {'wikidata': 'Q1196'}, language_code: 'de', requested_by: 'https://www.openstreetmap.org/messages/1060670'}
 #- {internal_region_name: 'Niemcy: Groningen', website_main_title_part: 'Deutschland: Groningen', merged_into: ["Deutschland"], identifier: {'wikidata': 'Q752'}, language_code: 'de', requested_by: 'https://www.openstreetmap.org/messages/1060670'}
