@@ -6,26 +6,27 @@ import pprint
 import json
 
 import config
+import obtain_from_overpass
 
-def generate_output_for_given_area(main_output_name_part, reports_data):
+def generate_output_for_given_area(main_output_name_part, reports_data, timestamps_of_data):
     file = config.get_report_directory() + '/' + main_output_name_part + ".html"
-    main_report_count = generate_html_file(reports_data, file, for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.")
+    main_report_count = generate_html_file(reports_data, file, for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.", timestamps_of_data)
 
     file = config.get_report_directory() + '/' + main_output_name_part + " - obvious.html"
-    generate_html_file(reports_data, file, obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.")
+    generate_html_file(reports_data, file, obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.", timestamps_of_data)
 
     file = config.get_report_directory() + '/' + main_output_name_part + " - test.html"
-    generate_html_file(reports_data, file, for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.")
+    generate_html_file(reports_data, file, for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.", timestamps_of_data)
     note_unused_errors(reports_data)
     return main_report_count
 
 # TODO: errors -> reports here, and later elsewhere
-def generate_html_file(errors, output_file_name, types, information_header):
+def generate_html_file(errors, output_file_name, types, information_header, timestamps_of_data):
     prefix_of_lines = "\t\t\t"
     total_error_count = 0
     added_reports = {}
     with open( output_file_name, 'w') as file:
-        file.write(object_list_header())
+        file.write(object_list_header(timestamps_of_data))
         file.write(row( '<hr>', prefix_of_lines=prefix_of_lines))
         file.write(row( information_header, prefix_of_lines=prefix_of_lines ))
         file.write(row( '<hr>', prefix_of_lines=prefix_of_lines ))
@@ -78,14 +79,20 @@ def send_me_a_message_html():
 def feedback_header():
     return "Feedback? Ideas? Complaints? Suggestions? Request for report about other area? " + send_me_a_message_html() + "!"
 
-def timestamp():
-    return "This page was generated on " + str(datetime.date.today()) + ". Please, " + send_me_a_message_html() + " if you want it updated!" 
+def timestamp_listing(timestamps):
+    if len(timestamps) == 1:
+        return "This page was generated using data obtained on " + str(datetime.date.fromtimestamp(timestamps[0])) + "."
+    else:
+        timestamps_string_list = []
+        for timestamp in timestamps:
+            timestamps_string_list.append(str(datetime.date.fromtimestamp(timestamp)))
+        return "This page was generated using data obtained on various dates including " + ", ".join(list(set(timestamps_string_list))) + "."
 
-def feedback_request():
+def feedback_request(timestamps_of_data):
     returned = ""
     returned += feedback_header()
     returned += "<br />\n"
-    returned += timestamp()
+    returned += timestamp_listing(timestamps_of_data) + " Please, " + send_me_a_message_html() + " if you want it updated!"
     returned += "<br />\n"
     return returned
 
@@ -113,10 +120,10 @@ def html_file_suffix():
     return returned
 
 
-def object_list_header():
+def object_list_header(timestamps_of_data):
     returned = ""
     returned += html_file_header()
-    returned += feedback_request()
+    returned += feedback_request(timestamps_of_data)
     returned += "<br />\n"
     returned += "<br />\n"
     return returned
@@ -381,7 +388,13 @@ def write_index_and_merged_entries(cursor):
     website_html += '<p>This tool is an <a href="https://github.com/matkoniecz/OSM-wikipedia-tag-validator#story-behing-this-tool">unexpected result</a> of creating a detector of interesting places based on OSM Data and Wikipedia. It turned out to require a filter to avoid invalid links. As detected links can be often fixed and it is better to remove invalid rather than keep them, I am sharing this tool.</p>\n'
     website_html += "</hr>\n"
     website_html += "</br>\n"
-    website_html += feedback_request() + "\n"
+    timestamps = []
+    for entry in config.get_entries_to_process():
+        if "hidden" in entry:
+            if entry["hidden"] == True:
+                continue
+        timestamps.append(obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name']))
+    website_html += feedback_request(timestamps) + "\n"
     website_html += "</br>\n"
     website_html += "</hr>\n"
     """
@@ -402,6 +415,7 @@ def write_index_and_merged_entries(cursor):
 
 
     for merged_code in merged_outputs.keys():
+        timestamps_of_data = []
         merged_reports = []
         primary_report_count = 0
         for component in merged_outputs[merged_code]:
@@ -417,9 +431,10 @@ def write_index_and_merged_entries(cursor):
                 merged_reports.append(validator_complaint)
                 if(validator_complaint['error_id'] in for_review()):
                     primary_report_count += 1
-        generate_output_for_given_area(merged_code, merged_reports)
+            timestamps_of_data.append(obtain_from_overpass.get_data_timestamp(cursor, component['internal_region_name']))
+        generate_output_for_given_area(merged_code, merged_reports, timestamps_of_data)
         
-        line = '<a href = "./' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count) + '\n'
+        line = '<a href = "./' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count, timestamps_of_data) + '\n'
         if primary_report_count > 0:
             website_html += line
         else:
@@ -432,7 +447,8 @@ def write_index_and_merged_entries(cursor):
         website_main_title_part = entry['website_main_title_part']
         filename = website_main_title_part + '.html'
         report_count = human_review_problem_count_for_given_internal_region_name(cursor, entry['internal_region_name'])
-        report_count_string = problem_count_string(report_count)
+        timestamp = obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name'])
+        report_count_string = problem_count_string(report_count, [timestamp])
         line = '<a href = "./' + htmlify(filename) + '">' + htmlify(website_main_title_part) + '</a> ' + report_count_string + '\n'
         if report_count != 0:
             website_html += line
@@ -458,7 +474,9 @@ def human_review_problem_count_for_given_internal_region_name(cursor, internal_r
             report_count += 1
     return report_count
 
-def problem_count_string(report_count):
+def problem_count_string(report_count, timestamps):
+    if list(set(timestamps)) == [0]:
+        return '(data was - for now - not processed at all for this entry)</br>'
     if report_count == 1:
         return '(found ' + str(report_count) + ' problem)</br>'
     return '(found ' + str(report_count) + ' problems)</br>'
