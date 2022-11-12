@@ -430,19 +430,9 @@ def write_index_and_merged_entries(cursor):
             if entry["hidden"] == True:
                 continue
         website_main_title_part = entry['website_main_title_part']
-
-        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": entry['internal_region_name']})
-        returned = cursor.fetchall()
-        report_count = 0
-        for entry in returned:
-            rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
-            validator_complaint = json.loads(validator_complaint)
-            if(validator_complaint['error_id'] in for_review()):
-                report_count += 1
-
-        report_count_string = problem_count_string(report_count)
-
         filename = website_main_title_part + '.html'
+        report_count = human_review_problem_count_for_given_internal_region_name(cursor, entry['internal_region_name'])
+        report_count_string = problem_count_string(report_count)
         line = '<a href = "./' + htmlify(filename) + '">' + htmlify(website_main_title_part) + '</a> ' + report_count_string + '\n'
         if report_count != 0:
             website_html += line
@@ -456,6 +446,17 @@ def write_index_and_merged_entries(cursor):
     website_html += html_file_suffix()
     with open(config.get_report_directory() + '/' + 'index.html', 'w') as index:
         index.write(website_html)
+
+def human_review_problem_count_for_given_internal_region_name(cursor, internal_region_name):
+    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
+    returned = cursor.fetchall()
+    report_count = 0
+    for entry in returned:
+        rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
+        validator_complaint = json.loads(validator_complaint)
+        if(validator_complaint['error_id'] in for_review()):
+            report_count += 1
+    return report_count
 
 def problem_count_string(report_count):
     if report_count == 1:
