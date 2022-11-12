@@ -14,6 +14,20 @@ def main():
     # /home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published
     # cd "/home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published" && bash reinstall.sh && cd -
     processed = [
+        {
+        'code': 'US-CA',
+        'group_name': ["USA", "California"],
+        'extra_part_of_name': "California",
+        'extra_part_of_internal_name': "California",
+        'language_code': "en",
+        'requested_by': 'Adamant1 via PM - https://www.openstreetmap.org/messages/865259',
+        'admin_level': 6,
+        'ignored_problems': ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag'], # TODO test support for this
+        'generated_commented_out': True,
+        'priority_multiplier': 0.9
+        },
+    ]
+    done_already = [
         { # Ireland https://www.openstreetmap.org/relation/62273
         'code': 'IE',
         'group_name': ["Ireland / Éire (Irlandia)"],
@@ -34,8 +48,6 @@ def main():
         'admin_level': 4,
         'generated_commented_out': True,
         },
-    ]
-    done_already = [
         { # Ukraine
         'code': 'UA',
         'group_name': ["Ukraine"],
