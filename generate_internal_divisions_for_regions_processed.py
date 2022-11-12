@@ -105,6 +105,7 @@ def main():
         'requested_by': 'skquinn via PM in https://www.openstreetmap.org/messages/924460 and Bman via PM in https://www.openstreetmap.org/messages/1054938',
         'admin_level': 6,
         'ignored_problems': ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag'], # TODO test support for this
+        'generated_commented_out': True,
         'priority_multiplier': 0.9,
         },
     ]
