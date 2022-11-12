@@ -93,6 +93,7 @@ def main():
         'requested_by': 'skquinn via PM in https://www.openstreetmap.org/messages/924460 and Bman via PM in https://www.openstreetmap.org/messages/1054938',
         'admin_level': 6,
         'ignored_problems': ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag'], # TODO test support for this
+        'priority_multiplier': 0.9,
         },
     ]
     for source in processed:
@@ -143,6 +144,8 @@ def generate_entry_for_specific_subregion(source, osm_data):
         }
     if "ignored_problems" in source:
         region_data["ignored_problems"] = source["ignored_problems"]
+    if "priority_multiplier" in source:
+        region_data["priority_multiplier"] = source["priority_multiplier"]
     if "generated_commented_out" in source:
         region_data["generated_commented_out"] = source["generated_commented_out"],
     if source['language_code'] != None:
@@ -159,7 +162,10 @@ def generate_yaml_row_text(region_data):
     ignored_problems = ""
     if "ignored_problems" in region_data:
         ignored_problems = "ignored_problems: " + str(json.dumps(region_data["ignored_problems"])) + ", "
-    manual = "- {internal_region_name: '" + region_data['internal_region_name'] + "', website_main_title_part: '" + region_data['website_main_title_part'] + "', merged_into: " + str(json.dumps(region_data["merged_into"])) + ", identifier: {'wikidata': '" + region_data["identifier"]["wikidata"] + "'}, " + language_code_section + ignored_problems + "requested_by: '" + region_data["requested_by"] + "'}"
+    if "priority_multiplier" in region_data:
+        priority_multiplier = "priority_multiplier: " + str(region_data["priority_multiplier"]) + ", "
+        
+    manual = "- {internal_region_name: '" + region_data['internal_region_name'] + "', website_main_title_part: '" + region_data['website_main_title_part'] + "', merged_into: " + str(json.dumps(region_data["merged_into"])) + ", identifier: {'wikidata': '" + region_data["identifier"]["wikidata"] + "'}, " + language_code_section + ignored_problems + priority_multiplier + "requested_by: '" + region_data["requested_by"] + "'}"
     print(raw_yaml)
     print(manual)
     returned = manual
