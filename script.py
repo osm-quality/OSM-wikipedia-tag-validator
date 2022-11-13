@@ -133,7 +133,7 @@ def process_given_area(cursor, entry):
             cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': object_type, 'id': object_id, 'lat': new_lat, 'lon': new_lon, "tags": json.dumps(data["tag"]), "area_identifier": entry['internal_region_name'], "download_timestamp": timestamp, "validator_complaint": None})
         print(object_type, object_id, "is outdated, not in the report so its entry needs to be updated:", tags, new_tags)
 
-    update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None))
+    update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None), entry.get('ignored_problems', []))
     generate_website_file_for_given_area(cursor, entry)
 
 def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, timestamp_when_file_was_downloaded):
@@ -157,10 +157,10 @@ def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, 
     """, {"identifier": internal_region_name, "timestamp_when_file_was_downloaded": timestamp_when_file_was_downloaded})
     return cursor.fetchall()
 
-def update_validator_reports_for_given_area(cursor, internal_region_name, language_code):
+def update_validator_reports_for_given_area(cursor, internal_region_name, language_code, ignored_problems):
     detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code)
     print("NOW CHECKING WHAT WAS REPORTED WITHOUT USING CACHE!")
-    verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code)
+    verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code, ignored_problems)
 
 def detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code):
     issue_detector = get_wikimedia_link_issue_reporter_object(language_code)
@@ -168,23 +168,28 @@ def detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name,
     # will not recheck entries that previously were free of errors
     cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NULL', {"identifier": internal_region_name})
     entries = cursor.fetchall()
-    update_problem_for_all_entries(issue_detector, cursor, entries)
+    update_problem_for_all_entries(issue_detector, cursor, entries, [])
 
-def verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code):
+def verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code, ignored_problems):
     issue_detector_refreshing_cache = get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=True)
     # recheck reported with request to fetch cache
     # done separately to avoid refetching over and over again where everything is fine
     # (say, tags on a road/river)
     cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ""', {"identifier": internal_region_name})
     entries = cursor.fetchall()
-    update_problem_for_all_entries(issue_detector_refreshing_cache, cursor, entries)
+    update_problem_for_all_entries(issue_detector_refreshing_cache, cursor, entries, ignored_problems)
 
-def update_problem_for_all_entries(issue_detector, cursor, entries):
+def update_problem_for_all_entries(issue_detector, cursor, entries, ignored_problems):
     for entry in entries:
         rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
         tags = json.loads(tags)
         location = (lat, lon)
         object_description = object_type + "/" + str(object_id)
+        if validator_complaint != None:
+            if len(ignored_problems) > 0:
+                validator_complaint = json.loads(validator_complaint)
+                if validator_complaint['error_id'] in ignored_problems:
+                    continue
         update_problem_for_entry(issue_detector, cursor, tags, location, object_type, object_id, object_description, rowid)
 
 def update_problem_for_entry(issue_detector, cursor, tags, location, object_type, object_id, object_description, rowid):
