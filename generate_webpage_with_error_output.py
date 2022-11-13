@@ -434,11 +434,14 @@ def write_index_and_merged_entries(cursor):
             timestamps_of_data.append(obtain_from_overpass.get_data_timestamp(cursor, component['internal_region_name']))
         generate_output_for_given_area(merged_code, merged_reports, timestamps_of_data)
         
-        line = '<a href = "./' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count, timestamps_of_data) + '\n'
-        if primary_report_count > 0:
-            website_html += line
+        if(list(set(timestamps_of_data)) == [0]):
+            print(merged_code, "has no collected data at all, skipping")
         else:
-            completed += line
+            line = '<a href = "./' + htmlify(merged_code) + '.html">' + htmlify(merged_code) + '</a> ' + problem_count_string(primary_report_count) + '\n'
+            if primary_report_count > 0:
+                website_html += line
+            else:
+                completed += line
 
     for entry in config.get_entries_to_process():
         if "hidden" in entry:
@@ -447,13 +450,15 @@ def write_index_and_merged_entries(cursor):
         website_main_title_part = entry['website_main_title_part']
         filename = website_main_title_part + '.html'
         report_count = human_review_problem_count_for_given_internal_region_name(cursor, entry['internal_region_name'])
-        timestamp = obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name'])
-        report_count_string = problem_count_string(report_count, [timestamp])
+        report_count_string = problem_count_string(report_count)
         line = '<a href = "./' + htmlify(filename) + '">' + htmlify(website_main_title_part) + '</a> ' + report_count_string + '\n'
-        if report_count != 0:
-            website_html += line
+        if obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name']) == 0:
+            print(entry['internal_region_name'], "has no collected data at all, skipping")
         else:
-            completed += line
+            if report_count != 0:
+                website_html += line
+            else:
+                completed += line
     website_html += "<br>\n"
     website_html += "<h1>Finished, congratulations :)</h1>\n"
     if completed == "":
@@ -474,9 +479,7 @@ def human_review_problem_count_for_given_internal_region_name(cursor, internal_r
             report_count += 1
     return report_count
 
-def problem_count_string(report_count, timestamps):
-    if list(set(timestamps)) == [0]:
-        return '(data was - for now - not processed at all for this entry)</br>'
+def problem_count_string(report_count):
     if report_count == 1:
         return '(found ' + str(report_count) + ' problem)</br>'
     return '(found ' + str(report_count) + ' problems)</br>'
