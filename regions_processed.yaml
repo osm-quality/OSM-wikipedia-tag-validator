@@ -312,7 +312,7 @@
 # North Carolina
 #  North Dakota Ohio Oklahoma 
 - {internal_region_name: Oregon, website_main_title_part: 'Oregon, USA', merged_into: ['USA'], identifier: {'name': 'Oregon'}, language_code: en, ignored_problems: ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag'], requested_by: 'Adamant1 via PM - https://www.openstreetmap.org/messages/865259'}
-# Pennsylvania 
+#- {internal_region_name: Pennsylvania, website_main_title_part: 'Pennsylvania, USA', merged_into: ['USA'], identifier: {'name': 'Pennsylvania'}, language_code: en, ignored_problems: ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag'], requested_by: ''}
 - {internal_region_name: Rhode Island, website_main_title_part: 'Rhode Island, USA', merged_into: ['USA'], identifier: {'name': 'Rhode Island'}, language_code: en, ignored_problems: ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag'], requested_by: 'ZeLonewolf from Discord - https://discord.com/channels/413070382636072960/413070502580453387/809052893402890240'}
 # South Carolina South Dakota Tennessee Texas Utah Vermont
 #- {internal_region_name: Virginia, website_main_title_part: 'Virginia, USA', merged_into: ['USA'], identifier: {'name': 'Virginia'}, language_code: en, ignored_problems: ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag']}
