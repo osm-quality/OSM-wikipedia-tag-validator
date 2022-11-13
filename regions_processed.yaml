@@ -217,6 +217,10 @@
 - {internal_region_name: Shropshire, website_main_title_part: 'Shropshire (county), UK', merged_into: ['UK'], identifier: {'name': 'Shropshire'}, language_code: en, requested_by: 'Trigpoint from Discord https://discord.com/channels/413070382636072960/413070502580453387/809045523084214323', priority_multiplier: 4}
 
 # USA (United States)
+# ignored problems due to rejection of bit edits:
+# 'wikipedia from wikidata tag' https://osmus.slack.com/archives/C029HV951/p1666803031647969
+# 'wikidata from wikipedia tag' https://osmus.slack.com/archives/C029HV951/p1666803031647969
+# 'wikipedia from wikidata tag, unexpected language' https://osmus.slack.com/archives/C029HV951/p1666803031647969
 #- {internal_region_name: Alabama, website_main_title_part: 'Alabama, USA', merged_into: ['USA'], identifier: {'name': 'Alabama'}, language_code: en, ignored_problems: ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag']}
 #- {internal_region_name: Alaska, website_main_title_part: 'Alaska, USA', merged_into: ['USA'], identifier: {'name': 'Alaska'}, language_code: en, ignored_problems: ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag']}
 #- {internal_region_name: Arizona, website_main_title_part: 'Arizona, USA', merged_into: ['USA'], identifier: {'name': 'Arizona'}, language_code: en, ignored_problems: ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag'], requested_by: 'Adamant1 via PM - https://www.openstreetmap.org/messages/865259'}
