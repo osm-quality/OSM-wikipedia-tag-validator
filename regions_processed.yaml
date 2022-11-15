@@ -111,7 +111,7 @@
 #- {internal_region_name: 'Chiny: 新疆生产建设兵团', website_main_title_part: '中国 (China): 新疆生产建设兵团', merged_into: ["\u4e2d\u56fd (China - Chiny)"], identifier: {'wikidata': 'Q1323296'}, requested_by: 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/issues/1'}
 
 #- {internal_region_name: Sweden, website_main_title_part: 'Sverige (Sweden - Szwecja)', identifier: {'ISO3166-1': 'SE'}, language_code: sv, requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'} # disabled for now - not sure are they actually going to fix this issues
-- {internal_region_name: Switzerland, website_main_title_part: 'Schweiz - Suisse - Svizzera - Svizra (Switzerland - Szwajcaria)', identifier: {'wikidata': 'Q39'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
+- {internal_region_name: Switzerland, website_main_title_part: 'Schweiz - Suisse - Svizzera - Svizra (Switzerland - Szwajcaria)', identifier: {'wikidata': 'Q39'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718', priority_multiplier: 20} # someone is quite interested in processing data :)
 # no need for smaller areas
 #- {internal_region_name: Valais or Wallis, website_main_title_part: 'Valais or Wallis (in Switzerland)', merged_into: ['Switzerland (merged)'], identifier: {'wikidata': 'Q834'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
 #- {internal_region_name: Bern, website_main_title_part: 'Bern (Brno)', merged_into: ['Switzerland (merged)'], identifier: {'wikidata': 'Q70'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718 - reduced on my own to much smaller area'}
@@ -155,7 +155,7 @@
 - {internal_region_name: Bulgaria, website_main_title_part: 'Бългaрия (Bulgaria, Bułgaria)', identifier: {'ISO3166-1': 'BG'}, language_code: bg, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819954835142475786 Dimitar155 [BG] (pinged 2022-10-17)', priority_multiplier: 4}
 - {internal_region_name: Turkey, website_main_title_part: 'Türkiye (Turkey, Turcja)', identifier: {'ISO3166-1': 'TR'}, language_code: tr, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819955226877624370 mappinglander'}
 
-- {internal_region_name: Litwa, website_main_title_part: 'Lietuva (Lithuania - Litwa)', identifier: {'ISO3166-1': 'LT'}, requested_by: 'https://www.openstreetmap.org/user/Aurimas%20Fi%C5%A1eras in https://www.openstreetmap.org/messages/1060679', language_code: lt, priority_multiplier: 1}
+- {internal_region_name: Litwa, website_main_title_part: 'Lietuva (Lithuania - Litwa)', identifier: {'ISO3166-1': 'LT'}, requested_by: 'https://www.openstreetmap.org/user/Aurimas%20Fi%C5%A1eras in https://www.openstreetmap.org/messages/1060679', language_code: lt, priority_multiplier: 1.5}
 
 # Poland
 #- {internal_region_name: Polska, website_main_title_part: 'Polska', language_code: pl}
