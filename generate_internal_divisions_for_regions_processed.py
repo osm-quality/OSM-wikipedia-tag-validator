@@ -12,7 +12,9 @@ def main():
     # and update wikidata_ids_of_countries_with_language
     # and then reinstall using script in 
     # /home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published
-    # cd "/home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published" && bash reinstall.sh && cd -
+    # cd "/home/mateusz/Documents/install_moje/OSM software/wikibrain_py_package_published" && bash reinstall.sh
+    # and in a separate command (why it does not work together?):
+    # cd -
     processed = [
         {
         'code': 'US-CA',
