@@ -144,6 +144,7 @@ def generate_entry_for_specific_subregion(source, osm_data):
         if name not in blocked_names:
             shown_extra_names.append(name)
     website_main_title_part = osm_data["name"]
+    shown_extra_names = deduplicate_list(shown_extra_names)
     if len(shown_extra_names) > 0:
         website_main_title_part += " (" + ", ".join(shown_extra_names) + ")"
     if "extra_part_of_name" in source:
@@ -188,5 +189,9 @@ def generate_yaml_row_text(region_data):
     if region_data["generated_commented_out"]:
         returned = "#" + returned
     return returned
+
+def deduplicate_list(mylist):
+    # https://stackoverflow.com/a/22520277
+    return [ v for (i,v) in enumerate(mylist) if v not in mylist[0:i] ]
 
 main()
