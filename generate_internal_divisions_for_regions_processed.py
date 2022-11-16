@@ -177,6 +177,7 @@ def generate_yaml_row_text(region_data):
     ignored_problems = ""
     if "ignored_problems" in region_data:
         ignored_problems = "ignored_problems: " + str(json.dumps(region_data["ignored_problems"])) + ", "
+    priority_multiplier = ""
     if "priority_multiplier" in region_data:
         priority_multiplier = "priority_multiplier: " + str(region_data["priority_multiplier"]) + ", "
         
