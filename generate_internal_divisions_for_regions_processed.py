@@ -16,6 +16,18 @@ def main():
     # and in a separate command (why it does not work together?):
     # cd -
     processed = [
+        { # Italy https://www.openstreetmap.org/relation/365331
+        'code': 'IT',
+        'group_name': ["Italia (Italy, Włochy)"],
+        'extra_part_of_name': "Italia (Italy, Włochy)",
+        'extra_part_of_internal_name': "Włochy",
+        'language_code': 'it',
+        'requested_by': '', # https://www.openstreetmap.org/messages/1065630 for Emilia Romagna by Danysan95
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
+    ]
+    done_already = [
         {
         'code': 'US-CA',
         'group_name': ["USA", "California"],
@@ -28,8 +40,6 @@ def main():
         'generated_commented_out': True,
         'priority_multiplier': 0.9
         },
-    ]
-    done_already = [
         { # Ireland https://www.openstreetmap.org/relation/62273
         'code': 'IE',
         'group_name': ["Ireland / Éire (Irlandia)"],
