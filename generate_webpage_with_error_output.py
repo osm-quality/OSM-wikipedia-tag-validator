@@ -279,6 +279,8 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'malformed secondary wikidata tag',
+        'secondary wikidata tag links to 404',
         'city limit sign with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'should use a secondary wikipedia tag - linking to a vehicle model or class',
