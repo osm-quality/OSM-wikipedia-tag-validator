@@ -180,6 +180,8 @@
 
 - {internal_region_name: Litwa, website_main_title_part: 'Lietuva (Lithuania - Litwa)', identifier: {'ISO3166-1': 'LT'}, requested_by: 'https://www.openstreetmap.org/user/Aurimas%20Fi%C5%A1eras in https://www.openstreetmap.org/messages/1060679', language_code: lt, priority_multiplier: 1.5}
 
+- {internal_region_name: Białoruś, website_main_title_part: 'Беларусь (Belarus - Białoruś)', identifier: {'ISO3166-1': 'BY'}, requested_by: 'https://t.me/byosm/63383', language_code: be, priority_multiplier: 2.5}
+
 # Poland
 #- {internal_region_name: Polska, website_main_title_part: 'Polska', language_code: pl}
 - {internal_region_name: województwo małopolskie, website_main_title_part: 'województwo małopolskie, Polska', merged_into: ['Polska'], identifier: {'name': 'województwo małopolskie'}, language_code: pl, priority_multiplier: 12}
