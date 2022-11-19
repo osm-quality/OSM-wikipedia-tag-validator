@@ -218,7 +218,8 @@ def get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=False
 def generate_website_file_for_given_area(cursor, entry):
     reports = reports_for_given_area(cursor, entry['internal_region_name'])
     website_main_title_part = entry['website_main_title_part']
-    generate_webpage_with_error_output.generate_output_for_given_area(website_main_title_part, reports)
+    timestamps = [obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name'])]
+    generate_webpage_with_error_output.generate_output_for_given_area(website_main_title_part, reports, timestamps)
 
 def reports_for_given_area(cursor, internal_region_name):
     cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
