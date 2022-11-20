@@ -54,6 +54,11 @@ def main():
     connection.commit()
 
     for entry in config.get_entries_to_process():
+        if "/" in entry['internal_region_name']:
+            raise Exception("/ in " + entry['internal_region_name'])
+        if "/" in entry['website_main_title_part']:
+            raise Exception("/ in " + entry['website_main_title_part'])
+
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
