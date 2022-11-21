@@ -8,15 +8,21 @@ import json
 import config
 import obtain_from_overpass
 
-def generate_output_for_given_area(main_output_name_part, reports_data, timestamps_of_data):
+def generate_output_for_given_area(main_output_name_part, reports_data, timestamps_of_data, ignored_problems):
     file = config.get_report_directory() + '/' + main_output_name_part + ".html"
-    main_report_count = generate_html_file(reports_data, file, for_review(), "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.", timestamps_of_data)
+    issues = for_review()
+    issues_without_skipped = [i for i in issues if i not in ignored_problems]
+    main_report_count = generate_html_file(reports_data, file, issues_without_skipped, "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.", timestamps_of_data)
 
+    issues = obvious_fixes()
+    issues_without_skipped = [i for i in issues if i not in ignored_problems]
     file = config.get_report_directory() + '/' + main_output_name_part + " - obvious.html"
-    generate_html_file(reports_data, file, obvious_fixes(), "Proposed edits at this page are so obvious that automatic edit makes sense.", timestamps_of_data)
+    generate_html_file(reports_data, file, issues_without_skipped, "Proposed edits at this page are so obvious that automatic edit makes sense.", timestamps_of_data)
 
+    issues = for_tests()
+    issues_without_skipped = [i for i in issues if i not in ignored_problems]
     file = config.get_report_directory() + '/' + main_output_name_part + " - test.html"
-    generate_html_file(reports_data, file, for_tests(), "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.", timestamps_of_data)
+    generate_html_file(reports_data, file, issues_without_skipped, "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.", timestamps_of_data)
     note_unused_errors(reports_data)
     return main_report_count
 
@@ -430,11 +436,12 @@ def write_index_and_merged_entries(cursor):
                 rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
                 tags = json.loads(tags)
                 validator_complaint = json.loads(validator_complaint)
-                merged_reports.append(validator_complaint)
-                if(validator_complaint['error_id'] in for_review()):
-                    primary_report_count += 1
+                if validator_complaint['error_id'] not in component.get('ignored_problems', []):
+                    merged_reports.append(validator_complaint)
+                    if validator_complaint['error_id'] in for_review():
+                        primary_report_count += 1
             timestamps_of_data.append(obtain_from_overpass.get_data_timestamp(cursor, component['internal_region_name']))
-        generate_output_for_given_area(merged_code, merged_reports, timestamps_of_data)
+        generate_output_for_given_area(merged_code, merged_reports, timestamps_of_data, component.get('ignored_problems', []))
         
         if(list(set(timestamps_of_data)) == [0]):
             print(merged_code, "has no collected data at all, skipping")
