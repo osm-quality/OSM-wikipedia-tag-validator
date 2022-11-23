@@ -612,3 +612,5 @@
 
 #- {internal_region_name: Brzezinka, website_main_title_part: 'Brzezinka', identifier: {'name': 'Brzezinka'}, language_code: pl, requested_by: 'debugging'}
 
+
+- {internal_region_name: Uganda, website_main_title_part: 'Uganda', identifier: {'ISO3166-1': 'UG'}, requested_by: 'https://www.openstreetmap.org/messages/1067013'}
