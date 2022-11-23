@@ -87,12 +87,17 @@ def feedback_header():
 
 def timestamp_listing(timestamps):
     if len(timestamps) == 1:
-        return "This page was generated using data obtained on " + str(datetime.date.fromtimestamp(timestamps[0])) + "."
+        return "This page was generated using data obtained on " + date_from_timestamp(timestamps[0]) + "."
     else:
         timestamps_string_list = []
         for timestamp in timestamps:
-            timestamps_string_list.append(str(datetime.date.fromtimestamp(timestamp)))
+            timestamps_string_list.append(date_from_timestamp(timestamp))
         return "This page was generated using data obtained on various dates including " + ", ".join(list(set(timestamps_string_list))) + "."
+
+def date_from_timestamp(timestamp):
+    if timestamp == 0:
+        return "-data-was-not-downloaded-for-now-"
+    return str(datetime.date.fromtimestamp(timestamp))
 
 def feedback_request(timestamps_of_data):
     returned = ""
