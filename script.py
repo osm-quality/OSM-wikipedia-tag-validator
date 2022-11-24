@@ -110,6 +110,11 @@ def main():
     commit_changes_in_report_directory()
 
 def process_given_area(cursor, entry):
+    update_outdated_elements(cursor, entry)
+    update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None), entry.get('ignored_problems', []))
+    generate_website_file_for_given_area(cursor, entry)
+
+def update_outdated_elements(cursor, entry):
     identifier_of_region_for_overpass_query=entry['identifier']
     timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(cursor, entry['internal_region_name'], identifier_of_region_for_overpass_query)
 
@@ -137,9 +142,6 @@ def process_given_area(cursor, entry):
             #print(data)
             cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': object_type, 'id': object_id, 'lat': new_lat, 'lon': new_lon, "tags": json.dumps(data["tag"]), "area_identifier": entry['internal_region_name'], "download_timestamp": timestamp, "validator_complaint": None})
         print(object_type, object_id, "is outdated, not in the report so its entry needs to be updated:", tags, new_tags)
-
-    update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None), entry.get('ignored_problems', []))
-    generate_website_file_for_given_area(cursor, entry)
 
 def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, timestamp_when_file_was_downloaded):
     # - entries currently are carrying reports and with outdated timestamps
