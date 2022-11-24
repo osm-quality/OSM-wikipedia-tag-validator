@@ -19,15 +19,12 @@ def timeout():
   return 2550
 
 def get_data_timestamp(cursor, internal_region_name):
-    downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed") # load location from database instead, maybe? TODO
-    if pathlib.Path(downloaded_filepath).is_file():
-        cursor.execute("SELECT download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name})
-        returned = cursor.fetchall()
-        if len(returned) == 0:
-            return 0
-        else:
-            return returned[0][0]
-    return 0
+    cursor.execute("SELECT download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name})
+    returned = cursor.fetchall()
+    if len(returned) == 0:
+        return 0
+    else:
+        return returned[0][0]
 
 def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
     downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed") # load location from database instead, maybe? TODO
