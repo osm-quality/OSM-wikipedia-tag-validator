@@ -16,8 +16,19 @@ def main():
     # and in a separate command (why it does not work together?):
     # cd -
     processed = [
-        # UK
-        {
+        { # UK
+        'code': 'CZ',
+        'group_name': ["Česko (Czechia - Czechy)"],
+        'extra_part_of_name': "Česko (Czechia - Czechy)",
+        'extra_part_of_internal_name': "Czechy",
+        'language_code': 'cz',
+        'requested_by': 'https://t.me/openstreetmapcz/1680',
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
+    ]
+    done_already = [
+        { # UK
         'code': 'GB',
         'group_name': ["Great Britain (Wielka Brytania)"],
         'extra_part_of_name': "Great Britain (Wielka Brytania)",
@@ -27,8 +38,6 @@ def main():
         'admin_level': 4,
         'generated_commented_out': True,
         },
-    ]
-    done_already = [
         { # Italy https://www.openstreetmap.org/relation/365331
         'code': 'IT',
         'group_name': ["Italia (Italy, Włochy)"],
