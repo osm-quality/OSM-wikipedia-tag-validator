@@ -275,6 +275,7 @@ def for_review():
 
 def obvious_fixes():
     return [
+        "wikipedia tag using redirecting language code",
         "wikipedia needs to be updated based on wikidata code and teryt:simc identifier",
         'blacklisted connection with known replacement',
         'wikipedia tag unexpected language',
