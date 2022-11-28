@@ -1,8 +1,44 @@
 import osm_bot_abstraction_layer.world_data as world_data
 import yaml
 import json
+import time
 
 def main():
+    show_overview_over_countries()
+    show_splits_of_specified_countries()
+
+def show_overview_over_countries():
+    data = world_data.countries_of_a_world(["ISO3166-1", "default_language", "name", "wikidata", "name:pl", "name:en"], '/tmp/boundary_data.osm')
+    countries_in_parts = ""
+    countries_full = ""
+    for entry in data:
+        print(entry)
+        if entry.get("ISO3166-1", None) == None:
+            continue
+        if entry.get("ISO3166-1", None) in ['CZ', 'GB', 'PL', 'IT', 'IE', 'US', 'LV', 'UA', 'DE', 'CN', 'AU', 'JP', 'MD', 'BY', 'CH']:
+            continue
+        website_main_title_part = generate_website_name(entry["name"], entry["name:en"], entry["name:pl"])
+        internal_name = generate_internal_name(entry["name"], entry["name:en"], entry["name:pl"])
+        prefix = "        "
+        countries_in_parts += prefix + "{" + "\n"
+        countries_in_parts += prefix + "'code': '" + entry["ISO3166-1"] + "',\n"
+        countries_in_parts += prefix + "'group_name': '" + website_main_title_part + "',\n"
+        countries_in_parts += prefix + "'extra_part_of_name': '" + website_main_title_part + "',\n"
+        countries_in_parts += prefix + "'extra_part_of_internal_name': '" + internal_name + "',\n"
+        countries_in_parts += prefix + "'language_code': '" + str(entry.get("default_language")) + "',\n"
+        countries_in_parts += prefix + "'requested_by': " + '"????????????????????????????????????????????????"' + ",\n"
+        countries_in_parts += prefix + "'admin_level': " + "4" + ",\n"
+        countries_in_parts += prefix + "'generated_commented_out': " + "True" + ",\n"
+        countries_in_parts += prefix + "}," + "\n"
+        print(countries_in_parts)
+        country_full = "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', identifier: {'ISO3166-1': '" + entry["ISO3166-1"] + "'}, requested_by: '??????????????????', priority_multiplier: 1}"
+        print(country_full)
+        countries_full += country_full + "\n"
+        if entry.get("name:pl", None) in ['Brazylia']:
+            time.sleep(101)
+    print(countries_full)
+
+def show_splits_of_specified_countries():
     returned = ""
     # for code "ISO3166-1", "ISO3166-1:alpha2", "ISO3166-2" tags can be used
 
