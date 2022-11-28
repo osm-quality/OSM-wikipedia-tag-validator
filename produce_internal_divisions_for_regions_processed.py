@@ -225,7 +225,7 @@ def generate_entry_for_specific_subregion(source, osm_data):
     region_data = {
         "internal_region_name": internal_name,
         "website_main_title_part": website_main_title_part,
-        "merged_into": source["group_name"],
+        "merged_into": [source["group_name"]],
         "identifier": {'wikidata': osm_data["wikidata"]},
         "requested_by": source['requested_by'],
         }
