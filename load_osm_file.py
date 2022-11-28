@@ -30,12 +30,12 @@ def record(cursor, entry, identifier_of_region, timestamp):
             raise "unexpected" # TODO store old data in osm_data or move it to somewhere else to record statistics
         if len(data) == 1:
             present_already_timestamp = data[0][0]
-            print("currently stored object for", "https://osm.org/" + entry["osm_type"] + "/" + entry["osm_id"], "has timestamp", present_already_timestamp, "our is", timestamp, (timestamp-present_already_timestamp), "seconds later")
+            #print("currently stored object for", "https://osm.org/" + entry["osm_type"] + "/" + entry["osm_id"], "has timestamp", present_already_timestamp, "our is", timestamp, (timestamp-present_already_timestamp), "seconds later")
             if timestamp > present_already_timestamp:
-                print("deleting older")
+                #print("deleting older")
                 cursor.execute("DELETE FROM osm_data WHERE type = :type and id = :id", {'type': entry["osm_type"], 'id': entry["osm_id"]})
             else:
-                print("so skipping")
+                #print("so skipping")
                 return False
 
         cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': entry["osm_type"], 'id': entry["osm_id"], 'lat': entry["lat"], 'lon': entry["lon"], "tags": json.dumps(entry["osm_tags"]), "area_identifier": identifier_of_region, "download_timestamp": timestamp, "validator_complaint": None})
