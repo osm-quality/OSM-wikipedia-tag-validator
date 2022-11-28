@@ -157,26 +157,31 @@ def generate_subregion_list(source, admin_level):
     print(returned)
     return returned
 
+def generate_internal_name(local, english, polish):
+    internal_name = None
+    for name in [polish, english, local]:
+        if name != None:
+            return name
+    raise Exception("no name at all")
+
+def generate_website_name(local, english, polish):
+    extra_names = [english, polish]
+    shown_extra_names = []
+    blocked_names = [None, local]
+    for name in extra_names:
+        if name not in blocked_names and name not in shown_extra_names:
+            shown_extra_names.append(name)
+    website_main_title_part = local
+    if len(shown_extra_names) > 0:
+        website_main_title_part += " (" + ", ".join(shown_extra_names) + ")"
+    return website_main_title_part.replace("/", "|").replace("\\", "|")
+
 def generate_entry_for_specific_subregion(source, osm_data):
     print(source)
     print(osm_data)
-    internal_name = None
-    for key in ["name:pl", "name:en", "name"]:
-        if key in osm_data and osm_data[key] != None:
-            internal_name = osm_data[key]
-            break
-        else:
-            print(osm_data["name"], "/", osm_data["name:en"], " has no", key, "tag")
-    extra_names = [osm_data.get("name:en"), osm_data.get("name:pl")]
-    shown_extra_names = []
-    blocked_names = [None, osm_data["name"]]
-    for name in extra_names:
-        if name not in blocked_names:
-            shown_extra_names.append(name)
-    website_main_title_part = osm_data["name"]
-    shown_extra_names = deduplicate_list(shown_extra_names)
-    if len(shown_extra_names) > 0:
-        website_main_title_part += " (" + ", ".join(shown_extra_names) + ")"
+    internal_name = generate_internal_name(osm_data["name"], osm_data["name:en"], osm_data["name:pl"])
+    website_main_title_part = generate_website_name(osm_data["name"], osm_data["name:en"], osm_data["name:pl"])
+
     if "extra_part_of_name" in source:
         internal_name = source["extra_part_of_internal_name"] + ": " + internal_name
         website_main_title_part = source["extra_part_of_name"] + ": " + website_main_title_part
