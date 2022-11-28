@@ -261,8 +261,4 @@ def generate_yaml_row_text(region_data):
         returned = "#" + returned
     return returned
 
-def deduplicate_list(mylist):
-    # https://stackoverflow.com/a/22520277
-    return [ v for (i,v) in enumerate(mylist) if v not in mylist[0:i] ]
-
 main()
