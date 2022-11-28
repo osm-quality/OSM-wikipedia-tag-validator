@@ -275,8 +275,6 @@ def for_review():
 
 def obvious_fixes():
     return [
-        "wikipedia tag using redirecting language code",
-        "wikipedia needs to be updated based on wikidata code and teryt:simc identifier",
         'blacklisted connection with known replacement',
         'wikipedia tag unexpected language',
         'wikipedia tag from wikipedia tag in an outdated form',
@@ -287,15 +285,18 @@ def obvious_fixes():
         'wikipedia tag in an outdated form for removal',
         'wikipedia tag from wikipedia tag in an outdated form and wikidata',
         'wikipedia wikidata mismatch - follow wikidata redirect',
+        "wikipedia tag using redirecting language code",
+        "wikipedia needs to be updated based on wikidata code and teryt:simc identifier",
+        'malformed secondary wikidata tag',
+        'should use a secondary wikipedia tag - linking to a vehicle model or class',
     ]
 
 def for_tests():
     return [
-        'malformed secondary wikidata tag',
+        "malformed wikipedia tag - nonexisting language code",
         'secondary wikidata tag links to 404',
         'city limit sign with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
-        'should use a secondary wikipedia tag - linking to a vehicle model or class',
         'should use a secondary wikipedia tag - linking to an opera',
         'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
         'no longer existing object',
