@@ -15,7 +15,7 @@ def show_overview_over_countries():
         print(entry)
         if entry.get("ISO3166-1", None) == None:
             continue
-        if entry.get("ISO3166-1", None) in ['CZ', 'GB', 'PL', 'IT', 'IE', 'US', 'LV', 'UA', 'DE', 'CN', 'AU', 'JP', 'MD', 'BY', 'CH']:
+        if entry.get("ISO3166-1", None) in ['CZ', 'GB', 'PL', 'IT', 'IE', 'US', 'LV', 'UA', 'DE', 'CN', 'AU', 'JP', 'MD', 'BY', 'CH', 'UG', 'GH', 'BR']:
             continue
         website_main_title_part = generate_website_name(entry["name"], entry["name:en"], entry["name:pl"])
         internal_name = generate_internal_name(entry["name"], entry["name:en"], entry["name:pl"])
@@ -34,7 +34,7 @@ def show_overview_over_countries():
         country_full = "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', identifier: {'ISO3166-1': '" + entry["ISO3166-1"] + "'}, requested_by: '??????????????????', priority_multiplier: 1}"
         print(country_full)
         countries_full += country_full + "\n"
-        if entry.get("name:pl", None) in ['Brazylia']:
+        if entry.get("name:pl", None) in ['Rosja']:
             time.sleep(101)
     print(countries_full)
 
@@ -52,6 +52,18 @@ def show_splits_of_specified_countries():
     # and in a separate command (why it does not work together?):
     # cd -
     processed = [
+    ] 
+    done_already = [
+        {
+        'code': 'BR',
+        'group_name': 'Brasil (Brazil, Brazylia)',
+        'extra_part_of_name': 'Brasil (Brazil, Brazylia)',
+        'extra_part_of_internal_name': 'Brazylia',
+        'language_code': "pt",
+        'requested_by': "https://t.me/OSMBrasil_Comunidade/64788",
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
         { # UK
         'code': 'CZ',
         'group_name': ["Česko (Czechia - Czechy)"],
@@ -62,8 +74,6 @@ def show_splits_of_specified_countries():
         'admin_level': 4,
         'generated_commented_out': True,
         },
-    ]
-    done_already = [
         { # UK
         'code': 'GB',
         'group_name': ["Great Britain (Wielka Brytania)"],
