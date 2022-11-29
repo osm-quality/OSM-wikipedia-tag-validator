@@ -253,6 +253,8 @@ def for_review():
         'invalid old-style wikipedia tag',
         'malformed wikidata tag',
         'malformed wikipedia tag',
+        "malformed wikipedia tag - nonexisting language code",
+        'malformed secondary wikidata tag',
         'information board with wikipedia tag, not subject:wikipedia',
         'information board with wikidata tag, not subject:wikidata',
         'should use a secondary wikipedia tag - linking to a human',
@@ -266,6 +268,8 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a chain store',
         'should use a secondary wikipedia tag - linking to a given name',
         'should use a secondary wikipedia tag - linking to a coat of arms',
+        'should use a secondary wikipedia tag - linking to a vehicle model or class',
+        'should use a secondary wikipedia tag - linking to a weapon model or class',
         'mismatching teryt:simc codes in wikidata and in osm element',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
         'wikipedia tag in outdated form and there is mismatch between links',
@@ -287,15 +291,11 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikidata redirect',
         "wikipedia tag using redirecting language code",
         "wikipedia needs to be updated based on wikidata code and teryt:simc identifier",
-        'malformed secondary wikidata tag',
-        'should use a secondary wikipedia tag - linking to a vehicle model or class',
     ]
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to a weapon model or class',
         'should use a secondary wikipedia tag - linking to an event',
-        "malformed wikipedia tag - nonexisting language code",
         'secondary wikidata tag links to 404',
         'city limit sign with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
