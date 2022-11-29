@@ -262,6 +262,9 @@
 #- {internal_region_name: 'Wielka Brytania: Szkocja', website_main_title_part: 'Great Britain (Wielka Brytania): Alba (Scotland, Szkocja)', merged_into: ["Great Britain (Wielka Brytania)"], identifier: {'wikidata': 'Q22'}, language_code: 'en', requested_by: ''}
 #- {internal_region_name: 'Wielka Brytania: Anglia', website_main_title_part: 'Great Britain (Wielka Brytania): England (Anglia)', merged_into: ["Great Britain (Wielka Brytania)"], identifier: {'wikidata': 'Q21'}, language_code: 'en', requested_by: ''}
 #- {internal_region_name: 'Wielka Brytania: Irlandia Północna', website_main_title_part: 'Great Britain (Wielka Brytania): Northern Ireland (Irlandia Północna)', merged_into: ["Great Britain (Wielka Brytania)"], identifier: {'wikidata': 'Q26'}, language_code: 'en', requested_by: ''}
+- {internal_region_name: 'Andora', website_main_title_part: 'Andorra (Andora)', identifier: {'ISO3166-1': 'AD'}, requested_by: 'none', priority_multiplier: 1}
+- {internal_region_name: 'San Marino', website_main_title_part: 'San Marino', identifier: {'ISO3166-1': 'SM'}, requested_by: 'none', priority_multiplier: 1}
+- {internal_region_name: 'Wyspy Owcze', website_main_title_part: 'Føroyar (Faroe Islands, Wyspy Owcze)', identifier: {'ISO3166-1': 'FO'}, requested_by: 'none', priority_multiplier: 1}
 
 # USA (United States)
 # ignored problems due to rejection of bit edits:
