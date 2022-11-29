@@ -448,9 +448,6 @@ def write_index_and_merged_entries(cursor):
     website_html += feedback_request(timestamps) + "\n"
     website_html += "</br>\n"
     website_html += "</hr>\n"
-    """
-    website_html += '<p></p>\n'
-    """
     website_html += "</br>\n"
 
     completed = ""
