@@ -396,14 +396,18 @@ def ordered_keys(dictionary):
     keys = list(dictionary.keys())
     return sorted(keys)
 
-def write_index_and_merged_entries(cursor):
+def index_page_description():
     website_html = ""
-    website_html += html_file_header() + "\n"
     website_html += '<p>This page lists OpenStreetMap objects that have <a href="https://wiki.openstreetmap.org/wiki/Key:wikipedia">wikipedia</a> / <a href="https://wiki.openstreetmap.org/wiki/Key:wikipedia">wikidata</a> tags with some problems.</p>'
     website_html += '<p>For example, it allows to detect cases where <a href="https://www.openstreetmap.org/way/693854629/history">an incorrect object was linked</a>, a link leads to a deleted page or there is some other issue.</p>\n'
     website_html += '<p>This tool is an <a href="https://github.com/matkoniecz/OSM-wikipedia-tag-validator#story-behing-this-tool">unexpected result</a> of creating a detector of interesting places based on OSM Data and Wikipedia. It turned out to require a filter to avoid invalid links. As detected links can be often fixed and it is better to remove invalid rather than keep them, I am sharing this tool.</p>\n'
     website_html += "</hr>\n"
     website_html += "</br>\n"
+    return website_html
+
+def write_index_and_merged_entries(cursor):
+    website_html = ""
+    website_html += html_file_header() + "\n" + index_page_description()
     timestamps = []
     for entry in config.get_entries_to_process():
         if "hidden" in entry:
