@@ -439,13 +439,13 @@ def index_page_description():
 def write_index_and_merged_entries(cursor):
     website_html = ""
     website_html += html_file_header() + "\n" + index_page_description()
-    timestamps = []
+    all_timestamps = []
     for entry in config.get_entries_to_process():
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
-        timestamps.append(obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name']))
-    website_html += feedback_request(timestamps) + "\n"
+        all_timestamps.append(obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name']))
+    website_html += feedback_request(all_timestamps) + "\n"
     website_html += "</br>\n"
     website_html += "</hr>\n"
     website_html += "</br>\n"
