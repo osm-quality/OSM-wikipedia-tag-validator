@@ -516,6 +516,15 @@ def write_index_and_merged_entries(cursor):
     website_html += html_file_suffix()
     with open(config.get_report_directory() + '/' + 'index.html', 'w') as index:
         index.write(website_html)
+    generate_shared_test_results_page(cursor, all_timestamps)
+
+def generate_shared_test_results_page(cursor, all_timestamps):
+    query = "SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> ''"
+    query_parameters = {}
+    reports_data = query_to_reports_data(cursor, query, query_parameters)
+    filepath = config.get_report_directory() + '/' + "all merged - test.html"
+    ignored_problem_codes = []
+    generate_test_issue_listing(reports_data, all_timestamps, filepath, ignored_problem_codes)
 
 def human_review_problem_count_for_given_internal_region_name(cursor, internal_region_name):
     cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
