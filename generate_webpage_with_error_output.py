@@ -293,6 +293,8 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a weapon model or class',
+        'should use a secondary wikipedia tag - linking to an event',
         "malformed wikipedia tag - nonexisting language code",
         'secondary wikidata tag links to 404',
         'city limit sign with wikipedia tag, not subject:wikipedia',
@@ -320,7 +322,6 @@ def ignored():
         # https://www.wikidata.org/wiki/Wikidata_talk:WikiProject_Ontology
         # https://www.wikidata.org/wiki/Wikidata:Project_chat/Archive/2022/08#Subclass_trees
         # https://wiki.openstreetmap.org/wiki/Talk:Data_items#Broken_Wikidata_ontology
-        'should use a secondary wikipedia tag - linking to an event',
 
         'link to a list', # even I am not really convinced it is a problem
     ]
