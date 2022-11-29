@@ -62,7 +62,7 @@ def main():
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
-        generate_website_file_for_given_area(cursor, entry)
+        generate_webpage_with_error_output.generate_website_file_for_given_area(cursor, entry)
     generate_webpage_with_error_output.write_index_and_merged_entries(cursor)
     commit_changes_in_report_directory()
 
@@ -112,7 +112,7 @@ def main():
 def process_given_area(cursor, entry):
     update_outdated_elements(cursor, entry)
     update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None), entry.get('ignored_problems', []))
-    generate_website_file_for_given_area(cursor, entry)
+    generate_webpage_with_error_output.generate_website_file_for_given_area(cursor, entry)
 
 def update_outdated_elements(cursor, entry):
     identifier_of_region_for_overpass_query=entry['identifier']
@@ -221,29 +221,6 @@ def get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=False
         allow_requesting_edits_outside_osm=False,
         allow_false_positives=False
         )
-
-def generate_website_file_for_given_area(cursor, entry):
-    reports = reports_for_given_area(cursor, entry['internal_region_name'])
-    website_main_title_part = entry['website_main_title_part']
-    timestamps = [obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name'])]
-    ignored_problems = entry.get('ignored_problems', [])
-    generate_webpage_with_error_output.generate_output_for_given_area(website_main_title_part, reports, timestamps, ignored_problems)
-
-def reports_for_given_area(cursor, internal_region_name):
-    try:
-        cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
-        returned = cursor.fetchall()
-        reports = []
-        for entry in returned:
-            rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
-            tags = json.loads(tags)
-            validator_complaint = json.loads(validator_complaint)
-            reports.append(validator_complaint)
-        return reports
-    except sqlite3.DatabaseError as e:
-        print(internal_region_name)
-        raise e
-
 
 def commit_changes_in_report_directory():
     current_working_directory = os.getcwd()

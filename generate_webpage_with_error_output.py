@@ -8,23 +8,54 @@ import json
 import config
 import obtain_from_overpass
 
-def generate_output_for_given_area(main_output_name_part, reports_data, timestamps_of_data, ignored_problems):
-    file = config.get_report_directory() + '/' + main_output_name_part + ".html"
+def generate_website_file_for_given_area(cursor, entry):
+    reports = reports_for_given_area(cursor, entry['internal_region_name'])
+    website_main_title_part = entry['website_main_title_part']
+    timestamps = [obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name'])]
+    ignored_problems = entry.get('ignored_problems', [])
+    generate_output_for_given_area(website_main_title_part, reports, timestamps, ignored_problems)
+
+def reports_for_given_area(cursor, internal_region_name):
+    query = "SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''"
+    query_parameters = {"identifier": internal_region_name}
+    return query_to_reports_data(cursor, query, query_parameters)
+
+def query_to_reports_data(cursor, query, query_parameters):
+    try:
+        cursor.execute(query, query_parameters)
+        returned = cursor.fetchall()
+        reports = []
+        for entry in returned:
+            rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
+            tags = json.loads(tags)
+            validator_complaint = json.loads(validator_complaint)
+            reports.append(validator_complaint)
+        return reports
+    except sqlite3.DatabaseError as e:
+        print(internal_region_name)
+        raise e
+
+def generate_output_for_given_area(main_output_name_part, reports_data, timestamps_of_data, ignored_problem_codes):
+    filepath = config.get_report_directory() + '/' + main_output_name_part + ".html"
     issues = for_review()
-    issues_without_skipped = [i for i in issues if i not in ignored_problems]
-    main_report_count = generate_html_file(reports_data, file, issues_without_skipped, "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.", timestamps_of_data)
+    issues_without_skipped = [i for i in issues if i not in ignored_problem_codes]
+    main_report_count = generate_html_file(reports_data, filepath, issues_without_skipped, "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.", timestamps_of_data)
 
     issues = obvious_fixes()
-    issues_without_skipped = [i for i in issues if i not in ignored_problems]
-    file = config.get_report_directory() + '/' + main_output_name_part + " - obvious.html"
-    generate_html_file(reports_data, file, issues_without_skipped, "Proposed edits at this page are so obvious that automatic edit makes sense.", timestamps_of_data)
+    issues_without_skipped = [i for i in issues if i not in ignored_problem_codes]
+    filepath = config.get_report_directory() + '/' + main_output_name_part + " - obvious.html"
+    generate_html_file(reports_data, filepath, issues_without_skipped, "Proposed edits at this page are so obvious that automatic edit makes sense.", timestamps_of_data)
 
-    issues = for_tests()
-    issues_without_skipped = [i for i in issues if i not in ignored_problems]
-    file = config.get_report_directory() + '/' + main_output_name_part + " - test.html"
-    generate_html_file(reports_data, file, issues_without_skipped, "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.", timestamps_of_data)
+    filepath = config.get_report_directory() + '/' + main_output_name_part + " - test.html"
+    generate_test_issue_listing(reports_data, timestamps_of_data, filepath, ignored_problem_codes)
+
     note_unused_errors(reports_data)
     return main_report_count
+
+def generate_test_issue_listing(reports_data, timestamps_of_data, filepath, ignored_problem_codes):
+    issues = for_tests()
+    issues_without_skipped = [i for i in issues if i not in ignored_problem_codes]
+    generate_html_file(reports_data, filepath, issues_without_skipped, "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.", timestamps_of_data)
 
 # TODO: errors -> reports here, and later elsewhere
 def generate_html_file(errors, output_file_name, types, information_header, timestamps_of_data):
