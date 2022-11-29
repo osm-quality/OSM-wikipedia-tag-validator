@@ -228,6 +228,7 @@ def commit_changes_in_report_directory():
     os.system('git commit -m "automatic update of index.html"')
     os.system('git add --all')
     os.system('git commit -m "automatic update of report files"')
+    os.system('git push')
     os.chdir(current_working_directory)
 
 main()
