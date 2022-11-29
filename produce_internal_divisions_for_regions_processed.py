@@ -54,6 +54,17 @@ def show_splits_of_specified_countries():
     processed = [
     ] 
     done_already = [
+        # entire Russia failed to fit, admin_level=3 also had trouble (and would make hard to exlude Crimea)
+        {
+        'code': 'RU',
+        'group_name': 'Россия (Russia, Rosja)',
+        'extra_part_of_name': 'Россия (Russia, Rosja)',
+        'extra_part_of_internal_name': 'Rosja',
+        'language_code': 'ru',
+        'requested_by': "https://t.me/ruosm/696196",
+        'admin_level': 4, # 3 seems to be too high
+        'generated_commented_out': True,
+        },
         {
         'code': 'BR',
         'group_name': 'Brasil (Brazil, Brazylia)',
