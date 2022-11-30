@@ -82,7 +82,7 @@ def main():
     print()
     print()
     print()
-    for selected_processing_entry in entries_with_age[:total_processed_entry_count]:
+    for selected_processing_entry in entries_with_age[:total_processed_entry_count][::-1]:
         entry = selected_processing_entry['data']
         score = (current_timestamp - selected_processing_entry["data_timestamp"]) * entry.get("priority_multiplier", 1)
         k = str(int((score+500)/1000))
