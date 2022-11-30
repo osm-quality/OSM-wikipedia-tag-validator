@@ -133,6 +133,8 @@
 
 #- {internal_region_name: Vatican, website_main_title_part: 'Civitas Vaticana (Vatican, Watykan)', identifier: {'ISO3166-1': 'VA'}, language_code: it} # , merged_into: ['Italy + Vatican + San Marino']
 
+- {internal_region_name: 'Gibraltar', website_main_title_part: 'Gibraltar', identifier: {'ISO3166-1': 'GI'}, requested_by: 'none', priority_multiplier: 1}
+
 #- {internal_region_name: 'Włochy: Sycylia', website_main_title_part: 'Italia (Italy, Włochy): Sicilia (Sicily, Sycylia)', merged_into: ["Italia (Italy, Włochy)"], identifier: {'wikidata': 'Q1460'}, language_code: 'it', requested_by: ''}
 #- {internal_region_name: 'Włochy: Apulia', website_main_title_part: 'Italia (Italy, Włochy): Puglia (Apulia)', merged_into: ["Italia (Italy, Włochy)"], identifier: {'wikidata': 'Q1447'}, language_code: 'it', requested_by: ''}
 #- {internal_region_name: 'Włochy: Basilicata', website_main_title_part: 'Italia (Italy, Włochy): Basilicata', merged_into: ["Italia (Italy, Włochy)"], identifier: {'wikidata': 'Q1452'}, language_code: 'it', requested_by: ''}
