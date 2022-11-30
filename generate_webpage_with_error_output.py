@@ -326,6 +326,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a religious organisation',
         'should use a secondary wikipedia tag - linking to an event',
         'secondary wikidata tag links to 404',
         'city limit sign with wikipedia tag, not subject:wikipedia',
