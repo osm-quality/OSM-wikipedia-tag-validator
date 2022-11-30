@@ -57,6 +57,7 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
         cursor.execute("INSERT INTO osm_data_update_log VALUES (:area_identifier, :filename, :download_type, :download_timestamp)", {"area_identifier": internal_region_name, "filename": downloaded_filepath, "download_type": "initial_full_data", "download_timestamp": timestamp})
         print("sleeping extra time to prevent inevitable quota exhaustion")
         time.sleep(60)
+        return timestamp
     print("updating old data!")
     print("area_identifier, filename, download_type, download_timestamp")
     current_timestamp = int(time.time())
