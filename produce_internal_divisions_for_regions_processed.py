@@ -15,7 +15,8 @@ def show_overview_over_countries():
         print(entry)
         if entry.get("ISO3166-1", None) == None:
             continue
-        if entry.get("ISO3166-1", None) in ['CZ', 'GB', 'PL', 'IT', 'IE', 'US', 'LV', 'UA', 'DE', 'CN', 'AU', 'JP', 'MD', 'BY', 'CH', 'UG', 'GH', 'BR']:
+        if entry.get("ISO3166-1", None) in ['CZ', 'GB', 'PL', 'IT', 'IE', 'US', 'LV', 'UA', 'DE', 'CN', 'AU', 'JP', 'MD', 'BY', 'CH', 'UG', 'GH', 'BR',
+        'RU', 'PT', 'IM', 'FO', 'YE', 'SA', 'AD', 'SM', 'SH', 'VG']:
             continue
         website_main_title_part = generate_website_name(entry["name"], entry["name:en"], entry["name:pl"])
         internal_name = generate_internal_name(entry["name"], entry["name:en"], entry["name:pl"])
