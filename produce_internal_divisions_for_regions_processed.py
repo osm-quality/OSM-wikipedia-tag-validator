@@ -15,7 +15,7 @@ def show_overview_over_countries():
         print(entry)
         if entry.get("ISO3166-1", None) == None:
             continue
-        if entry.get("ISO3166-1", None) in ['CZ', 'GB', 'PL', 'IT', 'IE', 'US', 'LV', 'UA', 'DE', 'CN', 'AU', 'JP', 'MD', 'BY', 'CH', 'UG', 'GH', 'BR', 'GI',
+        if entry.get("ISO3166-1", None) in ['CZ', 'GB', 'PL', 'IT', 'IE', 'US', 'LV', 'UA', 'DE', 'CN', 'AU', 'JP', 'MD', 'BY', 'CH', 'UG', 'GH', 'BR', 'GI', 'ES', 'RS', 'CU',
         'RU', 'PT', 'IM', 'FO', 'YE', 'SA', 'AD', 'SM', 'SH', 'VG']:
             continue
         website_main_title_part = generate_website_name(entry["name"], entry["name:en"], entry["name:pl"])
@@ -55,6 +55,16 @@ def show_splits_of_specified_countries():
     processed = [
     ] 
     done_already = [
+        {
+        'code': 'ES',
+        'group_name': 'España (Spain, Hiszpania)',
+        'extra_part_of_name': 'España (Spain, Hiszpania)',
+        'extra_part_of_internal_name': 'Hiszpania',
+        'language_code': 'None',
+        'requested_by': "????????????????????????????????????????????????",
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
         # entire Russia failed to fit, admin_level=3 also had trouble (and would make hard to exlude Crimea)
         {
         'code': 'RU',
