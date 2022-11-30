@@ -26,7 +26,10 @@ def show_overview_over_countries():
         countries_in_parts += prefix + "'group_name': '" + website_main_title_part + "',\n"
         countries_in_parts += prefix + "'extra_part_of_name': '" + website_main_title_part + "',\n"
         countries_in_parts += prefix + "'extra_part_of_internal_name': '" + internal_name + "',\n"
-        countries_in_parts += prefix + "'language_code': '" + str(entry.get("default_language")) + "',\n"
+        language_string = entry.get("default_language")
+        if language_string == None:
+            language_string = "null"
+        countries_in_parts += prefix + "'language_code': '" + language_string + "',\n"
         countries_in_parts += prefix + "'requested_by': " + '"????????????????????????????????????????????????"' + ",\n"
         countries_in_parts += prefix + "'admin_level': " + "4" + ",\n"
         countries_in_parts += prefix + "'generated_commented_out': " + "True" + ",\n"
@@ -60,7 +63,7 @@ def show_splits_of_specified_countries():
         'group_name': 'España (Spain, Hiszpania)',
         'extra_part_of_name': 'España (Spain, Hiszpania)',
         'extra_part_of_internal_name': 'Hiszpania',
-        'language_code': 'None',
+        'language_code': None,
         'requested_by': "????????????????????????????????????????????????",
         'admin_level': 4,
         'generated_commented_out': True,
