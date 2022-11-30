@@ -38,7 +38,7 @@ def show_overview_over_countries():
         country_full = "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', identifier: {'ISO3166-1': '" + entry["ISO3166-1"] + "'}, requested_by: '??????????????????', priority_multiplier: 1}"
         print(country_full)
         countries_full += country_full + "\n"
-        if entry.get("name:pl", None) in ['Rosja']:
+        if entry.get("name:pl", None) in ['Białoruś']: # to reduce overwhelming spam
             time.sleep(101)
     print(countries_full)
 
@@ -56,6 +56,16 @@ def show_splits_of_specified_countries():
     # and in a separate command (why it does not work together?):
     # cd -
     processed = [
+        {
+        'code': 'BY',
+        'group_name': 'Беларусь (Belarus, Białoruś)',
+        'extra_part_of_name': 'Беларусь (Belarus, Białoruś)',
+        'extra_part_of_internal_name': 'Białoruś',
+        'language_code': 'be',
+        'requested_by': "????????????????????????????????????????????????",
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
     ] 
     done_already = [
         {
