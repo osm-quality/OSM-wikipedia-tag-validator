@@ -93,6 +93,8 @@
 
 - {internal_region_name: Mołdawia, website_main_title_part: 'Moldova (Mołdawia)', identifier: {'ISO3166-1': 'MD'}, requested_by: 'https://t.me/OSMMoldova/9611', priority_multiplier: 2}
 
+- {internal_region_name: 'Słowacja', website_main_title_part: 'Slovensko (Slovakia, Słowacja)', identifier: {'ISO3166-1': 'SK'}, requested_by: 'https://www.openstreetmap.org/messages/1069365 https://www.openstreetmap.org/user/*Martin*', priority_multiplier: 1}
+
 # too large
 #- {internal_region_name: Czechy, website_main_title_part: 'Česko (Czechia - Czechy)', identifier: {'ISO3166-1': 'CZ'}, requested_by: 'https://t.me/openstreetmapcz/1680', language_code: cs, priority_multiplier: 0.3}
 #- {internal_region_name: 'Czechy: Morawy Środkowe', website_main_title_part: 'Česko (Czechia - Czechy): Střední Morava (Central Moravia, Morawy Środkowe)', merged_into: ["\u010cesko (Czechia - Czechy)"], identifier: {'wikidata': 'Q5061457'}, language_code: 'cs', requested_by: 'https://t.me/openstreetmapcz/1680'}
@@ -153,6 +155,13 @@
 #- {internal_region_name: 'Niemcy: Dolna Saksonia', website_main_title_part: 'Deutschland: Niedersachsen (Lower Saxony, Dolna Saksonia)', merged_into: ["Deutschland"], identifier: {'wikidata': 'Q1197'}, language_code: 'de', requested_by: 'https://www.openstreetmap.org/messages/1060670'}
 #- {internal_region_name: 'Niemcy: Hamburg', website_main_title_part: 'Deutschland: Hamburg', merged_into: ["Deutschland"], identifier: {'wikidata': 'Q1055'}, language_code: 'de', requested_by: 'https://www.openstreetmap.org/messages/1060670'}
 #- {internal_region_name: 'Niemcy: Bawaria', website_main_title_part: 'Deutschland: Bayern (Bavaria, Bawaria)', merged_into: ["Deutschland"], identifier: {'wikidata': 'Q980'}, language_code: 'de', requested_by: 'https://www.openstreetmap.org/messages/1060670'}
+
+# https://t.me/OSMPortugal/58550 wikipedia tag from wikipedia tag in an outdated form
+# https://t.me/OSMPortugal/58551 wikipedia from wikidata tag, unexpected language
+# for the same reasons:          wikidata from wikipedia tag
+- {internal_region_name: 'Portugalia', website_main_title_part: 'Portugal (Portugalia)', identifier: {'ISO3166-1': 'PT'}, requested_by: 'https://t.me/OSMPortugal/58497', ignored_problems: ['wikipedia tag from wikipedia tag in an outdated form', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag'], priority_multiplier: 10}
+
+- {internal_region_name: 'Chorwacja', website_main_title_part: 'Hrvatska (Croatia, Chorwacja)', identifier: {'ISO3166-1': 'HR'}, requested_by: 'https://t.me/osmhr/17769', priority_multiplier: 1}
 
 - {internal_region_name: 'Hiszpania: Baleary', website_main_title_part: 'España (Spain, Hiszpania): Illes Balears (Balearic Islands, Baleary)', merged_into: ["Espa\u00f1a (Spain, Hiszpania)"], identifier: {'wikidata': 'Q5765'}, language_code: null, requested_by: 'https://t.me/OSMes/136779'}
 #- {internal_region_name: 'Hiszpania: La Rioja', website_main_title_part: 'España (Spain, Hiszpania): La Rioja (Rioja)', merged_into: ["Espa\u00f1a (Spain, Hiszpania)"], identifier: {'wikidata': 'Q5727'}, language_code: null, requested_by: '????????????????????????????????????????????????'}
@@ -241,6 +250,8 @@
 #- {internal_region_name: 'Japonia: Prefektura Okinawa', website_main_title_part: '日本 (Japan - Japonia): 沖縄県 (Okinawa Prefecture, Prefektura Okinawa)', merged_into: ["\u65e5\u672c (Japan - Japonia)"], identifier: {'wikidata': 'Q766445'}, language_code: 'ja', requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'}
 #- {internal_region_name: 'Japonia: Prefektura Hokkaido', website_main_title_part: '日本 (Japan - Japonia): 北海道 (Hokkaido Prefecture, Prefektura Hokkaido)', merged_into: ["\u65e5\u672c (Japan - Japonia)"], identifier: {'wikidata': 'Q1037393'}, language_code: 'ja', requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'}
 #- {internal_region_name: 'Japonia: Prefektura Yamaguchi', website_main_title_part: '日本 (Japan - Japonia): 山口県 (Yamaguchi Prefecture, Prefektura Yamaguchi)', merged_into: ["\u65e5\u672c (Japan - Japonia)"], identifier: {'wikidata': 'Q127264'}, language_code: 'ja', requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'}
+
+- {internal_region_name: 'Tajwan', website_main_title_part: '臺灣 (Taiwan, Tajwan)', identifier: {'ISO3166-1': 'TW'}, requested_by: 'https://t.me/OSMTaiwan/8133', priority_multiplier: 10}
 
 - {internal_region_name: 'Chiny: Qinghai', website_main_title_part: '中国 (China): 青海省 (Qinghai)', merged_into: ["\u4e2d\u56fd (China - Chiny)"], identifier: {'wikidata': 'Q45833'}, requested_by: 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/issues/1', priority_multiplier: 0.9}
 - {internal_region_name: 'Chiny: Tybet', website_main_title_part: '中国 (China): 西藏自治区 (Tibet, Tybet)', merged_into: ["\u4e2d\u56fd (China - Chiny)"], identifier: {'wikidata': 'Q17269'}, requested_by: 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/issues/1', priority_multiplier: 0.9}
@@ -767,7 +778,9 @@
 
 - {internal_region_name: Uganda, website_main_title_part: 'Uganda', identifier: {'ISO3166-1': 'UG'}, requested_by: 'https://www.openstreetmap.org/messages/1067013'}
 - {internal_region_name: 'Ghana', website_main_title_part: 'Ghana', identifier: {'ISO3166-1': 'GH'}, requested_by: 'https://t.me/osmghana/7250', priority_multiplier: 1}
+- {internal_region_name: 'Etiopia', website_main_title_part: 'ኢትዮጵያ (Ethiopia, Etiopia)', identifier: {'ISO3166-1': 'ET'}, requested_by: 'https://t.me/osmethiopia/1299', priority_multiplier: 1}
 
+- {internal_region_name: 'Kolumbia', website_main_title_part: 'Colombia (Kolumbia)', identifier: {'ISO3166-1': 'CO'}, requested_by: 'https://t.me/OSMLatam/39759', priority_multiplier: 1}
 
 #- {internal_region_name: 'Brazylia', website_main_title_part: 'Brasil (Brazil, Brazylia)', identifier: {'ISO3166-1': 'BR'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Brazylia: Dystrykt Federalny', website_main_title_part: 'Brasil (Brazil, Brazylia): Distrito Federal (Federal District, Dystrykt Federalny)', merged_into: ["Brasil (Brazil, Brazylia)"], identifier: {'wikidata': 'Q119158'}, language_code: 'pt', requested_by: 'https://t.me/OSMBrasil_Comunidade/64788', priority_multiplier: 10}
