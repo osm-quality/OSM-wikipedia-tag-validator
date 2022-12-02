@@ -279,6 +279,7 @@ def for_review():
         'wikidata tag links to 404',
         'link to an unlinkable article',
         'wikipedia wikidata mismatch',
+        'should use a secondary wikipedia tag - linking to a battle',
         "should use a secondary wikipedia tag - linking to a transport accident",
         "should use a secondary wikipedia tag - linking to a crime",
         "should use a secondary wikipedia tag - linking to a film",
@@ -331,9 +332,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to a battle',
         'should use a secondary wikipedia tag - linking to an art genre',
-        'should use a secondary wikipedia tag - linking to a religious organisation',
         'should use a secondary wikipedia tag - linking to an opera',
         'should use a secondary wikipedia tag - linking to an event',
         'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
