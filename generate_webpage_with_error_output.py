@@ -50,7 +50,7 @@ def generate_output_for_given_area(main_output_name_part, reports_data, timestam
     filepath = config.get_report_directory() + '/' + main_output_name_part + " - test.html"
     generate_test_issue_listing(reports_data, timestamps_of_data, filepath, ignored_problem_codes)
 
-    note_unused_errors(reports_data)
+    note_unused_errors(reports_data, main_output_name_part)
     return main_report_count
 
 def generate_test_issue_listing(reports_data, timestamps_of_data, filepath, ignored_problem_codes):
@@ -262,7 +262,7 @@ def describe_proposed_relinking(e, prefix_of_lines):
         returned += row( escape_from_internal_python_string_to_html_ascii(article_name), prefix_of_lines=prefix_of_lines)
     return returned
 
-def note_unused_errors(reported_errors):
+def note_unused_errors(reported_errors, area):
     for e in reported_errors:
         if e['error_id'] in for_review():
             continue
@@ -272,7 +272,7 @@ def note_unused_errors(reported_errors):
             continue
         if e['error_id'] in ignored():
             continue
-        print('"' + e['error_id'] + '" is not appearing in any generated webpage')
+        print('"' + e['error_id'] + '" is not appearing in any generated webpage - in', area)
 
 def for_review():
     return [
