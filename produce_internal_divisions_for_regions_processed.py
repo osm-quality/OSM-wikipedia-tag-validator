@@ -38,7 +38,7 @@ def show_overview_over_countries():
         country_full = "- {internal_region_name: '" + internal_name + "', website_main_title_part: '" + website_main_title_part + "', identifier: {'ISO3166-1': '" + entry["ISO3166-1"] + "'}, requested_by: '??????????????????', priority_multiplier: 1}"
         print(country_full)
         countries_full += country_full + "\n"
-        if entry.get("name:pl", None) in ['Białoruś']: # to reduce overwhelming spam
+        if entry.get("name:pl", None) in ['Austria']: # to reduce overwhelming spam
             time.sleep(101)
     print(countries_full)
 
@@ -57,6 +57,18 @@ def show_splits_of_specified_countries():
     # cd -
     processed = [
         {
+        'code': 'AT',
+        'group_name': 'Österreich (Austria)',
+        'extra_part_of_name': 'Österreich (Austria)',
+        'extra_part_of_internal_name': 'Austria',
+        'language_code': 'de',
+        'requested_by': "https://www.openstreetmap.org/messages/1070237 https://www.openstreetmap.org/user/mcliquid",
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
+    ] 
+    done_already = [
+        {
         'code': 'BY',
         'group_name': 'Беларусь (Belarus, Białoruś)',
         'extra_part_of_name': 'Беларусь (Belarus, Białoruś)',
@@ -66,8 +78,6 @@ def show_splits_of_specified_countries():
         'admin_level': 4,
         'generated_commented_out': True,
         },
-    ] 
-    done_already = [
         {
         'code': 'ES',
         'group_name': 'España (Spain, Hiszpania)',
