@@ -310,10 +310,10 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a chain store',
         'blacklisted connection with known replacement',
         'mismatching teryt:simc codes in wikidata and in osm element',
-        "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
         'wikipedia tag in outdated form and there is mismatch between links',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not',
         'wikipedia/wikidata type tag that is incorrect according to not:* tag',
+        "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
     ]
 
 def obvious_fixes():
