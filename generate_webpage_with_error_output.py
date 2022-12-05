@@ -308,6 +308,7 @@ def for_review():
         "should use a secondary wikipedia tag - linking to a brand",
         'should use a secondary wikipedia tag - linking to a restaurant chain',
         'should use a secondary wikipedia tag - linking to a chain store',
+        'blacklisted connection with known replacement',
         'mismatching teryt:simc codes in wikidata and in osm element',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
         'wikipedia tag in outdated form and there is mismatch between links',
@@ -317,7 +318,6 @@ def for_review():
 
 def obvious_fixes():
     return [
-        'blacklisted connection with known replacement',
         'wikipedia tag unexpected language',
         'wikipedia tag from wikipedia tag in an outdated form',
         'wikipedia wikidata mismatch - follow wikipedia redirect',
