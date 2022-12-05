@@ -333,6 +333,8 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
+        'should use a secondary wikipedia tag - linking to a robbery',
         'should use a secondary wikipedia tag - linking to a terrorist organisation',
         'should use a secondary wikipedia tag - linking to a historical event',
         'should use a secondary wikipedia tag - linking to an art genre',
