@@ -338,10 +338,7 @@ def obvious_fixes():
 def for_tests():
     return [
         'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
-        'should use a secondary wikipedia tag - linking to an opera',
-        'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
         'secondary wikidata tag links to 404',
-        'city limit sign with wikipedia tag, not subject:wikipedia',
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'no longer existing object',
         'tag conflict with wikidata value',
