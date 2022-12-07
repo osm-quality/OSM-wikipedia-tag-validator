@@ -339,7 +339,6 @@ def for_tests():
         'should use a secondary wikipedia tag - linking to a historical event',
         'should use a secondary wikipedia tag - linking to an art genre',
         'should use a secondary wikipedia tag - linking to an opera',
-        'should use a secondary wikipedia tag - linking to an event',
         'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
         'secondary wikidata tag links to 404',
         'city limit sign with wikipedia tag, not subject:wikipedia',
@@ -354,6 +353,8 @@ def for_tests():
 
 def ignored():
     return [
+        'should use a secondary wikipedia tag - linking to an event',
+
         # too many mistakes. TODO: just remove it (or maybe keep as a reminder?)
         'should use a secondary wikipedia tag - linking to a company that has multiple locations',
 
