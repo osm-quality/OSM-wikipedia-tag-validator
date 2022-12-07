@@ -317,6 +317,7 @@ def for_review():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not',
         'wikipedia/wikidata type tag that is incorrect according to not:* tag',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
+        'should use a secondary wikipedia tag - linking to a social issue',
     ]
 
 def obvious_fixes():
@@ -336,7 +337,6 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to a social issue',
         'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking to an opera',
         'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
