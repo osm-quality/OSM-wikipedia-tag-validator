@@ -309,6 +309,9 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a restaurant chain',
         'should use a secondary wikipedia tag - linking to a chain store',
         'blacklisted connection with known replacement',
+        'should use a secondary wikipedia tag - linking to a robbery',
+        'should use a secondary wikipedia tag - linking to a terrorist organisation',
+        'should use a secondary wikipedia tag - linking to a historical event',
         'mismatching teryt:simc codes in wikidata and in osm element',
         'wikipedia tag in outdated form and there is mismatch between links',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not',
@@ -333,11 +336,8 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a social issue',
         'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
-        'should use a secondary wikipedia tag - linking to a robbery',
-        'should use a secondary wikipedia tag - linking to a terrorist organisation',
-        'should use a secondary wikipedia tag - linking to a historical event',
-        'should use a secondary wikipedia tag - linking to an art genre',
         'should use a secondary wikipedia tag - linking to an opera',
         'should use a secondary wikipedia tag - linking to a wikidata mandatory constraint',
         'secondary wikidata tag links to 404',
@@ -353,6 +353,10 @@ def for_tests():
 
 def ignored():
     return [
+        # multiple test cases created - enable it after fixing them
+        'should use a secondary wikipedia tag - linking to an art genre',
+
+        # enable after running out of art genre stuff
         'should use a secondary wikipedia tag - linking to an event',
 
         # too many mistakes. TODO: just remove it (or maybe keep as a reminder?)
