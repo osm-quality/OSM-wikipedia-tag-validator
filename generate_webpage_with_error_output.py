@@ -339,7 +339,6 @@ def for_tests():
     return [
         'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
         'secondary wikidata tag links to 404',
-        'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
         'no longer existing object',
         'tag conflict with wikidata value',
         'tag conflict with wikidata value - testing',
