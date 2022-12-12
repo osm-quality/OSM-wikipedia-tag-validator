@@ -128,8 +128,8 @@
 - {internal_region_name: województwo łódzkie, website_main_title_part: 'województwo łódzkie, Polska', merged_into: ['Polska'], identifier: {'name': 'województwo łódzkie'}, language_code: pl, priority_multiplier: 12}
 
 
-- {internal_region_name: 'Irlandia: Connacht', website_main_title_part: 'Ireland - Éire (Irlandia): Connacht', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q164421'}, language_code: 'en', requested_by: '', priority_multiplier: 0.4}
-- {internal_region_name: 'Irlandia: Leinster', website_main_title_part: 'Ireland - Éire (Irlandia): Leinster', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q159736'}, language_code: 'en', requested_by: '', priority_multiplier: 0.4}
+- {internal_region_name: 'Irlandia: Connacht', website_main_title_part: 'Ireland - Éire (Irlandia): Connacht', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q164421'}, language_code: 'en', requested_by: '', priority_multiplier: 1.1}
+- {internal_region_name: 'Irlandia: Leinster', website_main_title_part: 'Ireland - Éire (Irlandia): Leinster', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q159736'}, language_code: 'en', requested_by: '', priority_multiplier: 1.1}
 #- {internal_region_name: 'Irlandia: Munster', website_main_title_part: 'Ireland - Éire (Irlandia): Munster', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q131438'}, language_code: 'en', requested_by: ''}
 #- {internal_region_name: 'Irlandia: Ulster', website_main_title_part: 'Ireland - Éire (Irlandia): Ulster', merged_into: ["Ireland - \u00c9ire (Irlandia)"], identifier: {'wikidata': 'Q93195'}, language_code: 'en', requested_by: '', priority_multiplier: 0.4}
 
