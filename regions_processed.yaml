@@ -197,6 +197,8 @@
 #- {internal_region_name: 'Hiszpania: Melilla', website_main_title_part: 'España (Spain, Hiszpania): Melilla', merged_into: ["Espa\u00f1a (Spain, Hiszpania)"], identifier: {'wikidata': 'Q5831'}, language_code: null, requested_by: '????????????????????????????????????????????????'}
 #- {internal_region_name: 'Hiszpania: Nowa Akwitania', website_main_title_part: 'España (Spain, Hiszpania): Nouvelle-Aquitaine (Nowa Akwitania)', merged_into: ["Espa\u00f1a (Spain, Hiszpania)"], identifier: {'wikidata': 'Q18678082'}, language_code: null, requested_by: '????????????????????????????????????????????????'}
 
+- {internal_region_name: 'Kosowo', website_main_title_part: 'Kosova | Kosovo (Kosowo)', identifier: {'ISO3166-1': 'XK'}, requested_by: 'https://t.me/osmkosovo/19841', priority_multiplier: 1}
+
 - {internal_region_name: România, website_main_title_part: 'România (Romania, Rumunia)', identifier: {'name': 'România'}, language_code: ro, requested_by: 'baditaflorin, in PM https://www.openstreetmap.org/messages/924899'}
 
 # UK (United Kingdom)
