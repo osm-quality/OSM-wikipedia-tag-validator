@@ -4,8 +4,8 @@ import json
 import time
 
 def main():
-    show_overview_over_countries()
     show_splits_of_specified_countries()
+    show_overview_over_countries()
 
 def show_overview_over_countries():
     data = world_data.countries_of_a_world(["ISO3166-1", "default_language", "name", "wikidata", "name:pl", "name:en"], '/tmp/boundary_data.osm')
