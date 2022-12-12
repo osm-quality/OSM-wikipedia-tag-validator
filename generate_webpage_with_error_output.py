@@ -276,6 +276,8 @@ def note_unused_errors(reported_errors, area):
 
 def for_review():
     return [
+        'should use a secondary wikipedia tag - linking to a gene',
+        'should use a secondary wikipedia tag - linking to a violation of law',
         'wikipedia tag links to 404',
         'wikidata tag links to 404',
         'link to an unlinkable article',
@@ -318,6 +320,7 @@ def for_review():
         'wikipedia/wikidata type tag that is incorrect according to not:* tag',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
         'should use a secondary wikipedia tag - linking to a social issue',
+        'should use a secondary wikipedia tag - linking to a social movement',
     ]
 
 def obvious_fixes():
@@ -337,6 +340,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a protest',
         'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
         'secondary wikidata tag links to 404',
         'no longer existing object',
@@ -345,6 +349,8 @@ def for_tests():
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',
         'tag may be added based on wikidata - website', # dubious copyright
+        'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
+        'should use a secondary wikipedia tag - linking to a fictional entity',
     ]
 
 def ignored():
