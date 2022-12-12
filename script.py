@@ -145,7 +145,7 @@ def update_outdated_elements(cursor, entry, ignored_problems):
                 # what about ways and relations?
             #print(data)
             cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': object_type, 'id': object_id, 'lat': new_lat, 'lon': new_lon, "tags": json.dumps(data["tag"]), "area_identifier": entry['internal_region_name'], "download_timestamp": timestamp, "validator_complaint": None})
-        print(object_type, object_id, "is outdated, not in the report so its entry needs to be updated:", tags, new_tags)
+        print(object_type, object_id, "is outdated, not in the report so its entry needs to be updated for", validator_complaint['error_id'], "in", entry['internal_region_name'])
 
 def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, timestamp_when_file_was_downloaded):
     # - entries currently are carrying reports and with outdated timestamps
