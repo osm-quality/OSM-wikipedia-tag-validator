@@ -358,6 +358,9 @@ def for_tests():
 
 def ignored():
     return [
+        # delete this from database
+        "should use a secondary wikipedia tag - linking to an industry",
+
         # multiple test cases created - enable it after fixing them
         'should use a secondary wikipedia tag - linking to an art genre',
 
