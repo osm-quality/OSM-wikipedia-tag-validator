@@ -321,6 +321,7 @@ def for_review():
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
         'should use a secondary wikipedia tag - linking to a social issue',
         'should use a secondary wikipedia tag - linking to a social movement',
+        'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
     ]
 
 def obvious_fixes():
@@ -340,8 +341,10 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a podcast',
         'should use a secondary wikipedia tag - linking to a protest',
-        'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
+        'should use a secondary wikipedia tag - linking to a stampede',
+        'should use a secondary wikipedia tag - linking to a festival',
         'secondary wikidata tag links to 404',
         'no longer existing object',
         'tag conflict with wikidata value',
