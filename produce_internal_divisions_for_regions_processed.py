@@ -56,6 +56,8 @@ def show_splits_of_specified_countries():
     # and in a separate command (why it does not work together?):
     # cd -
     processed = [
+    ] 
+    done_already = [
         {
         'code': 'AT',
         'group_name': 'Österreich (Austria)',
@@ -66,8 +68,6 @@ def show_splits_of_specified_countries():
         'admin_level': 4,
         'generated_commented_out': True,
         },
-    ] 
-    done_already = [
         {
         'code': 'BY',
         'group_name': 'Беларусь (Belarus, Białoruś)',
