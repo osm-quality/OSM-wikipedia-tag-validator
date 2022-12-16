@@ -276,10 +276,11 @@ def note_unused_errors(reported_errors, area):
 
 def for_review():
     return [
-        'should use a secondary wikipedia tag - linking to a gene',
-        'should use a secondary wikipedia tag - linking to a violation of law',
         'wikipedia tag links to 404',
         'wikidata tag links to 404',
+        'should use a secondary wikipedia tag - linking to a gene',
+        'should use a secondary wikipedia tag - linking to a violation of law',
+        'should use a secondary wikipedia tag - linking to a sermon',
         'link to an unlinkable article',
         'wikipedia wikidata mismatch',
         'should use a secondary wikipedia tag - linking to a battle',
@@ -341,6 +342,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a television program',
         'should use a secondary wikipedia tag - linking to a podcast',
         'should use a secondary wikipedia tag - linking to a protest',
         'should use a secondary wikipedia tag - linking to a stampede',
