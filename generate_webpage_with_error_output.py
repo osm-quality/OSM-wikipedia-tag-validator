@@ -323,6 +323,12 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a social issue',
         'should use a secondary wikipedia tag - linking to a social movement',
         'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
+        'should use a secondary wikipedia tag - linking to a television program',
+        'should use a secondary wikipedia tag - linking to a podcast',
+        'should use a secondary wikipedia tag - linking to a protest',
+        'should use a secondary wikipedia tag - linking to a stampede',
+        'should use a secondary wikipedia tag - linking to a festival',
+        'should use a secondary wikipedia tag - linking to a fictional entity',
     ]
 
 def obvious_fixes():
@@ -342,11 +348,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to a television program',
-        'should use a secondary wikipedia tag - linking to a podcast',
-        'should use a secondary wikipedia tag - linking to a protest',
-        'should use a secondary wikipedia tag - linking to a stampede',
-        'should use a secondary wikipedia tag - linking to a festival',
+        'should use a secondary wikipedia tag - linking to a general industry',
         'secondary wikidata tag links to 404',
         'no longer existing object',
         'tag conflict with wikidata value',
@@ -355,7 +357,6 @@ def for_tests():
         'tag conflict with wikidata value - boring',
         'tag may be added based on wikidata - website', # dubious copyright
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
-        'should use a secondary wikipedia tag - linking to a fictional entity',
     ]
 
 def ignored():
