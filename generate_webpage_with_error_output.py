@@ -348,6 +348,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'name:etymology:wikidata:missing',
         'should use a secondary wikipedia tag - linking to a general industry',
         'secondary wikidata tag links to 404',
         'no longer existing object',
