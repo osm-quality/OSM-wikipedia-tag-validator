@@ -170,8 +170,9 @@ def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, 
 
 def update_validator_reports_for_given_area(cursor, internal_region_name, language_code, ignored_problems):
     detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code)
-    print("NOW CHECKING WHAT WAS REPORTED WITHOUT USING CACHE!")
-    verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code, ignored_problems)
+    print("SKIPPING CACHE REFRESH OF WIKIDATA DATA") # TODO reestablish it in a proper way
+    #print("NOW CHECKING WHAT WAS REPORTED WITHOUT USING CACHE!")
+    #verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code, ignored_problems)
 
 def detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code):
     issue_detector = get_wikimedia_link_issue_reporter_object(language_code)
