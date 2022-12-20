@@ -57,6 +57,16 @@ def show_splits_of_specified_countries():
     # cd -
     processed = [
         {
+        'code': 'DE-BY',
+        'group_name': 'Bayern (Bavaria, Bawaria) - (Deutschland)',
+        'extra_part_of_name': 'Bayern (Bavaria, Bawaria) - (Deutschland)',
+        'extra_part_of_internal_name': 'Bawaria (Niemcy)',
+        'language_code': 'de',
+        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany",
+        'admin_level': 6,
+        'generated_commented_out': True,
+        },
+        {
         'code': 'CH',
         'group_name': 'Schweiz|Suisse|Svizzera|Svizra (Switzerland, Szwajcaria)',
         'extra_part_of_name': 'Schweiz|Suisse|Svizzera|Svizra (Switzerland, Szwajcaria)',
@@ -68,6 +78,16 @@ def show_splits_of_specified_countries():
         },
     ] 
     done_already = [
+        {
+        'code': 'DE-BB',
+        'group_name': 'Brandenburg (Deutschland)',
+        'extra_part_of_name': 'Brandenburg (Deutschland)',
+        'extra_part_of_internal_name': 'Brandenburgia (Niemcy)',
+        'language_code': 'de',
+        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany",
+        'admin_level': 6,
+        'generated_commented_out': True,
+        },
         {
         'code': 'AT',
         'group_name': 'Österreich (Austria)',
