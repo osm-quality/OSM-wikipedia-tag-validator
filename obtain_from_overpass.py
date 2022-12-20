@@ -16,7 +16,8 @@ def filepath_to_downloaded_osm_data(name, suffix):
   return config.downloaded_osm_data_location() + "/" + filename
 
 def timeout():
-  return 2550
+  # Brandenburgia failed with 1000 but also failed anyway with 2500
+  return 1000
 
 def get_data_timestamp(cursor, internal_region_name):
     cursor.execute("SELECT download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name})
