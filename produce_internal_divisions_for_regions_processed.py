@@ -56,16 +56,10 @@ def show_splits_of_specified_countries():
     # and in a separate command (why it does not work together?):
     # cd -
     processed = [
-        {
-        'code': 'DE-BY',
-        'group_name': 'Bayern (Bavaria, Bawaria) - (Deutschland)',
-        'extra_part_of_name': 'Bayern (Bavaria, Bawaria) - (Deutschland)',
-        'extra_part_of_internal_name': 'Bawaria (Niemcy)',
-        'language_code': 'de',
-        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany",
-        'admin_level': 6,
-        'generated_commented_out': True,
-        },
+    ]
+    # Switzerland is on edge of needed to be split into parts
+    # https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718
+    """
         {
         'code': 'CH',
         'group_name': 'Schweiz|Suisse|Svizzera|Svizra (Switzerland, Szwajcaria)',
@@ -76,8 +70,18 @@ def show_splits_of_specified_countries():
         'admin_level': 4,
         'generated_commented_out': True,
         },
-    ] 
+    """
     done_already = [
+        {
+        'code': 'DE-BY',
+        'group_name': 'Bayern (Bavaria, Bawaria) - (Deutschland)',
+        'extra_part_of_name': 'Bayern (Bavaria, Bawaria) - (Deutschland)',
+        'extra_part_of_internal_name': 'Bawaria (Niemcy)',
+        'language_code': 'de',
+        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany",
+        'admin_level': 6,
+        'generated_commented_out': True,
+        },
         {
         'code': 'DE-BB',
         'group_name': 'Brandenburg (Deutschland)',
