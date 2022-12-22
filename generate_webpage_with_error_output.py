@@ -357,7 +357,6 @@ def for_tests():
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',
         'tag may be added based on wikidata - website', # dubious copyright
-        'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
     ]
 
 def ignored():
@@ -373,6 +372,9 @@ def ignored():
 
         # enable after running out of art genre stuff
         'should use a secondary wikipedia tag - linking to an event',
+
+        # too often problem is on Wikidata side - generate list and show it to Wikidata community?
+        'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
 
         # too many mistakes. TODO: just remove it (or maybe keep as a reminder?)
         'should use a secondary wikipedia tag - linking to a company that has multiple locations',
