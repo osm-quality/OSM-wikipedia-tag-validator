@@ -269,6 +269,8 @@ def show_splits_of_specified_countries():
     for source in processed:
         returned += generate_subregion_list(source, source['admin_level'])
     print(returned)
+    if len(processed) > 0:
+        time.sleep(10)
 
 def generate_subregion_list(source, admin_level):
     returned = ""
