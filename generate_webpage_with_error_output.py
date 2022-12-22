@@ -58,7 +58,6 @@ def generate_test_issue_listing(reports_data, timestamps_of_data, filepath, igno
     issues_without_skipped = [i for i in issues if i not in ignored_problem_codes]
     generate_html_file(reports_data, filepath, issues_without_skipped, "This page contains reports that are tested or are known to produce false positives. Be careful with using this data.", timestamps_of_data)
 
-# TODO: errors -> reports here, and later elsewhere
 def generate_html_file(errors, output_file_name, types, information_header, timestamps_of_data):
     prefix_of_lines = "\t\t\t"
     total_error_count = 0
