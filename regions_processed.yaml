@@ -70,9 +70,9 @@
 #- {internal_region_name: 'Włochy: Liguria', website_main_title_part: 'Italia (Italy, Włochy): Liguria', merged_into: ["Italia (Italy, Włochy)"], identifier: {'wikidata': 'Q1256'}, language_code: 'it', requested_by: ''}
 #- {internal_region_name: 'Włochy: Kalabria', website_main_title_part: 'Italia (Italy, Włochy): Calabria (Kalabria)', merged_into: ["Italia (Italy, Włochy)"], identifier: {'wikidata': 'Q1458'}, language_code: 'it', requested_by: ''}
 #- {internal_region_name: 'Włochy: Owernia-Rodan-Alpy', website_main_title_part: 'Italia (Italy, Włochy): Auvergne-Rhône-Alpes (Owernia-Rodan-Alpy)', merged_into: ["Italia (Italy, Włochy)"], identifier: {'wikidata': 'Q18338206'}, language_code: 'it', requested_by: ''}
-#- {internal_region_name: 'Włochy: Sardynia', website_main_title_part: 'Italia (Italy, Włochy): Sardigna | Sardegna (Sardinia, Sardynia)', merged_into: ["Italia (Italy, Włochy)"], identifier: {'wikidata': 'Q1462'}, language_code: 'it', requested_by: ''}
+- {internal_region_name: 'Włochy: Sardynia', website_main_title_part: 'Italia (Italy, Włochy): Sardigna | Sardegna (Sardinia, Sardynia)', merged_into: ["Italia (Italy, Włochy)"], identifier: {'wikidata': 'Q1462'}, language_code: 'it', requested_by: '', priority_multiplier: 0.2 }
 
-- {internal_region_name: 'San Marino', website_main_title_part: 'San Marino', identifier: {'ISO3166-1': 'SM'}, requested_by: 'none', priority_multiplier: 1}
+- {internal_region_name: 'San Marino', website_main_title_part: 'San Marino', identifier: {'ISO3166-1': 'SM'}, requested_by: 'none', priority_multiplier: 0.2}
 
 - {internal_region_name: Montenegro, website_main_title_part: 'Crna Gora - Црна Гора (Montenegro, Czarnogóra)', identifier: {'ISO3166-1': 'ME'}, language_code: sr, requested_by: 'Komadinovic Vanja, in PM https://www.openstreetmap.org/messages/928133 (pinged 2022-10-17)'}
 
