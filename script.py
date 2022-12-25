@@ -14,7 +14,7 @@ def main():
     check_for_malformed_definitions_of_entries()
     update_validator_database_and_reports()
 
-def update_validator_database():
+def update_validator_database_and_reports():
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     create_table_if_needed(cursor)
@@ -39,24 +39,20 @@ def update_validator_database():
     entries_with_age = sorted(entries_with_age, key=lambda entry: -(current_timestamp - entry["data_timestamp"]) * entry["data"].get("priority_multiplier", 1))
     
     total_entry_count = len(config.get_entries_to_process())
-    total_processed_entry_count = len(entries_with_age)
     processed_entries = 0
     print()
     print()
     print()
-    for selected_processing_entry in entries_with_age[:total_processed_entry_count][::-1]:
+    for selected_processing_entry in entries_with_age[::-1]:
         entry = selected_processing_entry['data']
         score = (current_timestamp - selected_processing_entry["data_timestamp"]) * entry.get("priority_multiplier", 1)
         k = str(int((score+500)/1000))
         print(entry['internal_region_name'], entry.get("priority_multiplier", 1), k+"k")
 
-    for selected_processing_entry in entries_with_age[:total_processed_entry_count]:
+    for selected_processing_entry in entries_with_age:
         print()
         print()
-        if (total_processed_entry_count != total_entry_count):
-            print(processed_entries, "/", total_processed_entry_count, '/', total_entry_count)
-        else:
-            print(processed_entries, "/", total_entry_count)
+        print(processed_entries, "/", total_entry_count)
         processed_entries += 1
         entry = selected_processing_entry['data']
         internal_region_name = entry['internal_region_name']
