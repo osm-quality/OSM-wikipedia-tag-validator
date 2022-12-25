@@ -347,8 +347,12 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        # detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
-        # take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
+        # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
+        # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
+
+        # TODO: detect image=* that should be wikimedia_commons=*
+        # TODO: check above for 404 erorrs
+        # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
         'name:etymology:wikidata:missing',
         'secondary wikidata tag links to 404',
         'no longer existing object',
