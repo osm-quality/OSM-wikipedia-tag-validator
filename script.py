@@ -10,61 +10,23 @@ import os
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
 import time
 
-def existing_tables(cursor):
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    table_listing = cursor.fetchall()
-    returned = []
-    for entry in table_listing:
-        returned.append(entry[0])
-    return returned
-
-def create_table_if_needed(cursor):
-    if "osm_data" in existing_tables(cursor):
-        print("osm_data table exists already, delete file with database to recreate")
-    else:
-        # validator_complaint needs to hold
-        # - not checked
-        # - checked, no problem found
-        # - error data
-        #
-        # right now for "checked, no error" I plan to use empty string but I am not too happy
-        cursor.execute('''CREATE TABLE osm_data
-                    (type text, id number, lat float, lon float, tags text, area_identifier text, download_timestamp integer, validator_complaint text)''')
-
-        # magnificent speedup
-        cursor.execute("""CREATE INDEX idx_osm_data_area_identifier ON osm_data (area_identifier);""")
-        cursor.execute("""CREATE INDEX idx_osm_data_id_type ON osm_data (id, type);""")
-    if "osm_data_update_log" in existing_tables(cursor):
-        print("osm_data_update_log table exists already, delete file with database to recreate")
-    else:
-        # register when data was downloaded so update can be done without downloading
-        # and processing the entire dataset
-        #
-        # instead just entries that were changed since then
-        # - and carry *(wikipedia|wikidata)* tags
-        # - that previously had problem reported about them
-        # should be downloaded
-        cursor.execute('''CREATE TABLE osm_data_update_log
-                    (area_identifier text, filename text, download_type text, download_timestamp integer)''')
-
 def main():
+    check_for_malformed_definitions_of_entries()
+    update_validator_database_and_reports()
+
+def update_validator_database():
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     create_table_if_needed(cursor)
     connection.commit()
 
     for entry in config.get_entries_to_process():
-        if "/" in entry['internal_region_name']:
-            raise Exception("/ in " + entry['internal_region_name'])
-        if "/" in entry['website_main_title_part']:
-            raise Exception("/ in " + entry['website_main_title_part'])
-
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
         generate_webpage_with_error_output.generate_website_file_for_given_area(cursor, entry)
     generate_webpage_with_error_output.write_index_and_merged_entries(cursor)
-    commit_changes_in_report_directory()
+    commit_and_publish_changes_in_report_directory()
 
     wikimedia_connection.set_cache_location(config.get_wikimedia_connection_cache_location())
 
@@ -106,7 +68,51 @@ def main():
         connection.commit()
         generate_webpage_with_error_output.write_index_and_merged_entries(cursor) # update after each run
     connection.close()
-    commit_changes_in_report_directory()
+    commit_and_publish_changes_in_report_directory()
+
+def check_for_malformed_definitions_of_entries():
+    for entry in config.get_entries_to_process():
+        if "/" in entry['internal_region_name']:
+            raise Exception("/ in " + entry['internal_region_name'])
+        if "/" in entry['website_main_title_part']:
+            raise Exception("/ in " + entry['website_main_title_part'])
+
+def existing_tables(cursor):
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    table_listing = cursor.fetchall()
+    returned = []
+    for entry in table_listing:
+        returned.append(entry[0])
+    return returned
+
+def create_table_if_needed(cursor):
+    if "osm_data" in existing_tables(cursor):
+        print("osm_data table exists already, delete file with database to recreate")
+    else:
+        # validator_complaint needs to hold
+        # - not checked
+        # - checked, no problem found
+        # - error data
+        #
+        # right now for "checked, no error" I plan to use empty string but I am not too happy
+        cursor.execute('''CREATE TABLE osm_data
+                    (type text, id number, lat float, lon float, tags text, area_identifier text, download_timestamp integer, validator_complaint text)''')
+
+        # magnificent speedup
+        cursor.execute("""CREATE INDEX idx_osm_data_area_identifier ON osm_data (area_identifier);""")
+        cursor.execute("""CREATE INDEX idx_osm_data_id_type ON osm_data (id, type);""")
+    if "osm_data_update_log" in existing_tables(cursor):
+        print("osm_data_update_log table exists already, delete file with database to recreate")
+    else:
+        # register when data was downloaded so update can be done without downloading
+        # and processing the entire dataset
+        #
+        # instead just entries that were changed since then
+        # - and carry *(wikipedia|wikidata)* tags
+        # - that previously had problem reported about them
+        # should be downloaded
+        cursor.execute('''CREATE TABLE osm_data_update_log
+                    (area_identifier text, filename text, download_type text, download_timestamp integer)''')
 
 def process_given_area(cursor, entry):
     update_outdated_elements(cursor, entry, entry.get('ignored_problems', []))
@@ -227,7 +233,7 @@ def get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=False
         allow_false_positives=False
         )
 
-def commit_changes_in_report_directory():
+def commit_and_publish_changes_in_report_directory():
     current_working_directory = os.getcwd()
     os.chdir(config.get_report_directory())
     os.system('git add index.html')
