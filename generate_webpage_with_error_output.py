@@ -347,6 +347,10 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a train category',
+        'should use a secondary wikipedia tag - linking to a biome (too generic, not linking specific object)',
+        'should use a secondary wikipedia tag - linking to a type of structure',
+        'should use a secondary wikipedia tag - linking to a branch of military service',
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
 
