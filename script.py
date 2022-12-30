@@ -9,8 +9,10 @@ import generate_webpage_with_error_output
 import os
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
 import time
+import osm_editor_bot_for_approved_tasks
 
 def main():
+    osm_editor_bot_for_approved_tasks.main()
     check_for_malformed_definitions_of_entries()
     update_validator_database_and_reports()
 
