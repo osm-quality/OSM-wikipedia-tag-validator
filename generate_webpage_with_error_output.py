@@ -287,7 +287,6 @@ def for_review():
         "should use a secondary wikipedia tag - linking to a crime",
         "should use a secondary wikipedia tag - linking to a film",
         "should use a secondary wikipedia tag - linking to a disaster",
-        'should use a secondary wikipedia tag - linking to a physical process',
         'should use a secondary wikipedia tag - linking to a website',
         'should use a secondary wikipedia tag - linking to a television series',
         'should use a secondary wikipedia tag - linking to a saying',
@@ -300,7 +299,6 @@ def for_review():
         'malformed wikidata tag',
         'malformed wikipedia tag',
         "malformed wikipedia tag - nonexisting language code",
-        'malformed secondary wikidata tag',
         'information board with wikipedia tag, not subject:wikipedia',
         'information board with wikidata tag, not subject:wikidata',
         'should use a secondary wikipedia tag - linking to a human',
@@ -331,6 +329,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a type of structure',
         'should use a secondary wikipedia tag - linking to a train category',
         'should use a secondary wikipedia tag - linking to an electronic device model series',
+        'malformed secondary wikidata tag',
     ]
 
 def obvious_fixes():
@@ -381,6 +380,9 @@ def ignored():
 
         # enable after running out of art genre stuff
         'should use a secondary wikipedia tag - linking to an event',
+
+        # enable after reporting and fixing incinerator issue
+        'should use a secondary wikipedia tag - linking to a physical process',
 
         # too often problem is on Wikidata side - generate list and show it to Wikidata community?
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
