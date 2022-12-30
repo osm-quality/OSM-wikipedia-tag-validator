@@ -330,6 +330,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a fictional entity',
         'should use a secondary wikipedia tag - linking to a type of structure',
         'should use a secondary wikipedia tag - linking to a train category',
+        'should use a secondary wikipedia tag - linking to an electronic device model series',
     ]
 
 def obvious_fixes():
@@ -350,7 +351,6 @@ def obvious_fixes():
 def for_tests():
     return [
         'should use a secondary wikipedia tag - linking to a branch of military service',
-        'should use a secondary wikipedia tag - linking to an electronic device model series',
         'should use a secondary wikipedia tag - linking to a history of a geographic region',
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
