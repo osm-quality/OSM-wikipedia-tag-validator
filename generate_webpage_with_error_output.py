@@ -329,6 +329,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a type of structure',
         'should use a secondary wikipedia tag - linking to a train category',
         'should use a secondary wikipedia tag - linking to an electronic device model series',
+        'should use a secondary wikipedia tag - linking to a physical process',
         'malformed secondary wikidata tag',
     ]
 
@@ -380,9 +381,6 @@ def ignored():
 
         # enable after running out of art genre stuff
         'should use a secondary wikipedia tag - linking to an event',
-
-        # enable after reporting and fixing incinerator issue
-        'should use a secondary wikipedia tag - linking to a physical process',
 
         # too often problem is on Wikidata side - generate list and show it to Wikidata community?
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
