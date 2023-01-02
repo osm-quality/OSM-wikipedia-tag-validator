@@ -371,6 +371,8 @@ def for_tests():
 
 def ignored():
     return [
+        # add TOC and roll out new edits first
+        #
         # some things are fixed in Wikidata and my cache is wrong
         # growing number of miscaches
         #
