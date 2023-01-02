@@ -371,9 +371,21 @@ def for_tests():
 
 def ignored():
     return [
+        # some things are fixed in Wikidata and my cache is wrong
+        # growing number of miscaches
+        #
         # multiple test cases created
-        # enable it after Wikidata community fixes at least part of what I reprted
+        # enable it after Wikidata community runs out of what I reported
         # AND all tests in wikibrain are passing
+        #
+        # or when I confirmed that I can clear
+        # /media/mateusz/OSM_cache/wikimedia-connection-cache
+        # and reuse database to avoid redownloading entries for
+        # entries not reported as broken now (or bite bullet and redownload everything
+        # or switch to Wikipedia/Wikidata dumps instead of API)
+        #
+        # or reenable redownloading cached data on reports being generated
+        # (needs "delete cache if older than X" in upstream repo) 
         'should use a secondary wikipedia tag - linking to an art genre',
         'should use a secondary wikipedia tag - linking to an event',
         'should use a secondary wikipedia tag - linking to a behavior',
