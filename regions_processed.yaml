@@ -14,6 +14,8 @@
 #- {internal_region_name: Bern, website_main_title_part: 'Bern (Brno)', merged_into: ['Switzerland (merged)'], identifier: {'wikidata': 'Q70'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718 - reduced on my own to much smaller area'}
 #- {internal_region_name: Vaud, website_main_title_part: 'Vaud (in Swizerland)', merged_into: ['Switzerland (merged)'], identifier: {'wikidata': 'Q12771'}, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718'}
 
+- {internal_region_name: 'Liechtenstein', website_main_title_part: 'Liechtenstein', identifier: {'ISO3166-1': 'LI'}, requested_by: 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator/issues/9', priority_multiplier: 1}
+
 # no response from local community for question about wikidata/wikipedia preferences
 #- {internal_region_name: Ukraine, website_main_title_part: 'Україна (Ukraine)', identifier: {'ISO3166-1': 'UA'}, language_code: uk, requested_by: 'https://t.me/OpenStreetMapOrg/73857 Alex Riabstev'}
 # slowly processed, enormous amount of reported issues
