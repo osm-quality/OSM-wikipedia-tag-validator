@@ -371,6 +371,10 @@ def for_tests():
 
         # enable after running out of art genre stuff
         'should use a secondary wikipedia tag - linking to an event',
+
+        'should use a secondary wikipedia tag - linking to a behavior',
+        'should use a secondary wikipedia tag - linking to a government program',
+
     ]
 
 def ignored():
