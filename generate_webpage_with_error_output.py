@@ -358,7 +358,6 @@ def for_tests():
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
-        'name:etymology:wikidata:missing',
         'secondary wikidata tag links to 404',
         'no longer existing object',
         'tag conflict with wikidata value',
@@ -399,6 +398,13 @@ def ignored():
         # https://www.wikidata.org/wiki/Wikidata_talk:WikiProject_Ontology
         # https://www.wikidata.org/wiki/Wikidata:Project_chat/Archive/2022/08#Subclass_trees
         # https://wiki.openstreetmap.org/wiki/Talk:Data_items#Broken_Wikidata_ontology
+
+        # inherently Wikidata issue, lets advertise it after Wikidata Ontology is promoted and 
+        # has entirely fixed deep structural issues (AKA never)
+        # this reports cases where name:etymology:wikidata:missing tag is present what claims
+        # that Wikidata is missing entries
+        # See also https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&oldid=1800873697#Is_someone_who_is_a_patron_of_a_street_always_notable_enough_for_Wikidata_identifier?
+        'name:etymology:wikidata:missing',
 
         'link to a list', # even I am not really convinced it is a problem
     ]
