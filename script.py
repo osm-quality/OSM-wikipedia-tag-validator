@@ -113,8 +113,9 @@ def create_table_if_needed(cursor):
                     (area_identifier text, filename text, download_type text, download_timestamp integer)''')
 
 def process_given_area(cursor, entry):
-    update_outdated_elements(cursor, entry, entry.get('ignored_problems', []))
-    update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None), entry.get('ignored_problems', []))
+    ignored_problems = entry.get('ignored_problems', [])
+    update_outdated_elements(cursor, entry, ignored_problems)
+    update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None), ignored_problems)
     generate_webpage_with_error_output.generate_website_file_for_given_area(cursor, entry)
 
 def update_outdated_elements(cursor, entry, ignored_problems):
