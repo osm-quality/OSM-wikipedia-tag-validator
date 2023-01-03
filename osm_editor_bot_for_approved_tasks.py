@@ -284,7 +284,7 @@ def is_edit_allowed_object_has_set_wikipedia(osm_object_url, object_data, target
         return False
 
     if language_code == "pl":
-        return True # addumes that Polish Wikipedia code is use only in Poland
+        return True # assumes that Polish Wikipedia code is use only in Poland
         
     countries_tagged_in_wikidata = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_country_location_from_wikidata_id(wikidata_id)
     if countries_tagged_in_wikidata == None:
