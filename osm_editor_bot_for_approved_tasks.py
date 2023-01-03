@@ -177,7 +177,6 @@ def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target
     for node_id in nodes_ids_to_verify:
         node_data = osm_bot_abstraction_layer.get_data(node_id, "node")
         if is_location_clearly_outside_territory(node_data["lat"], node_data["lon"], target_country):
-            # TODO: investigate false positives
             return False
         if is_location_possibly_outside_territory(node_data["lat"], node_data["lon"], target_country):
             print(node_data["lat"], node_data["lon"], "was classified as possibly outside - running nominatim to check", target_country)
