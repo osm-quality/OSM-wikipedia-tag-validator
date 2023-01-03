@@ -77,20 +77,16 @@ def generate_html_file(errors, output_file_name, types, information_header, time
             error_count = 0
             for e in reported_errors:
                 if e['error_id'] == error_type_id:
+                    error_text = error_description(e, prefix_of_lines + "\t")
+                    if error_text in added_reports:
+                        #normal in merged entries
+                        continue
                     if error_count == 0:
                         table_of_contents_text += '<li><a href="#' + error_type_id + '">' + error_type_id + '</a></li>'
                         reported_errors_text += row( '<a href="#' + error_type_id + '"><h2 id="' + error_type_id + '">' + error_type_id + '</h2></a>', prefix_of_lines=prefix_of_lines)
                         if e['error_general_intructions'] != None:
                             instructions = htmlify(e['error_general_intructions'])
                             reported_errors_text += row(instructions, prefix_of_lines=prefix_of_lines)
-                    error_text = error_description(e, prefix_of_lines + "\t")
-                    if error_text in added_reports:
-                        #normal in merged entries
-                        #print("duplicated error!")
-                        #print(error_text)
-                        #print(error_type_id)
-                        #print(output_file_name)
-                        continue
                     added_reports[error_text] = "added!"
                     error_count += 1
                     total_error_count += 1
