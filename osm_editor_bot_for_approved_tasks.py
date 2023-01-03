@@ -115,6 +115,9 @@ def handle_follow_wikipedia_redirect(e):
 def change_to_local_language(e):
     if e['error_id'] != 'wikipedia tag unexpected language':
         return
+    data = get_and_verify_data(e)
+    if data == None:
+        return None
     if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", very_rough_verification_function_is_within_given_country_prefers_false_negatives) == False:
         print("Skipping object", osm_object_url, "- apparently not within catchment area")
         print("ONLY EXTREMELY ROUGH CHECK WAS MADE! FALSE POSITIVES EXPECTED!")
@@ -128,10 +131,6 @@ def change_to_local_language(e):
         # TODO What about objects between "absolutely certain core" and borders?
         # right now I skip them...
         return
-
-    data = get_and_verify_data(e)
-    if data == None:
-        return None
 
     # run validator check again to prevent editing based on stale data
     # ask to run check without using cached data
