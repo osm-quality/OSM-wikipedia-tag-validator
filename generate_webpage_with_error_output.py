@@ -508,22 +508,25 @@ def index_page_description():
     website_html += "</br>\n"
     return website_html
 
-def write_index_and_merged_entries(cursor):
-    website_html = ""
-    website_html += html_file_header() + "\n" + index_page_description()
+def all_timestamps_for_index_page(cursor):
     all_timestamps = []
     for entry in config.get_entries_to_process():
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
         all_timestamps.append(obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name']))
-    website_html += feedback_request(all_timestamps) + "\n"
-    website_html += "</br>\n"
-    website_html += "</hr>\n"
-    website_html += "</br>\n"
+    return all_timestamps
 
-    completed = ""
+def html_header_for_index_page(all_timestamps):
+    index_header = ""
+    index_header += html_file_header() + "\n" + index_page_description()
+    index_header += feedback_request(all_timestamps) + "\n"
+    index_header += "</br>\n"
+    index_header += "</hr>\n"
+    index_header += "</br>\n"
+    return index_header
 
+def list_of_processed_entries_for_each_merged_group():
     merged_outputs = {}
     for entry in config.get_entries_to_process():
         if entry.get('merged_into', None) != None:
@@ -531,8 +534,14 @@ def write_index_and_merged_entries(cursor):
                 if parent not in merged_outputs:
                     merged_outputs[parent] = []
                 merged_outputs[parent].append(entry)
+    return merged_outputs
 
+def write_index_and_merged_entries(cursor):
+    all_timestamps = all_timestamps_for_index_page(cursor)
+    website_html = html_header_for_index_page(all_timestamps)
 
+    completed = ""
+    merged_outputs = list_of_processed_entries_for_each_merged_group()
 
     for merged_code in merged_outputs.keys():
         timestamps_of_data = []
