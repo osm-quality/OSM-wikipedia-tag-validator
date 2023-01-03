@@ -345,7 +345,7 @@ def generate_entry_for_specific_subregion(source, osm_data):
     if "priority_multiplier" in source:
         region_data["priority_multiplier"] = source["priority_multiplier"]
     if "generated_commented_out" in source:
-        region_data["generated_commented_out"] = source["generated_commented_out"],
+        region_data["generated_commented_out"] = source["generated_commented_out"]
     if source['language_code'] != None:
         region_data['language_code'] = source['language_code']
     return generate_yaml_row_text(region_data)
