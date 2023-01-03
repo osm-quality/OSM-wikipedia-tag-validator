@@ -94,10 +94,6 @@ def get_and_verify_data(e):
 def handle_follow_wikipedia_redirect(e):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
-    language_code = wikimedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
-    if language_code != "pl":
-        print(e['osm_object_url'], " - ", e['prerequisite']['wikipedia'] + " is not in the expected language code!")
-        return
     if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
         announce_skipping_object_as_outside_area(e['osm_object_url'])
 
@@ -119,11 +115,6 @@ def handle_follow_wikipedia_redirect(e):
 def change_to_local_language(e):
     if e['error_id'] != 'wikipedia tag unexpected language':
         return
-    language_code = wikimedia_connection.get_language_code_from_link(e['prerequisite']['wikipedia'])
-    if language_code != "pl":
-        print(e['osm_object_url'], " - ", e['prerequisite']['wikipedia'] + " is not in the expected language code!")
-        return
-
     if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", very_rough_verification_function_is_within_given_country_prefers_false_negatives) == False:
         print("Skipping object", osm_object_url, "- apparently not within catchment area")
         print("ONLY EXTREMELY ROUGH CHECK WAS MADE! FALSE POSITIVES EXPECTED!")
