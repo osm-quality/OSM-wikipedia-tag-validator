@@ -62,6 +62,8 @@ def generate_html_file(errors, output_file_name, types, information_header, time
     prefix_of_lines = "\t\t\t"
     total_error_count = 0
     added_reports = {}
+    table_of_contents_text = "<ul>"
+    reported_errors_text = ""
     with open( output_file_name, 'w') as file:
         file.write(object_list_header(timestamps_of_data))
         file.write(row( '<hr>', prefix_of_lines=prefix_of_lines))
@@ -76,10 +78,11 @@ def generate_html_file(errors, output_file_name, types, information_header, time
             for e in reported_errors:
                 if e['error_id'] == error_type_id:
                     if error_count == 0:
-                        file.write(row( '<a href="#' + error_type_id + '"><h2 id="' + error_type_id + '">' + error_type_id + '</h2></a>', prefix_of_lines=prefix_of_lines))
+                        table_of_contents_text += '<li><a href="#' + error_type_id + '">' + error_type_id + '</a></li>'
+                        reported_errors_text += row( '<a href="#' + error_type_id + '"><h2 id="' + error_type_id + '">' + error_type_id + '</h2></a>', prefix_of_lines=prefix_of_lines)
                         if e['error_general_intructions'] != None:
                             instructions = htmlify(e['error_general_intructions'])
-                            file.write(row(instructions, prefix_of_lines=prefix_of_lines))
+                            reported_errors_text += row(instructions, prefix_of_lines=prefix_of_lines)
                     error_text = error_description(e, prefix_of_lines + "\t")
                     if error_text in added_reports:
                         #normal in merged entries
@@ -91,13 +94,16 @@ def generate_html_file(errors, output_file_name, types, information_header, time
                     added_reports[error_text] = "added!"
                     error_count += 1
                     total_error_count += 1
-                    file.write(error_text)
+                    reported_errors_text += error_text
             if error_count != 0:
-                file.write(row( '<a href="https://overpass-turbo.eu/">overpass query</a> usable in JOSM that will load all objects where this specific error is present:', prefix_of_lines=prefix_of_lines ))
+                reported_errors_text += row( '<a href="https://overpass-turbo.eu/">overpass query</a> usable in JOSM that will load all objects where this specific error is present:', prefix_of_lines=prefix_of_lines )
                 query = get_query_for_loading_errors_by_category_from_error_data(errors, printed_error_ids = [error_type_id], format = "josm")
                 query_html = "<blockquote>" + escape_from_internal_python_string_to_html_ascii(query) + "</blockquote>"
-                file.write(row(query_html, prefix_of_lines=prefix_of_lines))
-                file.write(row( '<hr>', prefix_of_lines=prefix_of_lines ))
+                reported_errors_text += row(query_html, prefix_of_lines=prefix_of_lines)
+                reported_errors_text += row( '<hr>', prefix_of_lines=prefix_of_lines )
+        table_of_contents_text += "</ul>"
+        file.write(table_of_contents_text)
+        file.write(reported_errors_text)
         file.write(html_file_suffix())
     return total_error_count
         
