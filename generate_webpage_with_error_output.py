@@ -371,8 +371,7 @@ def for_tests():
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',
         'tag may be added based on wikidata - website', # dubious copyright
-        'should use a secondary wikipedia tag - linking to a government program',
-
+        'should use a secondary wikipedia tag - linking to a public transport network" is not appearing in any generated webpage',
     ]
 
 def ignored():
@@ -400,6 +399,10 @@ def ignored():
 
         # enable after running out of art genre stuff and fixing reports after ferries
         'should use a secondary wikipedia tag - linking to a general industry',
+
+        # tricky with office=goverment, postpone handling untill less tricky stuff is dealt with
+        # (including on Wikidata side)
+        'should use a secondary wikipedia tag - linking to a government program',
 
         # too often problem is on Wikidata side - generate list and show it to Wikidata community?
         'should use a secondary wikipedia tag - linking to an uncoordinable generic object',
