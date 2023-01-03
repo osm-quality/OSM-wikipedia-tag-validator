@@ -141,6 +141,20 @@ def change_to_local_language(e):
     data = get_and_verify_data(e)
     if data == None:
         return None
+
+    # run validator check again to prevent editing based on stale data
+    # ask to run check without using cached data
+    # done only for objects scheduled to be deleted so some Wikimedia API is fine
+    print(data['tag'])
+    object_description = e['osm_object_url']
+    wikipedia = data['tag']['wikipedia'] # must be present given that error is about bad Wikipedia in the first place
+    wikidata = data['tag']['wikidata'] # there may be need to get it somehow
+    new_report = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(forced_refresh=True).get_wikipedia_language_issues(object_description, tags, wikipedia, wikidata_id)
+    print(e)
+    print(new_report)
+    print(e['desired_wikipedia_target'])
+    print(new_report['desired_wikipedia_target'])
+    print(e['desired_wikipedia_target'] == new_report['desired_wikipedia_target'])
     now = data['tag']['wikipedia']
     new = e['desired_wikipedia_target']
     reason = ", as wikipedia page in the local language should be preferred"
