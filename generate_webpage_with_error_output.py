@@ -367,7 +367,8 @@ def for_tests():
         'wikipedia tag unexpected language, article missing',
         'tag conflict with wikidata value - boring',
         'tag may be added based on wikidata - website', # dubious copyright
-        'should use a secondary wikipedia tag - linking to a public transport network" is not appearing in any generated webpage',
+        'should use a secondary wikipedia tag - linking to a public transport network',
+        'should use a secondary wikipedia tag - linking to a bicycle sharing system',
     ]
 
 def ignored():
