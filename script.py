@@ -185,7 +185,7 @@ def detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name,
     # will not recheck entries that previously were free of errors
     cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NULL', {"identifier": internal_region_name})
     entries = cursor.fetchall()
-    update_problem_for_all_entries(issue_detector, cursor, entries, [])
+    update_problem_for_all_this_entries(issue_detector, cursor, entries, [])
 
 def verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, internal_region_name, language_code, ignored_problems):
     issue_detector_refreshing_cache = get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=True)
@@ -194,9 +194,9 @@ def verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, int
     # (say, tags on a road/river)
     cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ""', {"identifier": internal_region_name})
     entries = cursor.fetchall()
-    update_problem_for_all_entries(issue_detector_refreshing_cache, cursor, entries, ignored_problems)
+    update_problem_for_all_this_entries(issue_detector_refreshing_cache, cursor, entries, ignored_problems)
 
-def update_problem_for_all_entries(issue_detector, cursor, entries, ignored_problems):
+def update_problem_for_all_this_entries(issue_detector, cursor, entries, ignored_problems):
     for entry in entries:
         rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
         tags = json.loads(tags)
