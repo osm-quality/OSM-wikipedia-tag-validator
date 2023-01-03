@@ -73,6 +73,26 @@ def show_splits_of_specified_countries():
     """
     done_already = [
         {
+        'code': 'DE-BW',
+        'group_name': 'Baden-Württemberg (Badenia-Wirtembergia) - (Deutschland)',
+        'extra_part_of_name': 'Baden-Württemberg (Badenia-Wirtembergia) - (Deutschland)',
+        'extra_part_of_internal_name': 'Badenia-Wirtembergia (Niemcy)',
+        'language_code': 'de',
+        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany and https://github.com/matkoniecz/OSM-wikipedia-tag-validator/issues/9",
+        'admin_level': 6,
+        'generated_commented_out': False,
+        },
+        {
+        'code': 'DE-NW',
+        'group_name': 'Nordrhein-Westfalen (North Rhine-Westphalia, Nadrenia Północna-Westfalia) - (Deutschland)',
+        'extra_part_of_name': 'Nordrhein-Westfalen (North Rhine-Westphalia, Nadrenia Północna-Westfalia) - (Deutschland)',
+        'extra_part_of_internal_name': 'Nadrenia Północna-Westfalia (Niemcy)',
+        'language_code': 'de',
+        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany and https://github.com/matkoniecz/OSM-wikipedia-tag-validator/issues/9",
+        'admin_level': 6,
+        'generated_commented_out': False,
+        },
+        {
         'code': 'DE-BY',
         'group_name': 'Bayern (Bavaria, Bawaria) - (Deutschland)',
         'extra_part_of_name': 'Bayern (Bavaria, Bawaria) - (Deutschland)',
