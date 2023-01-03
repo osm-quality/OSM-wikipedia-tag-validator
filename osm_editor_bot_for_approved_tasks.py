@@ -98,6 +98,9 @@ def handle_follow_wikipedia_redirect(e):
     if language_code != "pl":
         print(e['osm_object_url'], " - ", e['prerequisite']['wikipedia'] + " is not in the expected language code!")
         return
+    if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
+        announce_skipping_object_as_outside_area(e['osm_object_url'])
+
     data = get_and_verify_data(e)
     if data == None:
         return None
@@ -120,6 +123,21 @@ def change_to_local_language(e):
     if language_code != "pl":
         print(e['osm_object_url'], " - ", e['prerequisite']['wikipedia'] + " is not in the expected language code!")
         return
+
+    if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", very_rough_verification_function_is_within_given_country_prefers_false_negatives) == False:
+        print("Skipping object", osm_object_url, "- apparently not within catchment area")
+        print("ONLY EXTREMELY ROUGH CHECK WAS MADE! FALSE POSITIVES EXPECTED!")
+        print("---------------------------------")
+        print()
+        print()
+        #announce_skipping_object_as_outside_area(e['osm_object_url'])
+        # TODO: what about objects exactly on borders? This could result in a slow moving edit wars...
+        # Nominatim-based checking will not work reliably here...
+
+        # TODO What about objects between "absolutely certain core" and borders?
+        # right now I skip them...
+        return
+
     data = get_and_verify_data(e)
     if data == None:
         return None
@@ -142,7 +160,7 @@ def filter_reported_errors(reported_errors, matching_error_ids):
             errors_for_removal.append(e)
     return errors_for_removal
 
-def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target_country):
+def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target_country, verification_function_is_within_given_country):
     if target_country != "pl":
         raise "unimplemented"
     type = osm_object_url.split("/")[3]
@@ -159,7 +177,7 @@ def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target
                 way_data = osm_bot_abstraction_layer.get_and_verify_data(way_url, prerequisites={}, prerequisite_failure_callback=note_or_fixme_review_request_indication)
                 print("recursive calling from " + osm_object_url + " to " + way_url)
                 #pprint.pprint(data)
-                if is_edit_allowed_object_based_on_location(way_url, way_data, target_country) == False:
+                if is_edit_allowed_object_based_on_location(way_url, way_data, target_country, verification_function_is_within_given_country) == False:
                     return False
             elif member['type'] == 'node':
                 nodes_ids_to_verify.append(member['ref'])
@@ -176,19 +194,35 @@ def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target
         nodes_ids_to_verify = object_data["nd"]
     for node_id in nodes_ids_to_verify:
         node_data = osm_bot_abstraction_layer.get_data(node_id, "node")
-        if is_location_clearly_outside_territory(node_data["lat"], node_data["lon"], target_country):
+        if verification_function_is_within_given_country(node_data["lat"], node_data["lon"], target_country) == False:
             return False
-        if is_location_possibly_outside_territory(node_data["lat"], node_data["lon"], target_country):
-            print(node_data["lat"], node_data["lon"], "was classified as possibly outside - running nominatim to check", target_country)
-            if get_nominatim_country_code(node_data["lat"], node_data["lon"]) == target_country:
-                return True
-            else:
-                print(node_data["lat"], node_data["lon"], "was classified as outside", target_country)
-                print(link_to_point(node_data["lat"], node_data["lon"]))
-                return False
     print()
     print(object_data)
     return True
+
+def detailed_verification_function_is_within_given_country(lat, lon, target_country):
+    if is_location_clearly_outside_territory(lat, lon, target_country):
+        return False
+    if is_location_possibly_outside_territory(lat, lon, target_country):
+        if check_with_nominatim_is_within_given_country(lat, lon, target_country, debug=True):
+            return False
+    return True
+
+def very_rough_verification_function_is_within_given_country_prefers_false_negatives(lat, lon, target_country):
+    if is_location_clearly_inside_territory(lat, lon, target_country) == False:
+        return False
+    return True
+
+def check_with_nominatim_is_within_given_country(lat, lon, target_country, debug):
+    if debug:
+        print(lat, lon, "was classified as possibly outside - running nominatim to check", target_country)
+    if get_nominatim_country_code(lat, lon) == target_country:
+        return True
+    else:
+        if debug:
+            print(lat, lon, "was classified as outside", target_country)
+            print(link_to_point(lat, lon))
+        return False
 
 def is_location_clearly_outside_territory(lat, lon, target_country):
     if target_country == "pl":
@@ -201,6 +235,20 @@ def is_location_clearly_outside_territory(lat, lon, target_country):
         if lon > 25.137:
             return True
         return False
+    raise
+
+def is_location_clearly_inside_territory(lat, lon, target_country):
+    if target_country == "pl":
+        if lat >= 48.166:
+            return False
+        if lat <= 55.678:
+            return False
+        if lon >= 12.480:
+            return False
+        if lon <= 25.137:
+            return False
+        return True
+    raise
 
 def is_location_possibly_outside_territory(lat, lon, target_country):
     if target_country == "pl":
@@ -276,7 +324,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         if data == None:
             continue
 
-        if is_edit_allowed_object_has_set_wikipedia(e['osm_object_url'], data, "pl") == False and is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl") == False:
+        if is_edit_allowed_object_has_set_wikipedia(e['osm_object_url'], data, "pl") == False and is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
             announce_skipping_object_as_outside_area(e['osm_object_url'])
             continue
 
@@ -321,7 +369,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
         if data == None:
             continue
 
-        if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl") == False:
+        if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
             announce_skipping_object_as_outside_area(e['osm_object_url'])
             continue
 
@@ -348,8 +396,8 @@ def main():
     for entry in config.get_entries_to_process():
         if entry.get('language_code', None) == "pl":
             reported_errors = load_errors(cursor, entry["internal_region_name"])
-            add_wikipedia_tag_from_wikidata_tag(reported_errors) # check with is_edit_allowed_object_based_on_location function
-            add_wikidata_tag_from_wikipedia_tag(reported_errors) # self-checking location based on Wikipedia language code
+            add_wikipedia_tag_from_wikidata_tag(reported_errors)
+            add_wikidata_tag_from_wikipedia_tag(reported_errors)
             for e in reported_errors:
                 handle_follow_wikipedia_redirect(e) # self-checking location based on Wikipedia language code [pl required]
                 #change_to_local_language(e) - discussion missing
