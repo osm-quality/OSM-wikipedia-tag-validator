@@ -368,13 +368,6 @@ def for_tests():
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
-        'secondary wikidata tag links to 404',
-        'no longer existing object',
-        'tag conflict with wikidata value',
-        'tag conflict with wikidata value - testing',
-        'wikipedia tag unexpected language, article missing',
-        'tag conflict with wikidata value - boring',
-        'tag may be added based on wikidata - website', # dubious copyright
         'should use a secondary wikipedia tag - linking to a public transport network',
         'should use a secondary wikipedia tag - linking to a bicycle sharing system',
     ]
