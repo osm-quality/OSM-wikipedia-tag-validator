@@ -334,6 +334,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to an electronic device model series',
         'should use a secondary wikipedia tag - linking to a physical process',
         'malformed secondary wikidata tag',
+        'should use a secondary wikipedia tag - linking to a bicycle sharing system',
     ]
 
 def obvious_fixes():
@@ -369,7 +370,6 @@ def for_tests():
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
         'should use a secondary wikipedia tag - linking to a public transport network',
-        'should use a secondary wikipedia tag - linking to a bicycle sharing system',
     ]
 
 def ignored():
