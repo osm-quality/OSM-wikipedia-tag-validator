@@ -94,12 +94,11 @@ def get_and_verify_data(e):
 def handle_follow_wikipedia_redirect(e):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
-    if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
-        announce_skipping_object_as_outside_area(e['osm_object_url'])
-
     data = get_and_verify_data(e)
     if data == None:
         return None
+    if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
+        announce_skipping_object_as_outside_area(e['osm_object_url'])
     now = data['tag']['wikipedia']
     new = e['desired_wikipedia_target']
     reason = ", as current tag is a redirect and the new page matches present wikidata"
