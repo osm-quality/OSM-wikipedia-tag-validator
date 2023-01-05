@@ -352,6 +352,15 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a geodetic control network',
+        'should use a secondary wikipedia tag - linking to a music festival',
+
+        'should use a secondary wikipedia tag - linking to an object that exists outside physical reality',
+
+        # enable after running out of art genre stuff and fixing reports after ferries
+        'should use a secondary wikipedia tag - linking to a general industry',
+
+
         'should use a secondary wikipedia tag - linking to a branch of military service',
         'should use a secondary wikipedia tag - linking to a history of a geographic region',
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
@@ -373,29 +382,12 @@ def for_tests():
 
 def ignored():
     return [
-        # add TOC and roll out new edits first
-        #
-        # some things are fixed in Wikidata and my cache is wrong
-        # growing number of miscaches
-        #
         # multiple test cases created
         # enable it after Wikidata community runs out of what I reported
         # AND all tests in wikibrain are passing
-        #
-        # or when I confirmed that I can clear
-        # /media/mateusz/OSM_cache/wikimedia-connection-cache
-        # and reuse database to avoid redownloading entries for
-        # entries not reported as broken now (or bite bullet and redownload everything
-        # or switch to Wikipedia/Wikidata dumps instead of API)
-        #
-        # or reenable redownloading cached data on reports being generated
-        # (needs "delete cache if older than X" in upstream repo) 
         'should use a secondary wikipedia tag - linking to an art genre',
         'should use a secondary wikipedia tag - linking to an event',
         'should use a secondary wikipedia tag - linking to a behavior',
-
-        # enable after running out of art genre stuff and fixing reports after ferries
-        'should use a secondary wikipedia tag - linking to a general industry',
 
         # tricky with office=goverment, postpone handling untill less tricky stuff is dealt with
         # (including on Wikidata side)
