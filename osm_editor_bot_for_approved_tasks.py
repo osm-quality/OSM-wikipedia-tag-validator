@@ -166,36 +166,8 @@ def filter_reported_errors(reported_errors, matching_error_ids):
 def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target_country, verification_function_is_within_given_country):
     if target_country != "pl":
         raise "unimplemented"
-    type = osm_object_url.split("/")[3]
-
-    nodes_ids_to_verify = []
-    if type != "way" and type != "node" and type != "relation":
-        error = "unexpected type " + str(type)
-        print(error)
-        raise ValueError(error)
-    if type == "relation":
-        for member in object_data["member"]:
-            if member['type'] == 'way':
-                way_url = "https://www.openstreetmap.org/way/" + str(member['ref'])
-                way_data = osm_bot_abstraction_layer.get_and_verify_data(way_url, prerequisites={}, prerequisite_failure_callback=note_or_fixme_review_request_indication)
-                print("recursive calling from " + osm_object_url + " to " + way_url)
-                #pprint.pprint(data)
-                if is_edit_allowed_object_based_on_location(way_url, way_data, target_country, verification_function_is_within_given_country) == False:
-                    return False
-            elif member['type'] == 'node':
-                nodes_ids_to_verify.append(member['ref'])
-            elif member['type'] == 'relation':
-                print("for now recursive relations are not supported (handling cycles would be necessary)")
-            #pprint.pprint(member['type'])
-            #pprint.pprint(member['ref'])
-    nodes_ids_to_verify = []
     print()
-    if type == "node":
-        print(object_data)
-        nodes_ids_to_verify = [object_data["id"]]
-    if type == "way":
-        nodes_ids_to_verify = object_data["nd"]
-    for node_id in nodes_ids_to_verify:
+    for node_id in osm_bot_abstraction_layer.get_all_nodes_of_an_object(osm_object_url):
         node_data = osm_bot_abstraction_layer.get_data(node_id, "node")
         if verification_function_is_within_given_country(node_data["lat"], node_data["lon"], target_country) == False:
             return False
