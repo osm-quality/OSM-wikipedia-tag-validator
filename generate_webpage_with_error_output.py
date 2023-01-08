@@ -377,7 +377,7 @@ def ignored():
     return [
         # multiple test cases created
         # enable it after Wikidata community runs out of what I reported
-        # AND all tests in wikibrain are passing (flushing bad data + gixing that not-yet-detected case)
+        # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
         'should use a secondary wikipedia tag - linking to an art genre',
         'should use a secondary wikipedia tag - linking to an event',
         'should use a secondary wikipedia tag - linking to a behavior',
