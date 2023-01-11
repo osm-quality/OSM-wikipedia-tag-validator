@@ -327,6 +327,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a podcast',
         'should use a secondary wikipedia tag - linking to a protest',
         'should use a secondary wikipedia tag - linking to a stampede',
+        'should use a secondary wikipedia tag - linking to a military operation',
         'should use a secondary wikipedia tag - linking to a festival',
         'should use a secondary wikipedia tag - linking to a fictional entity',
         'should use a secondary wikipedia tag - linking to a type of structure',
@@ -354,9 +355,9 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to a military operation',
         'secondary wikidata tag links to 404',
         'should use a secondary wikipedia tag - linking to a geodetic control network',
+        'should use a secondary wikipedia tag - linking to a fireworks event',
 
         # enable after running out of art genre stuff and fixing reports after ferries
         'should use a secondary wikipedia tag - linking to a general industry',
@@ -366,6 +367,9 @@ def for_tests():
         'should use a secondary wikipedia tag - linking to a history of a geographic region',
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
+
+        'should use a secondary wikipedia tag - linking to a heraldic animal',
+        'should use a secondary wikipedia tag - linking to a type of world view',
 
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
