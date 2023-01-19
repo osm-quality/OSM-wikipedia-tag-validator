@@ -325,7 +325,6 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikipedia from wikidata tag'])
     if errors_for_removal == []:
         return
-    #TODO check location - checking language of desired article is not helpful as Polish articles exist for objects outside Poland...
     automatic_status = osm_bot_abstraction_layer.fully_automated_description()
     affected_objects_description = ""
     comment = "add wikipedia tag based on wikidata tag"
