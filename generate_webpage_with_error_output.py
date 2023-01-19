@@ -357,6 +357,10 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'wikipedia wikidata mismatch - for secondary tag',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for secondary tag',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for secondary tag',
+        'no longer existing object',
         'should use a secondary wikipedia tag - linking to a geodetic control network',
         'should use a secondary wikipedia tag - linking to a fireworks event',
 
