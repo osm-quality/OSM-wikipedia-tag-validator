@@ -56,6 +56,16 @@ def show_splits_of_specified_countries():
     # and in a separate command (why it does not work together?):
     # cd -
     processed = [
+        {
+        'code': 'NO',
+        'group_name': 'Norge (Norway, Norwegia)',
+        'extra_part_of_name': 'Norge (Norway, Norwegia)',
+        'extra_part_of_internal_name': 'Norwegia',
+        'language_code': 'no',
+        'requested_by': "https://www.openstreetmap.org/user/KyZEN in https://www.openstreetmap.org/messages/1078358",
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
     ]
     # Switzerland is on edge of needed to be split into parts
     # https://discord.com/channels/413070382636072960/413070502580453387/889598425954418718
