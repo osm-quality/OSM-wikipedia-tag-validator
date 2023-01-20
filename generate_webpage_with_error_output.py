@@ -207,59 +207,48 @@ def row(text, prefix_of_lines):
     returned += prefix_of_lines + "</tr>\n"
     return returned
 
-def error_description(e, prefix_of_lines):
-    returned = ""
-    returned += row(htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
-    returned += row(link_to_osm_object(e['osm_object_url'], e['tags']), prefix_of_lines=prefix_of_lines)
-    desired_deprecated_form = e['desired_wikipedia_target'] #TODO - eliminate use of deprecated form, starting from bot
-    current_deprecated_form = e['current_wikipedia_target'] #TODO - eliminate use of deprecated form, starting from bot
-    desired = None
+def current_wikipedia_target(e):
     current = None
+    if e['proposed_tagging_changes'] != None:
+        for change in e['proposed_tagging_changes']:
+            if "wikipedia" in change["to"]:
+                if current != None:
+                    raise ValueError("multiple original replacements of the same tag (may make sense)")
+                current = change["from"]["wikipedia"]
+    return current
+
+def desired_wikipedia_target(e):
+    desired = None
     if e['proposed_tagging_changes'] != None:
         for change in e['proposed_tagging_changes']:
             if "wikipedia" in change["to"]:
                 if desired != None:
                     raise ValueError("multiple incoming replacements of the same tag")
-                if current != None:
-                    raise ValueError("multiple original replacements of the same tag (may make sense)")
                 desired = change["to"]["wikipedia"]
-                current = change["from"]["wikipedia"]
-    if desired_deprecated_form != None:
-        if desired_deprecated_form != desired:
-            for _ in range(30):
-                print("+++++++++++++++++ MISMATCH on desired ++++++++++++++++++++++")
-            pprint.pprint(e['proposed_tagging_changes'])
-            pprint.pprint(e['desired_wikipedia_target'])
-            pprint.pprint(e)
-            raise
-    if current_deprecated_form != None:
-        if current_deprecated_form != current:
-            for _ in range(30):
-                print("++++++++++++++ MISMATCH on current +++++++++++++++++++++++++")
-            pprint.pprint(e['proposed_tagging_changes'])
-            pprint.pprint(e['current_wikipedia_target'])
-            pprint.pprint(e)
-            raise
-        for _ in range(30):
-            print("++++++++++++++ deprecated current form exists at all, why? +++++++++++++++++++++++++")
-        pprint.pprint(e['proposed_tagging_changes'])
-        pprint.pprint(e['current_wikipedia_target'])
-        pprint.pprint(e)
+    return desired
 
-    if e['desired_wikipedia_target'] != None:
+def error_description(e, prefix_of_lines):
+    returned = ""
+    returned += row(htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
+    returned += row(link_to_osm_object(e['osm_object_url'], e['tags']), prefix_of_lines=prefix_of_lines)
+    desired = desired_wikipedia_target(e)
+    if desired != None:
         returned += describe_proposed_relinking(e, prefix_of_lines)
     returned += row( '<hr>', prefix_of_lines=prefix_of_lines)
     return returned
 
 def describe_proposed_relinking(e, prefix_of_lines):
     returned = ""
-    current = format_wikipedia_link(e['current_wikipedia_target'])
-    to = format_wikipedia_link(e['desired_wikipedia_target'])
+    current = current_wikipedia_target(e)
+    to = desired_wikipedia_target(e)
+    if current == None or to == None:
+        returned += row("failed to describe proposed relinking here (was: " + str({"current": current, "to": to}) + "), dump of raw proposed_tagging_changes: " + str(e['proposed_tagging_changes']), prefix_of_lines=prefix_of_lines)
+        return returned
     if to == current:
         to = "?"
     returned += row( current + " -> " + to, prefix_of_lines=prefix_of_lines)
     if to != "?":
-        article_name = article_name_from_wikipedia_string(e['desired_wikipedia_target'])
+        article_name = article_name_from_wikipedia_string(to)
         returned += row( escape_from_internal_python_string_to_html_ascii(article_name), prefix_of_lines=prefix_of_lines)
     return returned
 
