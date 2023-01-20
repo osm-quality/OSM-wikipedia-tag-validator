@@ -57,14 +57,14 @@ def show_splits_of_specified_countries():
     # cd -
     processed = [
         {
-        'code': 'NO',
-        'group_name': 'Norge (Norway, Norwegia)',
-        'extra_part_of_name': 'Norge (Norway, Norwegia)',
-        'extra_part_of_internal_name': 'Norwegia',
-        'language_code': 'no',
-        'requested_by': "https://www.openstreetmap.org/user/KyZEN in https://www.openstreetmap.org/messages/1078358",
-        'admin_level': 4,
-        'generated_commented_out': True,
+        'code': 'GB-ENG',
+        'group_name': 'Great Britain (Wielka Brytania) - England',
+        'extra_part_of_name': 'Great Britain (Wielka Brytania) - England',
+        'extra_part_of_internal_name': 'Wielka Brytania - Anglia',
+        'language_code': 'en',
+        'requested_by': "https://osmus.slack.com/archives/CDJ4LKA2Y/p1674070563799229?thread_ts=1673515894.325429&cid=CDJ4LKA2Y",
+        'admin_level': 6,
+        'generated_commented_out': False,
         },
     ]
     # Switzerland is on edge of needed to be split into parts
@@ -82,6 +82,16 @@ def show_splits_of_specified_countries():
         },
     """
     done_already = [
+        {
+        'code': 'NO',
+        'group_name': 'Norge (Norway, Norwegia)',
+        'extra_part_of_name': 'Norge (Norway, Norwegia)',
+        'extra_part_of_internal_name': 'Norwegia',
+        'language_code': 'no',
+        'requested_by': "https://www.openstreetmap.org/user/KyZEN in https://www.openstreetmap.org/messages/1078358",
+        'admin_level': 4,
+        'generated_commented_out': True,
+        },
         {
         'code': 'DE-BW',
         'group_name': 'Baden-Württemberg (Badenia-Wirtembergia) - (Deutschland)',
