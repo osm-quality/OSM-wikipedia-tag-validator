@@ -5,7 +5,7 @@ import time
 
 def main():
     show_splits_of_specified_countries()
-    show_overview_over_countries()
+    #show_overview_over_countries()
 
 def show_overview_over_countries():
     data = world_data.countries_of_a_world(["ISO3166-1", "default_language", "name", "wikidata", "name:pl", "name:en"], '/tmp/boundary_data.osm')
@@ -385,8 +385,8 @@ def generate_yaml_row_text(region_data):
         priority_multiplier = "priority_multiplier: " + str(region_data["priority_multiplier"]) + ", "
         
     manual = "- {internal_region_name: '" + region_data['internal_region_name'] + "', website_main_title_part: '" + region_data['website_main_title_part'] + "', merged_into: " + str(json.dumps(region_data["merged_into"])) + ", identifier: {'wikidata': '" + region_data["identifier"]["wikidata"] + "'}, " + language_code_section + ignored_problems + priority_multiplier + "requested_by: '" + region_data["requested_by"] + "'}"
-    print(raw_yaml)
-    print(manual)
+    #print(raw_yaml)
+    #print(manual)
     returned = manual
     if region_data["generated_commented_out"]:
         returned = "#" + returned
