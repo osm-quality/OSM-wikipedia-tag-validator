@@ -4,22 +4,34 @@ import maproulette
 import json
 
 api_key = None
+user_id = None
 with open('secret.json') as f:
     data = json.load(f)
-    api_key = data['maproulette_api_key'] 
+    api_key = data['maproulette_api_key']
+    user_id = data['maproulette_user_id']
     # https://github.com/osmlab/maproulette-python-client#getting-started
     # Your API key is listed at the bottom of https://maproulette.org/user/profile page.
     # expected file structure:
     """
 {
-	"maproulette_api_key": "d88hfhffiigibberishffiojsdjios90su28923h3r2rr"
+    "maproulette_api_key": "d88hfhffiigibberishffiojsdjios90su28923h3r2rr"
+    "maproulette_user_id": 784242309243
 }
 """
+
+def get_matching_maproulette_projects(api, search_term, user_id):
+found = api.find_project(search_term)
+if(found["status"] != 200):
+    raise Exception("Unexpected status")
+for project in found["data"]:
+    if project["owner"] == user_id:
+        yield project
 
 config = maproulette.Configuration(api_key=api_key)
 api = maproulette.Project(config)
 my_project_name = "404"
-print(json.dumps(api.find_project(my_project_name), indent=4, sort_keys=True))
+for project in get_matching_maproulette_projects(api, my_project_name, user_id):
+    print(json.dumps(project, indent=4, sort_keys=True))
 
 # https://github.com/osmlab/maproulette-python-client#getting-started
 
