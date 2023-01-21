@@ -33,7 +33,8 @@ def query_to_reports_data(cursor, query, query_parameters):
             reports.append(validator_complaint)
         return reports
     except sqlite3.DatabaseError as e:
-        print(internal_region_name)
+        print(query)
+        print(query_parameters)
         raise e
 
 def generate_output_for_given_area(main_output_name_part, reports_data, timestamps_of_data, ignored_problem_codes):
