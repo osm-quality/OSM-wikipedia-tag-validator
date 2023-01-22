@@ -91,6 +91,18 @@ def get_and_verify_data(e):
     print(e['osm_object_url'])
     return osm_bot_abstraction_layer.get_and_verify_data(e['osm_object_url'], e['prerequisite'], prerequisite_failure_callback=note_or_fixme_review_request_indication)
 
+def desired_wikipedia_target_from_report(e):
+    desired = None
+    if e['proposed_tagging_changes'] != None:
+        for change in e['proposed_tagging_changes']:
+            if "wikipedia" in change["to"]:
+                if desired != None:
+                    raise ValueError("multiple incoming replacements of the same tag")
+                desired = change["to"]["wikipedia"]
+    if desired == None:
+        raise Exception("Expected wikipedia tag to be provided")
+    return desired
+
 def handle_follow_wikipedia_redirect(e):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
@@ -100,10 +112,10 @@ def handle_follow_wikipedia_redirect(e):
     if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
         announce_skipping_object_as_outside_area(e['osm_object_url'])
     now = data['tag']['wikipedia']
-    new = e['desired_wikipedia_target']
+    new = desired_wikipedia_target_from_report(e)
     reason = ", as current tag is a redirect and the new page matches present wikidata"
     comment = fit_wikipedia_edit_description_within_character_limit_changed(now, new, reason)
-    data['tag']['wikipedia'] = e['desired_wikipedia_target']
+    data['tag']['wikipedia'] = new
     discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
     osm_wiki_documentation_page = "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_Poland"
     automatic_status = osm_bot_abstraction_layer.fully_automated_description()
@@ -141,14 +153,14 @@ def change_to_local_language(e):
     new_report = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(forced_refresh=True).get_wikipedia_language_issues(object_description, tags, wikipedia, wikidata_id)
     print(e)
     print(new_report)
-    print(e['desired_wikipedia_target'])
-    print(new_report['desired_wikipedia_target'])
-    print(e['desired_wikipedia_target'] == new_report['desired_wikipedia_target'])
+    print(desired_wikipedia_target_from_report(e))
+    print(desired_wikipedia_target_from_report(new_report))
+    print(desired_wikipedia_target_from_report(e) == desired_wikipedia_target_from_report(new_report))
     now = data['tag']['wikipedia']
-    new = e['desired_wikipedia_target']
+    new = desired_wikipedia_target_from_report(e)
     reason = ", as wikipedia page in the local language should be preferred"
     comment = fit_wikipedia_edit_description_within_character_limit_changed(now, new, reason)
-    data['tag']['wikipedia'] = e['desired_wikipedia_target']
+    data['tag']['wikipedia'] = new
     discussion_url = None
     #osm_wiki_documentation_page = 
     automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
@@ -310,11 +322,11 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
             announce_skipping_object_as_outside_area(e['osm_object_url'])
             continue
 
-        new = e['desired_wikipedia_target']
+        new = desired_wikipedia_target_from_report(e)
         reason = ", as wikipedia tag may be added based on wikidata"
         change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + new + reason
         print(change_description)
-        data['tag']['wikipedia'] = e['desired_wikipedia_target']
+        data['tag']['wikipedia'] = new
         type = e['osm_object_url'].split("/")[3]
         osm_bot_abstraction_layer.update_element(api, type, data)
 
