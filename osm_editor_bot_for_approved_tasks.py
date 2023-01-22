@@ -240,40 +240,6 @@ def is_location_possibly_outside_territory(lat, lon, target_country):
                         return False
     return True
 
-def is_edit_allowed_object_has_set_wikipedia(osm_object_url, object_data, target_country):
-    if target_country != "pl":
-        raise "unimplemented"
-
-    wikipedia_tag = object_data['tag']['wikipedia']
-    language_code = wikimedia_connection.get_language_code_from_link(wikipedia_tag)
-    article_name = wikimedia_connection.get_article_name_from_link(wikipedia_tag)
-    wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
-
-    if wikipedia_tag in ["ru:Шешупе", "lt:Šešupė", "lt:Vyžaina", "be:Калонка", "be:Пчолка", "lt:Ingelis", "lt:Gilbietis (ežeras)",
-                         "de:Tiefwasserreede", "de:Pagensand", #WTF, I am downloading entire German borders?
-                         ]: # workaround for failed country detection
-        return False
-
-    if language_code == "pl":
-        return True # assumes that Polish Wikipedia code is use only in Poland
-        
-    countries_tagged_in_wikidata = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector().get_country_location_from_wikidata_id(wikidata_id)
-    if countries_tagged_in_wikidata == None:
-        return False
-
-    if(len(countries_tagged_in_wikidata) > 1):
-        print("SKIPPED BECAUSE IN MORE THAN ONE COUNTRY " + osm_object_url)
-        return False
-
-    if(countries_tagged_in_wikidata == [target_country]):
-        return True
-
-    if language_code != "pl" and wikipedia_tag not in ["de:Rastenburger Kleinbahnen"]:
-        print("UNEXPECTED LANGUAGE CODE <" + language_code + "> for Wikipedia tag in " + osm_object_url)
-        raise Exception("UNEXPECTED LANGUAGE CODE <" + language_code + "> for Wikipedia tag in " + osm_object_url)
-
-    return False
-
 def announce_skipping_object_as_outside_area(osm_object_url):
     print("Skipping object", osm_object_url, "- apparently not within catchment area")
     print("---------------------------------")
@@ -299,7 +265,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         if data == None:
             continue
 
-        if is_edit_allowed_object_has_set_wikipedia(e['osm_object_url'], data, "pl") == False and is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
+        if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
             announce_skipping_object_as_outside_area(e['osm_object_url'])
             continue
 
