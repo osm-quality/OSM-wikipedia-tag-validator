@@ -365,13 +365,12 @@ def for_tests():
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
         'should use a secondary wikipedia tag - linking to a public transport network',
+
+        'secondary wikidata tag links to 404',
     ]
 
 def ignored():
     return [
-        # regenerate - all issues are fixed or false positives
-        'secondary wikidata tag links to 404',
-
         # multiple test cases created
         # enable it after Wikidata community runs out of what I reported
         # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
