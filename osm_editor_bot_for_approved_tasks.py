@@ -184,9 +184,9 @@ def detailed_verification_function_is_within_given_country(lat, lon, target_coun
     return True
 
 def very_rough_verification_function_is_within_given_country_prefers_false_negatives(lat, lon, target_country):
-    if is_location_clearly_inside_territory(lat, lon, target_country) == False:
-        return False
-    return True
+    if is_location_clearly_inside_territory(lat, lon, target_country) == True:
+        return True
+    return False
 
 def check_with_nominatim_is_within_given_country(lat, lon, target_country, debug):
     if debug:
