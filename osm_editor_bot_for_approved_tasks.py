@@ -151,11 +151,12 @@ def change_to_local_language(e):
     wikipedia = data['tag']['wikipedia'] # must be present given that error is about bad Wikipedia in the first place
     wikidata = data['tag']['wikidata'] # there may be need to get it somehow
     new_report = wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(forced_refresh=True).get_wikipedia_language_issues(object_description, tags, wikipedia, wikidata_id)
-    print(e)
-    print(new_report)
-    print(desired_wikipedia_target_from_report(e))
-    print(desired_wikipedia_target_from_report(new_report))
-    print(desired_wikipedia_target_from_report(e) == desired_wikipedia_target_from_report(new_report))
+    if desired_wikipedia_target_from_report(e) != desired_wikipedia_target_from_report(new_report):
+        print(e)
+        print(new_report)
+        print(desired_wikipedia_target_from_report(e))
+        print(desired_wikipedia_target_from_report(new_report))
+        raise Exception("report seems outdated")
     now = data['tag']['wikipedia']
     new = desired_wikipedia_target_from_report(e)
     reason = ", as wikipedia page in the local language should be preferred"
