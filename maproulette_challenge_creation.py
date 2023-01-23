@@ -2,6 +2,9 @@
 # https://github.com/osmlab/maproulette-python-client/issues/78
 import maproulette
 import json
+import generate_webpage_with_error_output
+import sqlite3
+import config
 
 api_key = None
 user_id = None
@@ -20,15 +23,34 @@ with open('secret.json') as f:
 """
 
 def get_matching_maproulette_projects(api, search_term, user_id):
-found = api.find_project(search_term)
-if(found["status"] != 200):
-    raise Exception("Unexpected status")
-for project in found["data"]:
-    if project["owner"] == user_id:
-        yield project
+    found = api.find_project(search_term)
+    if(found["status"] != 200):
+        raise Exception("Unexpected status")
+    for project in found["data"]:
+        if project["owner"] == user_id:
+            yield project
 
-config = maproulette.Configuration(api_key=api_key)
-api = maproulette.Project(config)
+def get_reports_with_specific_error_id(cursor, error_id):
+    print("COUNT WILL BE SHOWN")
+    cursor.execute('SELECT COUNT(rowid) FROM osm_data WHERE error_id = :error_id', {"error_id": name})
+    #print(returned)
+    print(cursor.fetchall()[0])
+    #for entry in cursor.fetchall():
+    #    print(entry)
+    print("COUNT SHOWN")
+
+    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE error_id = :error_id', {"error_id": name})
+    returned = []
+    for entry in cursor.fetchall():
+        rowid, object_type, id, lat, lon, tags, area_identifier, updated, validator_complaint, error_id = entry
+        tags = json.loads(tags)
+        validator_complaint = json.loads(validator_complaint)
+        returned.append(validator_complaint)
+    return returned
+
+
+maproulette_config = maproulette.Configuration(api_key=api_key)
+api = maproulette.Project(maproulette_config)
 my_project_name = "404"
 for project in get_matching_maproulette_projects(api, my_project_name, user_id):
     print(json.dumps(project, indent=4, sort_keys=True))
@@ -57,6 +79,13 @@ And in some cases this report is wrong! For example if someone created a link po
 
 # Fix conflicting *wikidata and not:*wikidata tags, detected by https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/ - fixed with #maproulette
 
+project_instructions = {
 
+}
+
+connection = sqlite3.connect(config.database_filepath())
+cursor = connection.cursor()
+for name in generate_webpage_with_error_output.for_review():
+    print(name)
+    get_reports_with_specific_error_id(cursor, name)
 # hmm, mention my site in MR so it is linked from it
-# work around https://github.com/maproulette/maproulette3/issues/1563
