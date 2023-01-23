@@ -192,7 +192,7 @@ def detailed_verification_function_is_within_given_country(lat, lon, target_coun
     if is_location_clearly_outside_territory(lat, lon, target_country):
         return False
     if is_location_possibly_outside_territory(lat, lon, target_country):
-        if check_with_nominatim_is_within_given_country(lat, lon, target_country, debug=True):
+        if check_with_nominatim_is_within_given_country(lat, lon, target_country, debug=True) == False:
             return False
     return True
 
