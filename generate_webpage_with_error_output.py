@@ -347,6 +347,15 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'wikipedia wikidata mismatch - follow wikidata redirect - for brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for operator prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for subject prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for operator prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for subject prefixed tags',
+        'wikipedia wikidata mismatch - for brand prefixed tags',
+        'wikipedia wikidata mismatch - for operator prefixed tags',
+        'wikipedia wikidata mismatch - for subject prefixed tags',
         #brand prefix # https://discord.com/channels/783754873861963786/783766269707026483/1066768070351257741 - hmmmm
         'no longer existing object',
         'should use a secondary wikipedia tag - linking to a geodetic control network',
