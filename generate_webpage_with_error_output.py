@@ -347,7 +347,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'wikipedia wikidata mismatch - for secondary tag',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for secondary tag',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for secondary tag',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for secondary tag',
         'no longer existing object',
@@ -367,6 +367,8 @@ def for_tests():
         'should use a secondary wikipedia tag - linking to a public transport network',
 
         'secondary wikidata tag links to 404',
+
+        'wikipedia wikidata mismatch - for secondary tag', # https://discord.com/channels/783754873861963786/783766269707026483/1066768070351257741 - hmmmm
     ]
 
 def ignored():
