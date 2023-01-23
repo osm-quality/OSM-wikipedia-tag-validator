@@ -38,7 +38,7 @@ def record(cursor, entry, identifier_of_region, timestamp):
                 #print("so skipping")
                 return False
 
-        cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': entry["osm_type"], 'id': entry["osm_id"], 'lat': entry["lat"], 'lon': entry["lon"], "tags": json.dumps(entry["osm_tags"]), "area_identifier": identifier_of_region, "download_timestamp": timestamp, "validator_complaint": None})
+        cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint, :error_id)", {'type': entry["osm_type"], 'id': entry["osm_id"], 'lat': entry["lat"], 'lon': entry["lon"], "tags": json.dumps(entry["osm_tags"]), "area_identifier": identifier_of_region, "download_timestamp": timestamp, "validator_complaint": None, "error_id": None})
         return True
     return False
 

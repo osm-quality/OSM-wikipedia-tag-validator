@@ -94,7 +94,7 @@ def create_table_if_needed(cursor):
         #
         # right now for "checked, no error" I plan to use empty string but I am not too happy
         cursor.execute('''CREATE TABLE osm_data
-                    (type text, id number, lat float, lon float, tags text, area_identifier text, download_timestamp integer, validator_complaint text)''')
+                    (type text, id number, lat float, lon float, tags text, area_identifier text, download_timestamp integer, validator_complaint text, error_id text)''')
 
         # magnificent speedup
         cursor.execute("""CREATE INDEX idx_osm_data_area_identifier ON osm_data (area_identifier);""")
@@ -125,7 +125,7 @@ def update_outdated_elements(cursor, entry, ignored_problems):
     # properly update by fetching new info about entries which also must be updated and could be missed
     outdated_objects = outdated_entries_in_area_that_must_be_updated(cursor, entry['internal_region_name'], timestamp_when_file_was_downloaded)
     for outdated in outdated_objects:
-        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = outdated
+        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id = outdated
         validator_complaint = json.loads(validator_complaint)
         if validator_complaint['error_id'] in ignored_problems:
             continue
@@ -149,7 +149,7 @@ def update_outdated_elements(cursor, entry, ignored_problems):
                 new_lon = data["lon"]
                 # what about ways and relations?
             #print(data)
-            cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint)", {'type': object_type, 'id': object_id, 'lat': new_lat, 'lon': new_lon, "tags": new_tags, "area_identifier": entry['internal_region_name'], "download_timestamp": timestamp, "validator_complaint": None})
+            cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint, :error_id)", {'type': object_type, 'id': object_id, 'lat': new_lat, 'lon': new_lon, "tags": new_tags, "area_identifier": entry['internal_region_name'], "download_timestamp": timestamp, "validator_complaint": None, 'error_id': None})
         print(object_type, object_id, "is outdated, not in the report so its entry needs to be updated for", validator_complaint['error_id'], "in", entry['internal_region_name'])
 
 def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, timestamp_when_file_was_downloaded):
@@ -160,7 +160,7 @@ def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, 
     #   - will not generate valid report
     #   - will not be false positives
 
-    cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint
+    cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id
     FROM osm_data
     WHERE
     area_identifier = :identifier
@@ -183,7 +183,7 @@ def detect_problems_using_cache_for_wikimedia_data(cursor, internal_region_name,
     issue_detector = get_wikimedia_link_issue_reporter_object(language_code)
     # will recheck reported errors
     # will not recheck entries that previously were free of errors
-    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NULL', {"identifier": internal_region_name})
+    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NULL', {"identifier": internal_region_name})
     entries = cursor.fetchall()
     update_problem_for_all_this_entries(issue_detector, cursor, entries, [])
 
@@ -192,13 +192,13 @@ def verify_that_problem_exist_without_using_cache_for_wikimedia_data(cursor, int
     # recheck reported with request to fetch cache
     # done separately to avoid refetching over and over again where everything is fine
     # (say, tags on a road/river)
-    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ""', {"identifier": internal_region_name})
+    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ""', {"identifier": internal_region_name})
     entries = cursor.fetchall()
     update_problem_for_all_this_entries(issue_detector_refreshing_cache, cursor, entries, ignored_problems)
 
 def update_problem_for_all_this_entries(issue_detector, cursor, entries, ignored_problems):
     for entry in entries:
-        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
+        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id = entry
         tags = json.loads(tags)
         location = (lat, lon)
         object_description = object_type + "/" + str(object_id)
@@ -217,10 +217,19 @@ def update_problem_for_entry(issue_detector, cursor, tags, location, object_type
             data = reported.data()
             data['osm_object_url'] = link # TODO eliminate need for this
             data['tags'] = tags # TODO eliminate need for this
+            error_id = data['error_id']
             data = json.dumps(data)
-            cursor.execute("UPDATE osm_data SET validator_complaint = :validator_complaint WHERE rowid = :rowid", {"validator_complaint": data, "rowid": rowid})
+            cursor.execute("""UPDATE osm_data 
+            SET validator_complaint = :validator_complaint,
+                error_id = :error_id
+            WHERE rowid = :rowid""",
+            {"validator_complaint": data, "error_id": error_id, "rowid": rowid})
         else:
-            cursor.execute("UPDATE osm_data SET validator_complaint = :validator_complaint WHERE rowid = :rowid", {"validator_complaint": "", "rowid": rowid})
+            cursor.execute("""UPDATE osm_data
+            SET validator_complaint = :validator_complaint,
+                error_id = :error_id
+            WHERE rowid = :rowid""",
+            {"validator_complaint": "", "error_id": "", "rowid": rowid})
 
 def get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=False):
     return wikimedia_link_issue_reporter.WikimediaLinkIssueDetector(

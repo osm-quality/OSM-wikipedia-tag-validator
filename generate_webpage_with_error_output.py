@@ -17,7 +17,7 @@ def generate_website_file_for_given_area(cursor, entry):
     generate_output_for_given_area(website_main_title_part, reports, timestamps, ignored_problems)
 
 def reports_for_given_area(cursor, internal_region_name):
-    query = "SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''"
+    query = "SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''"
     query_parameters = {"identifier": internal_region_name}
     return query_to_reports_data(cursor, query, query_parameters)
 
@@ -27,7 +27,7 @@ def query_to_reports_data(cursor, query, query_parameters):
         returned = cursor.fetchall()
         reports = []
         for entry in returned:
-            rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
+            rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id = entry
             tags = json.loads(tags)
             validator_complaint = json.loads(validator_complaint)
             reports.append(validator_complaint)
@@ -540,15 +540,15 @@ def write_index_and_merged_entries(cursor):
             if "hidden" in component:
                 if component["hidden"] == True:
                     continue
-            cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": component['internal_region_name']})
+            cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": component['internal_region_name']})
             returned = cursor.fetchall()
             for entry in returned:
-                rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
-                tags = json.loads(tags)
+                rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id = entry
+                #tags = json.loads(tags) - unused
                 validator_complaint = json.loads(validator_complaint)
-                if validator_complaint['error_id'] not in component.get('ignored_problems', []):
+                if error_id not in component.get('ignored_problems', []):
                     merged_reports.append(validator_complaint)
-                    if validator_complaint['error_id'] in for_review():
+                    if error_id in for_review():
                         primary_report_count += 1
             timestamps_of_data.append(obtain_from_overpass.get_data_timestamp(cursor, component['internal_region_name']))
         generate_output_for_given_area(merged_code, merged_reports, timestamps_of_data, component.get('ignored_problems', []))
@@ -589,7 +589,7 @@ def write_index_and_merged_entries(cursor):
     generate_shared_test_results_page(cursor, all_timestamps)
 
 def generate_shared_test_results_page(cursor, all_timestamps):
-    query = "SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> ''"
+    query = "SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> ''"
     query_parameters = {}
     reports_data = query_to_reports_data(cursor, query, query_parameters)
     filepath = config.get_report_directory() + '/' + "all merged - test.html"
@@ -597,13 +597,14 @@ def generate_shared_test_results_page(cursor, all_timestamps):
     generate_test_issue_listing(reports_data, all_timestamps, filepath, ignored_problem_codes)
 
 def human_review_problem_count_for_given_internal_region_name(cursor, internal_region_name):
-    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
+    # TODO smart COUNT() may be better
+    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
     returned = cursor.fetchall()
     report_count = 0
     for entry in returned:
-        rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint = entry
-        validator_complaint = json.loads(validator_complaint)
-        if(validator_complaint['error_id'] in for_review()):
+        rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id = entry
+        #validator_complaint = json.loads(validator_complaint) - unused
+        if(error_id in for_review()):
             report_count += 1
     return report_count
 
