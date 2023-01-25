@@ -182,33 +182,32 @@ def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target
     print()
     for node_id in osm_bot_abstraction_layer.get_all_nodes_of_an_object(osm_object_url):
         node_data = osm_bot_abstraction_layer.get_data(node_id, "node")
-        if verification_function_is_within_given_country(node_data["lat"], node_data["lon"], target_country) == False:
+        if verification_function_is_within_given_country(osm_object_url, node_data["lat"], node_data["lon"], target_country) == False:
             return False
     print()
     print(object_data)
     return True
 
-def detailed_verification_function_is_within_given_country(lat, lon, target_country):
+def detailed_verification_function_is_within_given_country(root_osm_object_url, lat, lon, target_country):
     if is_location_clearly_outside_territory(lat, lon, target_country):
         return False
     if is_location_possibly_outside_territory(lat, lon, target_country):
-        if check_with_nominatim_is_within_given_country(lat, lon, target_country, debug=True) == False:
-            return False
+        return check_with_nominatim_is_within_given_country(root_osm_object_url, lat, lon, target_country, debug=True)
     return True
 
-def very_rough_verification_function_is_within_given_country_prefers_false_negatives(lat, lon, target_country):
+def very_rough_verification_function_is_within_given_country_prefers_false_negatives(root_osm_object_url, lat, lon, target_country):
     if is_location_clearly_inside_territory(lat, lon, target_country) == True:
         return True
     return False
 
-def check_with_nominatim_is_within_given_country(lat, lon, target_country, debug):
+def check_with_nominatim_is_within_given_country(root_osm_object_url, lat, lon, target_country, debug):
     if debug:
-        print(lat, lon, "was classified as possibly outside - running nominatim to check", target_country)
+        print(lat, lon, "- part of", root_osm_object_url, "was classified as possibly outside - running nominatim to check", target_country)
     if get_nominatim_country_code(lat, lon) == target_country:
         return True
     else:
         if debug:
-            print(lat, lon, "was classified as outside", target_country)
+            print(lat, lon, "- part of", root_osm_object_url, "was classified as outside", target_country)
             print(link_to_point(lat, lon))
         return False
 
