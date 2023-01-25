@@ -270,7 +270,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
     builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
-    builder.create_changeset(api)
+    changeset = None
 
     for e in errors_for_removal:
         data = get_and_verify_data(e)
@@ -294,10 +294,13 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         osm_bot_abstraction_layer.sleep(2)
         data['tag']['wikidata'] = wikidata_id
         type = e['osm_object_url'].split("/")[3]
+        if changeset == None:
+            changeset = builder.create_changeset(api)
         osm_bot_abstraction_layer.update_element(api, type, data)
 
-    api.ChangesetClose()
-    osm_bot_abstraction_layer.sleep(60)
+    if changeset != None:
+        api.ChangesetClose()
+        osm_bot_abstraction_layer.sleep(60)
 
 def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikipedia from wikidata tag'])
@@ -311,7 +314,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
     source = "wikidata, OSM"
     builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
-    builder.create_changeset(api)
+    changeset = None
 
     for e in errors_for_removal:
         data = get_and_verify_data(e)
@@ -328,10 +331,13 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
         print(change_description)
         data['tag']['wikipedia'] = new
         type = e['osm_object_url'].split("/")[3]
-        osm_bot_abstraction_layer.update_element(api, type, data)
+        if changeset == None:
+            changeset = builder.create_changeset(api)
+            osm_bot_abstraction_layer.update_element(api, type, data)
 
-    api.ChangesetClose()
-    osm_bot_abstraction_layer.sleep(60)
+    if changeset != None:
+        api.ChangesetClose()
+        osm_bot_abstraction_layer.sleep(60)
 
 def link_to_point(lat, lon):
     return "https://www.openstreetmap.org/?mlat=" + str(lat) + "&mlon=" + str(lon) + "#map=10/" + str(lat) + "/" + str(lon)
