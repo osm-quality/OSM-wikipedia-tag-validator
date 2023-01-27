@@ -583,7 +583,7 @@
 #- {internal_region_name: 'Japonia: Prefektura Hokkaido', website_main_title_part: '日本 (Japan - Japonia): 北海道 (Hokkaido Prefecture, Prefektura Hokkaido)', merged_into: ["\u65e5\u672c (Japan - Japonia)"], identifier: {'wikidata': 'Q1037393'}, language_code: 'ja', requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'}
 #- {internal_region_name: 'Japonia: Prefektura Yamaguchi', website_main_title_part: '日本 (Japan - Japonia): 山口県 (Yamaguchi Prefecture, Prefektura Yamaguchi)', merged_into: ["\u65e5\u672c (Japan - Japonia)"], identifier: {'wikidata': 'Q127264'}, language_code: 'ja', requested_by: 'https://www.openstreetmap.org/messages/1054938 Bman'}
 
-- {internal_region_name: 'Tajwan', website_main_title_part: '臺灣 (Taiwan, Tajwan)', identifier: {'ISO3166-1': 'TW'}, requested_by: 'https://t.me/OSMTaiwan/8133', priority_multiplier: 5}
+- {internal_region_name: 'Tajwan', website_main_title_part: '臺灣 (Taiwan, Tajwan)', identifier: {'ISO3166-1': 'TW'}, requested_by: 'https://t.me/OSMTaiwan/8133', priority_multiplier: 4}
 
 - {internal_region_name: 'Chiny: Guangdong', website_main_title_part: '中国 (China): 广东省 (Guangdong Province, Guangdong)', merged_into: ["\u4e2d\u56fd (China - Chiny)"], identifier: {'wikidata': 'Q15175'}, requested_by: 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/issues/1 https://t.me/osmchina/85698'}
 #- {internal_region_name: 'Chiny: Pekin', website_main_title_part: '中国 (China): 北京市 (Beijing, Pekin)', merged_into: ["\u4e2d\u56fd (China - Chiny)"], identifier: {'wikidata': 'Q956'}, requested_by: 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/issues/1 https://t.me/osmchina/85698'}
