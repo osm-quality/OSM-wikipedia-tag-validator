@@ -330,6 +330,18 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a bicycle sharing system',
         'secondary wikidata tag links to 404',
 
+        'malformed wikipedia tag - for brand prefixed tags',
+        'malformed wikipedia tag - for operator prefixed tags',
+        'malformed wikipedia tag - for subject prefixed tags',
+        'malformed wikipedia tag - for network prefixed tags',
+        'malformed wikipedia tag - for taxon prefixed tags',
+        'malformed wikipedia tag - for genus prefixed tags',
+        'malformed wikipedia tag - for species prefixed tags',
+        'malformed wikipedia tag - for parish prefixed tags',
+        'malformed wikipedia tag - for flag prefixed tags',
+        'malformed wikipedia tag - for name prefixed tags',
+        'malformed wikipedia tag - for name:etymology prefixed tags',
+        'malformed wikipedia tag - for architect prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
@@ -398,18 +410,6 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'malformed wikipedia tag - for brand prefixed tags',
-        'malformed wikipedia tag - for operator prefixed tags',
-        'malformed wikipedia tag - for subject prefixed tags',
-        'malformed wikipedia tag - for network prefixed tags',
-        'malformed wikipedia tag - for taxon prefixed tags',
-        'malformed wikipedia tag - for genus prefixed tags',
-        'malformed wikipedia tag - for species prefixed tags',
-        'malformed wikipedia tag - for parish prefixed tags',
-        'malformed wikipedia tag - for flag prefixed tags',
-        'malformed wikipedia tag - for name prefixed tags',
-        'malformed wikipedia tag - for name:etymology prefixed tags',
-        'malformed wikipedia tag - for architect prefixed tags',
         'no longer existing object',
         'should use a secondary wikipedia tag - linking to a geodetic control network',
         'should use a secondary wikipedia tag - linking to a fireworks event',
@@ -457,7 +457,24 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for object prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for object prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for object prefixed tags',
-        
+
+        # should it even exist?        
+        'malformed wikipedia tag - for was:brand prefixed tags',
+        'wikipedia wikidata mismatch - for was:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for was:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for was:brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for was:brand prefixed tags',
+        'malformed wikipedia tag - for disused:brand prefixed tags',
+        'wikipedia wikidata mismatch - for disused:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for disused:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for disused:brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for disused:brand prefixed tags',
+        'malformed wikipedia tag - for abandoned:brand prefixed tags',
+        'wikipedia wikidata mismatch - for abandoned:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for abandoned:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for abandoned:brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for abandoned:brand prefixed tags',
+
         # multiple test cases created
         # enable it after Wikidata community runs out of what I reported
         # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
