@@ -328,6 +328,32 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a heraldic animal',
         'should use a secondary wikipedia tag - linking to a general industry',
         'should use a secondary wikipedia tag - linking to a bicycle sharing system',
+        'secondary wikidata tag links to 404',
+
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for network prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for genus prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for species prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for parish prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for flag prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for architect prefixed tags',
+        'wikipedia wikidata mismatch - for brand prefixed tags',
+        'wikipedia wikidata mismatch - for operator prefixed tags',
+        'wikipedia wikidata mismatch - for subject prefixed tags',
+        'wikipedia wikidata mismatch - for network prefixed tags',
+        'wikipedia wikidata mismatch - for taxon prefixed tags',
+        'wikipedia wikidata mismatch - for genus prefixed tags',
+        'wikipedia wikidata mismatch - for species prefixed tags',
+        'wikipedia wikidata mismatch - for parish prefixed tags',
+        'wikipedia wikidata mismatch - for flag prefixed tags',
+        'wikipedia wikidata mismatch - for name prefixed tags',
+        'wikipedia wikidata mismatch - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - for architect prefixed tags',
     ]
 
 def obvious_fixes():
@@ -343,10 +369,7 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikidata redirect',
         "wikipedia tag using redirecting language code",
         "wikipedia needs to be updated based on wikidata code and teryt:simc identifier",
-    ]
 
-def for_tests():
-    return [
         'wikipedia wikidata mismatch - follow wikidata redirect - for brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for operator prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for subject prefixed tags',
@@ -358,6 +381,7 @@ def for_tests():
         'wikipedia wikidata mismatch - follow wikidata redirect - for flag prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for name prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for architect prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for operator prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for subject prefixed tags',
@@ -369,29 +393,23 @@ def for_tests():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for flag prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for name prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for name:etymology prefixed tags',
-        'wikipedia wikidata mismatch - for brand prefixed tags',
-        'wikipedia wikidata mismatch - for operator prefixed tags',
-        'wikipedia wikidata mismatch - for subject prefixed tags',
-        'wikipedia wikidata mismatch - for network prefixed tags',
-        'wikipedia wikidata mismatch - for taxon prefixed tags',
-        'wikipedia wikidata mismatch - for genus prefixed tags',
-        'wikipedia wikidata mismatch - for species prefixed tags',
-        'wikipedia wikidata mismatch - for parish prefixed tags',
-        'wikipedia wikidata mismatch - for flag prefixed tags',
-        'wikipedia wikidata mismatch - for name prefixed tags',
-        'wikipedia wikidata mismatch - for name:etymology prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for network prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for genus prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for species prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for parish prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for flag prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
-        #brand prefix # https://discord.com/channels/783754873861963786/783766269707026483/1066768070351257741 - hmmmm
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for architect prefixed tags',
+    ]
+
+def for_tests():
+    return [
+        'malformed wikipedia tag - for brand prefixed tags',
+        'malformed wikipedia tag - for operator prefixed tags',
+        'malformed wikipedia tag - for subject prefixed tags',
+        'malformed wikipedia tag - for network prefixed tags',
+        'malformed wikipedia tag - for taxon prefixed tags',
+        'malformed wikipedia tag - for genus prefixed tags',
+        'malformed wikipedia tag - for species prefixed tags',
+        'malformed wikipedia tag - for parish prefixed tags',
+        'malformed wikipedia tag - for flag prefixed tags',
+        'malformed wikipedia tag - for name prefixed tags',
+        'malformed wikipedia tag - for name:etymology prefixed tags',
+        'malformed wikipedia tag - for architect prefixed tags',
         'no longer existing object',
         'should use a secondary wikipedia tag - linking to a geodetic control network',
         'should use a secondary wikipedia tag - linking to a fireworks event',
@@ -407,12 +425,39 @@ def for_tests():
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
         'should use a secondary wikipedia tag - linking to a public transport network',
-
-        'secondary wikidata tag links to 404',
     ]
 
 def ignored():
     return [
+        # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
+        'malformed wikipedia tag - for related prefixed tags',
+        'wikipedia wikidata mismatch - for related prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for related prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for related prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for related prefixed tags',
+
+        # being turned into model prefix - report for change?
+        'malformed wikipedia tag - for vehicle prefixed tags',
+        'wikipedia wikidata mismatch - for vehicle prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for vehicle prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for vehicle prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for vehicle prefixed tags',
+
+        # what is this? Investigate
+        # almost certainly should be moved to man_made=bridge area
+        'malformed wikipedia tag - for bridge prefixed tags',
+        'wikipedia wikidata mismatch - for bridge prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for bridge prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for bridge prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for bridge prefixed tags',
+        
+        # what is this? Investigate
+        'malformed wikipedia tag - for object prefixed tags',
+        'wikipedia wikidata mismatch - for object prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for object prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for object prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for object prefixed tags',
+        
         # multiple test cases created
         # enable it after Wikidata community runs out of what I reported
         # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
