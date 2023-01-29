@@ -110,7 +110,7 @@ def handle_follow_wikipedia_redirect(e):
     if data == None:
         return None
     if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
-        announce_skipping_object_as_outside_area(e['osm_object_url'])
+        announce_skipping_object_as_outside_area(e['osm_object_url']+" (handle_follow_wikipedia_redirect funtion)")
     now = data['tag']['wikipedia']
     new = desired_wikipedia_target_from_report(e)
     reason = ", as current tag is a redirect and the new page matches present wikidata"
@@ -276,9 +276,8 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         data = get_and_verify_data(e)
         if data == None:
             continue
-
         if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
-            announce_skipping_object_as_outside_area(e['osm_object_url'])
+            announce_skipping_object_as_outside_area(e['osm_object_url'] + " (add_wikidata_tag_from_wikipedia_tag function)")
             continue
 
         wikipedia_tag = data['tag']['wikipedia']
@@ -323,7 +322,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
             continue
 
         if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
-            announce_skipping_object_as_outside_area(e['osm_object_url'])
+            announce_skipping_object_as_outside_area(e['osm_object_url'] + " (add_wikipedia_tag_from_wikidata_tag function)")
             continue
 
         new = desired_wikipedia_target_from_report(e)
