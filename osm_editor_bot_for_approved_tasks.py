@@ -285,8 +285,6 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         article_name = wikimedia_connection.get_article_name_from_link(wikipedia_tag)
         wikidata_id = wikimedia_connection.get_wikidata_object_id_from_article(language_code, article_name)
 
-        print(e['osm_object_url'])
-        print(wikidata_id)
         reason = ", as wikidata tag may be added based on wikipedia tag"
         change_description = e['osm_object_url'] + " " + str(e['prerequisite']) + " to " + wikidata_id + reason
         print(change_description)
