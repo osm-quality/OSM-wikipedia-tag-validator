@@ -339,6 +339,8 @@ def for_review():
         'malformed wikipedia tag - for species prefixed tags',
         'malformed wikipedia tag - for parish prefixed tags',
         'malformed wikipedia tag - for flag prefixed tags',
+        'malformed wikipedia tag - for buried prefixed tags',
+        'malformed wikipedia tag - for artist prefixed tags',
         'malformed wikipedia tag - for name prefixed tags',
         'malformed wikipedia tag - for name:etymology prefixed tags',
         'malformed wikipedia tag - for architect prefixed tags',
@@ -350,6 +352,8 @@ def for_review():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for genus prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for species prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for parish prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for buried prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for artist prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for flag prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
@@ -362,10 +366,13 @@ def for_review():
         'wikipedia wikidata mismatch - for genus prefixed tags',
         'wikipedia wikidata mismatch - for species prefixed tags',
         'wikipedia wikidata mismatch - for parish prefixed tags',
+        'wikipedia wikidata mismatch - for buried prefixed tags',
+        'wikipedia wikidata mismatch - for artist prefixed tags',
         'wikipedia wikidata mismatch - for flag prefixed tags',
         'wikipedia wikidata mismatch - for name prefixed tags',
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for architect prefixed tags',
+        'no longer existing object (according to Wikidata)',
     ]
 
 def obvious_fixes():
@@ -390,6 +397,8 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikidata redirect - for genus prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for species prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for parish prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for buried prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for artist prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for flag prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for name prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for name:etymology prefixed tags',
@@ -402,6 +411,8 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for genus prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for species prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for parish prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for buried prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for artist prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for flag prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for name prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for name:etymology prefixed tags',
@@ -410,8 +421,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'no longer existing object',
-        'should use a secondary wikipedia tag - linking to a geodetic control network',
+        'no longer existing brand (according to Wikidata)',
         'should use a secondary wikipedia tag - linking to a fireworks event',
 
         'should use a secondary wikipedia tag - linking to a branch of military service',
@@ -420,6 +430,12 @@ def for_tests():
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
 
         'should use a secondary wikipedia tag - linking to a type of world view',
+        'should use a secondary wikipedia tag - linking to a broadcaster',
+
+        'should use a secondary wikipedia tag - linking to a human behavior',
+        'should use a secondary wikipedia tag - linking to a broadcaster',
+        'should use a secondary wikipedia tag - linking to an intentional human activity',
+
 
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
@@ -429,6 +445,13 @@ def for_tests():
 
 def ignored():
     return [
+        # multiple test cases created
+        # enable it after Wikidata community runs out of what I reported or as a reward
+        # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
+        'should use a secondary wikipedia tag - linking to an art genre',
+        'should use a secondary wikipedia tag - linking to an event',
+        'should use a secondary wikipedia tag - linking to a behavior',
+        
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
         'malformed wikipedia tag - for related prefixed tags',
         'wikipedia wikidata mismatch - for related prefixed tags',
@@ -458,7 +481,7 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for object prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for object prefixed tags',
 
-        # should it even exist?        
+        # should it even exist?
         'malformed wikipedia tag - for was:brand prefixed tags',
         'wikipedia wikidata mismatch - for was:brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for was:brand prefixed tags',
@@ -475,16 +498,12 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for abandoned:brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for abandoned:brand prefixed tags',
 
-        # multiple test cases created
-        # enable it after Wikidata community runs out of what I reported
-        # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
-        'should use a secondary wikipedia tag - linking to an art genre',
-        'should use a secondary wikipedia tag - linking to an event',
-        'should use a secondary wikipedia tag - linking to a behavior',
-
         # tricky with office=goverment, postpone handling untill less tricky stuff is dealt with
         # (including on Wikidata side)
         'should use a secondary wikipedia tag - linking to a government program',
+
+        # how say https://www.openstreetmap.org/node/1968342133 should be tagged?
+        'should use a secondary wikipedia tag - linking to a geodetic control network',
 
         # is https://www.openstreetmap.org/way/234792502
         # really wrong?
@@ -513,6 +532,8 @@ def ignored():
         'name:etymology:wikidata:missing',
 
         'link to a list', # even I am not really convinced it is a problem
+
+        'no longer existing object', # renamed, should be removed once database updates or is forced to update
     ]
 
 def htmlify(string):
