@@ -22,6 +22,16 @@ def update_validator_database_and_reports():
     create_table_if_needed(cursor)
     connection.commit()
 
+    # cleanup after manual tag deactivation
+    cursor.execute("""UPDATE osm_data
+    SET
+    validator_complaint = NULL
+    WHERE
+    validator_complaint IS NOT NULL
+    AND
+    error_id IS NULL
+    """)
+
     for entry in config.get_entries_to_process():
         if "hidden" in entry:
             if entry["hidden"] == True:
