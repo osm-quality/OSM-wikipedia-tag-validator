@@ -372,7 +372,10 @@ def for_review():
         'wikipedia wikidata mismatch - for name prefixed tags',
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for architect prefixed tags',
+        'should use a secondary wikipedia tag - linking to a software',
+        'no longer existing brand (according to Wikidata)',
         'no longer existing object (according to Wikidata)',
+        'should use a secondary wikipedia tag - linking to a film festival',
     ]
 
 def obvious_fixes():
@@ -422,11 +425,8 @@ def obvious_fixes():
 def for_tests():
     return [
         'should use a secondary wikipedia tag - linking to a radio station',
-        'should use a secondary wikipedia tag - linking to a software',
         'should use a secondary wikipedia tag - linking to a signage',
-        'should use a secondary wikipedia tag - linking to a film festival',
         'should use a secondary wikipedia tag - linking to a sports competition',
-        'no longer existing brand (according to Wikidata)',
         'should use a secondary wikipedia tag - linking to a fireworks event',
 
         'should use a secondary wikipedia tag - linking to a branch of military service',
