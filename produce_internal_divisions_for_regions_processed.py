@@ -57,12 +57,12 @@ def show_splits_of_specified_countries():
     # cd -
     processed = [
         {
-        'code': 'GB-ENG',
-        'group_name': 'Great Britain (Wielka Brytania) - England',
-        'extra_part_of_name': 'Great Britain (Wielka Brytania) - England',
-        'extra_part_of_internal_name': 'Wielka Brytania - Anglia',
-        'language_code': 'en',
-        'requested_by': "https://osmus.slack.com/archives/CDJ4LKA2Y/p1674070563799229?thread_ts=1673515894.325429&cid=CDJ4LKA2Y",
+        'code': 'DE-NI',
+        'group_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia) - (Deutschland)',
+        'extra_part_of_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia) - (Deutschland)',
+        'extra_part_of_internal_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia)',
+        'language_code': 'de',
+        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany and https://github.com/matkoniecz/OSM-wikipedia-tag-validator/issues/9 and https://osmus.slack.com/archives/CDJ4LKA2Y/p1675062203082609?thread_ts=1673515894.325429&cid=CDJ4LKA2Y",
         'admin_level': 6,
         'generated_commented_out': False,
         },
@@ -82,6 +82,16 @@ def show_splits_of_specified_countries():
         },
     """
     done_already = [
+        {
+        'code': 'GB-ENG',
+        'group_name': 'Great Britain (Wielka Brytania) - England',
+        'extra_part_of_name': 'Great Britain (Wielka Brytania) - England',
+        'extra_part_of_internal_name': 'Wielka Brytania - Anglia',
+        'language_code': 'en',
+        'requested_by': "https://osmus.slack.com/archives/CDJ4LKA2Y/p1674070563799229?thread_ts=1673515894.325429&cid=CDJ4LKA2Y",
+        'admin_level': 6,
+        'generated_commented_out': False,
+        },
         {
         'code': 'NO',
         'group_name': 'Norge (Norway, Norwegia)',
