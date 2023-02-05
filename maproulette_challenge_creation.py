@@ -34,7 +34,7 @@ def get_reports_with_specific_error_id(cursor, error_id):
     print("COUNT WILL BE SHOWN")
     cursor.execute('SELECT COUNT(rowid) FROM osm_data WHERE error_id = :error_id', {"error_id": name})
     #print(returned)
-    print(cursor.fetchall()[0])
+    print(cursor.fetchall()[0][0])
     #for entry in cursor.fetchall():
     #    print(entry)
     print("COUNT SHOWN")
