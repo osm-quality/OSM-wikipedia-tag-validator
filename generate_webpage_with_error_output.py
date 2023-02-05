@@ -41,7 +41,7 @@ def generate_output_for_given_area(main_output_name_part, reports_data, timestam
     filepath = config.get_report_directory() + '/' + main_output_name_part + ".html"
     issues = for_review()
     issues_without_skipped = [i for i in issues if i not in ignored_problem_codes]
-    main_report_count = generate_html_file(reports_data, filepath, issues_without_skipped, "Remember to check whatever edit makes sense! All reports are at this page because this tasks require human judgment to verify whatever proposed edit makes sense.", timestamps_of_data)
+    main_report_count = generate_html_file(reports_data, filepath, issues_without_skipped, "Remember to check whether edits make sense! All reports are on this page because these tasks require human judgment to verify whether the proposed edit makes sense.", timestamps_of_data)
 
     issues = obvious_fixes()
     issues_without_skipped = [i for i in issues if i not in ignored_problem_codes]
