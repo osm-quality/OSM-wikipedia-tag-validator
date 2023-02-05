@@ -310,6 +310,7 @@ def for_review():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not',
         'wikipedia/wikidata type tag that is incorrect according to not:* tag',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
+        'should use a secondary wikipedia tag - linking to a software',
         'should use a secondary wikipedia tag - linking to a social issue',
         'should use a secondary wikipedia tag - linking to a social movement',
         'should use a secondary wikipedia tag - linking to an aspect in a geographic region',
@@ -328,6 +329,8 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a heraldic animal',
         'should use a secondary wikipedia tag - linking to a general industry',
         'should use a secondary wikipedia tag - linking to a bicycle sharing system',
+        'should use a secondary wikipedia tag - linking to a history of a geographic region',
+
         'secondary wikidata tag links to 404',
 
         'malformed wikipedia tag - for brand prefixed tags',
@@ -372,10 +375,12 @@ def for_review():
         'wikipedia wikidata mismatch - for name prefixed tags',
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for architect prefixed tags',
-        'should use a secondary wikipedia tag - linking to a software',
+        'should use a secondary wikipedia tag - linking to a film festival',
+        'should use a secondary wikipedia tag - linking to a sports competition',
+        'should use a secondary wikipedia tag - linking to a radio station',
+        'should use a secondary wikipedia tag - linking to a broadcaster',
         'no longer existing brand (according to Wikidata)',
         'no longer existing object (according to Wikidata)',
-        'should use a secondary wikipedia tag - linking to a film festival',
     ]
 
 def obvious_fixes():
@@ -424,18 +429,22 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to a radio station',
+        # multiple test cases created
+        # enable it after Wikidata community runs out of what I reported or as a reward
+        # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
+        'should use a secondary wikipedia tag - linking to an art genre',
+        'should use a secondary wikipedia tag - linking to an event',
+        'should use a secondary wikipedia tag - linking to a behavior',
+        'should use a secondary wikipedia tag - linking to a human behavior',
+        
         'should use a secondary wikipedia tag - linking to a signage',
-        'should use a secondary wikipedia tag - linking to a sports competition',
         'should use a secondary wikipedia tag - linking to a fireworks event',
 
         'should use a secondary wikipedia tag - linking to a branch of military service',
-        'should use a secondary wikipedia tag - linking to a history of a geographic region',
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
 
         'should use a secondary wikipedia tag - linking to a type of world view',
-        'should use a secondary wikipedia tag - linking to a broadcaster',
 
         'should use a secondary wikipedia tag - linking to a broadcaster',
         'should use a secondary wikipedia tag - linking to an intentional human activity',
@@ -449,13 +458,7 @@ def for_tests():
 
 def ignored():
     return [
-        # multiple test cases created
-        # enable it after Wikidata community runs out of what I reported or as a reward
-        # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
-        'should use a secondary wikipedia tag - linking to an art genre',
-        'should use a secondary wikipedia tag - linking to an event',
-        'should use a secondary wikipedia tag - linking to a behavior',
-        'should use a secondary wikipedia tag - linking to a human behavior',
+
 
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
         'malformed wikipedia tag - for related prefixed tags',
@@ -553,6 +556,12 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for razed prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for razed prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for razed prefixed tags',
+
+        'malformed wikipedia tag - for removed prefixed tags',
+        'wikipedia wikidata mismatch - for removed prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for removed prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for removed prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for removed prefixed tags',
 
         # tricky with office=goverment, postpone handling untill less tricky stuff is dealt with
         # (including on Wikidata side)
