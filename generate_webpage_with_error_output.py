@@ -430,6 +430,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to an explosion',
         'should use a secondary wikipedia tag - linking to a fireworks event',
 
         'should use a secondary wikipedia tag - linking to a branch of military service',
@@ -499,6 +500,11 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for post_office:brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for post_office:brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for post_office:brand prefixed tags',
+        'malformed wikipedia tag - for post_office:service_provider prefixed tags',
+        'wikipedia wikidata mismatch - for post_office:service_provider prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for post_office:service_provider prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for post_office:service_provider prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for post_office:bservice_provider and prefixed tags',
 
         # should it even exist?
         'malformed wikipedia tag - for razed:brand prefixed tags',
@@ -557,6 +563,13 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for removed prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for removed prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for removed prefixed tags',
+
+        # skip as not really important?
+        'malformed wikipedia tag - for not prefixed tags',
+        'wikipedia wikidata mismatch - for not prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for not prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for not prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for not prefixed tags',
 
         # tricky with office=goverment, postpone handling untill less tricky stuff is dealt with
         # (including on Wikidata side)
