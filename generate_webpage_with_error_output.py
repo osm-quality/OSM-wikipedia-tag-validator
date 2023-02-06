@@ -447,7 +447,6 @@ def for_tests():
 
         'should use a secondary wikipedia tag - linking to a type of world view',
 
-        'should use a secondary wikipedia tag - linking to a broadcaster',
         'should use a secondary wikipedia tag - linking to an intentional human activity',
 
 
