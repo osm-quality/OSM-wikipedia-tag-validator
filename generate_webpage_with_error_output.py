@@ -430,15 +430,6 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        # multiple test cases created
-        # enable it after Wikidata community runs out of what I reported or as a reward
-        # AND all tests in wikibrain are passing (flushing bad data + fixing that not-yet-detected case)
-        'should use a secondary wikipedia tag - linking to an art genre',
-        'should use a secondary wikipedia tag - linking to an event',
-        'should use a secondary wikipedia tag - linking to a behavior',
-        'should use a secondary wikipedia tag - linking to a human behavior',
-        
-        'should use a secondary wikipedia tag - linking to a signage',
         'should use a secondary wikipedia tag - linking to a fireworks event',
 
         'should use a secondary wikipedia tag - linking to a branch of military service',
@@ -457,7 +448,12 @@ def for_tests():
 
 def ignored():
     return [
-
+        # enable after flushing this error classes from the database as some were processed
+        'should use a secondary wikipedia tag - linking to an art genre',
+        'should use a secondary wikipedia tag - linking to an event',
+        'should use a secondary wikipedia tag - linking to a behavior',
+        'should use a secondary wikipedia tag - linking to a human behavior',
+        'should use a secondary wikipedia tag - linking to a signage',
 
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
         'malformed wikipedia tag - for related prefixed tags',
