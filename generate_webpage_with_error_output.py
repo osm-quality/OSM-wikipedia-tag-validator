@@ -379,6 +379,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a sports competition',
         'should use a secondary wikipedia tag - linking to a radio station',
         'should use a secondary wikipedia tag - linking to a broadcaster',
+        'should use a secondary wikipedia tag - linking to a public transport network',
         'no longer existing brand (according to Wikidata)',
         'no longer existing object (according to Wikidata)',
     ]
@@ -453,7 +454,6 @@ def for_tests():
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
-        'should use a secondary wikipedia tag - linking to a public transport network',
     ]
 
 def ignored():
