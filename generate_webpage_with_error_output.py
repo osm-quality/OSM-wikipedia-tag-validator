@@ -505,6 +505,11 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for post_office:service_provider prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for post_office:service_provider prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for post_office:bservice_provider and prefixed tags',
+        'malformed wikipedia tag - for branch prefixed tags',
+        'wikipedia wikidata mismatch - for branch prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for branch prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for branch prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for branch prefixed tags',
 
         # should it even exist?
         'malformed wikipedia tag - for razed:brand prefixed tags',
