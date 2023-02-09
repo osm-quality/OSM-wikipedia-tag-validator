@@ -438,9 +438,8 @@ def for_tests():
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
 
         'should use a secondary wikipedia tag - linking to a type of world view',
-
-        'should use a secondary wikipedia tag - linking to an intentional human activity',
-
+        'should use a secondary wikipedia tag - linking to a recurring sports event',
+        'should use a secondary wikipedia tag - linking to an academic discipline',
 
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
@@ -449,13 +448,6 @@ def for_tests():
 
 def ignored():
     return [
-        # enable after flushing this error classes from the database as some were processed
-        'should use a secondary wikipedia tag - linking to an art genre',
-        'should use a secondary wikipedia tag - linking to an event',
-        'should use a secondary wikipedia tag - linking to a behavior',
-        'should use a secondary wikipedia tag - linking to a human behavior',
-        'should use a secondary wikipedia tag - linking to a signage',
-
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
         'malformed wikipedia tag - for related prefixed tags',
         'wikipedia wikidata mismatch - for related prefixed tags',
@@ -568,6 +560,16 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for removed prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for removed prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for removed prefixed tags',
+
+        # enable after flushing this error classes from the database as some were processed
+        # and after at least attemped processing of OSM-specific issues
+        # Note that processing this helps Wikidata more than anything else
+        'should use a secondary wikipedia tag - linking to an art genre',
+        'should use a secondary wikipedia tag - linking to an event',
+        'should use a secondary wikipedia tag - linking to a behavior',
+        'should use a secondary wikipedia tag - linking to a human behavior',
+        'should use a secondary wikipedia tag - linking to a signage',
+        'should use a secondary wikipedia tag - linking to an intentional human activity',
 
         # skip as not really important?
         'malformed wikipedia tag - for not prefixed tags',
