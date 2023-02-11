@@ -346,6 +346,7 @@ def for_review():
         'malformed wikipedia tag - for artist prefixed tags',
         'malformed wikipedia tag - for name prefixed tags',
         'malformed wikipedia tag - for name:etymology prefixed tags',
+        'malformed wikipedia tag - for old_name:etymology prefixed tags',
         'malformed wikipedia tag - for architect prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
@@ -360,6 +361,7 @@ def for_review():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for flag prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for old_name:etymology prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for architect prefixed tags',
         'wikipedia wikidata mismatch - for brand prefixed tags',
         'wikipedia wikidata mismatch - for operator prefixed tags',
@@ -374,6 +376,7 @@ def for_review():
         'wikipedia wikidata mismatch - for flag prefixed tags',
         'wikipedia wikidata mismatch - for name prefixed tags',
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - for old_name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for architect prefixed tags',
         'should use a secondary wikipedia tag - linking to an explosion',
         'should use a secondary wikipedia tag - linking to a film festival',
@@ -412,6 +415,7 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikidata redirect - for flag prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for name prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for old_name:etymology prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for architect prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for operator prefixed tags',
@@ -426,11 +430,15 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for flag prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for name prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for old_name:etymology prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for architect prefixed tags',
     ]
 
 def for_tests():
     return [
+        'should use a secondary wikipedia tag - linking to a meeting',
+        'should use a secondary wikipedia tag - linking to a conflict',
+        'should use a secondary wikipedia tag - linking to a religious denomination',
         'should use a secondary wikipedia tag - linking to a fireworks event',
 
         'should use a secondary wikipedia tag - linking to a branch of military service',
