@@ -57,12 +57,12 @@ def show_splits_of_specified_countries():
     # cd -
     processed = [
         {
-        'code': 'DE-NI',
-        'group_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia) - (Deutschland)',
-        'extra_part_of_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia) - (Deutschland)',
-        'extra_part_of_internal_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia)',
-        'language_code': 'de',
-        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany and https://github.com/matkoniecz/OSM-wikipedia-tag-validator/issues/9 and https://osmus.slack.com/archives/CDJ4LKA2Y/p1675062203082609?thread_ts=1673515894.325429&cid=CDJ4LKA2Y",
+        'code': 'ES-CT',
+        'group_name': 'Catalunya (Catalonia, Katalonia) - (España, Spain, Hiszpania)',
+        'extra_part_of_name': 'Catalunya (Catalonia, Katalonia) - (España, Spain, Hiszpania)',
+        'extra_part_of_internal_name': 'Catalunya (Catalonia, Katalonia) - (España, Spain, Hiszpania)',
+        'language_code': 'es',
+        'requested_by': "?https://t.me/OSMes/136779",
         'admin_level': 6,
         'generated_commented_out': False,
         },
@@ -82,6 +82,16 @@ def show_splits_of_specified_countries():
         },
     """
     done_already = [
+        {
+        'code': 'DE-NI',
+        'group_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia) - (Deutschland)',
+        'extra_part_of_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia) - (Deutschland)',
+        'extra_part_of_internal_name': 'Niedersachsen (Lower Saxony, Dolna Saksonia)',
+        'language_code': 'de',
+        'requested_by': "https://www.openstreetmap.org/messages/1060670 + mcliquid - https://www.openstreetmap.org/messages/1070337 - maproulette for Germany and https://github.com/matkoniecz/OSM-wikipedia-tag-validator/issues/9 and https://osmus.slack.com/archives/CDJ4LKA2Y/p1675062203082609?thread_ts=1673515894.325429&cid=CDJ4LKA2Y",
+        'admin_level': 6,
+        'generated_commented_out': False,
+        },
         {
         'code': 'GB-ENG',
         'group_name': 'Great Britain (Wielka Brytania) - England',
