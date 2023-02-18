@@ -384,6 +384,7 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a radio station',
         'should use a secondary wikipedia tag - linking to a broadcaster',
         'should use a secondary wikipedia tag - linking to a public transport network',
+        'should use a secondary wikipedia tag - linking to a recurring sports event',
         'no longer existing brand (according to Wikidata)',
         'no longer existing object (according to Wikidata)',
     ]
@@ -436,7 +437,7 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to a meeting',
+        'should use a secondary wikipedia tag - linking to a belief',
         'should use a secondary wikipedia tag - linking to a conflict',
         'should use a secondary wikipedia tag - linking to a religious denomination',
         'should use a secondary wikipedia tag - linking to a fireworks event',
@@ -446,8 +447,6 @@ def for_tests():
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
 
         'should use a secondary wikipedia tag - linking to a type of world view',
-        'should use a secondary wikipedia tag - linking to a recurring sports event',
-        'should use a secondary wikipedia tag - linking to an academic discipline',
 
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
@@ -478,23 +477,29 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for bridge prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for bridge prefixed tags',
 
-        # investigate terribleness after 11:00
+        # investigate terribleness after 15:00
         'malformed wikipedia tag - for tunnel prefixed tags',
         'wikipedia wikidata mismatch - for tunnel prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for tunnel prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for tunnel prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for tunnel prefixed tags',
 
-        # what is this? Investigate after 11:00
-        # https://taginfo.openstreetmap.org//search?q=object%3Awikidata
-        # https://taginfo.openstreetmap.org//search?q=object%3Awikipedia
+        # investigate terribleness after 15:00
+        'malformed wikipedia tag - for old_wikidata prefixed tags',
+        'wikipedia wikidata mismatch - for old_wikidata prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for old_wikidata prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for old_wikidata prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for old_wikidata prefixed tags',
+
+        # what is this? Investigate after 15:00
+        #TODO remove from databse and clear this entries
         'malformed wikipedia tag - for object prefixed tags',
         'wikipedia wikidata mismatch - for object prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for object prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for object prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for object prefixed tags',
 
-        # what is this? Investigate after 11:00
+        # what is this? Investigate after 15:00
         'malformed wikipedia tag - for post_office:brand prefixed tags',
         'wikipedia wikidata mismatch - for post_office:brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for post_office:brand prefixed tags',
@@ -578,6 +583,9 @@ def ignored():
         'should use a secondary wikipedia tag - linking to a human behavior',
         'should use a secondary wikipedia tag - linking to a signage',
         'should use a secondary wikipedia tag - linking to an intentional human activity',
+        'should use a secondary wikipedia tag - linking to a human activity',
+        'should use a secondary wikipedia tag - linking to a meeting', # summits for mountains are likely about political conferences... Attempted offloading to a separate report
+        'should use a secondary wikipedia tag - linking to an academic discipline',
 
         # skip as not really important?
         'malformed wikipedia tag - for not prefixed tags',
