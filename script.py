@@ -22,6 +22,10 @@ def update_validator_database_and_reports():
     create_table_if_needed(cursor)
     connection.commit()
 
+    cursor.execute("PRAGMA integrity_check;")
+    info = cursor.fetchall()
+    print(info)
+
     # cleanup after manual tag deactivation
     cursor.execute("""UPDATE osm_data
     SET
