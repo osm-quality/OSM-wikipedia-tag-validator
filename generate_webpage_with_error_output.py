@@ -378,6 +378,8 @@ def for_review():
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for old_name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for architect prefixed tags',
+        'should use a secondary wikipedia tag - linking to a branch of military service',
+        'should use a secondary wikipedia tag - linking to a type of world view',
         'should use a secondary wikipedia tag - linking to an explosion',
         'should use a secondary wikipedia tag - linking to a film festival',
         'should use a secondary wikipedia tag - linking to a sports competition',
@@ -385,6 +387,8 @@ def for_review():
         'should use a secondary wikipedia tag - linking to a broadcaster',
         'should use a secondary wikipedia tag - linking to a public transport network',
         'should use a secondary wikipedia tag - linking to a recurring sports event',
+        'should use a secondary wikipedia tag - linking to a religious denomination',
+        'should use a secondary wikipedia tag - linking to a conflict',
         'no longer existing brand (according to Wikidata)',
         'no longer existing object (according to Wikidata)',
     ]
@@ -437,17 +441,8 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        'should use a secondary wikipedia tag - linking to a belief',
-        'should use a secondary wikipedia tag - linking to a conflict',
-        'should use a secondary wikipedia tag - linking to a religious denomination',
-        'should use a secondary wikipedia tag - linking to a fireworks event',
-
-        'should use a secondary wikipedia tag - linking to a branch of military service',
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
-
-        'should use a secondary wikipedia tag - linking to a type of world view',
-
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
@@ -584,6 +579,7 @@ def ignored():
         'should use a secondary wikipedia tag - linking to a signage',
         'should use a secondary wikipedia tag - linking to an intentional human activity',
         'should use a secondary wikipedia tag - linking to a human activity',
+        'should use a secondary wikipedia tag - linking to a belief',
         'should use a secondary wikipedia tag - linking to a meeting', # summits for mountains are likely about political conferences... Attempted offloading to a separate report
         'should use a secondary wikipedia tag - linking to an academic discipline',
 
