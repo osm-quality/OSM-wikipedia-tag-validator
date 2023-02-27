@@ -735,6 +735,10 @@ def list_of_processed_entries_for_each_merged_group():
                 merged_outputs[parent].append(entry)
     return merged_outputs
 
+def all_error_reports_of_area(cursor, internal_region_name):
+    cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": internal_region_name})
+    return cursor.fetchall()
+
 def write_index_and_merged_entries(cursor):
     all_timestamps = all_timestamps_for_index_page(cursor)
     website_html = html_header_for_index_page(all_timestamps)
@@ -744,25 +748,28 @@ def write_index_and_merged_entries(cursor):
 
     for merged_code in merged_outputs.keys():
         timestamps_of_data = []
-        merged_reports = []
-        primary_report_count = 0
+        merged_primary_reports = []
+        merged_secondary_reports = []
         for component in merged_outputs[merged_code]:
+            ignored_problems = component.get('ignored_problems', [])
             if "hidden" in component:
                 if component["hidden"] == True:
                     continue
-            cursor.execute("SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE area_identifier = :identifier AND validator_complaint IS NOT NULL AND validator_complaint <> ''", {"identifier": component['internal_region_name']})
-            returned = cursor.fetchall()
-            for entry in returned:
+            for entry in all_error_reports_of_area(cursor, component['internal_region_name']):
                 rowid, object_type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id = entry
                 #tags = json.loads(tags) - unused
                 validator_complaint = json.loads(validator_complaint)
-                if error_id not in component.get('ignored_problems', []):
-                    merged_reports.append(validator_complaint)
+                if error_id not in ignored_problems:
                     if error_id in for_review():
-                        primary_report_count += 1
+                        merged_primary_reports.append(validator_complaint)
+                    else:
+                        merged_secondary_reports.append(validator_complaint)
             timestamps_of_data.append(obtain_from_overpass.get_data_timestamp(cursor, component['internal_region_name']))
-        generate_output_for_given_area(merged_code, merged_reports, timestamps_of_data, component.get('ignored_problems', []))
+
+        # ignored reports were used to filter out reports for each component
+        generate_output_for_given_area(merged_code, merged_primary_reports + merged_secondary_reports, timestamps_of_data, [])
         
+        primary_report_count = len(merged_primary_reports)
         if(list(set(timestamps_of_data)) == [0]):
             print(merged_code, "has no collected data at all, skipping")
         else:
