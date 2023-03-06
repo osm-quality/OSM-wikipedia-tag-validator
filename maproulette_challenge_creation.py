@@ -29,6 +29,21 @@ def main():
     for project in get_matching_maproulette_projects(api, my_project_name, user_id):
         print(json.dumps(project, indent=4, sort_keys=True))
 
+    my_project_name = "fix link (test project - run 1, automatically generated)"
+    projects = get_matching_maproulette_projects(api, my_project_name, user_id)
+    if len(projects) == 0:
+        """
+        my_project = maproulette.ProjectModel(name='fix links: - Germany')
+        my_project.description = 'my project description'
+        print(json.dumps(api.create_project(my_project), indent=4, sort_keys=True))
+        """
+        my_project = maproulette.ProjectModel(name=my_project_name)
+        my_project.description = 'my project description'
+        print(json.dumps(api.create_project(my_project), indent=4, sort_keys=True))
+    else:
+        print(projects)
+        print("project exists")
+
     # https://github.com/osmlab/maproulette-python-client#getting-started
 
     # 404 links https://maproulette.org/admin/project/50406/challenge/37335/edit
@@ -62,14 +77,20 @@ def main():
         print(name)
         get_reports_with_specific_error_id(cursor, name)
 
+    merged_outputs =  generate_webpage_with_error_output.list_of_processed_entries_for_each_merged_group()
+    for entry in merged_outputs:
+        print(entry)
+
+    for name in generate_webpage_with_error_output.for_review():
+        for entry in config.get_entries_to_process():
+            internal_region_name = entry['internal_region_name']
+            get_reports_with_specific_error_id_in_specific_area(cursor, name)
+
     exit()
     # hmm, mention my site in MR so it is linked from it
     # work around https://github.com/maproulette/maproulette3/issues/1563
 
     # https://github.com/osmlab/maproulette-python-client/blob/dev/examples/project_examples.py
-    my_project = maproulette.ProjectModel(name='fix links: - Germany')
-    my_project.description = 'my project description'
-    print(json.dumps(api.create_project(my_project), indent=4, sort_keys=True))
 
     # https://github.com/osmlab/maproulette-python-client/blob/dev/examples/challenge_examples.py
     # https://github.com/osmlab/maproulette-python-client/blob/0a3e4b68af7892700463c2afc66a1ae4dcbf0825/maproulette/models/challenge.py
@@ -101,19 +122,21 @@ def main():
     print(json.dumps(api.add_tasks_to_challenge(data, challenge_id)))
 
 def get_matching_maproulette_projects(api, search_term, user_id):
+    returned = []
     found = api.find_project(search_term)
     if(found["status"] != 200):
         raise Exception("Unexpected status")
     for project in found["data"]:
         if project["owner"] == user_id:
-            yield project
+            returned.append(project)
+    return returned
 
 def get_reports_with_specific_error_id(cursor, error_id):
-    cursor.execute('SELECT COUNT(rowid) FROM osm_data WHERE error_id = :error_id', {"error_id": name})
+    cursor.execute('SELECT COUNT(rowid) FROM osm_data WHERE error_id = :error_id', {"error_id": error_id})
     count = cursor.fetchall()[0][0]
     print(count, "entries")
 
-    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE error_id = :error_id', {"error_id": name})
+    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE error_id = :error_id', {"error_id": error_id})
     returned = []
     for entry in cursor.fetchall():
         rowid, object_type, id, lat, lon, tags, area_identifier, updated, validator_complaint, error_id = entry
@@ -121,5 +144,20 @@ def get_reports_with_specific_error_id(cursor, error_id):
         validator_complaint = json.loads(validator_complaint)
         returned.append(validator_complaint)
     return returned
+
+def get_reports_with_specific_error_id_in_specific_area(cursor, error_id, internal_region_name):
+    cursor.execute('SELECT COUNT(rowid) FROM osm_data WHERE error_id = :error_id AND area_identifier = :area_identifier', {"error_id": name, 'area_identifier': internal_region_name})
+    count = cursor.fetchall()[0][0]
+    print(count, "entries")
+
+    cursor.execute('SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE error_id = :error_id AND area_identifier = :area_identifier', {"error_id": name, 'area_identifier': internal_region_name})
+    returned = []
+    for entry in cursor.fetchall():
+        rowid, object_type, id, lat, lon, tags, area_identifier, updated, validator_complaint, error_id = entry
+        tags = json.loads(tags)
+        validator_complaint = json.loads(validator_complaint)
+        returned.append(validator_complaint)
+    return returned
+
 
 main()
