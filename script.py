@@ -13,18 +13,24 @@ import osm_editor_bot_for_approved_tasks
 
 def main():
     osm_editor_bot_for_approved_tasks.main()
+    connection = sqlite3.connect(config.database_filepath())
+    cursor = connection.cursor()
+    create_table_if_needed(cursor)
+    check_database_integrity(cursor)
+    connection.close()
     check_for_malformed_definitions_of_entries()
     update_validator_database_and_reports()
+
+def check_database_integrity(cursor):
+    cursor.execute("PRAGMA integrity_check;")
+    info = cursor.fetchall()
+    if (info != [('ok',)]):
+        raise
 
 def update_validator_database_and_reports():
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
-    create_table_if_needed(cursor)
     connection.commit()
-
-    cursor.execute("PRAGMA integrity_check;")
-    info = cursor.fetchall()
-    print(info)
 
     # cleanup after manual tag deactivation
     cursor.execute("""UPDATE osm_data
