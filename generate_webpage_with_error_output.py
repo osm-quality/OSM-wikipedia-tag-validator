@@ -279,7 +279,6 @@ def for_review():
         "should use a secondary wikipedia tag - linking to a crime",
         "should use a secondary wikipedia tag - linking to a film",
         "should use a secondary wikipedia tag - linking to a disaster",
-        'should use a secondary wikipedia tag - linking to a website',
         'should use a secondary wikipedia tag - linking to a television series',
         'should use a secondary wikipedia tag - linking to a saying',
         'should use a secondary wikipedia tag - linking to a website',
