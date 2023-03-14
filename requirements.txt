@@ -2,4 +2,3 @@ pathlib==1.0.1
 xml_stream
 osm_bot_abstraction_layer
 wikibrain
-sqlite3
