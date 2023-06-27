@@ -440,11 +440,25 @@ def obvious_fixes():
 
 def for_tests():
     return [
-        # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set
-        # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs
+        'should use a secondary wikipedia tag - linking to an art genre',
+        'should use a secondary wikipedia tag - linking to an event',
+        'should use a secondary wikipedia tag - linking to a behavior',
+        'should use a secondary wikipedia tag - linking to a human behavior',
+        'should use a secondary wikipedia tag - linking to a signage',
+        # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
+        # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
+
+        # enable after flushing this error classes from the database as some were processed
+        # and after at least attemped processing of OSM-specific issues
+        # Note that processing this helps Wikidata more than anything else
+        'should use a secondary wikipedia tag - linking to an intentional human activity',
+        'should use a secondary wikipedia tag - linking to a human activity',
+        'should use a secondary wikipedia tag - linking to a belief',
+        'should use a secondary wikipedia tag - linking to a meeting', # summits for mountains are likely about political conferences... Attempted offloading to a separate report
+        'should use a secondary wikipedia tag - linking to an academic discipline',
     ]
 
 def ignored():
@@ -568,19 +582,6 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for removed prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for removed prefixed tags',
 
-        # enable after flushing this error classes from the database as some were processed
-        # and after at least attemped processing of OSM-specific issues
-        # Note that processing this helps Wikidata more than anything else
-        'should use a secondary wikipedia tag - linking to an art genre',
-        'should use a secondary wikipedia tag - linking to an event',
-        'should use a secondary wikipedia tag - linking to a behavior',
-        'should use a secondary wikipedia tag - linking to a human behavior',
-        'should use a secondary wikipedia tag - linking to a signage',
-        'should use a secondary wikipedia tag - linking to an intentional human activity',
-        'should use a secondary wikipedia tag - linking to a human activity',
-        'should use a secondary wikipedia tag - linking to a belief',
-        'should use a secondary wikipedia tag - linking to a meeting', # summits for mountains are likely about political conferences... Attempted offloading to a separate report
-        'should use a secondary wikipedia tag - linking to an academic discipline',
 
         # skip as not really important?
         'malformed wikipedia tag - for not prefixed tags',
