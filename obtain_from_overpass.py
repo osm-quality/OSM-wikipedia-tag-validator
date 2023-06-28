@@ -67,7 +67,7 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
     print("running update on data downloaded", int(age_of_data_in_hours + 0.5), "hours ago")
 
     dt_object = datetime.fromtimestamp(latest_download_timestamp)
-    timestamp_formatted = overpass_query_maker.datetime_to_overpass_data_format(dt_object)
+    timestamp_formatted = overpass_query_maker.datetime_to_overpass_date_format(dt_object)
     area_name_in_query = "searchArea"
     area_finder_string = area_finder(identifier_data_for_overpass, area_name_in_query)
     query = download_update_query_text(area_finder_string, area_name_in_query, latest_download_timestamp)
@@ -100,7 +100,7 @@ def area_finder(identifier_tag_dictionary, name_of_area):
 
 def download_update_query_text(area_finder_string, area_name, timestamp):
     dt_object = datetime.fromtimestamp(timestamp)
-    timestamp_formatted = overpass_query_maker.datetime_to_overpass_data_format(dt_object)
+    timestamp_formatted = overpass_query_maker.datetime_to_overpass_date_format(dt_object)
     area_identifier = 'area.' + area_name
 
     query = "[timeout:" + str(timeout()) + "];\n"

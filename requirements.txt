@@ -1,4 +1,4 @@
 pathlib==1.0.1
 xml_stream
-osm_bot_abstraction_layer
+osm_bot_abstraction_layer>=0.0.17
 wikibrain
