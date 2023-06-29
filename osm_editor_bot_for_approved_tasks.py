@@ -267,7 +267,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
     comment = "add wikidata tag based on wikipedia tag"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59925'
     osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikidata_tags_based_on_wikipedia_tags_in_Poland'
-    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
+    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url, osm_wiki_documentation_page)
     source = "wikidata, OSM"
     builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
     started_changeset = False
@@ -309,7 +309,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     comment = "add wikipedia tag based on wikidata tag"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59888'
     osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_tags_based_on_wikidata_tags_in_Poland'
-    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url)
+    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url, osm_wiki_documentation_page)
     source = "wikidata, OSM"
     builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
     started_changeset = False
