@@ -28,144 +28,35 @@ def main():
 
     maproulette_config = maproulette.Configuration(api_key=api_key)
     project_api = maproulette.Project(maproulette_config)
-    project_id = setup_project(api)
+    project_id = setup_project(project_api, user_id)
     # docs: https://github.com/osmlab/maproulette-python-client#getting-started
 
 
-
-    challenge_name = "404 - fix Wikipedia links leading to an article which does not exist"
-    challenge_data = maproulette.ChallengeModel(name=challenge_name)
-
-    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/models/challenge.py#L7
-
-    # Adding example description
 
     # wikipedia tags linking to nonexisting pages in Germany (this time covers entire Germany)
     # wikipedia tags linking to nonexisting pages in USA (note that only part of USA is covered, feel free to request processing of more states)
     # reports from https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/
     # Fix conflicting *wikidata and not:*wikidata tags - fixed with #maproulette
 
-    challenge_data.description = "Wikipedia article linked from OSM object using wikipedia tag is missing and should be fixed"
-    challenge_data.instruction = """Wikipedia article linked from OSM object using wikipedia tag is missing.
-
-Try to follow link and fix/repair - if that fails, remove this wikipedia tag.
-
-This problem can happen for multiple reasons and fix depends on what went wrong
-
-
-- article was moved without leaving redirect and wikipedia tag should be edited to point to the new one (wikidata tag if present may help to find correct tag)
-- someone made typo, for example failed to copy final letter of article title (fix link in such case)
-- link is somehow malformed but fixable
-- sometimes link was accidentally deleted by people editing something else - look at object history in such cases
-- article may be deleted or never existed. In such cases wikipedia tag should be deleted.
-- sometimes link was simply invalid anyway and should be deleted
-- something else happened
-
-And in some cases this report is wrong! For example if someone created a link pointing nowhere, then it was detected by this tool and later article was created then report here will be wrong!
-
-It is useful to look at Wikipedia logs of not existing item - sadly, articles are often moved without leaving redirect (which is a major annoyance)
-
-Please fix other problems if you spot them! Often they will be far more valuable than fixing wikipedia linking.
-"""
-    challenge_data.enabled = True
-    challenge_data.blurb = "blurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurb" # TODO where this is used?
-    challenge_data.featured = True
-    challenge_data.check_in_comment = "fixing links to nonexisting wikipedia articles, detected by https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/"
-    challenge_data.check_in_source = None
-    challenge_data.requires_local = False
-    challenge_data.osm_id_property = "osm_link"
-    # default_zoom max_zoom min_zoom
-    # popularity
-    # exportable_properties
-
-    # Adding required instruction
-    challenge_data.parent = project_id
-
-    # Adding example overpass QL input for challenge
-    # work around https://github.com/maproulette/maproulette3/issues/1563
-    # overpass query cannot be changed
-    #challenge_data.overpassQL = open('data/Example_OverpassQL_Query', 'r').read()
-
     # Create challenge
-    challenge_api = maproulette.Challenge(maproulette_config)    
-
-    data = get_challenge_data_from_project(challenge_api, project_id)
-
-    if len(data) == 0:
-        print(project_id, "is without challenges")
-        print(data)
-        print(json.dumps(challenge_api.create_challenge(challenge_data)))
-        data = get_challenge_data_from_project(challenge_api, project_id)
-        if len(data) == 0:
-            print("Still without challenges?")
-            time.sleep(10)
-            data = get_challenge_data_from_project(challenge_api, project_id)
-            if len(data) == 0:
-                raise "wat"
-    elif len(data) == 1:
-        print(data[0])
-        if data[0]["name"] != challenge_name:
-            raise
-    else:
-        raise
-
-    if len(data) != 1:
-        raise Exception("unexpected size " + str(len(data)))
-    challenge_id = data[0]['id']
-
-    # Printing response:
-    # https://maproulette.org/admin/projects
 
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
-    print("getting reports from my database")
-
-    geojson_object = {
-        "type": "FeatureCollection",
-        "features": []
-    }
-
     for name in generate_webpage_with_error_output.for_review():
-        if name != "wikipedia tag links to 404":
-            print("skipping", name, "for now")
-            continue
         reports = get_reports_with_specific_error_id(cursor, name)
-        print("calling get_reports_with_specific_error_id:", name, len(reports), "entries")
-        for entry in reports:
-            print(json.dumps(entry, indent=4, sort_keys=True))
-            print(entry['osm_object_url'])
-            print(entry['error_id'])
-            print(entry['error_message'])
-            print(entry['location'])
-            if "node" in entry['osm_object_url']:
-                lon = entry['location']['lon']
-                lat = entry['location']['lat']
-                element = {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [lon, lat], # [longitude, latitude] 
-                    },
-                    "properties": {
-                        "osm_link": entry['osm_object_url'],
-                    }
-                }
-                if entry['error_message'] != "":
-                    element['properties']['error_message'] = entry['error_message']
-                for tag_key in entry['tags'].keys():
-                    element['properties'][tag_key] = entry['tags'][tag_key]
-                geojson_object["features"].append(element)
+        print("calling get_reports_with_specific_error_id:", name, len(reports), "- entries")
+    connection.close()
+    exit()
 
-    print("add_tasks_to_challenge")
-    raise("figure way to add only still active ones (avoid readding done in MR), needs to fetch them and check prerequisites - try to reuse code here! Maybe somehow rely on central updater? Or recheck them right now? Number here is not so huge, I guess")
-    delete_fresh_challenge_tasks(challenge_api, challenge_id)
-    tasks_remaining = get_challenge_tasks(challenge_api, challenge_id)
-    for task in tasks_remaining:
-        print(task)
-    if len(tasks_remaining) == 0:
-        print("no tasks to view")
-    raise("https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/task.py#L169 - delete tasks one by one? Is delete_fresh_challenge_tasks actually working and deleting only undone?")
-    print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id)))
+    # should use a secondary wikipedia tag - linking to a transport accident
+    # 57 entries
+
+    # should use a secondary wikipedia tag - linking to a coat of arms
+    # 7 entries
+
+    challenge_api = maproulette.Challenge(maproulette_config)    
+    error_id = "wikipedia tag links to 404"
+    update_or_create_challenge_based_on_error_id(challenge_api, project_id, error_id)
 
     exit()
 
@@ -197,14 +88,97 @@ Please fix other problems if you spot them! Often they will be far more valuable
     # https://github.com/osmlab/maproulette-python-client/blob/38920add1b95b9ec472e1653915faf9eebe2a6b9/maproulette/api/challenge.py#L269 - add_tasks_to_challenge
     # https://github.com/osmlab/maproulette-python-client/blob/0a3e4b68af7892700463c2afc66a1ae4dcbf0825/maproulette/models/challenge.py
 
-def setup_project(api):
+def update_or_create_challenge_based_on_error_id(challenge_api, project_id, error_id):
+    data = get_challenge_data_from_project(challenge_api, project_id)
+    challenge_id = None
+    for challenge in data:
+        if challenge["name"] == challenge_name:
+            challenge_id = challenge['id']
+    if challenge_id == None:
+        create_link_challenge_based_on_error_id(challenge_api, project_id, error_id)
+
+        print(project_id, "is without challenge", challenge_name)
+        print(data)
+        print(json.dumps(challenge_api.create_challenge(challenge_data)))
+        raise "restart script after challenge creation I guess" # TODO do it properly 
+
+    # Printing response:
+    # https://maproulette.org/admin/projects
+
+    print("getting reports from my database")
+
+    # work around https://github.com/maproulette/maproulette3/issues/1563
+    # overpass query cannot be changed
+    # so we need to provide data manually
+    geojson_object = get_data_of_a_specific_error_id(error_id)
+    print("add_tasks_to_challenge")
+    raise("figure way to add only still active ones (avoid readding done in MR), needs to fetch them and check prerequisites - try to reuse code here! Maybe somehow rely on central updater? Or recheck them right now? Number here is not so huge, I guess")
+    delete_fresh_challenge_tasks(challenge_api, challenge_id)
+    tasks_remaining = get_challenge_tasks(challenge_api, challenge_id)
+    for task in tasks_remaining:
+        print(task)
+    if len(tasks_remaining) == 0:
+        print("no tasks to view")
+    raise("https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/task.py#L169 - delete tasks one by one? Is delete_fresh_challenge_tasks actually working and deleting only undone?")
+    print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id)))
+
+def create_link_challenge_based_on_error_id(challenge_api, project_id, error_id):
+    if error_id == "wikipedia tag links to 404":
+        challenge_name = "404 - fix Wikipedia links leading to an article which does not exist"
+        challenge_description = "Wikipedia article linked from OSM object using wikipedia tag is missing and should be fixed"
+        # TODO synchronize with my own website, I guess
+        challenge_instructions = """Wikipedia article linked from OSM object using wikipedia tag is missing.
+
+Try to follow link and fix/repair - if that fails, remove this wikipedia tag.
+
+This problem can happen for multiple reasons and fix depends on what went wrong
+
+
+- article was moved without leaving redirect and wikipedia tag should be edited to point to the new one (wikidata tag if present may help to find correct tag)
+- someone made typo, for example failed to copy final letter of article title (fix link in such case)
+- link is somehow malformed but fixable
+- sometimes link was accidentally deleted by people editing something else - look at object history in such cases
+- article may be deleted or never existed. In such cases wikipedia tag should be deleted.
+- sometimes link was simply invalid anyway and should be deleted
+- something else happened
+
+And in some cases this report is wrong! For example if someone created a link pointing nowhere, then it was detected by this tool and later article was created then report here will be wrong!
+
+It is useful to look at Wikipedia logs of not existing item - sadly, articles are often moved without leaving redirect (which is a major annoyance)
+
+Please fix other problems if you spot them! Often they will be far more valuable than fixing wikipedia linking.
+"""
+        create_challenge(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions)
+    else:
+        raise Unsupported # TODO find proper exception
+
+def create_challenge(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions):
+    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/models/challenge.py#L7
+    challenge_data = maproulette.ChallengeModel(name=challenge_name)
+    challenge_data.description = challenge_description
+    challenge_data.instruction = challenge_instructions
+    challenge_data.enabled = True
+    challenge_data.blurb = "blurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurb" # TODO where this is used?
+    challenge_data.featured = True
+    challenge_data.check_in_comment = "fixing links to nonexisting wikipedia articles, detected by https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/"
+    challenge_data.check_in_source = None
+    challenge_data.requires_local = False
+    challenge_data.osm_id_property = "osm_link"
+    # default_zoom max_zoom min_zoom
+    # popularity
+    # exportable_properties
+
+    # Adding required instruction
+    challenge_data.parent = project_id
+
+def setup_project(project_api, user_id):
     my_project_name = "404"
-    for project in get_matching_maproulette_projects(api, my_project_name, user_id):
+    for project in get_matching_maproulette_projects(project_api, my_project_name, user_id):
         print("my project data found:")
         print(json.dumps(project, indent=4, sort_keys=True))
 
     my_project_name = "fix broken Wikipedia tags"
-    projects = get_matching_maproulette_projects(api, my_project_name, user_id)
+    projects = get_matching_maproulette_projects(project_api, my_project_name, user_id)
     if len(projects) == 0:
         my_project = maproulette.ProjectModel(name=my_project_name)
         # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/models/project.py#L7
@@ -213,8 +187,8 @@ def setup_project(api):
         my_project.featured = True # it actually works!
         my_project.display_name = my_project_name
         print("creating project")
-        print(json.dumps(api.create_project(my_project), indent=4, sort_keys=True))
-        projects = get_matching_maproulette_projects(api, my_project_name, user_id)
+        print(json.dumps(project_api.create_project(my_project), indent=4, sort_keys=True))
+        projects = get_matching_maproulette_projects(project_api, my_project_name, user_id)
     else:
         print("project exists")
         print(json.dumps(projects, indent=4, sort_keys=True))
@@ -223,6 +197,46 @@ def setup_project(api):
 
     project_id = projects[0]["id"]
     return project_id
+
+def get_data_of_a_specific_error_id(report_id):
+    connection = sqlite3.connect(config.database_filepath())
+    cursor = connection.cursor()
+    geojson_object = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    for name in generate_webpage_with_error_output.for_review():
+        if name != report_id:
+            print("skipping", name, "for now")
+            continue
+        reports = get_reports_with_specific_error_id(cursor, name)
+        print("calling get_reports_with_specific_error_id:", name, len(reports), "entries")
+        for entry in reports:
+            print(json.dumps(entry, indent=4, sort_keys=True))
+            print(entry['osm_object_url'])
+            print(entry['error_id'])
+            print(entry['error_message'])
+            print(entry['location'])
+            if "node" in entry['osm_object_url']:
+                lon = entry['location']['lon']
+                lat = entry['location']['lat']
+                element = {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [lon, lat], # [longitude, latitude] 
+                    },
+                    "properties": {
+                        "osm_link": entry['osm_object_url'],
+                    }
+                }
+                if entry['error_message'] != "":
+                    element['properties']['error_message'] = entry['error_message']
+                for tag_key in entry['tags'].keys():
+                    element['properties'][tag_key] = entry['tags'][tag_key]
+                geojson_object["features"].append(element)
+    connection.close()
+    return geojson_object
 
 def delete_fresh_challenge_tasks(challenge_api, challenge_id):
     # docs: https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L136C9-L136C28
