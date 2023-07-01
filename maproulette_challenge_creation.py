@@ -46,13 +46,20 @@ def main():
         reports = get_reports_with_specific_error_id(cursor, name)
         print("calling get_reports_with_specific_error_id:", name, len(reports), "- entries")
     connection.close()
+
+    #error_id = "should use a secondary wikipedia tag - linking from wikipedia to a coat of arms"
+    #update_or_create_challenge_based_on_error_id(challenge_api, project_id, error_id)
+
+    #error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a coat of arms"
+    #update_or_create_challenge_based_on_error_id(challenge_api, project_id, error_id)
+
+    #error_id = "should use a secondary wikipedia tag - linking from wikidata to a coat of arms"
+    #update_or_create_challenge_based_on_error_id(challenge_api, project_id, error_id)
     exit()
 
-    # should use a secondary wikipedia tag - linking to a transport accident
-    # 57 entries
-
-    # should use a secondary wikipedia tag - linking to a coat of arms
-    # 7 entries
+    #error_id = "should use a secondary wikipedia tag - linking from wikipedia to a transport accident"
+    #update_or_create_challenge_based_on_error_id(challenge_api, project_id, error_id)
+    exit()
 
     challenge_api = maproulette.Challenge(maproulette_config)    
     error_id = "wikipedia tag links to 404"
@@ -123,6 +130,39 @@ def update_or_create_challenge_based_on_error_id(challenge_api, project_id, erro
     print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id)))
 
 def create_link_challenge_based_on_error_id(challenge_api, project_id, error_id):
+    for from_tags in [
+        "wikipedia and wikidata",
+        "wikipedia",
+        "wikidata",
+    ]
+        if "should use a secondary wikipedia tag - linking from " + from_tags + " tag to " in error_id:
+            new_tag_form = None
+            if from_tags == "wikipedia and wikidata":
+                new_tag_form = "subject:wikipedia and subject:wikidata"
+            what = error_id.replace("should use a secondary wikipedia tag - linking from " + from_tags + " tag to ", "")
+            challenge_name = from_tags + " tag linking to " + what + " - should use secondary wikipedia/wikidata tag"
+            challenge_description = """Wikipedia article or wikidata entry linked from OSM object using wikipedia tag is not about something expected to be directly linkable
+        
+as thing such as """ + what + """is not being mapped in Wikipedia it is extremely unlikely that this """ + from_tags + """ tag is valid
+
+it likely should be changed into """ + new_tag_form + """
+
+for example historic=memorial commemorating """ + what + """ should link article about it using subject:wikipedia / subject:wikidata - as article is about subject of memorial, not about memorial itself]
+
+(if article would be about memorial then linking it in main wikipedia/wikidata tag is fine)
+
+in some cases wikipedia/wikidata tags should be simply removed if they are simply wrong or about entire class of object
+
+in case that linked wikipedia/wikidata entry is not about """ + what + """ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny so I can handle this false positive
+
+REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong. Please review each entry rather than blindly retagging! If you start blindly editing, take a break."""
+            # TODO synchronize with my own website, I guess
+            challenge_instructions = """ """
+    linked wikidata entry (Q204476) is about a human, so it is very unlikely to be correct
+    subject:wikipedia=* or name:wikipedia tag would be probably better (see https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links for full list of what else may be applicable)
+            changeset_action = "fixing primary link leading to " + what + " entry"
+            create_challenge(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action)
+
     if error_id == "wikipedia tag links to 404":
         challenge_name = "404 - fix Wikipedia links leading to an article which does not exist"
         challenge_description = "Wikipedia article linked from OSM object using wikipedia tag is missing and should be fixed"
@@ -147,20 +187,23 @@ And in some cases this report is wrong! For example if someone created a link po
 It is useful to look at Wikipedia logs of not existing item - sadly, articles are often moved without leaving redirect (which is a major annoyance)
 
 Please fix other problems if you spot them! Often they will be far more valuable than fixing wikipedia linking.
+
+REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong, some are fixable but not in obvious ways. Please review each entry rather than blindly deleting! If you start blindly deleting, take a break.
 """
-        create_challenge(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions)
+        changeset_action = "fixing links to nonexisting wikipedia articles"
+        create_challenge(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action)
     else:
         raise Unsupported # TODO find proper exception
 
-def create_challenge(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions):
+def create_challenge(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action):
     # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/models/challenge.py#L7
     challenge_data = maproulette.ChallengeModel(name=challenge_name)
     challenge_data.description = challenge_description
     challenge_data.instruction = challenge_instructions
     challenge_data.enabled = True
-    challenge_data.blurb = "blurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurbblurb" # TODO where this is used?
+    #challenge_data.blurb = "blurb blurb blurbblurb" # appears to be unused
     challenge_data.featured = True
-    challenge_data.check_in_comment = "fixing links to nonexisting wikipedia articles, detected by https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/"
+    challenge_data.check_in_comment = changeset_action + ", detected by https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/"
     challenge_data.check_in_source = None
     challenge_data.requires_local = False
     challenge_data.osm_id_property = "osm_link"
