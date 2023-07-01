@@ -3,6 +3,7 @@ from wikibrain import wikipedia_knowledge
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import config
 import obtain_from_overpass
+import database
 import json
 import sqlite3
 import generate_webpage_with_error_output
@@ -95,16 +96,8 @@ def check_for_malformed_definitions_of_entries():
         if "/" in entry['website_main_title_part']:
             raise Exception("/ in " + entry['website_main_title_part'])
 
-def existing_tables(cursor):
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    table_listing = cursor.fetchall()
-    returned = []
-    for entry in table_listing:
-        returned.append(entry[0])
-    return returned
-
 def create_table_if_needed(cursor):
-    if "osm_data" in existing_tables(cursor):
+    if "osm_data" in database.existing_tables(cursor):
         print("osm_data table exists already, delete file with database to recreate")
     else:
         # validator_complaint needs to hold
@@ -120,7 +113,7 @@ def create_table_if_needed(cursor):
         cursor.execute("""CREATE INDEX idx_osm_data_area_identifier ON osm_data (area_identifier);""")
         cursor.execute("""CREATE INDEX idx_osm_data_id_type ON osm_data (id, type);""")
         cursor.execute("""CREATE INDEX idx_error_id ON osm_data (error_id);""")
-    if "osm_data_update_log" in existing_tables(cursor):
+    if "osm_data_update_log" in database.existing_tables(cursor):
         print("osm_data_update_log table exists already, delete file with database to recreate")
     else:
         # register when data was downloaded so update can be done without downloading

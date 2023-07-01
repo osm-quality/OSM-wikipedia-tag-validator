@@ -1,6 +1,7 @@
 import config
 from osm_bot_abstraction_layer.overpass_downloader import download_overpass_query
 from osm_bot_abstraction_layer import overpass_query_maker
+import database
 import pathlib
 import shutil
 import time
@@ -19,14 +20,6 @@ def timeout():
   # Brandenburgia failed with 1000 but also failed anyway with 2500
   return 1000
 
-def get_data_timestamp(cursor, internal_region_name):
-    cursor.execute("SELECT download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier ORDER BY download_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name})
-    returned = cursor.fetchall()
-    if len(returned) == 0:
-        return 0
-    else:
-        return returned[0][0]
-
 def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
     files = os.listdir(config.downloaded_osm_data_location())
     for filename in files:
@@ -37,7 +30,7 @@ def download_entry(cursor, internal_region_name, identifier_data_for_overpass):
 
     downloaded_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_unprocessed") # load location from database instead, maybe? TODO
     work_filepath = filepath_to_downloaded_osm_data(internal_region_name, "_download_in_progress")
-    latest_download_timestamp = get_data_timestamp(cursor, internal_region_name)
+    latest_download_timestamp = database.get_data_download_timestamp(cursor, internal_region_name)
     if latest_download_timestamp == 0:
         print("data was not downloaded for this area! cleaning data in database for this area just in case!")
         # there could be old entries which are no longer valid and not present anymore in fetched data
