@@ -265,4 +265,5 @@ def commit_and_publish_changes_in_report_directory():
     os.system('git push')
     os.chdir(current_working_directory)
 
-main()
+if __name__ == '__main__':
+    main()
