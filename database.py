@@ -50,7 +50,7 @@ def get_data_download_timestamp(cursor, internal_region_name):
         return returned[0][0]
 
 def get_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type):
-    cursor.execute("SELECT download_timestamp FROM osm_data_update_log WHERE area_identifier = :area_identifier AND type = :type ORDER BY download_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name, "type": bot_edit_type, })
+    cursor.execute("SELECT bot_edit_timestamp FROM osm_bot_edit_log WHERE area_identifier = :area_identifier AND type = :type ORDER BY bot_edit_timestamp DESC LIMIT 1", {"area_identifier": internal_region_name, "type": bot_edit_type, })
     returned = cursor.fetchall()
     if len(returned) == 0:
         return 0

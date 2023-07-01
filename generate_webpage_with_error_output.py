@@ -8,11 +8,12 @@ import sqlite3
 
 import config
 import obtain_from_overpass
+import database
 
 def generate_website_file_for_given_area(cursor, entry):
     reports = reports_for_given_area(cursor, entry['internal_region_name'])
     website_main_title_part = entry['website_main_title_part']
-    timestamps = [obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name'])]
+    timestamps = [database.get_data_download_timestamp(cursor, entry['internal_region_name'])]
     ignored_problems = entry.get('ignored_problems', [])
     generate_output_for_given_area(website_main_title_part, reports, timestamps, ignored_problems)
 
@@ -728,7 +729,7 @@ def all_timestamps_for_index_page(cursor):
         if "hidden" in entry:
             if entry["hidden"] == True:
                 continue
-        all_timestamps.append(obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name']))
+        all_timestamps.append(database.get_data_download_timestamp(cursor, entry['internal_region_name']))
     return all_timestamps
 
 def html_header_for_index_page(all_timestamps):
@@ -779,7 +780,7 @@ def write_index_and_merged_entries(cursor):
                         merged_primary_reports.append(validator_complaint)
                     else:
                         merged_secondary_reports.append(validator_complaint)
-            timestamps_of_data.append(obtain_from_overpass.get_data_timestamp(cursor, component['internal_region_name']))
+            timestamps_of_data.append(database.get_data_download_timestamp(cursor, component['internal_region_name']))
 
         # ignored reports were used to filter out reports for each component
         generate_output_for_given_area(merged_code, merged_primary_reports + merged_secondary_reports, timestamps_of_data, [])
@@ -803,7 +804,7 @@ def write_index_and_merged_entries(cursor):
         report_count = human_review_problem_count_for_given_internal_region_name(cursor, entry['internal_region_name'])
         report_count_string = problem_count_string(report_count)
         line = '<a href = "./' + htmlify(filename) + '">' + htmlify(website_main_title_part) + '</a> ' + report_count_string + '\n'
-        if obtain_from_overpass.get_data_timestamp(cursor, entry['internal_region_name']) == 0:
+        if database.get_data_download_timestamp(cursor, entry['internal_region_name']) == 0:
             print(entry['internal_region_name'], "has no collected data at all, skipping")
         else:
             if report_count != 0:

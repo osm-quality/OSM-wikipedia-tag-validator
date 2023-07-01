@@ -11,6 +11,7 @@ import sqlite3
 import json
 import config
 import database
+import time
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -268,7 +269,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
     comment = "add wikidata tag based on wikipedia tag"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59925'
     osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikidata_tags_based_on_wikipedia_tags_in_Poland'
-    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url, osm_wiki_documentation_page)
+    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url, osm_wiki_page_url)
     source = "wikidata, OSM"
     builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
     started_changeset = False
@@ -310,7 +311,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
     comment = "add wikipedia tag based on wikidata tag"
     discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59888'
     osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_tags_based_on_wikidata_tags_in_Poland'
-    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url, osm_wiki_documentation_page)
+    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url, osm_wiki_page_url)
     source = "wikidata, OSM"
     builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
     started_changeset = False
@@ -342,14 +343,14 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
 def link_to_point(lat, lon):
     return "https://www.openstreetmap.org/?mlat=" + str(lat) + "&mlon=" + str(lon) + "#map=10/" + str(lat) + "/" + str(lon)
 
-def has_bot_edit_been_done_on_this_data(internal_region_name, bot_edit_type):
+def has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type):
     data_download_timestamp = database.get_data_download_timestamp(cursor, internal_region_name)
     bot_edit_timestamp = database.get_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type)
     if bot_edit_timestamp < data_download_timestamp:
-        return True
+        return False
     else:
         print("no need to rerun bot edit, data was not yet updated")
-        return False
+        return True
 
 def main():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
@@ -363,26 +364,26 @@ def main():
             reported_errors = load_errors(cursor, internal_region_name)
 
             bot_edit_type = "add_wikipedia_tag_from_wikidata_tag"
-            if has_bot_edit_been_done_on_this_data(internal_region_name, bot_edit_type) == False:
+            if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
                 timestamp = int(time.time())
                 add_wikipedia_tag_from_wikidata_tag(reported_errors)
                 database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
 
             bot_edit_type = "add_wikidata_tag_from_wikipedia_tag"
-            if has_bot_edit_been_done_on_this_data(internal_region_name, bot_edit_type) == False:
+            if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
                 timestamp = int(time.time())
                 add_wikidata_tag_from_wikipedia_tag(reported_errors)
                 database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
 
             bot_edit_type = "handle_follow_wikipedia_redirect"
-            if has_bot_edit_been_done_on_this_data(internal_region_name, bot_edit_type) == False:
+            if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
                 timestamp = int(time.time())
                 for e in reported_errors:
                     handle_follow_wikipedia_redirect(e)
                 database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
 
             bot_edit_type = "change_to_local_language"
-            if has_bot_edit_been_done_on_this_data(internal_region_name, bot_edit_type) == False:
+            if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
                 timestamp = int(time.time())
                 for e in reported_errors:
                     change_to_local_language(e)

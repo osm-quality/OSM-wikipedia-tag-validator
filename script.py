@@ -56,7 +56,7 @@ def update_validator_database_and_reports():
     entries_with_age = []
     for entry in config.get_entries_to_process():
         internal_region_name = entry['internal_region_name']
-        timestamp = obtain_from_overpass.get_data_timestamp(cursor, internal_region_name)
+        timestamp = database.get_data_download_timestamp(cursor, internal_region_name)
         entries_with_age.append({"data": entry, "data_timestamp": timestamp})
     current_timestamp = int(time.time())
     entries_with_age = sorted(entries_with_age, key=lambda entry: -(current_timestamp - entry["data_timestamp"]) * entry["data"].get("priority_multiplier", 1))
