@@ -125,6 +125,12 @@ def create_table_if_needed(cursor):
         # should be downloaded
         cursor.execute('''CREATE TABLE osm_data_update_log
                     (area_identifier text, filename text, download_type text, download_timestamp integer)''')
+    if "osm_bot_edit_log" in database.existing_tables(cursor):
+        print("osm_bot_edit_log table exists already")
+    else:
+        cursor.execute('''CREATE TABLE osm_bot_edit_log
+                    (area_identifier text, type text, bot_edit_timestamp integer)''')
+
 
 def process_given_area(cursor, entry):
     ignored_problems = entry.get('ignored_problems', [])
