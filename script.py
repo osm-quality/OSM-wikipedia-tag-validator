@@ -16,7 +16,7 @@ def main():
     osm_editor_bot_for_approved_tasks.main()
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
-    create_table_if_needed(cursor)
+    database.create_table_if_needed(cursor)
     check_database_integrity(cursor)
     connection.close()
     check_for_malformed_definitions_of_entries()
@@ -96,40 +96,6 @@ def check_for_malformed_definitions_of_entries():
         if "/" in entry['website_main_title_part']:
             raise Exception("/ in " + entry['website_main_title_part'])
 
-def create_table_if_needed(cursor):
-    if "osm_data" in database.existing_tables(cursor):
-        print("osm_data table exists already, delete file with database to recreate")
-    else:
-        # validator_complaint needs to hold
-        # - not checked
-        # - checked, no problem found
-        # - error data
-        #
-        # right now for "checked, no error" I plan to use empty string but I am not too happy
-        cursor.execute('''CREATE TABLE osm_data
-                    (type text, id number, lat float, lon float, tags text, area_identifier text, download_timestamp integer, validator_complaint text, error_id text)''')
-
-        # magnificent speedup
-        cursor.execute("""CREATE INDEX idx_osm_data_area_identifier ON osm_data (area_identifier);""")
-        cursor.execute("""CREATE INDEX idx_osm_data_id_type ON osm_data (id, type);""")
-        cursor.execute("""CREATE INDEX idx_error_id ON osm_data (error_id);""")
-    if "osm_data_update_log" in database.existing_tables(cursor):
-        print("osm_data_update_log table exists already, delete file with database to recreate")
-    else:
-        # register when data was downloaded so update can be done without downloading
-        # and processing the entire dataset
-        #
-        # instead just entries that were changed since then
-        # - and carry *(wikipedia|wikidata)* tags
-        # - that previously had problem reported about them
-        # should be downloaded
-        cursor.execute('''CREATE TABLE osm_data_update_log
-                    (area_identifier text, filename text, download_type text, download_timestamp integer)''')
-    if "osm_bot_edit_log" in database.existing_tables(cursor):
-        print("osm_bot_edit_log table exists already")
-    else:
-        cursor.execute('''CREATE TABLE osm_bot_edit_log
-                    (area_identifier text, type text, bot_edit_timestamp integer)''')
 
 
 def process_given_area(cursor, entry):
