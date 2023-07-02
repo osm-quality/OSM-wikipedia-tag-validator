@@ -105,14 +105,16 @@ def desired_wikipedia_target_from_report(e):
         raise Exception("Expected wikipedia tag to be provided")
     return desired
 
-def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e):
+def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
     data = get_and_verify_data(e)
     if data == None:
         return None
-    if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
+    if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, area_code, detailed_verification_function_is_within_given_country) == False:
         announce_skipping_object_as_outside_area(e['osm_object_url']+" (handle_follow_wikipedia_redirect funtion)")
+    else:
+        print(e['osm_object_url'], "element eligible for edit, within expected area")
     now = data['tag']['wikipedia']
     new = desired_wikipedia_target_from_report(e)
     reason = ", as current tag is a redirect and the new page matches present wikidata"
@@ -125,13 +127,13 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e):
     source = "wikidata, OSM"
     osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, osm_wiki_documentation_page, type, data, source)
 
-def change_to_local_language_single(e):
+def change_to_local_language_single(e, area_code):
     if e['error_id'] != 'wikipedia tag unexpected language':
         return
     data = get_and_verify_data(e)
     if data == None:
         return None
-    if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", very_rough_verification_function_is_within_given_country_prefers_false_negatives) == False:
+    if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, area_code, very_rough_verification_function_is_within_given_country_prefers_false_negatives) == False:
         print("Skipping object", e['osm_object_url'], "- apparently not within catchment area")
         print("ONLY EXTREMELY ROUGH CHECK WAS MADE! FALSE POSITIVES EXPECTED!")
         print("---------------------------------")
@@ -179,8 +181,6 @@ def filter_reported_errors(reported_errors, matching_error_ids):
     return errors_for_removal
 
 def is_edit_allowed_object_based_on_location(osm_object_url, object_data, target_country, verification_function_is_within_given_country):
-    if target_country != "pl":
-        raise "unimplemented"
     print()
     for node_id in osm_bot_abstraction_layer.get_all_nodes_of_an_object(osm_object_url):
         node_data = osm_bot_abstraction_layer.get_data(node_id, "node")
@@ -224,6 +224,11 @@ def is_location_clearly_outside_territory(lat, lon, target_country):
         if lon > 25.137:
             return True
         return False
+    elif target_country == "usa":
+        print("is_location_clearly_outside_territory should be smarter for USA")
+        return False
+    else:
+        raise "unimplemented"
     raise
 
 def is_location_clearly_inside_territory(lat, lon, target_country):
@@ -237,6 +242,8 @@ def is_location_clearly_inside_territory(lat, lon, target_country):
         if lon <= 25.137:
             return False
         return True
+    else:
+        raise "unimplemented"
     raise
 
 def is_location_possibly_outside_territory(lat, lon, target_country):
@@ -246,12 +253,8 @@ def is_location_possibly_outside_territory(lat, lon, target_country):
                 if lon < 22.643:
                     if lon > 15.128:
                         return False 
-    if target_country == "pl":
-        if lat < 51.241:
-            if lat > 49.746:
-                if lon < 22.302:
-                    if lon > 18.875:
-                        return False
+    else:
+        raise "unimplemented"
     return True
 
 def announce_skipping_object_as_outside_area(osm_object_url):
@@ -260,7 +263,7 @@ def announce_skipping_object_as_outside_area(osm_object_url):
     print()
     print()
 
-def add_wikidata_tag_from_wikipedia_tag(reported_errors):
+def add_wikidata_tag_from_wikipedia_tag(reported_errors, area_code):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikidata from wikipedia tag'])
     if errors_for_removal == []:
         return
@@ -278,7 +281,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         data = get_and_verify_data(e)
         if data == None:
             continue
-        if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
+        if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, area_code, detailed_verification_function_is_within_given_country) == False:
             announce_skipping_object_as_outside_area(e['osm_object_url'] + " (add_wikidata_tag_from_wikipedia_tag function)")
             continue
 
@@ -296,13 +299,14 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors):
         if started_changeset == False:
             started_changeset = True
             builder.create_changeset(api)
+        print("add_wikidata_tag_from_wikipedia_tag EDITS",e['osm_object_url'])
         osm_bot_abstraction_layer.update_element(api, type, data)
 
     if started_changeset:
         api.ChangesetClose()
         osm_bot_abstraction_layer.sleep(60)
 
-def add_wikipedia_tag_from_wikidata_tag(reported_errors):
+def add_wikipedia_tag_from_wikidata_tag(reported_errors, area_code):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikipedia from wikidata tag'])
     if errors_for_removal == []:
         return
@@ -321,7 +325,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors):
         if data == None:
             continue
 
-        if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, "pl", detailed_verification_function_is_within_given_country) == False:
+        if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, area_code, detailed_verification_function_is_within_given_country) == False:
             announce_skipping_object_as_outside_area(e['osm_object_url'] + " (add_wikipedia_tag_from_wikidata_tag function)")
             continue
 
@@ -352,19 +356,19 @@ def has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_t
         print("no need to rerun bot edit, data was not yet updated")
         return True
 
-def handle_follow_wikipedia_redirect_where_target_matches_wikidata(reported_errors):
+def handle_follow_wikipedia_redirect_where_target_matches_wikidata(reported_errors, area_code):
     for e in reported_errors:
-        handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e)
+        handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code)
 
-def change_to_local_language(reported_errors):
+def change_to_local_language(reported_errors, area_code):
     for e in reported_errors:
-        change_to_local_language_single(e)
+        change_to_local_language_single(e, area_code)
 
-def run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, fix_function):
+def run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, fix_function):
     bot_edit_type = fix_function.__name__
     if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
         timestamp = int(time.time())
-        fix_function(reported_errors)
+        fix_function(reported_errors, area_code)
         database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
         connection.commit()
 
@@ -377,12 +381,13 @@ def main():
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
         if entry.get('language_code', None) == "pl":
+            area_code = "pl"
             print(internal_region_name, "botting")
             reported_errors = load_errors(cursor, internal_region_name)
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, add_wikipedia_tag_from_wikidata_tag)
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, add_wikidata_tag_from_wikipedia_tag)
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, handle_follow_wikipedia_redirect_where_target_matches_wikidata)
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, change_to_local_language)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, add_wikipedia_tag_from_wikidata_tag)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, add_wikidata_tag_from_wikipedia_tag)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, change_to_local_language)
         if 'USA' in entry.get('merged_into', []):
             print("USA!", internal_region_name, "handle_follow_wikipedia_redirect is planned")
 
