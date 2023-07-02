@@ -361,6 +361,7 @@ def main():
     for entry in config.get_entries_to_process():
         if entry.get('language_code', None) == "pl":
             internal_region_name = entry["internal_region_name"]
+            print(internal_region_name, "botting")
             reported_errors = load_errors(cursor, internal_region_name)
 
             bot_edit_type = "add_wikipedia_tag_from_wikidata_tag"
