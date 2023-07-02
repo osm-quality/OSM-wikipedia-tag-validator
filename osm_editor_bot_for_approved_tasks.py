@@ -105,7 +105,7 @@ def desired_wikipedia_target_from_report(e):
         raise Exception("Expected wikipedia tag to be provided")
     return desired
 
-def handle_follow_wikipedia_redirect(e):
+def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
     data = get_and_verify_data(e)
@@ -125,7 +125,7 @@ def handle_follow_wikipedia_redirect(e):
     source = "wikidata, OSM"
     osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, osm_wiki_documentation_page, type, data, source)
 
-def change_to_local_language(e):
+def change_to_local_language_single(e):
     if e['error_id'] != 'wikipedia tag unexpected language':
         return
     data = get_and_verify_data(e)
@@ -352,6 +352,22 @@ def has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_t
         print("no need to rerun bot edit, data was not yet updated")
         return True
 
+def handle_follow_wikipedia_redirect_where_target_matches_wikidata(reported_errors):
+    for e in reported_errors:
+        handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e)
+
+def change_to_local_language(reported_errors):
+    for e in reported_errors:
+        change_to_local_language_single(e)
+
+def run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, fix_function):
+    bot_edit_type = fix_function.__name__
+    if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
+        timestamp = int(time.time())
+        fix_function(reported_errors)
+        database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
+        connection.commit()
+
 def main():
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     connection = sqlite3.connect(config.database_filepath())
@@ -359,40 +375,16 @@ def main():
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     for entry in config.get_entries_to_process():
+        internal_region_name = entry["internal_region_name"]
         if entry.get('language_code', None) == "pl":
-            internal_region_name = entry["internal_region_name"]
             print(internal_region_name, "botting")
             reported_errors = load_errors(cursor, internal_region_name)
-
-            bot_edit_type = "add_wikipedia_tag_from_wikidata_tag"
-            if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
-                timestamp = int(time.time())
-                add_wikipedia_tag_from_wikidata_tag(reported_errors)
-                database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
-                connection.commit()
-
-            bot_edit_type = "add_wikidata_tag_from_wikipedia_tag"
-            if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
-                timestamp = int(time.time())
-                add_wikidata_tag_from_wikipedia_tag(reported_errors)
-                database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
-                connection.commit()
-
-            bot_edit_type = "handle_follow_wikipedia_redirect"
-            if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
-                timestamp = int(time.time())
-                for e in reported_errors:
-                    handle_follow_wikipedia_redirect(e)
-                database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
-                connection.commit()
-
-            bot_edit_type = "change_to_local_language"
-            if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
-                timestamp = int(time.time())
-                for e in reported_errors:
-                    change_to_local_language(e)
-                database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
-                connection.commit()
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, add_wikipedia_tag_from_wikidata_tag)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, add_wikidata_tag_from_wikipedia_tag)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, handle_follow_wikipedia_redirect_where_target_matches_wikidata)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, change_to_local_language)
+        if 'USA' in entry.get('merged_into', []):
+            print("USA!", internal_region_name, "handle_follow_wikipedia_redirect is planned")
 
 if __name__ == '__main__':
     main()
