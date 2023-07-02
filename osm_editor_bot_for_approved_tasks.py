@@ -7,6 +7,7 @@ import osm_handling_config.global_config as osm_handling_config
 from wikibrain import wikimedia_link_issue_reporter
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
+from geopy.exc import GeocoderServiceError
 import sqlite3
 import json
 import config
@@ -29,6 +30,9 @@ def get_nominatim_country_code(lat, lon):
         print(returned)
     except GeocoderTimedOut:
         osm_bot_abstraction_layer.sleep(20)
+        return get_nominatim_country_code(lat, lon)
+    except GeocoderServiceError:
+        osm_bot_abstraction_layer.sleep(200)
         return get_nominatim_country_code(lat, lon)
     if "address" not in returned:
         print(returned)
