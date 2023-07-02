@@ -40,6 +40,19 @@ def main():
 
     # Create challenge
 
+    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a coat of arms"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a coat of arms"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikidata to a coat of arms"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+    exit()
+
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     for name in generate_webpage_with_error_output.for_review():
