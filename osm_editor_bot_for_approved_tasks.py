@@ -148,6 +148,7 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, are
 def change_to_local_language_single(e, area_code, automatic_status=None):
     if automatic_status == None:
         automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
+        raise NotImplementedError
     else:
         raise NotImplementedError
     if e['error_id'] != 'wikipedia tag unexpected language':
