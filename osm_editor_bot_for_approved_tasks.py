@@ -112,9 +112,12 @@ def desired_wikipedia_target_from_report(e):
         raise Exception("Expected wikipedia tag to be provided")
     return desired
 
-def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code):
+def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code, automatic_status = None):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
+    if automatic_status == None:
+        automatic_status = osm_bot_abstraction_layer.fully_automated_description()
+
     data = get_and_verify_data(e)
     if data == None:
         return None
@@ -125,14 +128,21 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, are
     reason = ", as current tag is a redirect and the new page matches present wikidata"
     comment = fit_wikipedia_edit_description_within_character_limit_changed(now, new, reason)
     data['tag']['wikipedia'] = new
-    discussion_url = "https://forum.openstreetmap.org/viewtopic.php?id=59649"
-    osm_wiki_documentation_page = "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_Poland"
-    automatic_status = osm_bot_abstraction_layer.fully_automated_description()
+    discussion_urls = {
+        "pl": "https://forum.openstreetmap.org/viewtopic.php?id=59649",
+    }
+    osm_wiki_page_urls = {
+        "pl": "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_Poland",
+    }
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata, OSM"
-    osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, osm_wiki_documentation_page, type, data, source)
+    osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], type, data, source)
 
-def change_to_local_language_single(e, area_code):
+def change_to_local_language_single(e, area_code, automatic_status=None):
+    if automatic_status == None:
+        automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
+    else:
+        raise NotImplementedError
     if e['error_id'] != 'wikipedia tag unexpected language':
         return
     data = get_and_verify_data(e)
@@ -173,7 +183,6 @@ def change_to_local_language_single(e, area_code):
     data['tag']['wikipedia'] = new
     discussion_url = None
     #osm_wiki_documentation_page = 
-    automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata, OSM"
     osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, osm_wiki_documentation_page, type, data, source)
@@ -268,18 +277,25 @@ def announce_skipping_object_as_outside_area(osm_object_url):
     print()
     print()
 
-def add_wikidata_tag_from_wikipedia_tag(reported_errors, area_code):
+def add_wikidata_tag_from_wikipedia_tag(reported_errors, area_code, automatic_status = None):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikidata from wikipedia tag'])
     if errors_for_removal == []:
         return
-    automatic_status = osm_bot_abstraction_layer.fully_automated_description()
+    if automatic_status == None:
+        automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
+    else:
+        raise NotImplementedError
     affected_objects_description = ""
     comment = "add wikidata tag based on wikipedia tag"
-    discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59925'
-    osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikidata_tags_based_on_wikipedia_tags_in_Poland'
-    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url, osm_wiki_page_url)
+    discussion_urls = {
+        'pl': 'https://forum.openstreetmap.org/viewtopic.php?id=59925'
+    }
+    osm_wiki_page_urls = {
+        "pl": 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikidata_tags_based_on_wikipedia_tags_in_Poland'
+    }
+    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code])
     source = "wikidata, OSM"
-    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
+    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], source)
     started_changeset = False
 
     for e in errors_for_removal:
@@ -311,18 +327,26 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors, area_code):
         api.ChangesetClose()
         osm_bot_abstraction_layer.sleep(60)
 
-def add_wikipedia_tag_from_wikidata_tag(reported_errors, area_code):
+def add_wikipedia_tag_from_wikidata_tag(reported_errors, area_code, automatic_status=None):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikipedia from wikidata tag'])
     if errors_for_removal == []:
         return
-    automatic_status = osm_bot_abstraction_layer.fully_automated_description()
+    if automatic_status == None:
+        automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
+    else:
+        raise NotImplementedError
+    # osm_bot_abstraction_layer.manually_reviewed_description()
     affected_objects_description = ""
     comment = "add wikipedia tag based on wikidata tag"
-    discussion_url = 'https://forum.openstreetmap.org/viewtopic.php?id=59888'
-    osm_wiki_page_url = 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_tags_based_on_wikidata_tags_in_Poland'
-    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_url, osm_wiki_page_url)
+    discussion_urls = {
+        "pl": 'https://forum.openstreetmap.org/viewtopic.php?id=59888',
+    }
+    osm_wiki_page_urls = {
+        "pl": 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_tags_based_on_wikidata_tags_in_Poland'
+    }
+    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code])
     source = "wikidata, OSM"
-    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_url, osm_wiki_page_url, source)
+    builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], source)
     started_changeset = False
 
     for e in errors_for_removal:
@@ -361,19 +385,19 @@ def has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_t
         print("no need to rerun bot edit, data was not yet updated")
         return True
 
-def handle_follow_wikipedia_redirect_where_target_matches_wikidata(reported_errors, area_code):
+def handle_follow_wikipedia_redirect_where_target_matches_wikidata(reported_errors, area_code, automatic_status = None):
     for e in reported_errors:
-        handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code)
+        handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code, automatic_status)
 
-def change_to_local_language(reported_errors, area_code):
+def change_to_local_language(reported_errors, area_code, automatic_status = None):
     for e in reported_errors:
-        change_to_local_language_single(e, area_code)
+        change_to_local_language_single(e, area_code, automatic_status)
 
-def run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, fix_function):
+def run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, fix_function, automatic_status = None):
     bot_edit_type = fix_function.__name__
     if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
         timestamp = int(time.time())
-        fix_function(reported_errors, area_code)
+        fix_function(reported_errors, area_code, automatic_status)
         database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
         connection.commit()
 
