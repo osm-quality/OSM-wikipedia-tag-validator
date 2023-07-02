@@ -341,7 +341,7 @@ def generate_subregion_list(source, admin_level):
     for osm_data in data:
         returned += generate_entry_for_specific_subregion(source, osm_data)
         returned += "\n"
-    print(returned)
+    #print(returned)
     return returned
 
 def generate_internal_name(local, english, polish):
@@ -364,8 +364,8 @@ def generate_website_name(local, english, polish):
     return website_main_title_part.replace("/", "|").replace("\\", "|")
 
 def generate_entry_for_specific_subregion(source, osm_data):
-    print(source)
-    print(osm_data)
+    #print(source)
+    #print(osm_data)
     internal_name = generate_internal_name(osm_data["name"], osm_data["name:en"], osm_data["name:pl"])
     website_main_title_part = generate_website_name(osm_data["name"], osm_data["name:en"], osm_data["name:pl"])
 

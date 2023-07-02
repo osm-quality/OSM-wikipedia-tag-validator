@@ -117,8 +117,6 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, are
         return None
     if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, area_code, detailed_verification_function_is_within_given_country) == False:
         announce_skipping_object_as_outside_area(e['osm_object_url']+" (handle_follow_wikipedia_redirect funtion)")
-    else:
-        print(e['osm_object_url'], "element eligible for edit, within expected area")
     now = data['tag']['wikipedia']
     new = desired_wikipedia_target_from_report(e)
     reason = ", as current tag is a redirect and the new page matches present wikidata"
