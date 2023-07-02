@@ -204,7 +204,7 @@ def very_rough_verification_function_is_within_given_country_prefers_false_negat
 
 def check_with_nominatim_is_within_given_country(root_osm_object_url, lat, lon, target_country, debug):
     if debug:
-        print(lat, lon, "- part of", root_osm_object_url, "was classified as possibly outside - running nominatim to check", target_country)
+        print(lat, lon, "- part of", root_osm_object_url, "was classified as possibly outside based on heuristic - running nominatim to check fully", target_country)
     if get_nominatim_country_code(lat, lon) == target_country:
         return True
     else:
