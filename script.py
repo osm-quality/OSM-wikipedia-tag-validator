@@ -11,6 +11,7 @@ import os
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
 import time
 import osm_editor_bot_for_approved_tasks
+import random
 
 def main():
     osm_editor_bot_for_approved_tasks.main()
@@ -23,10 +24,15 @@ def main():
     update_validator_database_and_reports()
 
 def check_database_integrity(cursor):
-    cursor.execute("PRAGMA integrity_check;")
-    info = cursor.fetchall()
-    if (info != [('ok',)]):
-        raise
+    if random.random() < 0.1:
+        print("started database integrity check (expensive, not always done - there is some random chance)")
+        cursor.execute("PRAGMA integrity_check;")
+        info = cursor.fetchall()
+        if (info != [('ok',)]):
+            raise
+        print("completed database integrity check")
+    else:
+        print("skipping expensive database integrity check (random chance)")
 
 def update_validator_database_and_reports():
     connection = sqlite3.connect(config.database_filepath())
