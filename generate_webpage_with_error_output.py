@@ -862,7 +862,7 @@ def write_index_and_merged_entries(cursor):
     generate_shared_test_results_page(cursor, all_timestamps)
 
 def generate_shared_test_results_page(cursor, all_timestamps):
-    query = "SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> ''"
+    query = "SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id FROM osm_data WHERE validator_complaint IS NOT NULL AND validator_complaint <> '' AND download_timestamp > 1688299417"
     query_parameters = {}
     reports_data = query_to_reports_data(cursor, query, query_parameters)
     filepath = config.get_report_directory() + '/' + "all merged - test.html"
