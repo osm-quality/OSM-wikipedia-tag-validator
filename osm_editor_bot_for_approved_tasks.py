@@ -13,6 +13,7 @@ import json
 import config
 import database
 import time
+import osm_bot_abstraction_layer.human_verification_mode as human_verification_mode
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -127,7 +128,13 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, are
     new = desired_wikipedia_target_from_report(e)
     reason = ", as current tag is a redirect and the new page matches present wikidata"
     comment = fit_wikipedia_edit_description_within_character_limit_changed(now, new, reason)
+    human_verification_mode.smart_print_tag_dictionary(data['tag'])
+    print()
     data['tag']['wikipedia'] = new
+    human_verification_mode.smart_print_tag_dictionary(data['tag'])
+    if automatic_status == osm_bot_abstraction_layer.manually_reviewed_description():
+        if human_verification_mode.is_human_confirming(e['osm_object_url']) == False:
+            return
     discussion_urls = {
         "pl": "https://forum.openstreetmap.org/viewtopic.php?id=59649",
     }
@@ -256,6 +263,15 @@ def is_location_clearly_inside_territory(lat, lon, target_country):
         if lon <= 25.137:
             return False
         return True
+    elif target_country == "usa":
+        # http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273
+        if lon >= -122.921906:
+            if lon <= -95.405273:
+                if lat >= 32.990236:
+                    if lat <= 48.995537:
+                        return True
+        print("is_location_clearly_inside_territory should be smarter for USA")
+        return False
     else:
         raise "unimplemented"
     raise
@@ -267,6 +283,9 @@ def is_location_possibly_outside_territory(lat, lon, target_country):
                 if lon < 22.643:
                     if lon > 15.128:
                         return False 
+    elif target_country == "usa":
+        return False 
+        print("is_location_possibly_outside_territory should be smarter for USA")
     else:
         raise "unimplemented"
     return True
@@ -407,6 +426,23 @@ def main():
     cursor = connection.cursor()
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
+    print("finish https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_USA")
+    print("usa bbox checker add")
+    print("run bot manually in USA for some example edits")
+    print("https://community.openstreetmap.org/t/propozycja-automatycznej-edycji-tagi-wikidata-co-sa-przekierowaniami/7727")
+
+    for entry in config.get_entries_to_process():
+        internal_region_name = entry["internal_region_name"]
+        if 'USA' in entry.get('merged_into', []):
+            if internal_region_name in ["Alabama", "Alaska", "Arizona"]:
+                continue
+            if internal_region_name not in ["California"]:
+                continue
+            area_code = "usa"
+            reported_errors = load_errors(cursor, internal_region_name)
+            print("USA!", internal_region_name, "handle_follow_wikipedia_redirect is planned")
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status = osm_bot_abstraction_layer.manually_reviewed_description())
+
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
         if entry.get('language_code', None) == "pl":
@@ -416,9 +452,11 @@ def main():
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, add_wikipedia_tag_from_wikidata_tag)
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, add_wikidata_tag_from_wikipedia_tag)
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata)
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, change_to_local_language)
-        if 'USA' in entry.get('merged_into', []):
-            print("USA!", internal_region_name, "handle_follow_wikipedia_redirect is planned")
+            
+            # what is the bot permission status here, actually?
+            #run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, change_to_local_language)
+
+
 
 if __name__ == '__main__':
     main()
