@@ -369,12 +369,14 @@ def main():
                 timestamp = int(time.time())
                 add_wikipedia_tag_from_wikidata_tag(reported_errors)
                 database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
+                connection.commit()
 
             bot_edit_type = "add_wikidata_tag_from_wikipedia_tag"
             if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
                 timestamp = int(time.time())
                 add_wikidata_tag_from_wikipedia_tag(reported_errors)
                 database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
+                connection.commit()
 
             bot_edit_type = "handle_follow_wikipedia_redirect"
             if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
@@ -382,6 +384,7 @@ def main():
                 for e in reported_errors:
                     handle_follow_wikipedia_redirect(e)
                 database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
+                connection.commit()
 
             bot_edit_type = "change_to_local_language"
             if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
@@ -389,6 +392,7 @@ def main():
                 for e in reported_errors:
                     change_to_local_language(e)
                 database.record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp)
+                connection.commit()
 
 if __name__ == '__main__':
     main()
