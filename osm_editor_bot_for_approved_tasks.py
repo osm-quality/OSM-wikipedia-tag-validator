@@ -24,6 +24,9 @@ def parsed_args():
 
 def get_nominatim_country_code(lat, lon):
     try:
+        # Nominatim is not cached as borders may change
+        # though offline geocoder or some caching may be smart...
+        # TODO
         osm_bot_abstraction_layer.sleep(3)
         geolocator = Nominatim(user_agent="Wikipedia Validator", timeout=15)
         returned = geolocator.reverse(str(lat) + ", " + str(lon)).raw
