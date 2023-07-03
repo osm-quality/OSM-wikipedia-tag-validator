@@ -56,10 +56,10 @@ def main():
 
     ]
     greenlit_groups_not_to_be_featured = [
-        # next 500+ reports
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a human',
     ]
     for_later = [
+
         # requires text descriptions
         # featurable, so after some featured are done
         'information board with wikidata tag, not subject:wikidata',
@@ -80,21 +80,21 @@ def main():
         'wikipedia wikidata mismatch',
 
         # may be confusing or raise protests
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a chain store',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a chain store',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a public transport network',
         "secondary wikidata tag links to 404", # look at that later - many should be reported as malformed
     ]
     already_uploaded = [
-        "wikipedia/wikidata type tag that is incorrect according to not:* tag",
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
-        "wikipedia tag links to 404",
-        "malformed wikipedia tag",
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
         'should use a secondary wikipedia tag - linking from wikidata tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical reality',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
+        "wikipedia/wikidata type tag that is incorrect according to not:* tag",
+        "wikipedia tag links to 404",
+        "malformed wikipedia tag",
         'information board with wikipedia tag, not subject:wikipedia',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
     ]
     for error_id in greenlit_groups:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = True)
@@ -222,17 +222,12 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
     # work around https://github.com/maproulette/maproulette3/issues/1563
     # overpass query cannot be changed
     # so we need to provide data manually
-    geojson_object = get_data_of_a_specific_error_id(error_id)
+    collected_data_for_use = get_data_of_a_specific_error_id(error_id)
+
     print("add_tasks_to_challenge")
     # prerequisites checked with live data
     # still, some may be marked on MR as too hard or invalid
     print(tasks_in_challenge)
-
-    candidates = []
-    print("provided by my data <")
-    for entry in geojson_object['features']:
-        candidates.append(entry['properties']['osm_link'])
-    print("> provided by my data")
 
     print("in MR already <")
     in_mr_already = {}
@@ -261,6 +256,12 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         # geojson object should not be compiled at that time
         # we should be able to skip/filter entries
         # and generate it only now...
+
+    candidates = []
+    print("provided by my data <")
+    for entry in collected_data_for_use:
+        candidates.append(entry['osm_object_url'])
+    print("> provided by my data")
 
     for present_url in in_mr_already.keys():
         if present_url not in candidates:
@@ -292,11 +293,34 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         # avoid readding any already in MR
         # what about ones in MR already, detected as problem, with newer date? List them I guess
 
+    geojson_object = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    for entry in collected_data_for_use:
+        if entry['osm_object_url'] in in_mr_already.keys():
+            # link was listed already and is in some state, not need to send it again
+            # though what about cases where user falsely claimed that something is fixed? TODO
+            # leave it for the future, I guess
+            pass
+        else:
+            if entry['geometry'] == 'point':
+                element = build_geojson_node_entry(entry['lon'], entry['lat'], entry['osm_object_url'], entry['error_message'], entry['tags'])
+                geojson_object["features"].append(element)
+            else:
+                element = build_geojson_way_entry(entry['way_coords'], entry['osm_object_url'], entry['error_message'], entry['tags'])
+                geojson_object["features"].append(element)
+            if len(tasks_in_challenge) > 0:
+                print(error_id, "for", entry['osm_object_url'], "should be added to MR - not adding right now as this is not properly tested")
+    print(geojson_object)
+    print(json.dumps(geojson_object, indent=4, sort_keys=True))
     if len(tasks_in_challenge) == 0:
         print("no tasks to view")
         print("so adding new ones is safe")
         print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
     else:
+        if(len(geojson_object["features"]) > 0):
+            raise "CHECK"
         print("figure out adding only new tasks to a challenge")
         print("nothing was added to an old challege even if something maybe could be")
 
@@ -308,7 +332,7 @@ def get_challenge_text_based_on_error_id(error_id):
     ]:
         if "should use a secondary wikipedia tag - linking from " + from_tags + " tag to " in error_id:
             what = error_id.replace("should use a secondary wikipedia tag - linking from " + from_tags + " tag to ", "")
-            challenge_name = from_tags + " tag linking to " + what + " - should use secondary wikipedia/wikidata tag"
+            challenge_name = from_tags + " tag linking to " + what + " - should use secondary " + from_tags + " tag"
             challenge_description = """Things like """ + what + """ are never directly linkable from wikidata/wikipedia tags - they can be linked in some cases from properly prefixed secondary tags (for example subject:wikipedia to link subject of a sculpture - wikipedia tag is for linking article about sculpture itself, not about what it is depicting)
             
 See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links%20and%20https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links
@@ -373,7 +397,25 @@ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Kon
         challenge_instructions = instructions_for_404_wikipedia_challenge()
         changeset_action = "fixing links to nonexisting wikipedia articles"
         return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
+    if error_id == "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags":
+        challenge_name = "mismatch: brand:wikipedia links disambiguation page, brand:wikidata does not"
+        challenge_description = """`wikipedia` or `brand:wikipedia` and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `brand:wikidata` not linking disambiguation page and being more likely to be valid
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
+        # TODO synchronize with my own website, I guess
+        challenge_instructions = """`wikipedia` or `brand:wikipedia` and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `brand:wikidata` not linking disambiguation page and being more likely to be valid
+
+review whether links actually mismatch and is `brand:wikidata` correct one
+
+in vast majority cases `brand:wikipedia` should be updated to match `brand:wikidata` - though `brand:wikidata` may be also invalid
+
+(some people prefer to use only `brand:wikidata`)
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
+        changeset_action = "fixing links to disambiguation page"
+        return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
     else:
+        print(error_id)
         raise Unsupported # TODO find proper exception
 
 def instructions_for_mislinked_object_type(what, from_tags):
@@ -388,7 +430,7 @@ as thing such as """ + what + """ is not being mapped in Wikipedia it is extreme
 
 it likely should be changed into """ + new_tag_form + """
 
-for example historic=memorial commemorating """ + what + """ should link article about it using subject:wikipedia / subject:wikidata - as article is about subject of memorial, not about memorial itself]
+for example `historic=memorial` commemorating """ + what + """ should link article about it using `subject:wikipedia` / `subject:wikidata` - as article is about subject of memorial, not about memorial itself]
 
 (if article would be about memorial then linking it in main wikipedia/wikidata tag is fine)
 
@@ -498,10 +540,7 @@ def setup_project(project_api, user_id):
 def get_data_of_a_specific_error_id(report_id):
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
-    geojson_object = {
-        "type": "FeatureCollection",
-        "features": []
-    }
+    collected_data_for_use = []
     for name in generate_webpage_with_error_output.for_review():
         if name != report_id:
             #print("skipping", name, "for now")
@@ -509,9 +548,6 @@ def get_data_of_a_specific_error_id(report_id):
         reports = get_reports_with_specific_error_id(cursor, name)
         print("calling get_reports_with_specific_error_id:", name, len(reports), "entries")
         for entry in reports:
-            if "way" in entry['osm_object_url']:
-                print("skipping way")
-                continue
             if "relation" in entry['osm_object_url']:
                 print("skipping relation")
                 continue
@@ -536,24 +572,27 @@ def get_data_of_a_specific_error_id(report_id):
                 error_message = entry['error_message']
                 if error_message == "":
                     error_message = None
-                element = build_geojson_node_entry(lon, lat, entry['osm_object_url'], error_message, entry['tags'])
-                geojson_object["features"].append(element)
+                collected_data_for_use.append({"lon": lon, "lat": lat, "geometry": "point", "osm_object_url": entry['osm_object_url'], 'error_message': error_message, 'tags': entry['tags']})
             elif "way" in entry['osm_object_url']:
                 # currently skipped early, see above
                 print(live_osm_data['nd'], "are nodes within a way")
+                way_coords = []
+                for node_id in live_osm_data['nd']:
+                    live_node_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link("https://openstreetmap.org/node/" + str(node_id))
+                    print("we should get node location")
+                    print(live_node_osm_data['lat'], live_node_osm_data['lon'])
+                    way_coords.append({'lat': live_node_osm_data['lat'], 'lon': live_node_osm_data['lon']})
+                # way vs area... TODO
+                collected_data_for_use.append({"way_coords": way_coords, "geometry": "way", "osm_object_url": entry['osm_object_url'], 'error_message': error_message, 'tags': entry['tags']})
             else:
                 print("skipping", entry['osm_object_url'])
-
     connection.close()
-    return geojson_object
+    return collected_data_for_use
 
-def build_geojson_node_entry(lon, lat, osm_object_url, error_message, tag_dictionary)
+def build_geojson_entry(geometry, osm_object_url, error_message, tag_dictionary):
     element = {
         "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [lon, lat], # [longitude, latitude] 
-        },
+        "geometry": geometry,
         "properties": {
             "osm_link": osm_object_url,
         }
@@ -564,6 +603,29 @@ def build_geojson_node_entry(lon, lat, osm_object_url, error_message, tag_dictio
         element['properties'][tag_key] = tag_dictionary[tag_key]
     return element
 
+def build_geojson_node_entry(lon, lat, osm_object_url, error_message, tag_dictionary):
+    geometry = build_geojson_node_geometry(lon, lat)
+    return build_geojson_entry(geometry, osm_object_url, error_message, tag_dictionary)
+
+def build_geojson_way_entry(way_coords, osm_object_url, error_message, tag_dictionary):
+    geometry = build_geojson_way_geometry(way_coords)
+    return build_geojson_entry(geometry, osm_object_url, error_message, tag_dictionary)
+
+def build_geojson_node_geometry(lon, lat):
+    return {
+            "type": "Point",
+            "coordinates": [lon, lat], # [longitude, latitude] 
+        }
+
+def build_geojson_way_geometry(way_coords):
+    returned = {
+            "type": "LineString",
+            "coordinates": [],
+        }
+    for entry in way_coords:
+        returned['coordinates'].append([entry['lon'], entry['lat']])
+    return returned
+
 def get_challenge_tasks(challenge_api, challenge_id):
     returned = []
     while True:
@@ -572,6 +634,7 @@ def get_challenge_tasks(challenge_api, challenge_id):
             limit = 500
             while True:
                 response = challenge_api.get_challenge_tasks(challenge_id, limit=limit, page=page)
+                page += 1
                 if response["status"] != 200:
                     raise
                 data = response["data"]
