@@ -46,85 +46,65 @@ def main():
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
 
-    for name in generate_webpage_with_error_output.for_review():
-        reports = get_reports_with_specific_error_id(cursor, name)
-        print("calling get_reports_with_specific_error_id:", name, len(reports), "- entries")
-    connection.close()
+    # fails, seems due to MR bug
+    #set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, 'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human', False)
 
-    set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, 'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human', False)
-    exit()
     greenlit_groups = [
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
         # candidate
         
         # temporary commenting out
-        #"wikipedia tag links to 404",
-        #"malformed wikipedia tag",
-        #'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
-        #'should use a secondary wikipedia tag - linking from wikidata tag to a human',
 
-        # for later
-        #'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
+    ]
+    greenlit_groups_not_to_be_featured = [
+        # next 500+ reports
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
+    ]
+    for_later = [
+        # requires text descriptions
+        # featurable, so after some featured are done
+        'information board with wikidata tag, not subject:wikidata',
+
+        # ideally: supply that known replacement
+        'blacklisted connection with known replacement',
+
+        # requires text descriptions
+        # no need to feature that
+        'malformed wikipedia tag - for operator prefixed tags',
+        'malformed wikipedia tag - for architect prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - for brand prefixed tags', # 22k entries [sic!]
+        'wikipedia wikidata mismatch',
+
+        # may be confusing or raise protests
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a chain store',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a public transport network',
+        "secondary wikidata tag links to 404", # look at that later - many should be reported as malformed
+    ]
+    already_uploaded = [
+        "wikipedia/wikidata type tag that is incorrect according to not:* tag",
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
+        "wikipedia tag links to 404",
+        "malformed wikipedia tag",
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a human',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical reality',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
+        'information board with wikipedia tag, not subject:wikipedia',
     ]
     for error_id in greenlit_groups:
-        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id)
+        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = True)
 
-    exit()
+    for error_id in greenlit_groups_not_to_be_featured:
+        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
 
-    error_id = "malformed wikidata tag"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+    show_candidate_reports(cursor, for_later, already_uploaded)
 
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a human"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a human"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikidata to a human"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a coat of arms"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a coat of arms"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikidata to a coat of arms"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a transport accident"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a transport accident"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikidata to a transport accident"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-    exit()
-
-
-    #error_id = "should use a secondary wikipedia tag - linking from wikipedia to a coat of arms"
-    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id)
-
-    #error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a coat of arms"
-    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id)
-
-    #error_id = "should use a secondary wikipedia tag - linking from wikidata to a coat of arms"
-    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id)
-    exit()
-
-    #error_id = "should use a secondary wikipedia tag - linking from wikipedia to a transport accident"
-    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id)
+    connection.close()
     exit()
 
 
@@ -156,6 +136,63 @@ def main():
     # https://github.com/osmlab/maproulette-python-client/blob/38920add1b95b9ec472e1653915faf9eebe2a6b9/maproulette/api/challenge.py#L269 - add_tasks_to_challenge
     # https://github.com/osmlab/maproulette-python-client/blob/0a3e4b68af7892700463c2afc66a1ae4dcbf0825/maproulette/models/challenge.py
 
+def show_candidate_reports(cursor, for_later, already_uploaded):
+    no_reports = 0
+    few_reports = 0
+    already_handled = 0
+    for name in generate_webpage_with_error_output.for_review():
+        if name in for_later:
+            continue
+        if name in already_uploaded:
+            already_handled += 1
+            continue
+        reports = get_reports_with_specific_error_id(cursor, name)
+        if len(reports) == 0:
+            no_reports += 1
+        elif len(reports) < 20:
+            few_reports += 1
+        else:
+            print("calling get_reports_with_specific_error_id:", name, "-", len(reports), "entries")
+    print(no_reports, "categories without reports")
+    print(few_reports, "categories with few reports")
+    print(already_handled, "already handled")
+    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a human"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikidata to a human"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a coat of arms"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a coat of arms"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikidata to a coat of arms"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a transport accident"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a transport accident"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    error_id = "should use a secondary wikipedia tag - linking from wikidata to a transport accident"
+    reports = get_reports_with_specific_error_id(cursor, error_id)
+    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
+
+    "should use a secondary wikipedia tag - linking from wikipedia to a coat of arms"
+    "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a coat of arms"
+    "should use a secondary wikipedia tag - linking from wikidata to a coat of arms"
+    "should use a secondary wikipedia tag - linking from wikipedia to a transport accident"
+
 def get_challenge_id_based_on_error_id(challenge_api, project_id, error_id):
     data = get_challenge_data_from_project(challenge_api, project_id)
     texts = get_challenge_text_based_on_error_id(error_id)
@@ -166,12 +203,12 @@ def get_challenge_id_based_on_error_id(challenge_api, project_id, error_id):
             challenge_id = challenge['id']
     return challenge_id
 
-def update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id):
+def update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured):
     challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
     if challenge_id == None:
-        create_link_challenge_based_on_error_id(challenge_api, project_id, error_id)
+        create_link_challenge_based_on_error_id(challenge_api, project_id, error_id, featured)
 
-        print(project_id, "is without challenge", challenge_name)
+        print(project_id, "is without challenge for", error_id)
         #print(data)
         raise "restart script after challenge creation I guess" # TODO do it properly 
 
@@ -270,7 +307,6 @@ def get_challenge_text_based_on_error_id(error_id):
         "wikidata",
     ]:
         if "should use a secondary wikipedia tag - linking from " + from_tags + " tag to " in error_id:
-            new_tag_form = None
             what = error_id.replace("should use a secondary wikipedia tag - linking from " + from_tags + " tag to ", "")
             challenge_name = from_tags + " tag linking to " + what + " - should use secondary wikipedia/wikidata tag"
             challenge_description = """Things like """ + what + """ are never directly linkable from wikidata/wikipedia tags - they can be linked in some cases from properly prefixed secondary tags (for example subject:wikipedia to link subject of a sculpture - wikipedia tag is for linking article about sculpture itself, not about what it is depicting)
@@ -283,6 +319,25 @@ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Kon
             changeset_action = "fixing primary link leading to " + what + " entry"
             return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
 
+    if error_id == 'information board with wikipedia tag, not subject:wikipedia':
+        raise ""
+    if error_id == "wikipedia/wikidata type tag that is incorrect according to not:* tag":
+        challenge_name = "Fix conflict involving not: prefixed tags"
+        challenge_description = """objects listed here have both not: prefixed tag describing that some other wikipedia-related tag is not applying and exactly this tag - this is self-contradictory and invalid"""
+        # TODO synchronize with my own website, I guess
+        challenge_instructions = """this object has both not: prefixed tag describing that some other wikipedia-related tag is not applying and exactly this tag
+
+one of them is invalid
+
+for example `species:wikipedia=en:Oak` and `not:species:wikipedia=en:Oak` should never be on the same object as they contradict each other
+
+in this cases it is necessary to investigate which tag is wrong - and remove one of them (or do more edits if necessary)
+
+REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong. Please review each entry rather than blindly retagging! If you start blindly editing, take a break.
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if something reported here is well formed link"""
+        changeset_action = "fix conflict involving not: prefixed tags"
+        return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
     if error_id == "malformed wikipedia tag":
         challenge_name = "Fix malformed wikipedia tags"
         challenge_description = """wikipedia tag is invalid and in form not matching expected one - should be rescued and fixed or deleted
@@ -322,6 +377,7 @@ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Kon
         raise Unsupported # TODO find proper exception
 
 def instructions_for_mislinked_object_type(what, from_tags):
+    new_tag_form = None
     if from_tags == "wikipedia and wikidata":
         new_tag_form = "subject:wikipedia and subject:wikidata"
     else:
@@ -369,9 +425,9 @@ Please fix other problems if you spot them! Often they will be far more valuable
 REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong, some are fixable but not in obvious ways. Please review each entry rather than blindly deleting! If you start blindly deleting, take a break.
 """
 
-def create_link_challenge_based_on_error_id(challenge_api, project_id, error_id):
+def create_link_challenge_based_on_error_id(challenge_api, project_id, error_id, featured):
     texts = get_challenge_text_based_on_error_id(error_id)
-    create_challenge(challenge_api, project_id, texts['challenge_name'], texts['challenge_description'], texts['challenge_instructions'], texts['changeset_action'])
+    create_challenge(challenge_api, project_id, texts['challenge_name'], texts['challenge_description'], texts['challenge_instructions'], texts['changeset_action'], featured)
 
 
 def create_challenge_model(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action, featured):
@@ -448,7 +504,7 @@ def get_data_of_a_specific_error_id(report_id):
     }
     for name in generate_webpage_with_error_output.for_review():
         if name != report_id:
-            print("skipping", name, "for now")
+            #print("skipping", name, "for now")
             continue
         reports = get_reports_with_specific_error_id(cursor, name)
         print("calling get_reports_with_specific_error_id:", name, len(reports), "entries")
@@ -477,20 +533,10 @@ def get_data_of_a_specific_error_id(report_id):
             if "node" in entry['osm_object_url']:
                 lon = entry['location']['lon']
                 lat = entry['location']['lat']
-                element = {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [lon, lat], # [longitude, latitude] 
-                    },
-                    "properties": {
-                        "osm_link": entry['osm_object_url'],
-                    }
-                }
-                if entry['error_message'] != "":
-                    element['properties']['error_message'] = entry['error_message']
-                for tag_key in entry['tags'].keys():
-                    element['properties'][tag_key] = entry['tags'][tag_key]
+                error_message = entry['error_message']
+                if error_message == "":
+                    error_message = None
+                element = build_geojson_node_entry(lon, lat, entry['osm_object_url'], error_message, entry['tags'])
                 geojson_object["features"].append(element)
             elif "way" in entry['osm_object_url']:
                 # currently skipped early, see above
@@ -501,18 +547,39 @@ def get_data_of_a_specific_error_id(report_id):
     connection.close()
     return geojson_object
 
+def build_geojson_node_entry(lon, lat, osm_object_url, error_message, tag_dictionary)
+    element = {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [lon, lat], # [longitude, latitude] 
+        },
+        "properties": {
+            "osm_link": osm_object_url,
+        }
+    }
+    if error_message != None:
+        element['properties']['error_message'] = error_message
+    for tag_key in tag_dictionary.keys():
+        element['properties'][tag_key] = tag_dictionary[tag_key]
+    return element
 
 def get_challenge_tasks(challenge_api, challenge_id):
     returned = []
     while True:
         try:
-            response = challenge_api.get_challenge_tasks(challenge_id, limit=10000, page=0) # limit 100 worked
-            if response["status"] != 200:
-                raise
-            data = response["data"]
-            for entry in data:
-                returned.append(entry)
-            return returned
+            page = 0
+            limit = 500
+            while True:
+                response = challenge_api.get_challenge_tasks(challenge_id, limit=limit, page=page)
+                if response["status"] != 200:
+                    raise
+                data = response["data"]
+                for entry in data:
+                    returned.append(entry)
+                print("fetching challenge tasks, processing page with", len(data), "entries")
+                if len(data) < limit:
+                    return returned
         except maproulette.api.errors.HttpError as e:
             print("get_challenge_tasks", e)
             time.sleep(10)
