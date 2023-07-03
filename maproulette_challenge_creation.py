@@ -8,7 +8,7 @@ import config
 import time
 
 # https://maproulette.org/admin/project/53065/challenge/40012
-
+# https://maproulette.org/admin/project/53065
 def main():
     api_key = None
     user_id = None
