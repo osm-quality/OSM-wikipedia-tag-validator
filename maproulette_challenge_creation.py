@@ -365,34 +365,25 @@ REMEMBER: This is on Maproluette rather than being done by bot because some of t
 please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if something reported here is well formed link"""
         changeset_action = "fix conflict involving not: prefixed tags"
         return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
+    if error_id == 'malformed wikipedia tag - for operator prefixed tags':
+        return model_for_malformed_wikipedia_tags("operator:wikipedia", "en:Kraków", "en", "London")
     if error_id == "malformed wikipedia tag":
-        challenge_name = "Fix malformed wikipedia tags"
-        challenge_description = """wikipedia tag is invalid and in form not matching expected one - should be rescued and fixed or deleted
+        return model_for_malformed_wikipedia_tags("wikipedia", "en:Kraków", "en", "London")
+    if error_id == "information board with wikidata tag, not subject:wikidata":
+        challenge_name = "Information board with wikidata tag rather subject:wikidata"
+        challenge_description = """for linking subject of information board please use `subject:wikidata` not `wikidata` (and `subject:wikipedia`, not `wikipedia`)
+
+`wikipedia` / `wikidata` would be valid if entry would be specifically about information board (please check is it happening and write to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if any such case exists!)
         
 please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
         # TODO synchronize with my own website, I guess
-        challenge_instructions = """expected format of wikipedia tag is wikipedia=en:Kraków 
+        challenge_instructions = """for linking subject of information board please use `subject:wikidata` not `wikidata` (and `subject:wikipedia`, not `wikipedia`)
 
-- language code
-- : separating it from
-- article title
-
-Sometimes it is malformed in various ways, for example:
-
-wikipedia=London
-should be
-wikipedia=en:London
-
-
-Very often it is fixable, though sometimes needs to be simply removed as invalid or not recoverable
-
-REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong. Please review each entry rather than blindly retagging! If you start blindly editing, take a break.
-
-please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if something reported here is well formed link"""
-        changeset_action = "fixing malformed links to wikipedia articles"
+`wikipedia` / `wikidata` would be valid if entry would be specifically about information board (please check is it happening and write to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if any such case exists!)
+        
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
+        changeset_action = "use subject:wikidata, not subject for linking topic of information board"
         return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
-    if error_id == "information board with wikidata tag, not subject:wikidata":
-        raise "support"
     if error_id == "wikipedia tag links to 404":
         challenge_name = "404 - fix Wikipedia links leading to an article which does not exist"
         challenge_description = """Wikipedia article linked from OSM object using wikipedia tag is missing and should be fixed
@@ -428,6 +419,34 @@ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Kon
     else:
         print(error_id)
         raise Unsupported # TODO find proper exception
+
+def model_for_malformed_wikipedia_tags(key, example_link, another_example_language, another_example_article):
+    challenge_name = "Fix malformed " + key + " tags"
+    challenge_description = key + """ tag is invalid and in form not matching expected one - should be rescued and fixed or deleted
+    
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
+    # TODO synchronize with my own website, I guess
+    challenge_instructions = """expected format of `""" + key + """` tag is `""" + key + "=" + example_link + """`
+
+Value must always contain:
+
+- language code
+- : separating it from
+- article title
+
+Sometimes it is malformed in various ways, for example:
+
+`""" + key """=""" + another_example_article + """`
+should be
+`""" + key + """=""" + another_example_language + """:""" + another_example_article + """`
+
+Very often it is fixable, though sometimes needs to be simply removed as invalid or not recoverable
+
+REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong. Please review each entry rather than blindly retagging! If you start blindly editing, take a break.
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if something reported here is well formed link"""
+    changeset_action = "fixing malformed links to wikipedia articles"
+    return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
 
 def instructions_for_mislinked_object_type(what, from_tags):
     new_subject_tag_form = None
