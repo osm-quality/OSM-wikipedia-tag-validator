@@ -12,6 +12,7 @@ import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstractio
 def main():
     api_key = None
     user_id = None
+    print("find random edits, get their authors and thank them/verify")
     print("figure out how to update challenge state (switching featured status, to allow many projects filled with tasks at once")
     with open('secret.json') as f:
         data = json.load(f)
@@ -34,6 +35,9 @@ def main():
     project_id = setup_project(project_api, user_id)
     # docs: https://github.com/osmlab/maproulette-python-client#getting-started
 
+    #geojson_object = 
+    #challenge_id = 40012
+    #print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
 
 
     # wikipedia tags linking to nonexisting pages in Germany (this time covers entire Germany)
@@ -56,9 +60,15 @@ def main():
 
     ]
     greenlit_groups_not_to_be_featured = [
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a human',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a vehicle model or class',
     ]
     for_later = [
+        # ready for featured ones
+        'should use a secondary wikipedia tag - linking from wikipedia tag to an animal or plant (and not an individual one)',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an animal or plant (and not an individual one)',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a chain store',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a general industry',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
 
         # requires text descriptions
         # featurable, so after some featured are done
@@ -71,38 +81,49 @@ def main():
         # no need to feature that
         'malformed wikipedia tag - for operator prefixed tags',
         'malformed wikipedia tag - for architect prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
-        'wikipedia wikidata mismatch - for brand prefixed tags', # 22k entries [sic!]
+        'wikipedia wikidata mismatch - for network prefixed tags',
+        'wikipedia wikidata mismatch - for operator prefixed tags',
+        'wikipedia wikidata mismatch - for brand prefixed tags', # 22k entries [sic!] - requires some special support to limit count of open ones to 1000 or something...
         'wikipedia wikidata mismatch',
 
         # may be confusing or raise protests
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a chain store',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a public transport network',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a public transport network',
         "secondary wikidata tag links to 404", # look at that later - many should be reported as malformed
     ]
+    already_uploaded_premium_update = [
+        "wikipedia tag links to 404",
+    ]
     already_uploaded = [
+        "malformed wikipedia tag",
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical reality',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
         'should use a secondary wikipedia tag - linking from wikidata tag to a human',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical reality',
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
-        "wikipedia tag links to 404",
-        "malformed wikipedia tag",
         'information board with wikipedia tag, not subject:wikipedia',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
     ]
+    show_candidate_reports(cursor, for_later, already_uploaded + already_uploaded_premium_update)
     for error_id in greenlit_groups:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = True)
 
     for error_id in greenlit_groups_not_to_be_featured:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
 
-    show_candidate_reports(cursor, for_later, already_uploaded)
+    for error_id in already_uploaded_premium_update:
+        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
+
+    # TODO reenable
+    #for error_id in already_uploaded:
+    #    update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
+
 
     connection.close()
     exit()
@@ -149,68 +170,43 @@ def show_candidate_reports(cursor, for_later, already_uploaded):
         reports = get_reports_with_specific_error_id(cursor, name)
         if len(reports) == 0:
             no_reports += 1
-        elif len(reports) < 20:
+        elif len(reports) < 50:
             few_reports += 1
         else:
             print("calling get_reports_with_specific_error_id:", name, "-", len(reports), "entries")
     print(no_reports, "categories without reports")
     print(few_reports, "categories with few reports")
     print(already_handled, "already handled")
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a human"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikidata to a human"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a coat of arms"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a coat of arms"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikidata to a coat of arms"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia to a transport accident"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a transport accident"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    error_id = "should use a secondary wikipedia tag - linking from wikidata to a transport accident"
-    reports = get_reports_with_specific_error_id(cursor, error_id)
-    print("calling get_reports_with_specific_error_id:", error_id, len(reports), "- entries")
-
-    "should use a secondary wikipedia tag - linking from wikipedia to a coat of arms"
-    "should use a secondary wikipedia tag - linking from wikipedia and wikidata to a coat of arms"
-    "should use a secondary wikipedia tag - linking from wikidata to a coat of arms"
-    "should use a secondary wikipedia tag - linking from wikipedia to a transport accident"
 
 def get_challenge_id_based_on_error_id(challenge_api, project_id, error_id):
     data = get_challenge_data_from_project(challenge_api, project_id)
     texts = get_challenge_text_based_on_error_id(error_id)
     challenge_name = texts['challenge_name']
     challenge_id = None
+    print()
     for challenge in data:
         if challenge["name"] == challenge_name: # TODO get challenge name here!
             challenge_id = challenge['id']
+        else:
+            print(challenge["name"])
+    print()
     return challenge_id
 
 def update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured):
     challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
+    challenge_name = get_challenge_text_based_on_error_id(error_id)['challenge_name']
     if challenge_id == None:
+        print(project_id, "is without challenge for")
+        print(error_id)
+        print("will be named")
+        print(challenge_name)
         create_link_challenge_based_on_error_id(challenge_api, project_id, error_id, featured)
-
-        print(project_id, "is without challenge for", error_id)
+        print(project_id, "was without challenge for", error_id)
+        time.sleep(5)
+        challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
         #print(data)
-        raise "restart script after challenge creation I guess" # TODO do it properly 
+        if challenge_id == None:
+            raise "restart script after challenge creation I guess" # TODO do it properly 
 
     tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id)
 
@@ -224,12 +220,9 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
     # so we need to provide data manually
     collected_data_for_use = get_data_of_a_specific_error_id(error_id)
 
-    print("add_tasks_to_challenge")
     # prerequisites checked with live data
     # still, some may be marked on MR as too hard or invalid
-    print(tasks_in_challenge)
 
-    print("in MR already <")
     in_mr_already = {}
     # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L198
     # 0 = Created, 1 = Fixed, 2 = False Positive, 3 = Skipped, 4 = Deleted, 5 = Already Fixed, 6 = Too Hard
@@ -250,18 +243,18 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         if status != STATUS_CREATED and status != STATUS_FIXED and status != STATUS_SKIPPED and status != STATUS_DELETED and status != 5:
             if status == 2:
                 print("False positive", link)
-            if status == 6:
+            elif status == 6:
                 print("Too hard", link)
+            else:
+                raise "unexpected"
         # TODO
         # geojson object should not be compiled at that time
         # we should be able to skip/filter entries
         # and generate it only now...
 
     candidates = []
-    print("provided by my data <")
     for entry in collected_data_for_use:
         candidates.append(entry['osm_object_url'])
-    print("> provided by my data")
 
     for present_url in in_mr_already.keys():
         if present_url not in candidates:
@@ -284,7 +277,18 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
             # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/task.py#L169
             print(in_mr_already[present_url]['id'])
             print(STATUS_DELETED)
-            task_api.update_task_status(in_mr_already[present_url]['id'], STATUS_DELETED, "", "", False)
+            try:
+                task_api.update_task_status(in_mr_already[present_url]['id'], STATUS_DELETED, "", "", False)
+            except maproulette.api.errors.HttpError as e:
+                print(e)
+                print(dir(e))
+                print(e.message)
+                print(e.status)
+                if e.message == "This task is locked by another user, cannot update status at this time.":
+                    # happens with entries just being edited
+                    pass
+                else:
+                    raise e
         # on one hand: entries present in MR, missing from my listing (delete them)
             # update status of specific task, including deletion
             # TODO important as the first step to update missing
@@ -308,21 +312,20 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
                 element = build_geojson_node_entry(entry['lon'], entry['lat'], entry['osm_object_url'], entry['error_message'], entry['tags'])
                 geojson_object["features"].append(element)
             else:
-                element = build_geojson_way_entry(entry['way_coords'], entry['osm_object_url'], entry['error_message'], entry['tags'])
+                element = build_geojson_way_entry(entry['way_ids'], entry['osm_object_url'], entry['error_message'], entry['tags'])
                 geojson_object["features"].append(element)
-            if len(tasks_in_challenge) > 0:
-                print(error_id, "for", entry['osm_object_url'], "should be added to MR - not adding right now as this is not properly tested")
-    print(geojson_object)
-    print(json.dumps(geojson_object, indent=4, sort_keys=True))
-    if len(tasks_in_challenge) == 0:
-        print("no tasks to view")
-        print("so adding new ones is safe")
+            #if (len(in_mr_already.keys()) > 0):
+                #if len(geojson_object["features"]) >= 10:
+                    #print(json.dumps(geojson_object, indent=4, sort_keys=True))
+                    #break # try to diagnose "requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    #print(challenge_id)
+    try:
         print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
-    else:
-        if(len(geojson_object["features"]) > 0):
-            raise "CHECK"
-        print("figure out adding only new tasks to a challenge")
-        print("nothing was added to an old challege even if something maybe could be")
+    except requests.exceptions.ConnectionError as e:
+        print(e)
+        print("will retry")
+        time.sleep(10)
+        print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
 
 def get_challenge_text_based_on_error_id(error_id):
     for from_tags in [
@@ -333,7 +336,7 @@ def get_challenge_text_based_on_error_id(error_id):
         if "should use a secondary wikipedia tag - linking from " + from_tags + " tag to " in error_id:
             what = error_id.replace("should use a secondary wikipedia tag - linking from " + from_tags + " tag to ", "")
             challenge_name = from_tags + " tag linking to " + what + " - should use secondary " + from_tags + " tag"
-            challenge_description = """Things like """ + what + """ are never directly linkable from wikidata/wikipedia tags - they can be linked in some cases from properly prefixed secondary tags (for example subject:wikipedia to link subject of a sculpture - wikipedia tag is for linking article about sculpture itself, not about what it is depicting)
+            challenge_description = """Things like """ + what + """ are never directly linkable from wikidata/wikipedia tags - they can be linked in some cases from properly prefixed secondary tags (for example `subject:wikipedia` to link subject of a sculpture - wikipedia tag is for linking article about sculpture itself, not about what it is depicting)
             
 See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links%20and%20https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links
 
@@ -388,6 +391,8 @@ REMEMBER: This is on Maproluette rather than being done by bot because some of t
 please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if something reported here is well formed link"""
         changeset_action = "fixing malformed links to wikipedia articles"
         return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
+    if error_id == "information board with wikidata tag, not subject:wikidata":
+        raise "support"
     if error_id == "wikipedia tag links to 404":
         challenge_name = "404 - fix Wikipedia links leading to an article which does not exist"
         challenge_description = """Wikipedia article linked from OSM object using wikipedia tag is missing and should be fixed
@@ -397,44 +402,55 @@ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Kon
         challenge_instructions = instructions_for_404_wikipedia_challenge()
         changeset_action = "fixing links to nonexisting wikipedia articles"
         return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
-    if error_id == "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags":
-        challenge_name = "mismatch: brand:wikipedia links disambiguation page, brand:wikidata does not"
-        challenge_description = """`wikipedia` or `brand:wikipedia` and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `brand:wikidata` not linking disambiguation page and being more likely to be valid
+   
+    prefix = "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for "
+    suffix = " prefixed tags"
+    if error_id.startswith(prefix):
+        if error_id.endswith(suffix):
+            what = error_id.replace(prefix, "")
+            what = what.replace(suffix, "")
+            challenge_name = "mismatch: " + what + ":wikipedia links disambiguation page, " + what + ":wikidata does not"
+            challenge_description = """`wikipedia` or `""" + what + """:wikipedia` and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `""" + what + """:wikidata` not linking disambiguation page and being more likely to be valid
 
 please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
-        # TODO synchronize with my own website, I guess
-        challenge_instructions = """`wikipedia` or `brand:wikipedia` and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `brand:wikidata` not linking disambiguation page and being more likely to be valid
+            # TODO synchronize with my own website, I guess
+            challenge_instructions = """`wikipedia` or `""" + what + """:wikipedia` and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `""" + what + """:wikidata` not linking disambiguation page and being more likely to be valid
 
-review whether links actually mismatch and is `brand:wikidata` correct one
+review whether links actually mismatch and is `""" + what + """:wikidata` correct one
 
-in vast majority cases `brand:wikipedia` should be updated to match `brand:wikidata` - though `brand:wikidata` may be also invalid
+in vast majority cases `""" + what + """:wikipedia` should be updated to match `""" + what + """:wikidata` - though `""" + what + """:wikidata` may be also invalid
 
-(some people prefer to use only `brand:wikidata`)
+(some people prefer to use only `""" + what + """:wikidata`)
 
 please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
-        changeset_action = "fixing links to disambiguation page"
-        return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
+            changeset_action = "fixing links to disambiguation page"
+            return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
     else:
         print(error_id)
         raise Unsupported # TODO find proper exception
 
 def instructions_for_mislinked_object_type(what, from_tags):
-    new_tag_form = None
+    new_subject_tag_form = None
+    new_brand_tag_form = None
     if from_tags == "wikipedia and wikidata":
-        new_tag_form = "subject:wikipedia and subject:wikidata"
+        new_subject_tag_form = "subject:wikipedia and subject:wikidata"
+        new_brand_tag_form = "brand:wikipedia and brand:wikidata"
     else:
-        new_tag_form = "subject:" + from_tags
+        new_subject_tag_form = "subject:" + from_tags
+        new_brand_tag_form = "brand:" + from_tags
     return """Wikipedia article or wikidata entry linked from OSM object using wikipedia tag is not about something expected to be directly linkable
         
 as thing such as """ + what + """ is not being mapped in Wikipedia it is extremely unlikely that this """ + from_tags + """ tag is valid
 
-it likely should be changed into """ + new_tag_form + """
+it likely should be changed into """ + new_subject_tag_form + """
 
 for example `historic=memorial` commemorating """ + what + """ should link article about it using `subject:wikipedia` / `subject:wikidata` - as article is about subject of memorial, not about memorial itself]
 
 (if article would be about memorial then linking it in main wikipedia/wikidata tag is fine)
 
-See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links%20and%20https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links for overview of possibilities
+for example `shop=supermarket` should no link company article with """ + from_tags + """ but rather with """ + new_brand_tag_form + """.
+
+See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links%20and%20https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links for overview of possibilities - there are ones for linking taxons, species, operators... 
 
 in some cases """ + from_tags + """ tags should be simply removed if they are simply wrong or about entire class of object
 
@@ -494,11 +510,11 @@ def create_challenge_model(challenge_api, project_id, challenge_name, challenge_
 
 def create_challenge(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action, featured):
     challenge_data = create_challenge_model(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action, featured)
-    print(json.dumps(challenge_api.create_challenge(challenge_data), indent=4, sort_keys=True))
+    print("challenge creation response", json.dumps(challenge_api.create_challenge(challenge_data), indent=4, sort_keys=True))
 
 def update_challenge(challenge_api, project_id, challenge_id, challenge_name, challenge_description, challenge_instructions, changeset_action, featured):
     challenge_data = create_challenge_model(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action, featured)
-    print(json.dumps(update_challenge.update_challenge(challenge_id, challenge_data.to_json()), indent=4, sort_keys=True))
+    print("challenge update response", json.dumps(update_challenge.update_challenge(challenge_id, challenge_data.to_json()), indent=4, sort_keys=True))
 
 def set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, featured_status):
     # seems to be not working at all anyway...
@@ -511,7 +527,7 @@ def set_featured_status_for_challenge_for_given_error_id(challenge_api, project_
     challenge_data = create_challenge_model(challenge_api, project_id, texts['challenge_name'], texts['challenge_description'], texts['challenge_instructions'], texts['changeset_action'], featured_status)
     #challenge_data.featured = featured_status
     #challenge_data.max_zoom = 22
-    print(challenge_data.featured)
+    print("requested features status", challenge_data.featured)
     print(json.dumps(challenge_data.to_json(), indent=4, sort_keys=True))
     print(json.dumps(challenge_api.update_challenge(challenge_id, challenge_data.to_json()), indent=4, sort_keys=True))
 
@@ -530,7 +546,6 @@ def setup_project(project_api, user_id):
         projects = get_matching_maproulette_projects(project_api, my_project_name, user_id)
     else:
         print("project exists")
-        #print(json.dumps(projects, indent=4, sort_keys=True))
     if projects[0]["deleted"]:
         raise "project is deleted!" # TODO what about archived
 
@@ -543,7 +558,6 @@ def get_data_of_a_specific_error_id(report_id):
     collected_data_for_use = []
     for name in generate_webpage_with_error_output.for_review():
         if name != report_id:
-            #print("skipping", name, "for now")
             continue
         reports = get_reports_with_specific_error_id(cursor, name)
         print("calling get_reports_with_specific_error_id:", name, len(reports), "entries")
@@ -560,32 +574,44 @@ def get_data_of_a_specific_error_id(report_id):
             #print(entry['prerequisite'])
             live_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link(entry['osm_object_url'])
             if live_osm_data == None: # deleted
+                rowid_in_osm_data = entry['rowid'] # modified, usually not present there
+                # also update data table if we checked correctness...
+                cursor.execute("""
+                UPDATE osm_data
+                SET validator_complaint = :validator_complaint, error_id = :error_id
+                WHERE rowid = :rowid""",
+                {"validator_complaint": "", "error_id": "", "rowid": rowid_in_osm_data}
+                )
+                print(entry['osm_object_url'], "is deleted, marking error as gone")
+                # TODO - delete row?
                 continue
             #print(live_osm_data)
             #print(json.dumps(live_osm_data, indent=4, sort_keys=True))
             if osm_bot_abstraction_layer.prerequisite_failure_reason(entry['osm_object_url'], entry['prerequisite'], live_osm_data, prerequisite_failure_callback=None) != None:
-                # TODO: RECORD IT IN THE DATABASE!
+                rowid_in_osm_data = entry['rowid'] # modified, usually not present there
+                # also update data table if we checked correctness...
+                cursor.execute("""
+                UPDATE osm_data
+                SET validator_complaint = :validator_complaint, error_id = :error_id
+                WHERE rowid = :rowid""",
+                {"validator_complaint": "", "error_id": "", "rowid": rowid_in_osm_data}
+                )
+                print(entry['osm_object_url'], "is no longer applicable, marking error as gone")
                 continue
+            error_message = entry['error_message']
+            if error_message == "":
+                error_message = None
             if "node" in entry['osm_object_url']:
                 lon = entry['location']['lon']
                 lat = entry['location']['lat']
-                error_message = entry['error_message']
-                if error_message == "":
-                    error_message = None
                 collected_data_for_use.append({"lon": lon, "lat": lat, "geometry": "point", "osm_object_url": entry['osm_object_url'], 'error_message': error_message, 'tags': entry['tags']})
             elif "way" in entry['osm_object_url']:
                 # currently skipped early, see above
-                print(live_osm_data['nd'], "are nodes within a way")
-                way_coords = []
-                for node_id in live_osm_data['nd']:
-                    live_node_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link("https://openstreetmap.org/node/" + str(node_id))
-                    print("we should get node location")
-                    print(live_node_osm_data['lat'], live_node_osm_data['lon'])
-                    way_coords.append({'lat': live_node_osm_data['lat'], 'lon': live_node_osm_data['lon']})
                 # way vs area... TODO
-                collected_data_for_use.append({"way_coords": way_coords, "geometry": "way", "osm_object_url": entry['osm_object_url'], 'error_message': error_message, 'tags': entry['tags']})
+                collected_data_for_use.append({"way_ids": live_osm_data['nd'], "geometry": "way", "osm_object_url": entry['osm_object_url'], 'error_message': error_message, 'tags': entry['tags']})
             else:
                 print("skipping", entry['osm_object_url'])
+    connection.commit()
     connection.close()
     return collected_data_for_use
 
@@ -607,7 +633,12 @@ def build_geojson_node_entry(lon, lat, osm_object_url, error_message, tag_dictio
     geometry = build_geojson_node_geometry(lon, lat)
     return build_geojson_entry(geometry, osm_object_url, error_message, tag_dictionary)
 
-def build_geojson_way_entry(way_coords, osm_object_url, error_message, tag_dictionary):
+def build_geojson_way_entry(way_ids, osm_object_url, error_message, tag_dictionary):
+    way_coords = []
+    for node_id in way_ids:
+        live_node_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link("https://openstreetmap.org/node/" + str(node_id))
+        print(live_node_osm_data['lat'], live_node_osm_data['lon'])
+        way_coords.append({'lat': live_node_osm_data['lat'], 'lon': live_node_osm_data['lon']})
     geometry = build_geojson_way_geometry(way_coords)
     return build_geojson_entry(geometry, osm_object_url, error_message, tag_dictionary)
 
@@ -650,10 +681,13 @@ def get_challenge_tasks(challenge_api, challenge_id):
 def get_challenge_data_from_project(challenge_api, project_id):
 
     # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L95
-    response = challenge_api.get_challenge_listing(project_ids=project_id) # yes, stringified boolean
+    limit_send = 1000
+    response = challenge_api.get_challenge_listing(project_ids=project_id, only_enabled='false', limit=limit_send) # yes, stringified boolean
     if response["status"] != 200:
         raise
     data = response["data"]
+    if len(data) == limit_send:
+        raise "paginate"
     return data
 
 def get_matching_maproulette_projects(api, search_term, user_id):
@@ -674,6 +708,7 @@ def get_reports_with_specific_error_id(cursor, error_id):
         tags = json.loads(tags)
         validator_complaint = json.loads(validator_complaint)
         validator_complaint['location'] = {'lat': lat, 'lon': lon}
+        validator_complaint['rowid'] = rowid
         returned.append(validator_complaint)
     return returned
 
