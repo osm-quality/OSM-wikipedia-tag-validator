@@ -3,9 +3,9 @@ def create_table_if_needed(cursor):
         print("osm_data table exists already, delete file with database to recreate")
     else:
         # validator_complaint needs to hold
-        # - not checked
-        # - checked, no problem found
-        # - error data
+        # - not checked (NULL)
+        # - checked, no problem found ("")
+        # - error data (structured data)
         #
         # right now for "checked, no error" I plan to use empty string but I am not too happy
         cursor.execute('''CREATE TABLE osm_data
