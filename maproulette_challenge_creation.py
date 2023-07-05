@@ -7,6 +7,7 @@ import sqlite3
 import config
 import time
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
+import random
 # https://maproulette.org/admin/project/53065/challenge/40012
 # https://maproulette.org/admin/project/53065
 def main():
@@ -60,7 +61,6 @@ def main():
 
     ]
     greenlit_groups_not_to_be_featured = [
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a vehicle model or class',
     ]
     for_later = [
         # ready for featured ones
@@ -69,18 +69,17 @@ def main():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a chain store',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a general industry',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
-
-        # requires text descriptions
-        # featurable, so after some featured are done
         'information board with wikidata tag, not subject:wikidata',
+
+        # ready for nonfeatured ones
+        'malformed wikipedia tag - for operator prefixed tags',
+        'malformed wikipedia tag - for architect prefixed tags', # see 'malformed wikipedia tag - for operator prefixed tags' - very minor example work needed
 
         # ideally: supply that known replacement
         'blacklisted connection with known replacement',
 
         # requires text descriptions
         # no need to feature that
-        'malformed wikipedia tag - for operator prefixed tags',
-        'malformed wikipedia tag - for architect prefixed tags',
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for network prefixed tags',
         'wikipedia wikidata mismatch - for operator prefixed tags',
@@ -93,14 +92,15 @@ def main():
         "secondary wikidata tag links to 404", # look at that later - many should be reported as malformed
     ]
     already_uploaded_premium_update = [
-        "wikipedia tag links to 404",
     ]
     already_uploaded = [
+        "wikipedia tag links to 404",
         "malformed wikipedia tag",
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical reality',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a vehicle model or class',
         'should use a secondary wikipedia tag - linking from wikidata tag to a human',
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
         'information board with wikipedia tag, not subject:wikipedia',
@@ -120,9 +120,9 @@ def main():
     for error_id in already_uploaded_premium_update:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
 
-    # TODO reenable
-    #for error_id in already_uploaded:
-    #    update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
+    random.shuffle(already_uploaded)
+    for error_id in already_uploaded:
+        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
 
 
     connection.close()
