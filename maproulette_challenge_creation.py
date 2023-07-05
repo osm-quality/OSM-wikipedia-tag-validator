@@ -336,7 +336,10 @@ def get_challenge_text_based_on_error_id(error_id):
         if "should use a secondary wikipedia tag - linking from " + from_tags + " tag to " in error_id:
             what = error_id.replace("should use a secondary wikipedia tag - linking from " + from_tags + " tag to ", "")
             challenge_name = from_tags + " tag linking to " + what + " - should use secondary " + from_tags + " tag"
-            challenge_description = """Things like """ + what + """ are never directly linkable from wikidata/wikipedia tags - they can be linked in some cases from properly prefixed secondary tags (for example `subject:wikipedia` to link subject of a sculpture - wikipedia tag is for linking article about sculpture itself, not about what it is depicting)
+            challenge_description = """Things like """ + what + """ are never directly linkable from `wikidata`/`wikipedia` tags - they can be linked in some cases from properly prefixed secondary tags.
+            
+For example `subject:wikipedia` to link subject of a sculpture - `wikipedia` tag is for linking article about sculpture itself, not about what it is depicting).
+And `name:etymology:wikidata` links Wikidata entry that describes source of name of a given object.
             
 See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links%20and%20https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links
 
@@ -436,9 +439,9 @@ Value must always contain:
 
 Sometimes it is malformed in various ways, for example:
 
-`""" + key """=""" + another_example_article + """`
+`""" + key + "=" + another_example_article + """`
 should be
-`""" + key + """=""" + another_example_language + """:""" + another_example_article + """`
+`""" + key + "=" + another_example_language + ":" + another_example_article + """`
 
 Very often it is fixable, though sometimes needs to be simply removed as invalid or not recoverable
 
@@ -451,27 +454,40 @@ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Kon
 def instructions_for_mislinked_object_type(what, from_tags):
     new_subject_tag_form = None
     new_brand_tag_form = None
+    new_etymology_tag_form = None
+    markdowned_from_tags = None
+    what_is_linked = None
     if from_tags == "wikipedia and wikidata":
         new_subject_tag_form = "subject:wikipedia and subject:wikidata"
         new_brand_tag_form = "brand:wikipedia and brand:wikidata"
+        new_etymology_tag_form = "name:etymology:wikipedia and name:etymology:brand:wikidata"
+        markdowned_from_tags = "`wikipedia` and `wikidata` tags"
     else:
         new_subject_tag_form = "subject:" + from_tags
         new_brand_tag_form = "brand:" + from_tags
-    return """Wikipedia article or wikidata entry linked from OSM object using wikipedia tag is not about something expected to be directly linkable
+        new_etymology_tag_form = "name:etymology:" + from_tags
+        markdowned_from_tags = "`" + from_tags + "` tag"
+    if from_tags == "wikidata":
+        what_is_linked = "Wikidata entry"
+    else:
+        what_is_linked = "Wikipedia article"
+    return what_is_linked + """ linked from OSM object using """ + markdowned_from_tags + """ is not about something expected to be directly linkable
         
-as thing such as """ + what + """ is not being mapped in Wikipedia it is extremely unlikely that this """ + from_tags + """ tag is valid
+as thing such as """ + what + """ is not being mapped in Wikipedia it is extremely unlikely that this """ + markdowned_from_tags + """ is valid
 
-it likely should be changed into """ + new_subject_tag_form + """
+it likely should be changed into """ + new_subject_tag_form + " or " + new_etymology_tag_form + """or other secondary tag form
 
 for example `historic=memorial` commemorating """ + what + """ should link article about it using `subject:wikipedia` / `subject:wikidata` - as article is about subject of memorial, not about memorial itself]
 
 (if article would be about memorial then linking it in main wikipedia/wikidata tag is fine)
 
-for example `shop=supermarket` should no link company article with """ + from_tags + """ but rather with """ + new_brand_tag_form + """.
+for example `shop=supermarket` should no link company article with """ + markdowned_from_tags + """ but rather with """ + new_brand_tag_form + """.
+
+And road named after something should not link """ + what + """ from """ + markdowned_from_tags + " but using " + new_etymology_tag_form + """
 
 See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links%20and%20https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links for overview of possibilities - there are ones for linking taxons, species, operators... 
 
-in some cases """ + from_tags + """ tags should be simply removed if they are simply wrong or about entire class of object
+in some cases """ + markdowned_from_tags + """ should be simply removed if they are simply wrong or not specifically about linked object
 
 in case that linked wikipedia/wikidata entry is not about """ + what + """ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny so I can handle this false positive
 
@@ -556,7 +572,7 @@ def setup_project(project_api, user_id):
     if len(projects) == 0:
         my_project = maproulette.ProjectModel(name=my_project_name)
         # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/models/project.py#L7
-        my_project.description = 'MapRoulette export/mirror of https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/ reports'
+        my_project.description = 'Lists various problems with `wikipedia`, `wikidata` and related tags such as `subject:wikidata` or `taxon:wikipedia` or  `name:etymology:wikidata` and other secondary wikipedia/wikidata links. \n\nMapRoulette export/mirror of https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/ reports'
         my_project.enabled = True
         my_project.featured = True # it actually works!
         my_project.display_name = my_project_name
