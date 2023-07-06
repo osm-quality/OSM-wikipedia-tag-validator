@@ -331,7 +331,6 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious denomination")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a conflict")
     returned += [
-        'link to an unlinkable article',
         'wikipedia wikidata mismatch',
         'tag may be added based on wikidata',
         'tag may be added based on wikidata - teryt',
