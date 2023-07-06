@@ -10,11 +10,15 @@ import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstractio
 import random
 # https://maproulette.org/admin/project/53065/challenge/40012
 # https://maproulette.org/admin/project/53065
+# https://maproulette.org/browse/projects/53065
+# See https://maproulette.org/browse/projects/53065 for related challenges about fixing `wikipedia` / `wikidata` and related tags.
+# https://maproulette.org/browse/projects/53065  set of challenges about fixing `wikipedia` / `wikidata` and related tags
 def main():
     api_key = None
     user_id = None
-    print("find random edits, get their authors and thank them/verify")
+    print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
     print("figure out how to update challenge state (switching featured status, to allow many projects filled with tasks at once")
+    print("monitor how many featured challenges are there published (start more if 0, avoid adding tasks if 2 or more are existing)")
     with open('secret.json') as f:
         data = json.load(f)
         api_key = data['maproulette_api_key']
