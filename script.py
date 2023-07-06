@@ -18,10 +18,43 @@ def main():
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     database.create_table_if_needed(cursor)
+    update_oldest_with_no_reported_issues(cursor)
     check_database_integrity(cursor)
+    connection.commit()
     connection.close()
     check_for_malformed_definitions_of_entries()
     update_validator_database_and_reports()
+
+def update_oldest_with_no_reported_issues(cursor):
+    outdated_objects = oldest_entries_with_no_reported_issues(cursor)
+    # what about ones not matching any still processed area?
+    for outdated in outdated_objects:
+        rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id = outdated
+        print("https://www.openstreetmap.org/" + object_type + "/" + str(object_id), area_identifier, "timestamp:", download_timestamp)  
+    ignored_problems = []
+    update_outdated_elements_and_reset_reports(cursor, outdated_objects, ignored_problems)
+
+def oldest_entries_with_no_reported_issues(cursor):
+    # - entries currently are carrying reports and with outdated timestamps
+    # (as wikipedia tag could be simply removed!)
+    #
+    # - entries without current wikidata/wikipedia tags may be outdated AND without active reports are safe
+    #   - will not generate valid report
+    #   - will not be false positives
+
+    cursor.execute("""SELECT rowid, type, id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id
+    FROM osm_data
+    WHERE
+    validator_complaint
+    OR
+    validator_complaint == ""
+    ORDER BY
+    download_timestamp, type, id
+    ASC
+    LIMIT 10
+    """, {})
+    return cursor.fetchall()
+
 
 def check_database_integrity(cursor):
     if random.random() < 0.1:
