@@ -54,7 +54,7 @@ def main():
     # fails, seems due to MR bug
     #set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, 'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human', False)
 
-    greenlit_groups = [
+    greenlit_groups_to_be_featured = [
         # candidate
         
         # temporary commenting out
@@ -70,30 +70,38 @@ def main():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a general industry',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a physical process',
         'information board with wikidata tag, not subject:wikidata',
+        "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not",
 
         # ready for nonfeatured ones
-        'malformed wikipedia tag - for operator prefixed tags',
         'malformed wikipedia tag - for architect prefixed tags', # see 'malformed wikipedia tag - for operator prefixed tags' - very minor example work needed
+        'information board with wikipedia tag, not subject:wikipedia', # very minor additional coding needed, see its wikidata variant
 
         # ideally: supply that known replacement
         'blacklisted connection with known replacement',
 
         # requires text descriptions
         # no need to feature that
+        'malformed secondary wikidata tag',
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for network prefixed tags',
         'wikipedia wikidata mismatch - for operator prefixed tags',
         'wikipedia wikidata mismatch - for brand prefixed tags', # 22k entries [sic!] - requires some special support to limit count of open ones to 1000 or something...
+        'no longer existing brand (according to Wikidata)', # >4k entries
         'wikipedia wikidata mismatch',
 
         # may be confusing or raise protests
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a public transport network',
         'should use a secondary wikipedia tag - linking from wikidata tag to a public transport network',
-        "secondary wikidata tag links to 404", # look at that later - many should be reported as malformed
+        "secondary wikidata tag links to 404", # look at that later - many should be reported as malformed - many should stop being listed here
+        "link to an unlinkable article", # disambigs got own category now - many should stop being listed here
+        'wikipedia wikidata mismatch - for on_the_list prefixed tags',
+        'mismatching teryt:simc codes in wikidata and in osm element',
     ]
     already_uploaded_premium_update = [
     ]
     already_uploaded = [
+        'wikipedia wikidata mismatch - for species prefixed tags',
+        'malformed wikipedia tag - for operator prefixed tags',
         "wikipedia tag links to 404",
         "malformed wikipedia tag",
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical reality',
@@ -103,15 +111,14 @@ def main():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a vehicle model or class',
         'should use a secondary wikipedia tag - linking from wikidata tag to a human',
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
-        'information board with wikipedia tag, not subject:wikipedia',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
     ]
-    show_candidate_reports(cursor, for_later, already_uploaded + already_uploaded_premium_update)
-    for error_id in greenlit_groups:
+    show_candidate_reports(cursor, greenlit_groups_to_be_featured + greenlit_groups_not_to_be_featured + for_later, already_uploaded + already_uploaded_premium_update)
+    for error_id in greenlit_groups_to_be_featured:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = True)
 
     for error_id in greenlit_groups_not_to_be_featured:
@@ -195,6 +202,12 @@ def get_challenge_id_based_on_error_id(challenge_api, project_id, error_id):
 def update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured):
     challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
     challenge_name = get_challenge_text_based_on_error_id(error_id)['challenge_name']
+
+    collected_data_for_use = get_data_of_a_specific_error_id(error_id)
+    if len(collected_data_for_use) == 0 and challenge_id == None:
+        print(challenge_name, "no tasks, challenge not created, therefore skipping doing anything")
+        return
+
     if challenge_id == None:
         print(project_id, "is without challenge for")
         print(error_id)
@@ -218,11 +231,11 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
     # work around https://github.com/maproulette/maproulette3/issues/1563
     # overpass query cannot be changed
     # so we need to provide data manually
-    collected_data_for_use = get_data_of_a_specific_error_id(error_id)
 
     # prerequisites checked with live data
     # still, some may be marked on MR as too hard or invalid
 
+    some_require_manual_investigation = False
     in_mr_already = {}
     # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L198
     # 0 = Created, 1 = Fixed, 2 = False Positive, 3 = Skipped, 4 = Deleted, 5 = Already Fixed, 6 = Too Hard
@@ -243,10 +256,14 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         if status != STATUS_CREATED and status != STATUS_FIXED and status != STATUS_SKIPPED and status != STATUS_DELETED and status != 5:
             if status == 2:
                 print("False positive", link)
+                some_require_manual_investigation = True
             elif status == 6:
                 print("Too hard", link)
+                some_require_manual_investigation = True
             else:
-                raise "unexpected"
+                print("unexpected status", status, "for", link)
+                #raise "unexpected"
+                some_require_manual_investigation = True
         # TODO
         # geojson object should not be compiled at that time
         # we should be able to skip/filter entries
@@ -272,6 +289,8 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
                 continue
             elif in_mr_already[present_url]['status'] == STATUS_TOO_HARD:
                 pass
+            else:
+                print("unexpected status", in_mr_already[present_url]['status'])
             link = "https://maproulette.org/task/" + str(in_mr_already[present_url]['id'])
             print(link, "should be marked as deleted")
             # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/task.py#L169
@@ -326,6 +345,9 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         print("will retry")
         time.sleep(10)
         print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
+    print(challenge_name, "processed")
+    if some_require_manual_investigation:
+        raise Exception("look at these entries")
 
 def get_challenge_text_based_on_error_id(error_id):
     for from_tags in [
@@ -341,7 +363,7 @@ def get_challenge_text_based_on_error_id(error_id):
 For example `subject:wikipedia` to link subject of a sculpture - `wikipedia` tag is for linking article about sculpture itself, not about what it is depicting).
 And `name:etymology:wikidata` links Wikidata entry that describes source of name of a given object.
             
-See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links%20and%20https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links
+See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links and https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links
 
 please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
             # TODO synchronize with my own website, I guess
@@ -349,29 +371,14 @@ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Kon
             changeset_action = "fixing primary link leading to " + what + " entry"
             return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
 
-    if error_id == 'information board with wikipedia tag, not subject:wikipedia':
-        raise ""
     if error_id == "wikipedia/wikidata type tag that is incorrect according to not:* tag":
-        challenge_name = "Fix conflict involving not: prefixed tags"
-        challenge_description = """objects listed here have both not: prefixed tag describing that some other wikipedia-related tag is not applying and exactly this tag - this is self-contradictory and invalid"""
-        # TODO synchronize with my own website, I guess
-        challenge_instructions = """this object has both not: prefixed tag describing that some other wikipedia-related tag is not applying and exactly this tag
-
-one of them is invalid
-
-for example `species:wikipedia=en:Oak` and `not:species:wikipedia=en:Oak` should never be on the same object as they contradict each other
-
-in this cases it is necessary to investigate which tag is wrong - and remove one of them (or do more edits if necessary)
-
-REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong. Please review each entry rather than blindly retagging! If you start blindly editing, take a break.
-
-please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if something reported here is well formed link"""
-        changeset_action = "fix conflict involving not: prefixed tags"
-        return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
+        return model_for_violated_not_prefix_restrictions()
     if error_id == 'malformed wikipedia tag - for operator prefixed tags':
         return model_for_malformed_wikipedia_tags("operator:wikipedia", "en:Kraków", "en", "London")
     if error_id == "malformed wikipedia tag":
         return model_for_malformed_wikipedia_tags("wikipedia", "en:Kraków", "en", "London")
+    if error_id == 'information board with wikipedia tag, not subject:wikipedia':
+        raise ""
     if error_id == "information board with wikidata tag, not subject:wikidata":
         challenge_name = "Information board with wikidata tag rather subject:wikidata"
         challenge_description = """for linking subject of information board please use `subject:wikidata` not `wikidata` (and `subject:wikipedia`, not `wikipedia`)
@@ -403,25 +410,79 @@ please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Kon
         if error_id.endswith(suffix):
             what = error_id.replace(prefix, "")
             what = what.replace(suffix, "")
-            challenge_name = "mismatch: " + what + ":wikipedia links disambiguation page, " + what + ":wikidata does not"
-            challenge_description = """`wikipedia` or `""" + what + """:wikipedia` and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `""" + what + """:wikidata` not linking disambiguation page and being more likely to be valid
-
-please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
-            # TODO synchronize with my own website, I guess
-            challenge_instructions = """`wikipedia` or `""" + what + """:wikipedia` and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `""" + what + """:wikidata` not linking disambiguation page and being more likely to be valid
-
-review whether links actually mismatch and is `""" + what + """:wikidata` correct one
-
-in vast majority cases `""" + what + """:wikipedia` should be updated to match `""" + what + """:wikidata` - though `""" + what + """:wikidata` may be also invalid
-
-(some people prefer to use only `""" + what + """:wikidata`)
-
-please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
-            changeset_action = "fixing links to disambiguation page"
-            return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
+            what += ":"
+            return model_for_wikipedia_wikidata_mismatch_with_link_to_disambig_page(what)
+    if error_id == "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not":
+        return model_for_wikipedia_wikidata_mismatch_with_link_to_disambig_page("")
+    prefix = "wikipedia wikidata mismatch - for "
+    suffix = " prefixed tags"
+    if error_id.startswith(prefix):
+        if error_id.endswith(suffix):
+            what = error_id.replace(prefix, "")
+            what = what.replace(suffix, "")
+            what += ":"
+            return model_for_wikipedia_wikidata_mismatch(what)
+    if error_id == "wikipedia wikidata mismatch":
+        return model_for_wikipedia_wikidata_mismatch("")
     else:
         print(error_id)
         raise Unsupported # TODO find proper exception
+
+def model_for_wikipedia_wikidata_mismatch(prefix_if_any):
+    challenge_name = "mismatch between " + prefix_if_any + "wikipedia and " + prefix_if_any + "wikidata"
+    intro = "`" + prefix_if_any + "wikipedia` and `" + prefix_if_any + "wikidata` should link to matching entries. Here it is not happening and should be fixed."
+    challenge_description = intro + """
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
+    # TODO synchronize with my own website, I guess
+    challenge_instructions = intro + """
+
+review whether links actually mismatch and which one, if any is correct - then amend/remove the second one.
+
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
+    changeset_action = "fixing wikipedia-wikidata mismatch"
+    return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
+
+def model_for_wikipedia_wikidata_mismatch_with_link_to_disambig_page(prefix_if_any):
+    challenge_name = "mismatch: " + prefix_if_any + "wikipedia links disambiguation page, " + prefix_if_any + "wikidata does not"
+    tag_examples = """`wikipedia` or `""" + prefix_if_any + """wikipedia`"""
+    if prefix_if_any == "":
+        tag_examples = """`wikipedia`"""
+    intro = tag_examples + " and so on should never link disambiguation pages (not an actual article but a list of articles sharing name). Here such link happens, with `" + prefix_if_any + "wikidata` not linking disambiguation page and being more likely to be valid"
+    challenge_description = intro + """
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
+    # TODO synchronize with my own website, I guess
+    challenge_instructions = intro + """
+
+review whether links actually mismatch and is `""" + prefix_if_any + """wikidata` correct one
+
+in vast majority cases `""" + prefix_if_any + """wikipedia` should be updated to match `""" + prefix_if_any + """wikidata` - though `""" + prefix_if_any + """wikidata` may be also invalid
+
+(some people prefer to use only `""" + prefix_if_any + """wikidata`)
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if anything is wrong with this listing or it causes people to make bad edits"""
+    changeset_action = "fixing links to disambiguation page"
+    return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
+
+def model_for_violated_not_prefix_restrictions():
+    challenge_name = "Fix conflict involving not: prefixed tags"
+    challenge_description = """objects listed here have both not: prefixed tag describing that some other wikipedia-related tag is not applying and exactly this tag - this is self-contradictory and invalid"""
+    # TODO synchronize with my own website, I guess
+    challenge_instructions = """this object has both not: prefixed tag describing that some other wikipedia-related tag is not applying and exactly this tag
+
+one of them is invalid
+
+for example `species:wikipedia=en:Oak` and `not:species:wikipedia=en:Oak` should never be on the same object as they contradict each other
+
+in this cases it is necessary to investigate which tag is wrong - and remove one of them (or do more edits if necessary)
+
+REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong. Please review each entry rather than blindly retagging! If you start blindly editing, take a break.
+
+please send a message to https://www.openstreetmap.org/message/new/Mateusz%20Konieczny if something reported here is well formed link"""
+    changeset_action = "fix conflict involving not: prefixed tags"
+    return {"challenge_name": challenge_name, "challenge_description": challenge_description, "challenge_instructions": challenge_instructions, "changeset_action": changeset_action}
 
 def model_for_malformed_wikipedia_tags(key, example_link, another_example_language, another_example_article):
     challenge_name = "Fix malformed " + key + " tags"
@@ -485,7 +546,7 @@ for example `shop=supermarket` should no link company article with """ + markdow
 
 And road named after something should not link """ + what + """ from """ + markdowned_from_tags + " but using " + new_etymology_tag_form + """
 
-See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links%20and%20https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links for overview of possibilities - there are ones for linking taxons, species, operators... 
+See https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links and https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links for overview of possibilities - there are ones for linking taxons, species, operators... 
 
 in some cases """ + markdowned_from_tags + """ should be simply removed if they are simply wrong or not specifically about linked object
 
@@ -580,7 +641,8 @@ def setup_project(project_api, user_id):
         print(json.dumps(project_api.create_project(my_project), indent=4, sort_keys=True))
         projects = get_matching_maproulette_projects(project_api, my_project_name, user_id)
     else:
-        print("project exists")
+        pass
+        #print("project exists")
     if projects[0]["deleted"]:
         raise "project is deleted!" # TODO what about archived
 
@@ -611,12 +673,7 @@ def get_data_of_a_specific_error_id(report_id):
             if live_osm_data == None: # deleted
                 rowid_in_osm_data = entry['rowid'] # modified, usually not present there
                 # also update data table if we checked correctness...
-                cursor.execute("""
-                UPDATE osm_data
-                SET validator_complaint = :validator_complaint, error_id = :error_id
-                WHERE rowid = :rowid""",
-                {"validator_complaint": "", "error_id": "", "rowid": rowid_in_osm_data}
-                )
+                cursor.execute("DELETE FROM osm_data WHERE rowid = :rowid", {"rowid": rowid_in_osm_data})
                 print(entry['osm_object_url'], "is deleted, marking error as gone")
                 # TODO - delete row?
                 continue
@@ -629,10 +686,18 @@ def get_data_of_a_specific_error_id(report_id):
                 UPDATE osm_data
                 SET validator_complaint = :validator_complaint, error_id = :error_id
                 WHERE rowid = :rowid""",
-                {"validator_complaint": "", "error_id": "", "rowid": rowid_in_osm_data}
+                {"validator_complaint": None, "error_id": None, "rowid": rowid_in_osm_data}
                 )
                 print(entry['osm_object_url'], "is no longer applicable, marking error as gone")
                 continue
+            # update timestamp so time will not be wasted elsewhere
+            rowid_in_osm_data = entry['rowid'] # modified, usually not present there
+            cursor.execute("""
+            UPDATE osm_data
+            SET download_timestamp = :timestamp
+            WHERE rowid = :rowid""",
+            {"timestamp": int(time.time()), "rowid": rowid_in_osm_data}
+            )
             error_message = entry['error_message']
             if error_message == "":
                 error_message = None
