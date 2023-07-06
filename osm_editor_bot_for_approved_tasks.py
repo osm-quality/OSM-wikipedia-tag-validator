@@ -441,8 +441,8 @@ def main():
                 continue
             area_code = "usa"
             reported_errors = load_errors(cursor, internal_region_name)
-            print("USA!", internal_region_name, "handle_follow_wikipedia_redirect is planned")
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status = osm_bot_abstraction_layer.manually_reviewed_description())
+            print("USA!", internal_region_name, "handle_follow_wikipedia_redirect_where_target_matches_wikidata is planned")
+            #run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status = osm_bot_abstraction_layer.manually_reviewed_description())
 
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
