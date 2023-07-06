@@ -106,23 +106,24 @@ def check_for_malformed_definitions_of_entries():
 
 def process_given_area(cursor, entry):
     ignored_problems = entry.get('ignored_problems', [])
-    update_outdated_elements(cursor, entry, ignored_problems)
-    update_validator_reports_for_given_area(cursor, entry['internal_region_name'], entry.get('language_code', None), ignored_problems)
+    identifier_of_region_for_overpass_query=entry['identifier']
+    internal_region_name = entry['internal_region_name']
+    timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(cursor, internal_region_name, identifier_of_region_for_overpass_query)
+    outdated_objects = outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, timestamp_when_file_was_downloaded)
+    update_outdated_elements_and_reset_reports(cursor, outdated_objects, ignored_problems)
+    update_validator_reports_for_given_area(cursor, internal_region_name, entry.get('language_code', None), ignored_problems)
     generate_webpage_with_error_output.generate_website_file_for_given_area(cursor, entry)
 
-def update_outdated_elements(cursor, entry, ignored_problems):
-    identifier_of_region_for_overpass_query=entry['identifier']
-    timestamp_when_file_was_downloaded = obtain_from_overpass.download_entry(cursor, entry['internal_region_name'], identifier_of_region_for_overpass_query)
-
+def update_outdated_elements_and_reset_reports(cursor, outdated_objects, ignored_problems):
     # properly update by fetching new info about entries which also must be updated and could be missed
-    outdated_objects = outdated_entries_in_area_that_must_be_updated(cursor, entry['internal_region_name'], timestamp_when_file_was_downloaded)
     for outdated in outdated_objects:
         rowid, object_type, object_id, lat, lon, tags, area_identifier, download_timestamp, validator_complaint, error_id = outdated
-        validator_complaint = json.loads(validator_complaint)
-        if validator_complaint['error_id'] in ignored_problems:
-            continue
-        else:
-            print(validator_complaint['error_id'], "IS NOT AMONG", ignored_problems)
+        if validator_complaint != None and validator_complaint != "":
+            validator_complaint = json.loads(validator_complaint)
+            if validator_complaint['error_id'] in ignored_problems:
+                continue
+            else:
+                print(validator_complaint['error_id'], "IS NOT AMONG", ignored_problems)
         data = osm_bot_abstraction_layer.get_data(object_id, object_type)
         timestamp = int(time.time())
         #print(json.dumps(returned, default=str, indent=3))
@@ -130,8 +131,9 @@ def update_outdated_elements(cursor, entry, ignored_problems):
         cursor.execute("""
         DELETE FROM osm_data
         WHERE
-        type = :type AND id = :id AND area_identifier = :identifier
-        """, {"type": object_type, "id": object_id, "identifier": entry['internal_region_name']})
+        type = :type AND id = :id
+        """, {"type": object_type, "id": object_id})
+        print("deleting", object_type, object_id)
         if data != None: # None means that it was deleted
             new_tags =  json.dumps(data["tag"], indent=3) # pretty format also in database for easier debugging
             new_lat = lat
@@ -141,8 +143,11 @@ def update_outdated_elements(cursor, entry, ignored_problems):
                 new_lon = data["lon"]
                 # what about ways and relations?
             #print(data)
-            cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint, :error_id)", {'type': object_type, 'id': object_id, 'lat': new_lat, 'lon': new_lon, "tags": new_tags, "area_identifier": entry['internal_region_name'], "download_timestamp": timestamp, "validator_complaint": None, 'error_id': None})
-        print(object_type, object_id, "is outdated, not in the report so its entry needs to be updated for", validator_complaint['error_id'], "in", entry['internal_region_name'])
+            cursor.execute("INSERT INTO osm_data VALUES (:type, :id, :lat, :lon, :tags, :area_identifier, :download_timestamp, :validator_complaint, :error_id)", {'type': object_type, 'id': object_id, 'lat': new_lat, 'lon': new_lon, "tags": new_tags, "area_identifier": area_identifier, "download_timestamp": timestamp, "validator_complaint": None, 'error_id': None})
+        complaint = "<no reported error>"
+        if validator_complaint != None and validator_complaint != "":
+            complaint = validator_complaint['error_id']
+        print(object_type, object_id, "is outdated, not in the report so its entry needs to be updated for", complaint, "in", area_identifier)
 
 def outdated_entries_in_area_that_must_be_updated(cursor, internal_region_name, timestamp_when_file_was_downloaded):
     # - entries currently are carrying reports and with outdated timestamps
