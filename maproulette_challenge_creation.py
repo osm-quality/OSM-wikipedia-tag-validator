@@ -25,13 +25,13 @@ def main():
         user_id = data['maproulette_user_id']
         # https://github.com/osmlab/maproulette-python-client#getting-started
         # Your API key is listed at the bottom of https://maproulette.org/user/profile page.
-        # expected file structure:
+        # expected file structure of secret.json:
         """
-    {
-        "maproulette_api_key": "d88hfhffiigibberishffiojsdjios90su28923h3r2rr"
-        "maproulette_user_id": 784242309243
-    }
-    """
+        {
+            "maproulette_api_key": "d88hfhffiigibberishffiojsdjios90su28923h3r2rr"
+            "maproulette_user_id": 784242309243
+        }
+        """
 
     maproulette_config = maproulette.Configuration(api_key=api_key)
     project_api = maproulette.Project(maproulette_config)
