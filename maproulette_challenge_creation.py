@@ -225,6 +225,13 @@ def main():
         for task in tasks:
             if is_active_task_status(task['status']):
                 active_tasks += 1
+            if task['status'] == STATUS_FALSE_POSITIVE:
+                link = "https://maproulette.org/task/" + str(task['id'])
+                print("False positive", link)
+            elif task['status'] == STATUS_TOO_HARD:
+                link = "https://maproulette.org/task/" + str(task['id'])
+                print("Too hard", link)
+
         print(error_id, "has", active_tasks, "active tasks")
         if active_tasks > 0:
             set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, True)
