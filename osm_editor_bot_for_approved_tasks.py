@@ -340,7 +340,8 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors, area_code, automatic_st
 
     if started_changeset:
         api.ChangesetClose()
-        osm_bot_abstraction_layer.sleep(60)
+        if automatic_status == osm_bot_abstraction_layer.fully_automated_description():
+            osm_bot_abstraction_layer.sleep(60)
 
 def add_wikipedia_tag_from_wikidata_tag(reported_errors, area_code, automatic_status=None):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikipedia from wikidata tag'])
@@ -384,7 +385,8 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors, area_code, automatic_st
 
     if started_changeset:
         api.ChangesetClose()
-        osm_bot_abstraction_layer.sleep(60)
+        if automatic_status == osm_bot_abstraction_layer.fully_automated_description():
+            osm_bot_abstraction_layer.sleep(60)
 
 def link_to_point(lat, lon):
     return "https://www.openstreetmap.org/?mlat=" + str(lat) + "&mlon=" + str(lon) + "#map=10/" + str(lat) + "/" + str(lon)
