@@ -429,10 +429,10 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
             in_mr_already[osm_link] = task
             modified_time = task['modified']
             if status != STATUS_CREATED and status != STATUS_FIXED and status != STATUS_SKIPPED and status != STATUS_DELETED and status != 5:
-                if status == 2:
+                if status == STATUS_FALSE_POSITIVE:
                     print("False positive", link)
                     some_require_manual_investigation = True
-                elif status == 6:
+                elif status == STATUS_TOO_HARD:
                     print("Too hard", link)
                     some_require_manual_investigation = True
                 else:
