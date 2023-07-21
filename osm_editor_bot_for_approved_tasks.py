@@ -113,12 +113,9 @@ def desired_wikipedia_target_from_report(e):
         raise Exception("Expected wikipedia tag to be provided")
     return desired
 
-def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code, automatic_status = None):
+def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code, automatic_status):
     if e['error_id'] != 'wikipedia wikidata mismatch - follow wikipedia redirect':
         return
-    if automatic_status == None:
-        automatic_status = osm_bot_abstraction_layer.fully_automated_description()
-
     data = get_and_verify_data(e)
     if data == None:
         return None
@@ -145,7 +142,7 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, are
     source = "wikidata, OSM"
     osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], type, data, source)
 
-def change_to_local_language_single(e, area_code, automatic_status=None):
+def change_to_local_language_single(e, area_code, automatic_status):
     if automatic_status == None:
         automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
         raise NotImplementedError
@@ -297,13 +294,11 @@ def announce_skipping_object_as_outside_area(osm_object_url):
     print()
     print()
 
-def add_wikidata_tag_from_wikipedia_tag(reported_errors, area_code, automatic_status = None):
+def add_wikidata_tag_from_wikipedia_tag(reported_errors, area_code, automatic_status):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikidata from wikipedia tag'])
     if errors_for_removal == []:
         return
-    if automatic_status == None:
-        automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
-    else:
+    if automatic_status == osm_bot_abstraction_layer.manually_reviewed_description():
         raise NotImplementedError
     affected_objects_description = ""
     comment = "add wikidata tag based on wikipedia tag"
@@ -351,9 +346,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors, area_code, automatic_st
     errors_for_removal = filter_reported_errors(reported_errors, ['wikipedia from wikidata tag'])
     if errors_for_removal == []:
         return
-    if automatic_status == None:
-        automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
-    else:
+    if automatic_status == osm_bot_abstraction_layer.manually_reviewed_description():
         raise NotImplementedError
     # osm_bot_abstraction_layer.manually_reviewed_description()
     affected_objects_description = ""
@@ -405,15 +398,15 @@ def has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_t
         print("no need to rerun bot edit, data was not yet updated")
         return True
 
-def handle_follow_wikipedia_redirect_where_target_matches_wikidata(reported_errors, area_code, automatic_status = None):
+def handle_follow_wikipedia_redirect_where_target_matches_wikidata(reported_errors, area_code, automatic_status):
     for e in reported_errors:
         handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, area_code, automatic_status)
 
-def change_to_local_language(reported_errors, area_code, automatic_status = None):
+def change_to_local_language(reported_errors, area_code, automatic_status):
     for e in reported_errors:
         change_to_local_language_single(e, area_code, automatic_status)
 
-def run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, fix_function, automatic_status = None):
+def run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, fix_function, automatic_status):
     bot_edit_type = fix_function.__name__
     if has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_type) == False:
         timestamp = int(time.time())
@@ -427,32 +420,29 @@ def main():
     cursor = connection.cursor()
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
-    print("finish https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_USA")
-    print("usa bbox checker add")
-    print("run bot manually in USA for some example edits")
+    print("proper usa bbox checker add")
     print("https://community.openstreetmap.org/t/propozycja-automatycznej-edycji-tagi-wikidata-co-sa-przekierowaniami/7727")
 
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
         if 'USA' in entry.get('merged_into', []):
-            if internal_region_name in ["Alabama", "Alaska", "Arizona"]:
-                continue
-            if internal_region_name not in ["California"]:
-                continue
+            print(internal_region_name)
             area_code = "usa"
             reported_errors = load_errors(cursor, internal_region_name)
             print("USA!", internal_region_name, "handle_follow_wikipedia_redirect_where_target_matches_wikidata is planned")
-            #run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status = osm_bot_abstraction_layer.manually_reviewed_description())
+            #run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status = osm_bot_abstraction_layer.fully_automated_description())
+            print("https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_USA  - 3 VIII lub później")
 
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
         if entry.get('language_code', None) == "pl":
             area_code = "pl"
             print(internal_region_name, "botting")
+            automatic_status = osm_bot_abstraction_layer.fully_automated_description()
             reported_errors = load_errors(cursor, internal_region_name)
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, add_wikipedia_tag_from_wikidata_tag)
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, add_wikidata_tag_from_wikipedia_tag)
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, add_wikipedia_tag_from_wikidata_tag, automatic_status)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, add_wikidata_tag_from_wikipedia_tag, automatic_status)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status)
             
             # what is the bot permission status here, actually?
             #run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, reported_errors, internal_region_name, area_code, change_to_local_language)
