@@ -32,7 +32,6 @@ def main():
     api_key = None
     user_id = None
     print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
-    print("figure out how to update challenge state (switching featured status, to allow many projects filled with tasks at once")
     with open('secret.json') as f:
         data = json.load(f)
         api_key = data['maproulette_api_key']
