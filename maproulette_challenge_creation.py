@@ -78,20 +78,18 @@ def main():
         # upload but not featured group
     ]
     for_later = [
-        'should use a secondary wikipedia tag - linking from wikidata tag to a type of structure',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a conflict',
-
-
         # will go to featured group
         # upload but not featured group
 
         'malformed wikipedia tag - for architect prefixed tags', # see 'malformed wikipedia tag - for operator prefixed tags' - very minor example work needed
 
         # requires text descriptions
-        # no need to feature that
-        'malformed secondary wikidata tag', # which one? why so unspecific?
-        'no longer existing brand (according to Wikidata)', # >4k entries
+        'no longer existing brand (according to Wikidata)',
         'wikipedia wikidata mismatch',
+        'link to a disambiguation page',
+        'species secondary tag links something that is not species according to wikidata (checking P105)',
+        'malformed secondary wikidata tag - for species prefixed tags',
+        'malformed secondary wikidata tag', # which one? why so unspecific?
 
         # fix http://overpass-turbo.eu/s/1x68 first
         # bot assisted edit?
@@ -121,6 +119,7 @@ def main():
         # how to even tag this one?
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a type of structure',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a type of structure',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a type of structure',
 
         # created an empty challenge...
         'should use a secondary wikipedia tag - linking from wikipedia tag to a human',
@@ -147,9 +146,10 @@ def main():
         "wikipedia tag links to 404",
         "malformed wikipedia tag",
         'should use a secondary wikipedia tag - linking from wikidata tag to a human',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a podcast',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a given name',
+        'should use a secondary wikipedia tag - linking from wikidata tag to an object that exists outside physical reality',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to an animal or plant (and not an individual one)',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an animal or plant (and not an individual one)',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a chain store',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a general industry',
         "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not",
@@ -176,11 +176,22 @@ def main():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a general industry',
         'should use a secondary wikipedia tag - linking from wikidata tag to a general industry',
         'should use a secondary wikipedia tag - linking from wikidata tag to a social issue',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a social issue',    ] # TODO assign featured status to them as needed, remove featured status from other
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a social issue',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a television series',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a saying',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a coat of arms',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a coat of arms',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a profession',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a restaurant chain',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a profession',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a software',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a protest',
+    ]
     already_uploaded = [
         # https://maproulette.org/browse/challenges/40177
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
-
+        'should use a secondary wikipedia tag - linking from wikipedia tag to an animal or plant (and not an individual one)',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an animal or plant (and not an individual one)',
         'should use a secondary wikipedia tag - linking from wikidata tag to an animal or plant (and not an individual one)',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a type of world view',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a historical event',
@@ -193,7 +204,6 @@ def main():
         'wikipedia wikidata mismatch - for species prefixed tags',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical eality',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a social movement',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for species prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for artist prefixed tags',
@@ -206,6 +216,12 @@ def main():
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
         'wikipedia wikidata mismatch - for brand prefixed tags',
         'malformed wikipedia tag - for operator prefixed tags',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a conflict',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a bicycle sharing system',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a bicycle sharing system',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a film',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a film',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a film',    
     ]
     show_candidate_reports(cursor, greenlit_groups_to_be_featured + greenlit_groups_not_to_be_featured + for_later, already_uploaded + already_uploaded_featured_pool)
 
