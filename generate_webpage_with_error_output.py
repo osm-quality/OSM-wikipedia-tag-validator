@@ -234,7 +234,11 @@ def desired_wikipedia_target(e):
 
 def error_description(e, prefix_of_lines):
     returned = ""
-    returned += row(htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
+    if e['error_message'] == None:
+        print(e)
+        print("e['error_message'] is None")
+    else:
+        returned += row(htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
     returned += row(link_to_osm_object(e['osm_object_url'], e['tags']), prefix_of_lines=prefix_of_lines)
     desired = desired_wikipedia_target(e)
     if desired != None:
