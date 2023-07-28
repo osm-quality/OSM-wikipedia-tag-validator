@@ -235,24 +235,27 @@ def main():
     while marked_featured < featured_count_request:
         error_id = already_uploaded_featured_pool[looked_at_potentially_featured_tasks]
         challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
-        tasks = get_challenge_tasks(challenge_api, challenge_id)
-        active_tasks = 0
-        for task in tasks:
-            if is_active_task_status(task['status']):
-                active_tasks += 1
-            if task['status'] == STATUS_FALSE_POSITIVE:
-                link = "https://maproulette.org/task/" + str(task['id'])
-                print("False positive", link)
-            elif task['status'] == STATUS_TOO_HARD:
-                link = "https://maproulette.org/task/" + str(task['id'])
-                print("Too hard", link)
-
-        print(error_id, "has", active_tasks, "active tasks")
-        if active_tasks > 0:
-            set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, True)
-            marked_featured += 1
+        if challenge_id == None:
+            print("no challenge for", error_id)
         else:
-            set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, False)
+            tasks = get_challenge_tasks(challenge_api, challenge_id)
+            active_tasks = 0
+            for task in tasks:
+                if is_active_task_status(task['status']):
+                    active_tasks += 1
+                if task['status'] == STATUS_FALSE_POSITIVE:
+                    link = "https://maproulette.org/task/" + str(task['id'])
+                    print("False positive", link)
+                elif task['status'] == STATUS_TOO_HARD:
+                    link = "https://maproulette.org/task/" + str(task['id'])
+                    print("Too hard", link)
+
+            print(error_id, "has", active_tasks, "active tasks")
+            if active_tasks > 0:
+                set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, True)
+                marked_featured += 1
+            else:
+                set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, False)
         looked_at_potentially_featured_tasks += 1
         if len(already_uploaded_featured_pool) == looked_at_potentially_featured_tasks:
             raise Exception("run out of task to feature")
@@ -269,8 +272,9 @@ def main():
     for error_id in greenlit_groups_not_to_be_featured:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
 
-    random.shuffle(already_uploaded_featured_pool + already_uploaded)
-    for error_id in already_uploaded:
+    pool = already_uploaded_featured_pool + already_uploaded
+    random.shuffle(pool)
+    for error_id in pool:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
 
     connection.close()
@@ -436,7 +440,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
             print(link)
             raise "wat"
         if osm_link not in candidates:
-            print(osm_link, "not in", candidates)
+            #print(osm_link, "not in", candidates)
             if is_live_task_shown_to_people(status):
                 delete_task_if_not_locked(task_api, task['id'], osm_link)
             # already fixed, already deleted or disabled should stay there or cannot be deleted more
@@ -842,10 +846,12 @@ def set_featured_status_for_challenge_for_given_error_id(challenge_api, project_
     texts = get_challenge_text_based_on_error_id(error_id)
 
     challenge_data = create_challenge_model(challenge_api, project_id, texts['challenge_name'], texts['challenge_description'], texts['challenge_instructions'], texts['changeset_action'], featured_status)
-    print("requested features status for", error_id, "is", challenge_data.featured)
+    #print("requested features status for", error_id, "is", challenge_data.featured)
     try:
         # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L340C9-L340C51
-        print(json.dumps(challenge_api.update_challenge(challenge_id, challenge_data), indent=4, sort_keys=True))
+        response = challenge_api.update_challenge(challenge_id, challenge_data)
+        if response["status"] != 200:
+            print(json.dumps(response, indent=4, sort_keys=True))
     except maproulette.api.errors.InvalidJsonError as e:
         print("challenge_id", challenge_id)
         print(challenge_data)
@@ -1001,6 +1007,11 @@ def get_challenge_tasks(challenge_api, challenge_id):
                     return returned
         except maproulette.api.errors.HttpError as e:
             print("https://maproulette.org/browse/challenges/" + str(challenge_id), "get_challenge_tasks", e)
+            print("will retry from start")
+            time.sleep(10)
+        except requests.exceptions.ConnectionError as e:
+            print("https://maproulette.org/browse/challenges/" + str(challenge_id), "get_challenge_tasks", e)
+            print("will retry from start")
             time.sleep(10)
 
 def get_challenge_data_from_project(challenge_api, project_id):
