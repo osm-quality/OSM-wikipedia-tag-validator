@@ -9,6 +9,7 @@ import time
 import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstraction_layer
 import random
 import requests
+# TODO brand:wikidata / brand:wikipedia without brand tag
 # https://maproulette.org/admin/project/53065/challenge/40012
 # https://maproulette.org/admin/project/53065
 # https://maproulette.org/browse/projects/53065
@@ -27,6 +28,7 @@ STATUS_SKIPPED = 3
 STATUS_DELETED = 4
 STATUS_ALREADY_FIXED = 5
 STATUS_TOO_HARD = 6
+STATUS_DISABLED = 9 # TODO missing in docs
 
 def main():
     api_key = None
@@ -73,14 +75,15 @@ def main():
     greenlit_groups_not_to_be_featured = [
         # will go to featured group
 
-
         # upload but not featured group
     ]
     for_later = [
+        
         # will go to featured group
         # upload but not featured group
 
         'malformed wikipedia tag - for architect prefixed tags', # see 'malformed wikipedia tag - for operator prefixed tags' - very minor example work needed
+        'malformed wikipedia tag - for brand prefixed tags',
 
         # requires text descriptions
         'no longer existing brand (according to Wikidata)',
@@ -185,6 +188,7 @@ def main():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a profession',
         'should use a secondary wikipedia tag - linking from wikidata tag to a software',
         'should use a secondary wikipedia tag - linking from wikidata tag to a protest',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a history of a geographic region',
     ]
     already_uploaded = [
         # https://maproulette.org/browse/challenges/40177
@@ -218,9 +222,14 @@ def main():
         'should use a secondary wikipedia tag - linking from wikidata tag to a conflict',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a bicycle sharing system',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a bicycle sharing system',
+
+        # some filming locations are bordeline
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a film',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a film',
         'should use a secondary wikipedia tag - linking from wikidata tag to a film',    
+
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a branch of military service',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a recurring sports event',
     ]
     show_candidate_reports(cursor, greenlit_groups_to_be_featured + greenlit_groups_not_to_be_featured + for_later, already_uploaded + already_uploaded_featured_pool)
 
@@ -237,6 +246,7 @@ def main():
         challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
         if challenge_id == None:
             print("no challenge for", error_id)
+            print()
         else:
             tasks = get_challenge_tasks(challenge_api, challenge_id)
             active_tasks = 0
@@ -245,12 +255,13 @@ def main():
                     active_tasks += 1
                 if task['status'] == STATUS_FALSE_POSITIVE:
                     link = "https://maproulette.org/task/" + str(task['id'])
-                    print("False positive", link)
+                    print("False positive (challenge " + error_id + ")", link)
                 elif task['status'] == STATUS_TOO_HARD:
                     link = "https://maproulette.org/task/" + str(task['id'])
-                    print("Too hard", link)
+                    print("Too hard (challenge " + error_id + ")", link)
 
             print(error_id, "has", active_tasks, "active tasks")
+            print()
             if active_tasks > 0:
                 set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, True)
                 marked_featured += 1
@@ -310,8 +321,8 @@ def regenerate_tasks(challenge_api, task_api, error_ids):
         tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id)
         for task in tasks_in_challenge:
             status = task['status']
-            STATUS_CREATED = 0
-            STATUS_DELETED = 4
+            #STATUS_CREATED = 0
+            #STATUS_DELETED = 4
             if is_active_task_status(status):
                 link = "https://maproulette.org/task/" + str(task['id'])
                 print(link, "deleting item", count)
@@ -447,7 +458,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         else:
             in_mr_already[osm_link] = task
             modified_time = task['modified']
-            if status != STATUS_CREATED and status != STATUS_FIXED and status != STATUS_SKIPPED and status != STATUS_DELETED and status != 5:
+            if status != STATUS_CREATED and status != STATUS_FIXED and status != STATUS_SKIPPED and status != STATUS_DELETED and status != STATUS_ALREADY_FIXED and status != STATUS_DISABLED:
                 if status == STATUS_FALSE_POSITIVE:
                     print("False positive", link)
                     some_require_manual_investigation = True
@@ -474,7 +485,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
                 element = build_geojson_node_entry(entry['lon'], entry['lat'], entry['osm_object_url'], entry['error_message'], entry['tags'])
                 geojson_object["features"].append(element)
             elif entry['geometry'] == 'way':
-                element = build_geojson_way_entry(entry['way_ids'], entry['osm_object_url'], entry['error_message'], entry['tags'])
+                element = build_geojson_way_entry(entry['nodes_ids_from_way'], entry['osm_object_url'], entry['error_message'], entry['tags'])
                 geojson_object["features"].append(element)
             else:
                 raise
@@ -492,7 +503,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
     print(challenge_name, "processed", len(geojson_object["features"]), "features added")
     if some_require_manual_investigation:
-        print("https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=3%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name")
+        print("https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C3%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name")
         raise Exception("look at these entries")
 
 def is_live_task_shown_to_people(status):
@@ -506,29 +517,13 @@ def is_live_task_shown_to_people(status):
         return True
     elif status == STATUS_DELETED:
         return False
+    elif status == STATUS_DISABLED:
+        return False
     elif status == STATUS_ALREADY_FIXED:
         return False
     elif status == STATUS_TOO_HARD:
         return True
     print("unexpected status", status)
-
-def delete_task_if_not_locked(task_api, task_id, osm_link):
-    link = "https://maproulette.org/task/" + str(task_id)
-    print(link, osm_link, "should be marked as deleted as it is present in task and not in reports from database")
-    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/task.py#L169
-    print(STATUS_DELETED)
-    try:
-        task_api.update_task_status(task_id, STATUS_DELETED, "", "", False)
-    except maproulette.api.errors.HttpError as e:
-        print(e)
-        print(dir(e))
-        print(e.message)
-        print(e.status)
-        if e.message == "This task is locked by another user, cannot update status at this time.":
-            # happens with entries just being edited
-            pass
-        else:
-            raise e
 
 def get_challenge_text_based_on_error_id(error_id):
     for from_tags in [
@@ -796,19 +791,6 @@ Please fix other problems if you spot them! Often they will be far more valuable
 REMEMBER: This is on Maproluette rather than being done by bot because some of this reports are wrong, some are fixable but not in obvious ways. Please review each entry rather than blindly deleting! If you start blindly deleting, take a break.
 """
 
-def create_link_challenge_based_on_error_id(challenge_api, project_id, error_id, featured):
-    texts = get_challenge_text_based_on_error_id(error_id)
-    try:
-        create_challenge(challenge_api, project_id, texts['challenge_name'], texts['challenge_description'], texts['challenge_instructions'], texts['changeset_action'], featured)
-    except requests.exceptions.ConnectionError as e:
-        print(e)
-        print("will retry")
-        print(challenge_api, project_id, error_id, featured)
-        print(texts)
-        time.sleep(10)
-        return create_link_challenge_based_on_error_id(challenge_api, project_id, error_id, featured)
-
-
 def create_challenge_model(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action, featured):
     # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/models/challenge.py#L7
     challenge_data = maproulette.ChallengeModel(name=challenge_name)
@@ -836,29 +818,6 @@ def create_challenge(challenge_api, project_id, challenge_name, challenge_descri
 def update_challenge(challenge_api, project_id, challenge_id, challenge_name, challenge_description, challenge_instructions, changeset_action, featured):
     challenge_data = create_challenge_model(challenge_api, project_id, challenge_name, challenge_description, challenge_instructions, changeset_action, featured)
     print("challenge update response", json.dumps(update_challenge.update_challenge(challenge_id, challenge_data), indent=4, sort_keys=True))
-
-def set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, featured_status):
-    # seems to be not working at all anyway...
-    challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
-    if challenge_id == None:
-        raise Exception("no such challenge: " + str(error_id))
-
-    texts = get_challenge_text_based_on_error_id(error_id)
-
-    challenge_data = create_challenge_model(challenge_api, project_id, texts['challenge_name'], texts['challenge_description'], texts['challenge_instructions'], texts['changeset_action'], featured_status)
-    #print("requested features status for", error_id, "is", challenge_data.featured)
-    try:
-        # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L340C9-L340C51
-        response = challenge_api.update_challenge(challenge_id, challenge_data)
-        if response["status"] != 200:
-            print(json.dumps(response, indent=4, sort_keys=True))
-    except maproulette.api.errors.InvalidJsonError as e:
-        print("challenge_id", challenge_id)
-        print(challenge_data)
-        print(json.dumps(maproulette.ChallengeModel.to_dict(challenge_data), indent=4, sort_keys=True))
-        print(e)
-        raise e
-    return
 
 def setup_project(project_api, user_id):
     my_project_name = "fix broken Wikipedia tags"
@@ -889,9 +848,6 @@ def get_data_of_a_specific_error_id(report_id):
     reports = get_reports_with_specific_error_id(cursor, report_id)
     print("calling get_reports_with_specific_error_id:", report_id, len(reports), "entries")
     for entry in reports:
-        if "relation" in entry['osm_object_url']:
-            print("skipping relation")
-            continue
 
         #print(json.dumps(entry, indent=4, sort_keys=True))
         #print(entry['osm_object_url'])
@@ -907,8 +863,9 @@ def get_data_of_a_specific_error_id(report_id):
             print(entry['osm_object_url'], "is deleted, marking error as gone")
             # TODO - delete row?
             continue
-        #print(live_osm_data)
-        #print(json.dumps(live_osm_data, indent=4, sort_keys=True))
+        if "relation" in entry['osm_object_url']:
+            if len(live_osm_data['member']) > 100:
+                print("skipping relation with many elements:", len(live_osm_data['member']))
         if osm_bot_abstraction_layer.prerequisite_failure_reason(entry['osm_object_url'], entry['prerequisite'], live_osm_data, prerequisite_failure_callback=None) != None:
             rowid_in_osm_data = entry['rowid'] # modified, usually not present there
             # also update data table if we checked correctness...
@@ -931,6 +888,8 @@ def get_data_of_a_specific_error_id(report_id):
         error_message = entry['error_message']
         if error_message == "":
             error_message = None
+            print(live_osm_data)
+            #print(json.dumps(live_osm_data, indent=4, sort_keys=True)) # TypeError: Object of type datetime is not JSON serializable
         if "node" in entry['osm_object_url']:
             lon = entry['location']['lon']
             lat = entry['location']['lat']
@@ -938,7 +897,50 @@ def get_data_of_a_specific_error_id(report_id):
         elif "way" in entry['osm_object_url']:
             # currently skipped early, see above
             # way vs area... TODO
-            collected_data_for_use.append({"way_ids": live_osm_data['nd'], "geometry": "way", "osm_object_url": entry['osm_object_url'], 'error_message': error_message, 'tags': entry['tags']})
+            collected_data_for_use.append({"nodes_ids_from_way": live_osm_data['nd'], "geometry": "way", "osm_object_url": entry['osm_object_url'], 'error_message': error_message, 'tags': entry['tags']})
+        if "relation" in entry['osm_object_url']:
+            ways = []
+            nodes = []
+            for entry in live_osm_data['member']:
+                print(json.dumps(entry, indent=4, sort_keys=True))
+                ref = entry["ref"]
+                object_type = entry["type"]
+                if object_type == "relation":
+                    print("relation in relation, will ignore this part and hope that it also has ways/nodes")
+            if len(ways) == 1 and len(nodes) == 0:
+                print("relation with just a single way, vould be reduced to a way")
+            print("skipping relation, see ")
+            continue
+            collected_data_for_use.append({"way_ids_from_relation": ways, "node_ids_from_relation": nodes, "geometry": "relation", "osm_object_url": entry['osm_object_url'], 'error_message': error_message, 'tags': entry['tags']})
+            """
+            {
+            "type": "GeometryCollection",
+            "geometries": [
+                {
+                    "type": "Point",
+                    "coordinates": [40.0, 10.0]
+                },
+                {
+                    "type": "LineString",
+                    "coordinates": [
+                        [10.0, 10.0],
+                        [20.0, 20.0],
+                        [10.0, 40.0]
+                    ]
+                },
+                {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [40.0, 40.0],
+                            [20.0, 45.0],
+                            [45.0, 30.0],
+                            [40.0, 40.0]
+                        ]
+                    ]
+                }
+            ]
+            }"""
         else:
             print("skipping", entry['osm_object_url'])
     connection.commit()
@@ -964,9 +966,9 @@ def build_geojson_node_entry(lon, lat, osm_object_url, error_message, tag_dictio
     geometry = build_geojson_node_geometry(lon, lat)
     return build_geojson_entry(geometry, osm_object_url, error_message, tag_dictionary)
 
-def build_geojson_way_entry(way_ids, osm_object_url, error_message, tag_dictionary):
+def build_geojson_way_entry(nodes_ids_from_way, osm_object_url, error_message, tag_dictionary):
     way_coords = []
-    for node_id in way_ids:
+    for node_id in nodes_ids_from_way:
         live_node_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link("https://openstreetmap.org/node/" + str(node_id))
         print(live_node_osm_data['lat'], live_node_osm_data['lon'])
         way_coords.append({'lat': live_node_osm_data['lat'], 'lon': live_node_osm_data['lon']})
@@ -987,6 +989,64 @@ def build_geojson_way_geometry(way_coords):
     for entry in way_coords:
         returned['coordinates'].append([entry['lon'], entry['lat']])
     return returned
+
+def create_link_challenge_based_on_error_id(challenge_api, project_id, error_id, featured):
+    texts = get_challenge_text_based_on_error_id(error_id)
+    try:
+        create_challenge(challenge_api, project_id, texts['challenge_name'], texts['challenge_description'], texts['challenge_instructions'], texts['changeset_action'], featured)
+    except requests.exceptions.ConnectionError as e:
+        print(e)
+        print("will retry")
+        print(challenge_api, project_id, error_id, featured)
+        print(texts)
+        time.sleep(10)
+        return create_link_challenge_based_on_error_id(challenge_api, project_id, error_id, featured)
+
+def delete_task_if_not_locked(task_api, task_id, osm_link):
+    link = "https://maproulette.org/task/" + str(task_id)
+    print(link, osm_link, "should be marked as deleted as it is present in task and not in reports from database")
+    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/task.py#L169
+    #print(STATUS_DELETED)
+    try:
+        task_api.update_task_status(task_id, STATUS_DELETED, "", "", False)
+    except maproulette.api.errors.HttpError as e:
+        print(e)
+        print(dir(e))
+        print(e.message)
+        print(e.status)
+        if e.message == "This task is locked by another user, cannot update status at this time.":
+            # happens with entries just being edited
+            pass
+        else:
+            raise e
+    except requests.exceptions.ConnectionError as e:
+        print(e)
+        print("will retry")
+        time.sleep(10)
+        return delete_task_if_not_locked(task_api, task_id, osm_link)
+
+def set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, featured_status):
+    # seems to be not working at all anyway...
+    challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
+    if challenge_id == None:
+        raise Exception("no such challenge: " + str(error_id))
+
+    texts = get_challenge_text_based_on_error_id(error_id)
+
+    challenge_data = create_challenge_model(challenge_api, project_id, texts['challenge_name'], texts['challenge_description'], texts['challenge_instructions'], texts['changeset_action'], featured_status)
+    #print("requested features status for", error_id, "is", challenge_data.featured)
+    try:
+        # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L340C9-L340C51
+        response = challenge_api.update_challenge(challenge_id, challenge_data)
+        if response["status"] != 200:
+            print(json.dumps(response, indent=4, sort_keys=True))
+    except maproulette.api.errors.InvalidJsonError as e:
+        print("challenge_id", challenge_id)
+        print(challenge_data)
+        print(json.dumps(maproulette.ChallengeModel.to_dict(challenge_data), indent=4, sort_keys=True))
+        print(e)
+        raise e
+    return
 
 def get_challenge_tasks(challenge_api, challenge_id):
     returned = []
