@@ -319,7 +319,6 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a train category")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an electronic device model series")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a heraldic animal")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a bicycle sharing system")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a history of a geographic region")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a branch of military service")
@@ -332,6 +331,9 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a profession")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a conflict")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a film")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a multinational corporation")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a mental process")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an electric utility")
     returned += [
         "link to a disambiguation page",
         'wikipedia wikidata mismatch',
@@ -371,6 +373,7 @@ def for_review():
         'malformed wikipedia tag - for on_the_list prefixed tags',
         'malformed wikipedia tag - for model prefixed tags',
         'malformed wikipedia tag - for manufacturer prefixed tags',
+        'malformed wikipedia tag - for royal_cypher prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
@@ -389,6 +392,7 @@ def for_review():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for on_the_list prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for model prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for manufacturer prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for royal_cypher prefixed tags',
         'wikipedia wikidata mismatch - for brand prefixed tags',
         'wikipedia wikidata mismatch - for operator prefixed tags',
         'wikipedia wikidata mismatch - for subject prefixed tags',
@@ -407,6 +411,8 @@ def for_review():
         'wikipedia wikidata mismatch - for on_the_list prefixed tags',
         'wikipedia wikidata mismatch - for model prefixed tags',
         'wikipedia wikidata mismatch - for manufacturer prefixed tags',
+        'wikipedia wikidata mismatch - for royal_cypher prefixed tags',
+
         "species secondary tag links something that is not species according to wikidata (checking P105)",
         "bridge:wikipedia - move to bridge outline",
         "bridge:wikidata - move to bridge outline",
@@ -430,8 +436,8 @@ def for_review():
         'malformed secondary wikidata tag - for on_the_list prefixed tags',
         'malformed secondary wikidata tag - for model prefixed tags',
         'malformed secondary wikidata tag - for manufacturer prefixed tags',
-        
-        'no longer existing brand (according to Wikidata)',
+        'malformed secondary wikidata tag - for royal_cypher prefixed tags',
+        "malformed secondary wikidata tag - for owner prefixed tags",
     ]
     return returned
 
@@ -506,10 +512,16 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a legal action")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a mental process")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a road type")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a meeting")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to religious sculpture (genre)")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a travel")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an overview article")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a shooting")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a tradition")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a food")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research project")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious sculpture (genre)")
     returned += [
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
@@ -523,19 +535,30 @@ def for_tests():
         "genus secondary tag links something that is not species according to wikidata",
         "species secondary tag links something that is not species according to wikidata",
         "genus secondary tag links something that is not genus according to wikidata (checking P105)",
-
-        "link to an unlinkable article", # remove as defunct TODO HACK
-
     ]
     return returned
 
 def ignored():
-    returned = []
+    returned = [
+        "link to an unlinkable article", # remove as defunct TODO HACK - present here to supress warnings in logs
+        "malformed secondary wikidata tag - for source:species prefixed tags", # remove as defunct TODO HACK - present here to supress warnings in logs
+
+        # many were actually existing - defunct companies but brands still existing
+        # move to tests once what was reported to Wikidata people gets fixed
+        'no longer existing brand (according to Wikidata)', 
+
+        'no longer existing object (according to Wikidata)', # many false positives, for example airport where runway remains may be mapped in OSM while not in Wikidata
+        # TODO: redo this, but skip cases where OSM has disused: abandoned: etc
+        # for example https://www.openstreetmap.org/node/1042007056 should be disused: prefixed or Wikidata is wrong
+    ]
     for from_tags in [
         "wikipedia and wikidata",
         "wikipedia",
         "wikidata",
     ]:
+        # many reported problems, lets wait for cleanup on Wikidata
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
+
         # free flight mess
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
 
@@ -560,6 +583,7 @@ def ignored():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an annual event")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a festival")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a film festival")
+
 
     returned += [
         # TODO
@@ -586,6 +610,11 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for disused:brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for disused:brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for disused:brand prefixed tags',
+        'malformed wikipedia tag - for construction:brand prefixed tags',
+        'wikipedia wikidata mismatch - for construction:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for construction:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for construction:brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for construction:brand prefixed tags',
         'malformed wikipedia tag - for abandoned:brand prefixed tags',
         'wikipedia wikidata mismatch - for abandoned:brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for abandoned:brand prefixed tags',
@@ -616,6 +645,7 @@ def ignored():
         # almost certainly should be moved to man_made=bridge area
         # https://taginfo.openstreetmap.org/keys/bridge%3Awikipedia#overview
         'malformed wikipedia tag - for bridge prefixed tags',
+        "malformed secondary wikidata tag - for bridge prefixed tags",
         'wikipedia wikidata mismatch - for bridge prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for bridge prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for bridge prefixed tags',
@@ -704,6 +734,13 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for not prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for not prefixed tags',
 
+        # skip as not really important?
+        'malformed wikipedia tag - for supervisor_district prefixed tags',
+        'wikipedia wikidata mismatch - for supervisor_district prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for supervisor_district prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for supervisor_district prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for supervisor_district prefixed tags',
+
 
         # how say https://www.openstreetmap.org/node/1968342133 should be tagged?
         'should use a secondary wikipedia tag - linking to a geodetic control network',
@@ -742,9 +779,6 @@ def ignored():
 
         #'no longer existing object', 'no longer existing brand', # renamed, should be removed once database updates or is forced to update # now flooded with errors anyway
 
-        'no longer existing object (according to Wikidata)', # many false positives, for example airport where runway remains may be mapped in OSM while not in Wikidata
-        # TODO: redo this, but skip cases where OSM has disused: abandoned: etc
-        # for example https://www.openstreetmap.org/node/1042007056 should be disused: prefixed or Wikidata is wrong
     ]
     return returned
 
