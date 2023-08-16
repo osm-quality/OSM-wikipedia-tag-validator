@@ -60,3 +60,11 @@ def get_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type):
 
 def record_bot_edit_timestamp(cursor, internal_region_name, bot_edit_type, timestamp):
     cursor.execute("INSERT INTO osm_bot_edit_log VALUES (:area_identifier, :type, :bot_edit_timestamp)", {"area_identifier": internal_region_name, "type": bot_edit_type, "bot_edit_timestamp": timestamp})
+
+def clear_error_and_request_update(cursor, rowid_in_osm_data):
+    cursor.execute("""
+    UPDATE osm_data
+    SET validator_complaint = :validator_complaint, error_id = :error_id
+    WHERE rowid = :rowid""",
+    {"validator_complaint": None, "error_id": None, "rowid": rowid_in_osm_data}
+    )

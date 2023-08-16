@@ -141,6 +141,7 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, are
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata, OSM"
     osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], type, data, source)
+    database.clear_error_and_request_update(cursor, e["rowid"])
 
 def change_to_local_language_single(e, area_code, automatic_status):
     if automatic_status == None:
