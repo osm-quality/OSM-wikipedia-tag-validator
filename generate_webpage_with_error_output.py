@@ -82,7 +82,7 @@ def generate_html_file(errors, output_file_name, types, information_header, time
             error_count = 0
             for e in reported_errors:
                 if e['error_id'] == error_type_id:
-                    error_text = error_description(e, prefix_of_lines + "\t")
+                    error_text = error_description(e, prefix_of_lines + "\t", debug_identifier=output_file_name)
                     if error_text in added_reports:
                         #normal in merged entries
                         continue
@@ -232,11 +232,11 @@ def desired_wikipedia_target(e):
                 desired = change["to"]["wikipedia"]
     return desired
 
-def error_description(e, prefix_of_lines):
+def error_description(e, prefix_of_lines, debug_identifier):
     returned = ""
     if e['error_message'] == None:
         print(e)
-        print("e['error_message'] is None")
+        print("e['error_message'] is None, debug_identifier:", debug_identifier)
     else:
         returned += row(htmlify(e['error_message']), prefix_of_lines=prefix_of_lines)
     returned += row(link_to_osm_object(e['osm_object_url'], e['tags']), prefix_of_lines=prefix_of_lines)
