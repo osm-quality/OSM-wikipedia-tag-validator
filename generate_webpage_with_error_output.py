@@ -335,6 +335,7 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a mental process")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an electric utility")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a shooting")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a cuisine")
     returned += [
         "link to a disambiguation page",
         'wikipedia wikidata mismatch',
@@ -501,11 +502,16 @@ def for_tests():
         "wikipedia",
         "wikidata",
     ]:
+        # many reported problems, lets wait for cleanup on Wikidata
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
+
+        # free flight mess
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
+
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an art genre")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an intentional human activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
@@ -520,8 +526,6 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an overview article")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a tradition")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a food")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a cuisine")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious denomination")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research project")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious sculpture (genre)")
     returned += [
@@ -530,6 +534,9 @@ def for_tests():
         # TODO: detect image=* that should be wikimedia_commons=*
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
+
+        "no longer existing brand (according to Wikidata) - and tag processing has not worked well",
+        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
 
         # enable after flushing this error classes from the database as some were processed
         # and after at least attemped processing of OSM-specific issues
@@ -544,10 +551,7 @@ def ignored():
     returned = [
         "link to an unlinkable article", # remove as defunct TODO HACK - present here to supress warnings in logs
         "malformed secondary wikidata tag - for source:species prefixed tags", # remove as defunct TODO HACK - present here to supress warnings in logs
-
-        # many were actually existing - defunct companies but brands still existing
-        # move to tests once what was reported to Wikidata people gets fixed
-        'no longer existing brand (according to Wikidata)', 
+        "no longer existing brand (according to Wikidata)",  # remove as defunct TODO HACK
 
         'no longer existing object (according to Wikidata)', # many false positives, for example airport where runway remains may be mapped in OSM while not in Wikidata
         # TODO: redo this, but skip cases where OSM has disused: abandoned: etc
@@ -558,11 +562,14 @@ def ignored():
         "wikipedia",
         "wikidata",
     ]:
-        # many reported problems, lets wait for cleanup on Wikidata
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
+        # how we should link it then?
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious denomination")
 
-        # free flight mess
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
+        # reports problem on Wikidata, useful for fixing Wikidata - not OSM
+        # once many collect maybe reporting then in one big group may make sense as they can still hide
+        # things from my hidden gem processor
+        # or implement skipping this errors also there? Wikidata bug category? 
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
 
         # tricky with office=goverment, postpone handling untill less tricky stuff is dealt with
         # (including on Wikidata side)
