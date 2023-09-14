@@ -3,6 +3,17 @@
 # 2 sierpnia: Fixed (4480/14141) - 32%
 # 3 sierpnia: Fixed (4518/14141) - 32%
 # 6 sierpnia Fixed (4643/14167) - 33%
+# 9 sierpnia Fixed (4873/14173) - 34%
+# 14 sierpnia Fixed (5103/14173) - 36%
+# 15 sierpnia Fixed (5150/14173) - 36%
+# 16 sierpnia Fixed (5227/14173) - 37%
+# 17 sierpnia Fixed (5231/14180) - 37%
+# 18 sierpnia Fixed (5255/14180) - 37%
+# 19 sierpnia Fixed (5256/14180) - 37%
+# 20 sierpnia Fixed (5265/14199) - 37%
+# 26 sierpnia Fixed (5318/14190) - 38%
+# 30 sierpnia Fixed (5359/14188) - 38%
+# 5 września Fixed (5381/14202) - 38%
 
 # https://github.com/osmlab/maproulette-python-client
 import maproulette
