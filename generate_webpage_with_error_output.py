@@ -552,10 +552,6 @@ def ignored():
         # also, I slowly create notes for Sprint cases
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
 
-        "link to an unlinkable article", # remove as defunct TODO HACK - present here to supress warnings in logs
-        "malformed secondary wikidata tag - for source:species prefixed tags", # remove as defunct TODO HACK - present here to supress warnings in logs
-        "no longer existing brand (according to Wikidata)",  # remove as defunct TODO HACK
-
         'no longer existing object (according to Wikidata)', # many false positives, for example airport where runway remains may be mapped in OSM while not in Wikidata
         # TODO: redo this, but skip cases where OSM has disused: abandoned: etc
         # for example https://www.openstreetmap.org/node/1042007056 should be disused: prefixed or Wikidata is wrong
