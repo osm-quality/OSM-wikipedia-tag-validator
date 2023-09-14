@@ -141,7 +141,7 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, are
         "usa": "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_USA"
     }
     type = e['osm_object_url'].split("/")[3]
-    source = "wikidata, OSM"
+    source = "wikidata;OSM"
     osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], type, data, source)
     database.clear_error_and_request_update(cursor, e["rowid"])
 
@@ -312,7 +312,7 @@ def add_wikidata_tag_from_wikipedia_tag(reported_errors, area_code, automatic_st
         "pl": 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikidata_tags_based_on_wikipedia_tags_in_Poland'
     }
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code])
-    source = "wikidata, OSM"
+    source = "wikidata;OSM"
     builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], source)
     started_changeset = False
 
@@ -362,7 +362,7 @@ def add_wikipedia_tag_from_wikidata_tag(reported_errors, area_code, automatic_st
         "pl": 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/adding_wikipedia_tags_based_on_wikidata_tags_in_Poland'
     }
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code])
-    source = "wikidata, OSM"
+    source = "wikidata;OSM"
     builder = osm_bot_abstraction_layer.ChangesetBuilder(affected_objects_description, comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], source)
     started_changeset = False
 
