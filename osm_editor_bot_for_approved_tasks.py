@@ -134,9 +134,11 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(e, are
             return
     discussion_urls = {
         "pl": "https://forum.openstreetmap.org/viewtopic.php?id=59649",
+        "usa": "https://community.openstreetmap.org/t/bot-edit-proposal-fixing-wikipedia-tags-pointing-at-redirects-in-usa-where-it-can-be-done-reliably/101417 and https://app.slack.com/client/T029HV94T/C029HV951/thread/C029HV951-1688283468.590519",
     }
     osm_wiki_page_urls = {
         "pl": "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_Poland",
+        "usa": "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikipedia_tags_pointing_at_redirects_in_USA"
     }
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata, OSM"
