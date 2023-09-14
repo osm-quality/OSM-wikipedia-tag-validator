@@ -14,16 +14,21 @@ import osm_editor_bot_for_approved_tasks
 import random
 
 def main():
-    osm_editor_bot_for_approved_tasks.main()
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     database.create_table_if_needed(cursor)
+    connection.commit()
+    connection.close()
+
+    osm_editor_bot_for_approved_tasks.main()
+    connection = sqlite3.connect(config.database_filepath())
+    cursor = connection.cursor()
+    update_validator_database_and_reports()
     update_oldest_with_no_reported_issues(cursor)
     check_database_integrity(cursor)
     connection.commit()
     connection.close()
     check_for_malformed_definitions_of_entries()
-    update_validator_database_and_reports()
 
 def update_oldest_with_no_reported_issues(cursor):
     outdated_objects = oldest_entries_with_no_reported_issues(cursor)
