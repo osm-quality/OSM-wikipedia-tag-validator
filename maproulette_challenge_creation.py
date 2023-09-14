@@ -90,17 +90,28 @@ def main():
     greenlit_groups_to_be_featured = [
     ]
     greenlit_groups_not_to_be_featured = [
-        # wat? why entries are not removed?
-        'link to a disambiguation page',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a shooting',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a military operation',
 
         # will go to featured group
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a train category',
 
         # upload but not featured group
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a website',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a website',
     ]
     for_later = [
+        # wat? why entries are not removed?
+        # process tests after Wikidata community fixes what causes noisy reports
+        # https://www.wikidata.org/w/index.php?title=User:Mateusz_Konieczny/failing_testcases&action=history
+        #
+        # after fixing - jest delete it, already listed
+        'link to a disambiguation page',
+
         # requires text descriptions
         'species secondary tag links something that is not species according to wikidata (checking P105)',
         'malformed secondary wikidata tag - for species prefixed tags',
+        'malformed secondary wikidata tag - for name:etymology prefixed tags',
         'malformed secondary wikidata tag', # which one? why so unspecific?
     ]
     """
@@ -143,7 +154,9 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a sports competition',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a sports competition',
         'should use a secondary wikipedia tag - linking from wikidata tag to a religious denomination',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a software', # see https://www.openstreetmap.org/note/3769352
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a software', # links many software companies, to the point taht arguably Wikidata is simply wrong=
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a software',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a software',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a public transport network',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a public transport network',
         'should use a secondary wikipedia tag - linking from wikidata tag to a public transport network',
@@ -153,33 +166,29 @@ def model_for_XXXXXX():
         'mismatching teryt:simc codes in wikidata and in osm element',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a film festival',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a festival',
+
+        'bridge:wikipedia and bridge:wikidata - move to bridge outline',
+        'bridge:wikipedia - move to bridge outline',
+
+        # what about say https://www.openstreetmap.org/node/5907460258
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a transport accident',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a transport accident',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a transport accident',
     ]
     already_uploaded_featured_pool = [
-        "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not",
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a protest',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a violation of law',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a transport accident',
         'should use a secondary wikipedia tag - linking from wikipedia tag to an object that exists outside physical reality',
         'should use a secondary wikipedia tag - linking from wikipedia tag to an aspect in a geographic region',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a transport accident',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a conflict',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical reality',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a software',
         'should use a secondary wikipedia tag - linking from wikidata tag to a chain store',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a chain store',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a transport accident',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a television series',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a violation of law',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a social issue',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a social issue',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a television series',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a saying',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a coat of arms',
         'should use a secondary wikipedia tag - linking from wikidata tag to a coat of arms',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a profession',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a restaurant chain',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a profession',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a software',
         'should use a secondary wikipedia tag - linking from wikidata tag to a protest',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a history of a geographic region',
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
@@ -187,6 +196,13 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a mental process',
         'should use a secondary wikipedia tag - linking from wikidata tag to a military operation',
         'should use a secondary wikipedia tag - linking from wikidata tag to a mental process',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a robbery',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a cuisine',
+
+        # review "too hard" etc
+        # https://maproulette.org/admin/project/53065/challenge/40094?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=20&sortCriteria.direction=DESC&sortCriteria.sortBy=name
+        # TODO
+        "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not",
 
         # exhausted, refilling will happen but lets give it time
         # less likely to be refilled at the bottom
@@ -209,6 +225,7 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a human',
     ]
+    print("look at https://maproulette.org/admin/project/53065/challenge/40094?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=20&sortCriteria.direction=DESC&sortCriteria.sortBy=name and then repromote 'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not'")
     already_uploaded = [
         'should use a secondary wikipedia tag - linking from wikidata tag to a vehicle model or class',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a vehicle model or class',
@@ -236,7 +253,6 @@ def model_for_XXXXXX():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for architect prefixed tags',
         'should use a secondary wikipedia tag - linking from wikidata tag to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an aspect in a geographic region',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a social issue',
         'wikipedia wikidata mismatch - for network prefixed tags',
         'wikipedia wikidata mismatch - for operator prefixed tags',
         'wikipedia wikidata mismatch - for name:etymology prefixed tags',
@@ -256,6 +272,12 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a fictional entity',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a fictional entity',
 
+        # also multiple reveal of bogus Wikidata ontology
+        'should use a secondary wikipedia tag - linking from wikidata tag to a social issue',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a social issue',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a social issue',
+
+
         # some argue that linking from offices/factories is fine
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a multinational corporation',
 
@@ -263,6 +285,14 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a film',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a film',
         'should use a secondary wikipedia tag - linking from wikidata tag to a film',    
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a television series',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a television series',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a television series',
+
+        #tricky
+        'should use a secondary wikipedia tag - linking from wikidata tag to a violation of law',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a violation of law',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a violation of law',
 
         'should use a secondary wikipedia tag - linking from wikipedia tag to a branch of military service',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a recurring sports event',
