@@ -27,6 +27,7 @@ import random
 import requests
 import database
 
+print("try to list all comments made by users...")
 # TODO brand:wikidata / brand:wikipedia without brand tag
 # https://maproulette.org/admin/project/53065/challenge/40012
 # https://maproulette.org/browse/projects/53065
