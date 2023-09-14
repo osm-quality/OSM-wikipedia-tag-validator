@@ -536,7 +536,6 @@ def for_tests():
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
 
         "no longer existing brand (according to Wikidata) - and tag processing has not worked well",
-        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
 
         # enable after flushing this error classes from the database as some were processed
         # and after at least attemped processing of OSM-specific issues
@@ -549,6 +548,10 @@ def for_tests():
 
 def ignored():
     returned = [
+        # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
+        # also, I slowly create notes for Sprint cases
+        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
+
         "link to an unlinkable article", # remove as defunct TODO HACK - present here to supress warnings in logs
         "malformed secondary wikidata tag - for source:species prefixed tags", # remove as defunct TODO HACK - present here to supress warnings in logs
         "no longer existing brand (according to Wikidata)",  # remove as defunct TODO HACK
