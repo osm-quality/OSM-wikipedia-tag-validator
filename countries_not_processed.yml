@@ -1,0 +1,180 @@
+- {internal_region_name: 'Austria', website_main_title_part: 'Österreich (Austria)', identifier: {'ISO3166-1': 'AT'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Węgry', website_main_title_part: 'Magyarország (Hungary, Węgry)', identifier: {'ISO3166-1': 'HU'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Gruzja', website_main_title_part: 'საქართველო (Georgia, Gruzja)', identifier: {'ISO3166-1': 'GE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Watykan', website_main_title_part: 'Civitas Vaticana - Città del Vaticano (Vatican City, Watykan)', identifier: {'ISO3166-1': 'VA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kambodża', website_main_title_part: 'ពររជណចករកមពជ (Cambodia, Kambodża)', identifier: {'ISO3166-1': 'KH'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Laos', website_main_title_part: 'ປະເທດລາວ (Laos)', identifier: {'ISO3166-1': 'LA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Wietnam', website_main_title_part: 'Việt Nam (Vietnam, Wietnam)', identifier: {'ISO3166-1': 'VN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Dania', website_main_title_part: 'Danmark (Denmark, Dania)', identifier: {'ISO3166-1': 'DK'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Mjanma', website_main_title_part: 'မနမ (Myanmar, Mjanma)', identifier: {'ISO3166-1': 'MM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Belgia', website_main_title_part: 'België | Belgique | Belgien (Belgium, Belgia)', identifier: {'ISO3166-1': 'BE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Szwecja', website_main_title_part: 'Sverige (Sweden, Szwecja)', identifier: {'ISO3166-1': 'SE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Albania', website_main_title_part: 'Shqipëria (Albania)', identifier: {'ISO3166-1': 'AL'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Macedonia Północna', website_main_title_part: 'Северна Македонија (North Macedonia, Macedonia Północna)', identifier: {'ISO3166-1': 'MK'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Czarnogóra', website_main_title_part: 'Crna Gora | Црна Гора (Montenegro, Czarnogóra)', identifier: {'ISO3166-1': 'ME'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Finlandia', website_main_title_part: 'Suomi | Finland (Finland, Finlandia)', identifier: {'ISO3166-1': 'FI'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Litwa', website_main_title_part: 'Lietuva (Lithuania, Litwa)', identifier: {'ISO3166-1': 'LT'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Estonia', website_main_title_part: 'Eesti (Estonia)', identifier: {'ISO3166-1': 'EE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Republika Południowej Afryki', website_main_title_part: 'South Africa (Republika Południowej Afryki)', identifier: {'ISO3166-1': 'ZA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Eswatini', website_main_title_part: 'eSwatini (Eswatini)', identifier: {'ISO3166-1': 'SZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Rumunia', website_main_title_part: 'România (Romania, Rumunia)', identifier: {'ISO3166-1': 'RO'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Ekwador', website_main_title_part: 'Ecuador (Ekwador)', identifier: {'ISO3166-1': 'EC'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Meksyk', website_main_title_part: 'México (Mexico, Meksyk)', identifier: {'ISO3166-1': 'MX'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Mongolia', website_main_title_part: 'Монгол улс ᠮᠤᠩᠭᠤᠯ ᠤᠯᠤᠰ (Mongolia)', identifier: {'ISO3166-1': 'MN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Chile', website_main_title_part: 'Chile', identifier: {'ISO3166-1': 'CL'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Rwanda', website_main_title_part: 'Rwanda', identifier: {'ISO3166-1': 'RW'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Turcja', website_main_title_part: 'Türkiye (Turkey, Turcja)', identifier: {'ISO3166-1': 'TR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kirgistan', website_main_title_part: 'Кыргызстан (Kyrgyzstan, Kirgistan)', identifier: {'ISO3166-1': 'KG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Bhutan', website_main_title_part: 'འབགཡལ་ (Bhutan)', identifier: {'ISO3166-1': 'BT'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Nepal', website_main_title_part: 'नपल (Nepal)', identifier: {'ISO3166-1': 'NP'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Bangladesz', website_main_title_part: 'বলদশ (Bangladesh, Bangladesz)', identifier: {'ISO3166-1': 'BD'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Jordania', website_main_title_part: 'الأردن (Jordan, Jordania)', identifier: {'ISO3166-1': 'JO'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Syria', website_main_title_part: 'سوريا (Syria)', identifier: {'ISO3166-1': 'SY'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Liban', website_main_title_part: 'لبنان (Lebanon, Liban)', identifier: {'ISO3166-1': 'LB'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Bułgaria', website_main_title_part: 'България (Bulgaria, Bułgaria)', identifier: {'ISO3166-1': 'BG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Grecja', website_main_title_part: 'Ελλάς (Greece, Grecja)', identifier: {'ISO3166-1': 'GR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Korea Północna', website_main_title_part: '조선민주주의인민공화국 (North Korea, Korea Północna)', identifier: {'ISO3166-1': 'KP'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Algieria', website_main_title_part: 'Algérie | ⵍⵣⵣⴰⵢⴻⵔ | الجزائر (Algeria, Algieria)', identifier: {'ISO3166-1': 'DZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Tunezja', website_main_title_part: 'تونس (Tunisia, Tunezja)', identifier: {'ISO3166-1': 'TN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Libia', website_main_title_part: 'ليبيا (Libya, Libia)', identifier: {'ISO3166-1': 'LY'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Mauretania', website_main_title_part: 'موريتانيا (Mauritania, Mauretania)', identifier: {'ISO3166-1': 'MR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Gambia', website_main_title_part: 'Gambia (The Gambia)', identifier: {'ISO3166-1': 'GM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Senegal', website_main_title_part: 'Sénégal (Senegal)', identifier: {'ISO3166-1': 'SN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Gwinea Bissau', website_main_title_part: 'Guiné-Bissau (Guinea-Bissau, Gwinea Bissau)', identifier: {'ISO3166-1': 'GW'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Sierra Leone', website_main_title_part: 'Sierra Leone', identifier: {'ISO3166-1': 'SL'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Gwinea', website_main_title_part: 'Guinée (Guinea, Gwinea)', identifier: {'ISO3166-1': 'GN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Wybrzeże Kości Słoniowej', website_main_title_part: 'Côte d’Ivoire (Côte d'Ivoire, Wybrzeże Kości Słoniowej)', identifier: {'ISO3166-1': 'CI'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Liberia', website_main_title_part: 'Liberia', identifier: {'ISO3166-1': 'LR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Ghana', website_main_title_part: 'Ghana', identifier: {'ISO3166-1': 'GH'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Togo', website_main_title_part: 'Togo', identifier: {'ISO3166-1': 'TG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Burkina Faso', website_main_title_part: 'Burkina Faso', identifier: {'ISO3166-1': 'BF'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Benin', website_main_title_part: 'Bénin (Benin)', identifier: {'ISO3166-1': 'BJ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Mali', website_main_title_part: 'Mali', identifier: {'ISO3166-1': 'ML'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Niger', website_main_title_part: 'Niger', identifier: {'ISO3166-1': 'NE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Nigeria', website_main_title_part: 'Nigeria', identifier: {'ISO3166-1': 'NG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Sudan', website_main_title_part: 'السودان (Sudan)', identifier: {'ISO3166-1': 'SD'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Republika Środkowoafrykańska', website_main_title_part: 'Ködörösêse tî Bêafrîka - République Centrafricaine (Central African Republic, Republika Środkowoafrykańska)', identifier: {'ISO3166-1': 'CF'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Gwinea Równikowa', website_main_title_part: 'Guinea Ecuatorial (Equatorial Guinea, Gwinea Równikowa)', identifier: {'ISO3166-1': 'GQ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Gabon', website_main_title_part: 'Gabon', identifier: {'ISO3166-1': 'GA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kongo', website_main_title_part: 'Congo (Congo-Brazzaville, Kongo)', identifier: {'ISO3166-1': 'CG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Demokratyczna Republika Konga', website_main_title_part: 'République démocratique du Congo (Democratic Republic of the Congo, Demokratyczna Republika Konga)', identifier: {'ISO3166-1': 'CD'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Uganda', website_main_title_part: 'Uganda', identifier: {'ISO3166-1': 'UG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kenia', website_main_title_part: 'Kenya (Kenia)', identifier: {'ISO3166-1': 'KE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Somalia', website_main_title_part: 'Soomaaliya الصومال (Somalia)', identifier: {'ISO3166-1': 'SO'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Dżibuti', website_main_title_part: 'Djibouti جيبوتي (Djibouti, Dżibuti)', identifier: {'ISO3166-1': 'DJ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kamerun', website_main_title_part: 'Cameroun (Cameroon, Kamerun)', identifier: {'ISO3166-1': 'CM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Namibia', website_main_title_part: 'Namibia', identifier: {'ISO3166-1': 'NA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Angola', website_main_title_part: 'Angola', identifier: {'ISO3166-1': 'AO'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Burundi', website_main_title_part: 'Burundi', identifier: {'ISO3166-1': 'BI'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Tanzania', website_main_title_part: 'Tanzania', identifier: {'ISO3166-1': 'TZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Zambia', website_main_title_part: 'Zambia', identifier: {'ISO3166-1': 'ZM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Zimbabwe', website_main_title_part: 'Zimbabwe', identifier: {'ISO3166-1': 'ZW'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Mozambik', website_main_title_part: 'Moçambique (Mozambique, Mozambik)', identifier: {'ISO3166-1': 'MZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Malawi', website_main_title_part: 'Malawi', identifier: {'ISO3166-1': 'MW'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Uzbekistan', website_main_title_part: 'Oʻzbekiston (Uzbekistan)', identifier: {'ISO3166-1': 'UZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Tadżykistan', website_main_title_part: 'Тоҷикистон (Tajikistan, Tadżykistan)', identifier: {'ISO3166-1': 'TJ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kazachstan', website_main_title_part: 'Қазақстан (Kazakhstan, Kazachstan)', identifier: {'ISO3166-1': 'KZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Słowenia', website_main_title_part: 'Slovenija (Slovenia, Słowenia)', identifier: {'ISO3166-1': 'SI'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Turkmenistan', website_main_title_part: 'Türkmenistan (Turkmenistan)', identifier: {'ISO3166-1': 'TM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Boliwia', website_main_title_part: 'Bolivia (Boliwia)', identifier: {'ISO3166-1': 'BO'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Guernsey', website_main_title_part: 'Guernsey', identifier: {'ISO3166-1': 'GG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Wenezuela', website_main_title_part: 'Venezuela (Wenezuela)', identifier: {'ISO3166-1': 'VE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Argentyna', website_main_title_part: 'Argentina (Argentyna)', identifier: {'ISO3166-1': 'AR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Urugwaj', website_main_title_part: 'Uruguay (Urugwaj)', identifier: {'ISO3166-1': 'UY'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Paragwaj', website_main_title_part: 'Paraguay | Paraguái (Paraguay, Paragwaj)', identifier: {'ISO3166-1': 'PY'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Surinam', website_main_title_part: 'Suriname (Surinam)', identifier: {'ISO3166-1': 'SR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Gujana', website_main_title_part: 'Guyana (Gujana)', identifier: {'ISO3166-1': 'GY'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Nikaragua', website_main_title_part: 'Nicaragua (Nikaragua)', identifier: {'ISO3166-1': 'NI'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kostaryka', website_main_title_part: 'Costa Rica (Kostaryka)', identifier: {'ISO3166-1': 'CR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Panama', website_main_title_part: 'Panamá (Panama)', identifier: {'ISO3166-1': 'PA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Honduras', website_main_title_part: 'Honduras', identifier: {'ISO3166-1': 'HN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Belize', website_main_title_part: 'Belize', identifier: {'ISO3166-1': 'BZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Peru', website_main_title_part: 'Perú (Peru)', identifier: {'ISO3166-1': 'PE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Erytrea', website_main_title_part: 'ኤርትራ Eritrea إرتريا (Eritrea, Erytrea)', identifier: {'ISO3166-1': 'ER'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Islandia', website_main_title_part: 'Ísland (Iceland, Islandia)', identifier: {'ISO3166-1': 'IS'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Afganistan', website_main_title_part: 'افغانستان (Afghanistan, Afganistan)', identifier: {'ISO3166-1': 'AF'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Indie', website_main_title_part: 'India (Indie)', identifier: {'ISO3166-1': 'IN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Indonezja', website_main_title_part: 'Indonesia (Indonezja)', identifier: {'ISO3166-1': 'ID'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Irak', website_main_title_part: 'العراق (Iraq, Irak)', identifier: {'ISO3166-1': 'IQ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Iran', website_main_title_part: 'ایران (Iran)', identifier: {'ISO3166-1': 'IR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Katar', website_main_title_part: 'قطر (Qatar, Katar)', identifier: {'ISO3166-1': 'QA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kuwejt', website_main_title_part: 'الكويت (Kuwait, Kuwejt)', identifier: {'ISO3166-1': 'KW'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Oman', website_main_title_part: 'عمان (Oman)', identifier: {'ISO3166-1': 'OM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Timor Wschodni', website_main_title_part: 'Timór Lorosa'e | Timor-Leste (East Timor, Timor Wschodni)', identifier: {'ISO3166-1': 'TL'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Pakistan', website_main_title_part: 'پاکستان (Pakistan)', identifier: {'ISO3166-1': 'PK'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Korea Południowa', website_main_title_part: '대한민국 (South Korea, Korea Południowa)', identifier: {'ISO3166-1': 'KR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Emiraty Arabskie', website_main_title_part: 'الإمارات العربية المتحدة (United Arab Emirates, Emiraty Arabskie)', identifier: {'ISO3166-1': 'AE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Cypr', website_main_title_part: 'Κύπρος - Kıbrıs (Cyprus, Cypr)', identifier: {'ISO3166-1': 'CY'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Dominika', website_main_title_part: 'Dominica (Dominika)', identifier: {'ISO3166-1': 'DM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Dominikana', website_main_title_part: 'República Dominicana (Dominican Republic, Dominikana)', identifier: {'ISO3166-1': 'DO'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Haiti', website_main_title_part: 'Ayiti (Haiti)', identifier: {'ISO3166-1': 'HT'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kuba', website_main_title_part: 'Cuba (Kuba)', identifier: {'ISO3166-1': 'CU'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Papua-Nowa Gwinea', website_main_title_part: 'Papua Niugini (Papua New Guinea, Papua-Nowa Gwinea)', identifier: {'ISO3166-1': 'PG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Armenia', website_main_title_part: 'Հայաստան (Armenia)', identifier: {'ISO3166-1': 'AM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Azerbejdżan', website_main_title_part: 'Azərbaycan (Azerbaijan, Azerbejdżan)', identifier: {'ISO3166-1': 'AZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Malta', website_main_title_part: 'Malta', identifier: {'ISO3166-1': 'MT'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Jersey', website_main_title_part: 'Jersey', identifier: {'ISO3166-1': 'JE'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Bahrajn', website_main_title_part: 'البحرين (Bahrain, Bahrajn)', identifier: {'ISO3166-1': 'BH'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Filipiny', website_main_title_part: 'Philippines (Filipiny)', identifier: {'ISO3166-1': 'PH'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Madagaskar', website_main_title_part: 'Madagasikara | Madagascar (Madagascar, Madagaskar)', identifier: {'ISO3166-1': 'MG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Republika Zielonego Przylądka', website_main_title_part: 'Cabo Verde (Cape Verde, Republika Zielonego Przylądka)', identifier: {'ISO3166-1': 'CV'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Komory', website_main_title_part: 'Comores Komori جزر القمر (Comoros, Komory)', identifier: {'ISO3166-1': 'KM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Mauritius', website_main_title_part: 'Mauritius', identifier: {'ISO3166-1': 'MU'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Wyspy Świętego Tomasza i Książęca', website_main_title_part: 'São Tomé e Príncipe (São Tomé and Príncipe, Wyspy Świętego Tomasza i Książęca)', identifier: {'ISO3166-1': 'ST'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Seszele', website_main_title_part: 'Sesel (Seychelles, Seszele)', identifier: {'ISO3166-1': 'SC'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Malediwy', website_main_title_part: 'ދވހރއޖ (Maldives, Malediwy)', identifier: {'ISO3166-1': 'MV'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Singapur', website_main_title_part: 'Singapore (Singapur)', identifier: {'ISO3166-1': 'SG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Sri Lanka', website_main_title_part: 'ශර ලකව இலஙக (Sri Lanka)', identifier: {'ISO3166-1': 'LK'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Saint Kitts i Nevis', website_main_title_part: 'Saint Kitts and Nevis (Saint Kitts i Nevis)', identifier: {'ISO3166-1': 'KN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Antigua i Barbuda', website_main_title_part: 'Antigua and Barbuda (Antigua i Barbuda)', identifier: {'ISO3166-1': 'AG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Montserrat', website_main_title_part: 'Montserrat', identifier: {'ISO3166-1': 'MS'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Bahamy', website_main_title_part: 'The Bahamas (Bahamy)', identifier: {'ISO3166-1': 'BS'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Turks i Caicos', website_main_title_part: 'Turks and Caicos Islands (Turks i Caicos)', identifier: {'ISO3166-1': 'TC'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Barbados', website_main_title_part: 'Barbados', identifier: {'ISO3166-1': 'BB'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Saint Vincent i Grenadyny', website_main_title_part: 'Saint Vincent and the Grenadines (Saint Vincent i Grenadyny)', identifier: {'ISO3166-1': 'VC'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Grenada', website_main_title_part: 'Grenada', identifier: {'ISO3166-1': 'GD'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Saint Lucia', website_main_title_part: 'Saint Lucia', identifier: {'ISO3166-1': 'LC'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Jamajka', website_main_title_part: 'Jamaica (Jamajka)', identifier: {'ISO3166-1': 'JM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Trynidad i Tobago', website_main_title_part: 'Trinidad and Tobago (Trynidad i Tobago)', identifier: {'ISO3166-1': 'TT'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Nowa Zelandia', website_main_title_part: 'New Zealand | Aotearoa (New Zealand, Nowa Zelandia)', identifier: {'ISO3166-1': 'NZ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kiribati', website_main_title_part: 'Kiribati', identifier: {'ISO3166-1': 'KI'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Fidżi', website_main_title_part: 'Viti (Fiji, Fidżi)', identifier: {'ISO3166-1': 'FJ'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Wyspy Marshalla', website_main_title_part: 'Ṃajeḷ (Marshall Islands, Wyspy Marshalla)', identifier: {'ISO3166-1': 'MH'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Mikronezja', website_main_title_part: 'Micronesia (Federated States of Micronesia, Mikronezja)', identifier: {'ISO3166-1': 'FM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Nauru', website_main_title_part: 'Naoero (Nauru)', identifier: {'ISO3166-1': 'NR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Palau', website_main_title_part: 'Belau (Palau)', identifier: {'ISO3166-1': 'PW'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Monako', website_main_title_part: 'Monaco (Monako)', identifier: {'ISO3166-1': 'MC'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Hiszpania', website_main_title_part: 'España (Spain, Hiszpania)', identifier: {'ISO3166-1': 'ES'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kanada', website_main_title_part: 'Canada (Kanada)', identifier: {'ISO3166-1': 'CA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Izrael', website_main_title_part: 'ישראל (Israel, Izrael)', identifier: {'ISO3166-1': 'IL'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Egipt', website_main_title_part: 'مصر (Egypt, Egipt)', identifier: {'ISO3166-1': 'EG'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Salwador', website_main_title_part: 'El Salvador (Salwador)', identifier: {'ISO3166-1': 'SV'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Gwatemala', website_main_title_part: 'Guatemala (Gwatemala)', identifier: {'ISO3166-1': 'GT'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Niue', website_main_title_part: 'Niuē (Niue)', identifier: {'ISO3166-1': 'NU'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Sudan Południowy', website_main_title_part: 'South Sudan (Sudan Południowy)', identifier: {'ISO3166-1': 'SS'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Serbia', website_main_title_part: 'Србија (Serbia)', identifier: {'ISO3166-1': 'RS'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Wyspy Salomona', website_main_title_part: 'Solomon Islands (Wyspy Salomona)', identifier: {'ISO3166-1': 'SB'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Samoa', website_main_title_part: 'Sāmoa (Samoa)', identifier: {'ISO3166-1': 'WS'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Botswana', website_main_title_part: 'Botswana', identifier: {'ISO3166-1': 'BW'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Georgia Południowa i Sandwich Południowy', website_main_title_part: 'South Georgia and the South Sandwich Islands (Georgia Południowa i Sandwich Południowy)', identifier: {'ISO3166-1': 'GS'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Bermudy', website_main_title_part: 'Bermuda (Bermudy)', identifier: {'ISO3166-1': 'BM'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Brytyjskie Terytorium Oceanu Indyjskiego', website_main_title_part: 'British Indian Ocean Territory (Brytyjskie Terytorium Oceanu Indyjskiego)', identifier: {'ISO3166-1': 'IO'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Tajlandia', website_main_title_part: 'ประเทศไทย (Thailand, Tajlandia)', identifier: {'ISO3166-1': 'TH'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Lesotho', website_main_title_part: 'Lesotho', identifier: {'ISO3166-1': 'LS'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Brunei', website_main_title_part: 'Brunei', identifier: {'ISO3166-1': 'BN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Malezja', website_main_title_part: 'Malaysia (Malezja)', identifier: {'ISO3166-1': 'MY'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Luksemburg', website_main_title_part: 'Lëtzebuerg (Luxembourg, Luksemburg)', identifier: {'ISO3166-1': 'LU'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Anguilla', website_main_title_part: 'Anguilla', identifier: {'ISO3166-1': 'AI'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Vanuatu', website_main_title_part: 'Vanuatu', identifier: {'ISO3166-1': 'VU'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Tuvalu', website_main_title_part: 'Tuvalu', identifier: {'ISO3166-1': 'TV'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Grenlandia', website_main_title_part: 'Kalaallit Nunaat (Greenland, Grenlandia)', identifier: {'ISO3166-1': 'GL'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Kajmany', website_main_title_part: 'Cayman Islands (Kajmany)', identifier: {'ISO3166-1': 'KY'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Falklandy', website_main_title_part: 'Falkland Islands (Falklandy)', identifier: {'ISO3166-1': 'FK'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Pitcairn', website_main_title_part: 'Pitcairn Islands (Pitcairn)', identifier: {'ISO3166-1': 'PN'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Tokelau', website_main_title_part: 'Tokelau', identifier: {'ISO3166-1': 'TK'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Tonga', website_main_title_part: 'Tonga', identifier: {'ISO3166-1': 'TO'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Francja', website_main_title_part: 'France (Francja)', identifier: {'ISO3166-1': 'FR'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Holandia', website_main_title_part: 'Nederland (Netherlands, Holandia)', identifier: {'ISO3166-1': 'NL'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Czad', website_main_title_part: 'Tchad تشاد (Chad, Czad)', identifier: {'ISO3166-1': 'TD'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Bośnia i Hercegowina', website_main_title_part: 'Bosna i Hercegovina | Босна и Херцеговина (Bosnia and Herzegovina, Bośnia i Hercegowina)', identifier: {'ISO3166-1': 'BA'}, requested_by: '??????????????????', priority_multiplier: 1}
+- {internal_region_name: 'Maroko', website_main_title_part: 'Maroc | ⵍⵎⵖⵔⵉⴱ | المغرب (Morocco, Maroko)', identifier: {'ISO3166-1': 'MA'}, requested_by: '??????????????????', priority_multiplier: 1}
