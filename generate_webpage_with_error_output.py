@@ -336,6 +336,7 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an electric utility")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a shooting")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a cuisine")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a food")
     returned += [
         "link to a disambiguation page",
         'wikipedia wikidata mismatch',
@@ -525,10 +526,12 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an overview article")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a tradition")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a food")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research project")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious sculpture (genre)")
     returned += [
+        'malformed secondary wikidata tag - for source:species prefixed tags',
+        'wikipedia tag links bot wikipedia',
+
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
         # TODO: detect image=* that should be wikimedia_commons=*
