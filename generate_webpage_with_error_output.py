@@ -524,6 +524,7 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a meeting")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a travel")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an overview article")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a tradition")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research project")
