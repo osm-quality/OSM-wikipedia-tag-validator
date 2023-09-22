@@ -114,7 +114,7 @@ def update_validator_database_and_reports():
         entry = selected_processing_entry['data']
         score = (current_timestamp - selected_processing_entry["data_timestamp"]) * entry.get("priority_multiplier", 1)
         k = str(int((score+500)/1000))
-        print(entry['internal_region_name'], entry.get("priority_multiplier", 1), k+"k")
+        #print(entry['internal_region_name'], entry.get("priority_multiplier", 1), k+"k")
 
     for selected_processing_entry in entries_with_age:
         print()

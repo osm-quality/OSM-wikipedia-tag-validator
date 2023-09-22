@@ -427,7 +427,7 @@ def has_bot_edit_been_done_on_this_data(cursor, internal_region_name, bot_edit_t
     if bot_edit_timestamp < data_download_timestamp:
         return False
     else:
-        print("no need to rerun bot edit, data was not yet updated")
+        #print("no need to rerun bot edit, data was not yet updated")
         return True
 
 def handle_follow_wikipedia_redirect_where_target_matches_wikidata(cursor, reported_errors, area_code, automatic_status):
@@ -459,7 +459,6 @@ def main():
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
         if 'USA' in entry.get('merged_into', []):
-            print(internal_region_name)
             area_code = "usa"
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status = osm_bot_abstraction_layer.fully_automated_description())
 
@@ -467,7 +466,7 @@ def main():
         internal_region_name = entry["internal_region_name"]
         if entry.get('language_code', None) == "pl":
             area_code = "pl"
-            print(internal_region_name, "botting")
+            #print(internal_region_name, "botting")
             automatic_status = osm_bot_abstraction_layer.fully_automated_description()
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, add_wikipedia_tag_from_wikidata_tag, automatic_status)
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, add_wikidata_tag_from_wikipedia_tag, automatic_status)
