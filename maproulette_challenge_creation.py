@@ -48,49 +48,14 @@ STATUS_ALREADY_FIXED = 5
 STATUS_TOO_HARD = 6
 STATUS_DISABLED = 9 # TODO missing in docs
 
-def main():
-    api_key = None
-    user_id = None
-    print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
-    with open('secret.json') as f:
-        data = json.load(f)
-        api_key = data['maproulette_api_key']
-        user_id = data['maproulette_user_id']
-        # https://github.com/osmlab/maproulette-python-client#getting-started
-        # Your API key is listed at the bottom of https://maproulette.org/user/profile page.
-        # expected file structure of secret.json:
-        """
-        {
-            "maproulette_api_key": "d88hfhffiigibberishffiojsdjios90su28923h3r2rr"
-            "maproulette_user_id": 784242309243
-        }
-        """
-
-    maproulette_config = maproulette.Configuration(api_key=api_key)
-    project_api = maproulette.Project(maproulette_config)
-    task_api = maproulette.Task(maproulette_config)
-    challenge_api = maproulette.Challenge(maproulette_config)
-    project_id = setup_project(project_api, user_id)
-    # docs: https://github.com/osmlab/maproulette-python-client#getting-started
-
-
-    connection = sqlite3.connect(config.database_filepath())
-    cursor = connection.cursor()
-
-    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, 'should use a secondary wikipedia tag - linking from wikidata tag to a chain store', featured = False)
-    # "wikidata tag linking to a chain store - should use secondary wikidata tag - or be removed"
-    # why it got created despite being empty?
-    #raise # should be now fixed, recheck
-
-    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, "wikipedia/wikidata type tag that is incorrect according to not:* tag", featured = False)
-    #raise # should be now fixed, recheck
-    # why it git disappeared?
-    # https://maproulette.org/admin/project/53065/challenge/40029/task/169269043/inspect
-    # https://www.openstreetmap.org/node/9658583079
-
-    greenlit_groups_to_be_featured = [
+def greenlit_groups_to_be_featured_list():
+    return [
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a food',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a food',
     ]
-    greenlit_groups_not_to_be_featured = [
+def greenlit_groups_not_to_be_featured_list():
+    return [
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a shooting',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a military operation',
 
@@ -101,6 +66,7 @@ def main():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a website',
         'should use a secondary wikipedia tag - linking from wikidata tag to a website',
     ]
+def for_later_list():
     for_later = [
         # wat? why entries are not removed?
         # process tests after Wikidata community fixes what causes noisy reports
@@ -176,7 +142,10 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikidata tag to a transport accident',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a transport accident',
     ]
-    already_uploaded_featured_pool = [
+    return for_later
+
+def already_uploaded_featured_pool_list():
+    return [
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a protest',
         'should use a secondary wikipedia tag - linking from wikipedia tag to an object that exists outside physical reality',
         'should use a secondary wikipedia tag - linking from wikipedia tag to an aspect in a geographic region',
@@ -226,8 +195,9 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a human',
     ]
-    print("look at https://maproulette.org/admin/project/53065/challenge/40094?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=20&sortCriteria.direction=DESC&sortCriteria.sortBy=name and then repromote 'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not'")
-    already_uploaded = [
+
+def already_uploaded_not_to_be_featured_list():
+    return [
         'should use a secondary wikipedia tag - linking from wikidata tag to a vehicle model or class',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a vehicle model or class',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a vehicle model or class',
@@ -298,6 +268,55 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a branch of military service',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a recurring sports event',
     ]
+
+def main():
+    api_key = None
+    user_id = None
+    print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
+    with open('secret.json') as f:
+        data = json.load(f)
+        api_key = data['maproulette_api_key']
+        user_id = data['maproulette_user_id']
+        # https://github.com/osmlab/maproulette-python-client#getting-started
+        # Your API key is listed at the bottom of https://maproulette.org/user/profile page.
+        # expected file structure of secret.json:
+        """
+        {
+            "maproulette_api_key": "d88hfhffiigibberishffiojsdjios90su28923h3r2rr"
+            "maproulette_user_id": 784242309243
+        }
+        """
+
+    maproulette_config = maproulette.Configuration(api_key=api_key)
+    project_api = maproulette.Project(maproulette_config)
+    task_api = maproulette.Task(maproulette_config)
+    challenge_api = maproulette.Challenge(maproulette_config)
+    project_id = setup_project(project_api, user_id)
+    # docs: https://github.com/osmlab/maproulette-python-client#getting-started
+
+
+    connection = sqlite3.connect(config.database_filepath())
+    cursor = connection.cursor()
+
+    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, 'should use a secondary wikipedia tag - linking from wikidata tag to a chain store', featured = False)
+    # "wikidata tag linking to a chain store - should use secondary wikidata tag - or be removed"
+    # why it got created despite being empty?
+    #raise # should be now fixed, recheck
+
+    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, "wikipedia/wikidata type tag that is incorrect according to not:* tag", featured = False)
+    #raise # should be now fixed, recheck
+    # why it git disappeared?
+    # https://maproulette.org/admin/project/53065/challenge/40029/task/169269043/inspect
+    # https://www.openstreetmap.org/node/9658583079
+
+    categories = {}
+    greenlit_groups_to_be_featured = greenlit_groups_to_be_featured_list()
+    greenlit_groups_not_to_be_featured = greenlit_groups_not_to_be_featured_list()
+    for_later = for_later_list()
+    already_uploaded_featured_pool = already_uploaded_featured_pool_list()
+    already_uploaded = already_uploaded_not_to_be_featured_list()
+
+    print("look at https://maproulette.org/admin/project/53065/challenge/40094?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=20&sortCriteria.direction=DESC&sortCriteria.sortBy=name and then repromote 'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not'")
     show_candidate_reports(cursor, greenlit_groups_to_be_featured + greenlit_groups_not_to_be_featured + for_later, already_uploaded + already_uploaded_featured_pool)
 
     # this also regenerates descriptions
