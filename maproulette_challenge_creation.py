@@ -298,17 +298,6 @@ def main():
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
 
-    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, 'should use a secondary wikipedia tag - linking from wikidata tag to a chain store', featured = False)
-    # "wikidata tag linking to a chain store - should use secondary wikidata tag - or be removed"
-    # why it got created despite being empty?
-    #raise # should be now fixed, recheck
-
-    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, "wikipedia/wikidata type tag that is incorrect according to not:* tag", featured = False)
-    #raise # should be now fixed, recheck
-    # why it git disappeared?
-    # https://maproulette.org/admin/project/53065/challenge/40029/task/169269043/inspect
-    # https://www.openstreetmap.org/node/9658583079
-
     categories = {}
     greenlit_groups_to_be_featured = greenlit_groups_to_be_featured_list()
     greenlit_groups_not_to_be_featured = greenlit_groups_not_to_be_featured_list()
