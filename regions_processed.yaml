@@ -113,7 +113,7 @@
 #- {internal_region_name: 'Białoruś: obwód witebski', website_main_title_part: 'Беларусь (Belarus, Białoruś): Віцебская вобласць (Vitsebsk Region, obwód witebski)', merged_into: ["\u0411\u0435\u043b\u0430\u0440\u0443\u0441\u044c (Belarus, Bia\u0142oru\u015b)"], identifier: {'wikidata': 'Q185700'}, language_code: 'be', requested_by: 'https://t.me/byosm/63383'}
 #- {internal_region_name: 'Białoruś: obwód miński', website_main_title_part: 'Беларусь (Belarus, Białoruś): Мінская вобласць (Minsk Region, obwód miński)', merged_into: ["\u0411\u0435\u043b\u0430\u0440\u0443\u0441\u044c (Belarus, Bia\u0142oru\u015b)"], identifier: {'wikidata': 'Q192959'}, language_code: 'be', requested_by: 'https://t.me/byosm/63383'}
 
-- {internal_region_name: Mołdawia, website_main_title_part: 'Moldova (Mołdawia)', identifier: {'ISO3166-1': 'MD'}, requested_by: 'https://t.me/OSMMoldova/9611', priority_multiplier: 1}
+#- {internal_region_name: Mołdawia, website_main_title_part: 'Moldova (Mołdawia)', identifier: {'ISO3166-1': 'MD'}, requested_by: 'https://t.me/OSMMoldova/9611', priority_multiplier: 1}
 
 - {internal_region_name: 'Słowacja', website_main_title_part: 'Slovensko (Slovakia, Słowacja)', identifier: {'ISO3166-1': 'SK'}, requested_by: 'https://www.openstreetmap.org/messages/1069365 https://www.openstreetmap.org/user/*Martin* and https://www.openstreetmap.org/messages/1117362 https://www.openstreetmap.org/user/Tomas_J', priority_multiplier: 3, ignored_problems: ['wikipedia from wikidata tag', 'wikipedia from wikidata tag, unexpected language', 'wikidata from wikipedia tag']}
 
@@ -770,8 +770,8 @@
 #- {internal_region_name: 'Rosja: Sewastopol', website_main_title_part: 'Россия (Russia, Rosja): Севастополь (Sevastopol, Sewastopol)', merged_into: ["\u0420\u043e\u0441\u0441\u0438\u044f (Russia, Rosja)"], identifier: {'wikidata': 'Q2659239'}, language_code: 'ru', requested_by: 'https://t.me/ruosm/696196'}
 #- {internal_region_name: 'Rosja: Sewastopol', website_main_title_part: 'Россия (Russia, Rosja): Севастополь (Sevastopol, Sewastopol)', merged_into: ["\u0420\u043e\u0441\u0441\u0438\u044f (Russia, Rosja)"], identifier: {'wikidata': 'Q17436425'}, language_code: 'ru', requested_by: 'https://t.me/ruosm/696196'}
 #- {internal_region_name: 'Rosja: Republika Krymu', website_main_title_part: 'Россия (Russia, Rosja): Республика Крым (Republic of Crimea, Republika Krymu)', merged_into: ["\u0420\u043e\u0441\u0441\u0438\u044f (Russia, Rosja)"], identifier: {'wikidata': 'Q15966495'}, language_code: 'ru', requested_by: 'https://t.me/ruosm/696196'}
-- {internal_region_name: 'Jemen', website_main_title_part: 'اليمن (Yemen, Jemen)', identifier: {'ISO3166-1': 'YE'}, requested_by: 'https://t.me/OSMYemen/143', priority_multiplier: 1}
-- {internal_region_name: 'Arabia Saudyjska', website_main_title_part: 'السعودية (Saudi Arabia, Arabia Saudyjska)', identifier: {'ISO3166-1': 'SA'}, requested_by: 'https://t.me/OSMSaudi/6014', priority_multiplier: 1}
+#- {internal_region_name: 'Jemen', website_main_title_part: 'اليمن (Yemen, Jemen)', identifier: {'ISO3166-1': 'YE'}, requested_by: 'https://t.me/OSMYemen/143', priority_multiplier: 1}
+#- {internal_region_name: 'Arabia Saudyjska', website_main_title_part: 'السعودية (Saudi Arabia, Arabia Saudyjska)', identifier: {'ISO3166-1': 'SA'}, requested_by: 'https://t.me/OSMSaudi/6014', priority_multiplier: 1}
 
 # Australia is too large to fetch from Overpass, so it was split
 # no response on talk-au https://lists.openstreetmap.org/pipermail/talk-au/2022-November/016664.html 
@@ -1174,10 +1174,10 @@
 
 
 - {internal_region_name: Uganda, website_main_title_part: 'Uganda', identifier: {'ISO3166-1': 'UG'}, requested_by: 'https://www.openstreetmap.org/messages/1067013'}
-- {internal_region_name: 'Ghana', website_main_title_part: 'Ghana', identifier: {'ISO3166-1': 'GH'}, requested_by: 'https://t.me/osmghana/7250', priority_multiplier: 1}
-- {internal_region_name: 'Etiopia', website_main_title_part: 'ኢትዮጵያ (Ethiopia, Etiopia)', identifier: {'ISO3166-1': 'ET'}, requested_by: 'https://t.me/osmethiopia/1299', priority_multiplier: 1}
+#- {internal_region_name: 'Ghana', website_main_title_part: 'Ghana', identifier: {'ISO3166-1': 'GH'}, requested_by: 'https://t.me/osmghana/7250', priority_multiplier: 1}
+#- {internal_region_name: 'Etiopia', website_main_title_part: 'ኢትዮጵያ (Ethiopia, Etiopia)', identifier: {'ISO3166-1': 'ET'}, requested_by: 'https://t.me/osmethiopia/1299', priority_multiplier: 1}
 
-- {internal_region_name: 'Kolumbia', website_main_title_part: 'Colombia (Kolumbia)', identifier: {'ISO3166-1': 'CO'}, requested_by: 'https://t.me/OSMLatam/39759', priority_multiplier: 2}
+#- {internal_region_name: 'Kolumbia', website_main_title_part: 'Colombia (Kolumbia)', identifier: {'ISO3166-1': 'CO'}, requested_by: 'https://t.me/OSMLatam/39759', priority_multiplier: 2}
 
 # needed to be split
 #- {internal_region_name: 'Brazylia', website_main_title_part: 'Brasil (Brazil, Brazylia)', identifier: {'ISO3166-1': 'BR'}}
