@@ -50,21 +50,10 @@ STATUS_DISABLED = 9 # TODO missing in docs
 
 def greenlit_groups_to_be_featured_list():
     return [
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a food',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a food',
     ]
 def greenlit_groups_not_to_be_featured_list():
     return [
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a shooting',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a military operation',
-
-        # will go to featured group
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a train category',
-
         # upload but not featured group
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a website',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a website',
     ]
 def for_later_list():
     for_later = [
@@ -80,6 +69,9 @@ def for_later_list():
         'malformed secondary wikidata tag - for species prefixed tags',
         'malformed secondary wikidata tag - for name:etymology prefixed tags',
         'malformed secondary wikidata tag', # which one? why so unspecific?
+        'malformed secondary wikidata tag - for operator prefixed tags',
+        'malformed secondary wikidata tag - for parish prefixed tags',
+        'malformed secondary wikidata tag - for network prefixed tags',
     ]
     """
 def model_for_XXXXXX():
@@ -91,6 +83,11 @@ def model_for_XXXXXX():
     """
 
     for_later += [
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a road type',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a sport',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a shooting',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a military operation',
+
         # requires description, may be featurable
         'invalid old-style wikipedia tag',
         'wikipedia tag in outdated form and there is mismatch between links',
@@ -146,6 +143,11 @@ def model_for_XXXXXX():
 
 def already_uploaded_featured_pool_list():
     return [
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a disaster',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a meeting',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a travel',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a travel',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a travel',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a protest',
         'should use a secondary wikipedia tag - linking from wikipedia tag to an object that exists outside physical reality',
         'should use a secondary wikipedia tag - linking from wikipedia tag to an aspect in a geographic region',
@@ -168,6 +170,10 @@ def already_uploaded_featured_pool_list():
         'should use a secondary wikipedia tag - linking from wikidata tag to a mental process',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a robbery',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a cuisine',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a train category',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a legal action',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a legal action',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a legal action',
 
         # review "too hard" etc
         # https://maproulette.org/admin/project/53065/challenge/40094?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=20&sortCriteria.direction=DESC&sortCriteria.sortBy=name
@@ -198,6 +204,15 @@ def already_uploaded_featured_pool_list():
 
 def already_uploaded_not_to_be_featured_list():
     return [
+        # with better description move to featured list
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a food',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a food',
+
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a website',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a website',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a website',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a bicycle sharing system',
         'should use a secondary wikipedia tag - linking from wikidata tag to a vehicle model or class',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a vehicle model or class',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a vehicle model or class',
