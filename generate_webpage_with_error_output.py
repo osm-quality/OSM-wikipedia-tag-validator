@@ -567,6 +567,8 @@ def ignored():
     returned = [
         # TODO - source:species should not be validated...
         'malformed secondary wikidata tag - for source:species prefixed tags',
+        "malformed secondary wikidata tag - for image:license prefixed tags",
+
 
         # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
         # also, I slowly create notes for Sprint cases
