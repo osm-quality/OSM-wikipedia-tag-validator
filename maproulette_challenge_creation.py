@@ -14,6 +14,9 @@
 # 26 sierpnia Fixed (5318/14190) - 38%
 # 30 sierpnia Fixed (5359/14188) - 38%
 # 5 września Fixed (5381/14202) - 38%
+# 30 września Fixed (5430/14461) - 38%
+# 4 listopada Fixed (5507/14461) - 38%
+# 4 listopada Fixed (5519/14814) - 37%
 
 # https://github.com/osmlab/maproulette-python-client
 import maproulette
@@ -284,10 +287,7 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a recurring sports event',
     ]
 
-def main():
-    api_key = None
-    user_id = None
-    print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
+def get_login_data():
     with open('secret.json') as f:
         data = json.load(f)
         api_key = data['maproulette_api_key']
@@ -301,6 +301,11 @@ def main():
             "maproulette_user_id": 784242309243
         }
         """
+        return api_key, user_id
+
+def main():
+    api_key, user_id = get_login_data()
+    print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
 
     maproulette_config = maproulette.Configuration(api_key=api_key)
     project_api = maproulette.Project(maproulette_config)
@@ -309,6 +314,15 @@ def main():
     project_id = setup_project(project_api, user_id)
     # docs: https://github.com/osmlab/maproulette-python-client#getting-started
 
+    total_error_count = 0
+    total_fixed_count = 0
+    for error_id in already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list():
+        challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
+        if challenge_id != None:
+            dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(challenge_api, challenge_id, None)
+            total_error_count += live_count
+            total_fixed_count += fixed_count
+    print(total_fixed_count, total_error_count, str(int(total_fixed_count/total_error_count + 0.5)) + "%")
 
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
@@ -318,15 +332,47 @@ def main():
     greenlit_groups_not_to_be_featured = greenlit_groups_not_to_be_featured_list()
     for_later = for_later_list()
     already_uploaded_featured_pool = already_uploaded_featured_pool_list()
-    already_uploaded = already_uploaded_not_to_be_featured_list()
 
     print("look at https://maproulette.org/admin/project/53065/challenge/40094?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=20&sortCriteria.direction=DESC&sortCriteria.sortBy=name and then repromote 'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not'")
-    show_candidate_reports(cursor, greenlit_groups_to_be_featured + greenlit_groups_not_to_be_featured + for_later, already_uploaded + already_uploaded_featured_pool)
+    show_candidate_reports(cursor, greenlit_groups_to_be_featured + greenlit_groups_not_to_be_featured + for_later, already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list())
 
-    # this also regenerates descriptions
-    #set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, already_uploaded_featured_pool[0], True)
-    #set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, already_uploaded_featured_pool[1], True)
+    ensure_correct_number_of_featured_groups(challenge_api, project_id)
+    for error_id in greenlit_groups_to_be_featured:
+        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = True)
 
+    for error_id in greenlit_groups_not_to_be_featured:
+        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
+    return
+
+    pool = already_uploaded_featured_pool + already_uploaded
+    random.shuffle(pool)
+    for error_id in pool:
+        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
+
+    connection.close()
+
+    #print("trying reports per area")
+    #for name in generate_webpage_with_error_output.for_review():
+    #    for entry in config.get_entries_to_process():
+    #        internal_region_name = entry['internal_region_name']
+    #        print("calling get_reports_with_specific_error_id_in_specific_area:", name, len(get_reports_with_specific_error_id_in_specific_area(cursor, name, internal_region_name)), "entries")
+
+    # where it has ended?
+    # https://www.maproulette.org/
+
+    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L269
+
+    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L136C9-L136C28
+    # get challenge tasks
+
+    # TODO hmm, mention my site in MR so it is linked from it
+
+    # https://github.com/osmlab/maproulette-python-client/blob/dev/examples/challenge_examples.py
+    # https://github.com/osmlab/maproulette-python-client/blob/38920add1b95b9ec472e1653915faf9eebe2a6b9/maproulette/api/challenge.py#L269 - add_tasks_to_challenge
+    # https://github.com/osmlab/maproulette-python-client/blob/0a3e4b68af7892700463c2afc66a1ae4dcbf0825/maproulette/models/challenge.py
+
+def ensure_correct_number_of_featured_groups(challenge_api, project_id):
+    already_uploaded_featured_pool = already_uploaded_featured_pool_list()
     featured_count_request = 2
     looked_at_potentially_featured_tasks = 0
     marked_featured = 0
@@ -362,43 +408,11 @@ def main():
             raise Exception("run out of task to feature")
             break
 
-    for error_id in already_uploaded_featured_pool[looked_at_potentially_featured_tasks:] + already_uploaded:
+    for error_id in already_uploaded_featured_pool[looked_at_potentially_featured_tasks:] + already_uploaded_not_to_be_featured_list():
         challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
         if challenge_id != None:
             set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, False)
 
-    for error_id in greenlit_groups_to_be_featured:
-        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = True)
-
-    for error_id in greenlit_groups_not_to_be_featured:
-        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
-
-    pool = already_uploaded_featured_pool + already_uploaded
-    random.shuffle(pool)
-    for error_id in pool:
-        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
-
-    connection.close()
-
-    #print("trying reports per area")
-    #for name in generate_webpage_with_error_output.for_review():
-    #    for entry in config.get_entries_to_process():
-    #        internal_region_name = entry['internal_region_name']
-    #        print("calling get_reports_with_specific_error_id_in_specific_area:", name, len(get_reports_with_specific_error_id_in_specific_area(cursor, name, internal_region_name)), "entries")
-
-    # where it has ended?
-    # https://www.maproulette.org/
-
-    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L269
-
-    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L136C9-L136C28
-    # get challenge tasks
-
-    # TODO hmm, mention my site in MR so it is linked from it
-
-    # https://github.com/osmlab/maproulette-python-client/blob/dev/examples/challenge_examples.py
-    # https://github.com/osmlab/maproulette-python-client/blob/38920add1b95b9ec472e1653915faf9eebe2a6b9/maproulette/api/challenge.py#L269 - add_tasks_to_challenge
-    # https://github.com/osmlab/maproulette-python-client/blob/0a3e4b68af7892700463c2afc66a1ae4dcbf0825/maproulette/models/challenge.py
 
 def regenerate_tasks(challenge_api, task_api, error_ids):
     count = 0
@@ -510,8 +524,6 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         if challenge_id == None:
             raise "restart script after challenge creation I guess" # TODO do it properly 
 
-    tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id)
-
     # Printing response:
     # https://maproulette.org/admin/projects
 
@@ -529,7 +541,28 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         candidates.append(entry['osm_object_url'])
 
     some_require_manual_investigation = False
+    in_mr_already, some_require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(challenge_api, challenge_id, candidates)
+
+    array_of_urls_in_mr_already = in_mr_already.keys()
+    geojson_object = build_geojson_of_tasks_to_add_challenge(collected_data_for_use, array_of_urls_in_mr_already)
+    try:
+        print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
+    except requests.exceptions.ConnectionError as e:
+        print(e)
+        print("will retry")
+        time.sleep(10)
+        print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
+    print(challenge_name, "processed", len(geojson_object["features"]), "features added")
+    if some_require_manual_investigation:
+        print("https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name")
+        raise Exception("look at these entries")
+
+def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(challenge_api, challenge_id, candidates):
     in_mr_already = {}
+    tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id)
+    fixed_count = 0
+    visible_tasks = 0
+    some_require_manual_investigation = False
     for task in tasks_in_challenge:
         #print(json.dumps(task, indent=4, sort_keys=True))
         status = task['status']
@@ -540,32 +573,41 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         if osm_link == None:
             print(link)
             raise "wat"
-        if osm_link not in candidates:
-            #print(osm_link, "not in", candidates)
+        if candidates != None and osm_link not in candidates: # TODO fix this double use horribleness, two functions are better
             if is_live_task_shown_to_people(status):
                 delete_task_if_not_locked(task_api, task['id'], osm_link)
-            # already fixed, already deleted or disabled should stay there or cannot be deleted more
         else:
             in_mr_already[osm_link] = task
             modified_time = task['modified']
-            if status != STATUS_CREATED and status != STATUS_FIXED and status != STATUS_SKIPPED and status != STATUS_DELETED and status != STATUS_ALREADY_FIXED and status != STATUS_DISABLED:
-                if status == STATUS_FALSE_POSITIVE:
-                    print("False positive", link)
-                    some_require_manual_investigation = True
-                elif status == STATUS_TOO_HARD:
-                    print("Too hard", link)
-                    some_require_manual_investigation = True
-                else:
-                    print("unexpected status", status, "for", link)
-                    #raise "unexpected"
-                    some_require_manual_investigation = True
+            if status == STATUS_FIXED:
+                fixed_count += 1
+                visible_tasks += 1
+            elif status == STATUS_DISABLED:
+                pass
+            elif status == STATUS_CREATED or status == STATUS_SKIPPED or status == STATUS_ALREADY_FIXED:
+                visible_tasks += 1
+            elif status == STATUS_FALSE_POSITIVE:
+                visible_tasks += 1
+                print("False positive", link)
+                some_require_manual_investigation = True
+            elif status == STATUS_TOO_HARD:
+                visible_tasks += 1
+                print("Too hard", link)
+                some_require_manual_investigation = True
+            else:
+                print("unexpected status", status, "for", link)
+                raise "unexpected"
+                some_require_manual_investigation = True
+    return in_mr_already, some_require_manual_investigation, fixed_count, visible_tasks
 
+
+def build_geojson_of_tasks_to_add_challenge(collected_data_for_use, array_of_urls_in_mr_already):
     geojson_object = {
         "type": "FeatureCollection",
         "features": []
     }
     for entry in collected_data_for_use:
-        if entry['osm_object_url'] in in_mr_already.keys():
+        if entry['osm_object_url'] in array_of_urls_in_mr_already:
             # link was listed already and is in some state, not need to send it again
             # though what about cases where user falsely claimed that something is fixed? TODO
             # leave it for the future, I guess
@@ -579,22 +621,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
                 geojson_object["features"].append(element)
             else:
                 raise
-            #if (len(in_mr_already.keys()) > 0):
-            #    if len(geojson_object["features"]) >= 10:
-            #        print(json.dumps(geojson_object, indent=4, sort_keys=True))
-            #        break # try to diagnose why only France was listed
-    #print(challenge_id)
-    try:
-        print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
-    except requests.exceptions.ConnectionError as e:
-        print(e)
-        print("will retry")
-        time.sleep(10)
-        print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
-    print(challenge_name, "processed", len(geojson_object["features"]), "features added")
-    if some_require_manual_investigation:
-        print("https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name")
-        raise Exception("look at these entries")
+    return geojson_object
 
 def is_live_task_shown_to_people(status):
     if status == STATUS_CREATED:
