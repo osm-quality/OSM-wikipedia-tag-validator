@@ -301,6 +301,7 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a vehicle model or class")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a weapon model or class")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a brand")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a sport")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a restaurant chain")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a chain store")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a robbery")
@@ -342,6 +343,8 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a travel")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a road type")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an overview article")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an electric vehicle charging network")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a postal service")
     returned += [
         "link to a disambiguation page",
         'wikipedia wikidata mismatch',
@@ -449,6 +452,7 @@ def for_review():
         'malformed secondary wikidata tag - for manufacturer prefixed tags',
         'malformed secondary wikidata tag - for royal_cypher prefixed tags',
         "malformed secondary wikidata tag - for owner prefixed tags",
+        "malformed secondary wikidata tag - for artist_name prefixed tags",
     ]
     return returned
 
@@ -515,19 +519,11 @@ def for_tests():
         "wikipedia",
         "wikidata",
     ]:
-        # many reported problems, lets wait for cleanup on Wikidata
-
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an electric vehicle charging network")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
 
         # free flight mess
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
 
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an intentional human activity")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
@@ -535,8 +531,6 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a postal service")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a sport")
     returned += [
 
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
@@ -564,6 +558,8 @@ def for_tests():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for artist_name prefixed tags',
 
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM, with tagging referring to defunct one",
+
+        "malformed secondary wikidata tag - for official_name prefixed tags", # TODO what it even means?
     ]
     return returned
 
@@ -593,6 +589,16 @@ def ignored():
         "wikipedia",
         "wikidata",
     ]:
+        # mostly wikidata bugs were found - is it really priority? Enabling MR, bot edits for wikidata redirects
+        # and wider: OSM bot edits
+        # and wider: OSMF activities
+        # and wider: see my TODO list....
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an intentional human activity")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
+
         # many protestant churches appear here, figure it out as low priority
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a tradition")
 
