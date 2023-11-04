@@ -11,7 +11,7 @@ import obtain_from_overpass
 import database
 
 def skip_test_cases_before_timestamp():
-    return 1689653097
+    return 1698794712
 
 def generate_website_file_for_given_area(cursor, entry):
     reports = reports_for_given_area(cursor, entry['internal_region_name'])
@@ -337,6 +337,11 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a shooting")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a cuisine")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a food")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a legal action")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a meeting")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a travel")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a road type")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an overview article")
     returned += [
         "link to a disambiguation page",
         'wikipedia wikidata mismatch',
@@ -421,6 +426,9 @@ def for_review():
         "bridge:wikidata - move to bridge outline",
         "bridge:wikipedia and bridge:wikidata - move to bridge outline",
 
+        'wikipedia tag links bot wikipedia',
+        "genus secondary tag links something that is not genus according to wikidata (checking P105)",
+
         'malformed secondary wikidata tag - for brand prefixed tags',
         'malformed secondary wikidata tag - for operator prefixed tags',
         'malformed secondary wikidata tag - for subject prefixed tags',
@@ -476,6 +484,8 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikidata redirect - for on_the_list prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for model prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for manufacturer prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for tank:model prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for network:2 prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for operator prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for subject prefixed tags',
@@ -494,6 +504,8 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for on_the_list prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for model prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for manufacturer prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for tank:model prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for network:2 prefixed tags',
     ]
 
 def for_tests():
@@ -504,12 +516,13 @@ def for_tests():
         "wikidata",
     ]:
         # many reported problems, lets wait for cleanup on Wikidata
+
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an electric vehicle charging network")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
 
         # free flight mess
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
 
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an art genre")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
@@ -519,19 +532,12 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a legal action")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a road type")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a meeting")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a travel")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an overview article")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a tradition")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research project")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious sculpture (genre)")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a postal service")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a sport")
     returned += [
-        'malformed secondary wikidata tag - for source:species prefixed tags',
-        'wikipedia tag links bot wikipedia',
 
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
@@ -539,22 +545,44 @@ def for_tests():
         # TODO: check above for 404 erorrs
         # TODO: check wikimedia_commons=* for invalid syntax and 404 errors
 
-        "no longer existing brand (according to Wikidata) - and tag processing has not worked well",
-
         # enable after flushing this error classes from the database as some were processed
         # and after at least attemped processing of OSM-specific issues
         # Note that processing this helps Wikidata more than anything else
         "genus secondary tag links something that is not species according to wikidata",
         "species secondary tag links something that is not species according to wikidata",
-        "genus secondary tag links something that is not genus according to wikidata (checking P105)",
+
+        "taxon secondary tag links something that is not taxon according to wikidata (checking regular ontology)",
+
+        "malformed secondary wikidata tag - for post_office:service_provider prefixed tags",
+        "malformed secondary wikidata tag - for delivery:partner prefixed tags",
+        "malformed secondary wikidata tag - for post_office:brand prefixed tags",
+
+        'malformed wikipedia tag - for artist_name prefixed tags',
+        'wikipedia wikidata mismatch - for artist_name prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for artist_name prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for artist_name prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for artist_name prefixed tags',
+
+        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM, with tagging referring to defunct one",
     ]
     return returned
 
 def ignored():
     returned = [
+        # TODO - source:species should not be validated...
+        'malformed secondary wikidata tag - for source:species prefixed tags',
+
         # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
         # also, I slowly create notes for Sprint cases
+        # reactivate only of wikidata issues will be processed or when I run out of notes to create (hahaha)
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
+
+        # see
+        # https://www.openstreetmap.org/note/3965037
+        # https://www.openstreetmap.org/note/3965039
+        # https://www.openstreetmap.org/note/3965033
+        # https://www.openstreetmap.org/note/3965031
+        "no longer existing brand (according to Wikidata) - and tag processing has not worked well",
 
         'no longer existing object (according to Wikidata)', # many false positives, for example airport where runway remains may be mapped in OSM while not in Wikidata
         # TODO: redo this, but skip cases where OSM has disused: abandoned: etc
@@ -565,18 +593,34 @@ def ignored():
         "wikipedia",
         "wikidata",
     ]:
+        # many protestant churches appear here, figure it out as low priority
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a tradition")
+
         # how we should link it then?
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious denomination")
 
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
+
+        # many find problem on Wikidata, though some are actual tagging issues in OSM
+        # review again after some time, when I run out of more interesting ones
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an art genre")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a genre")
+
+        # extremely likely to be wikidata issue, dig it out after restoring other ones (then advertise to wikidata people, or just generate listing of such cases blindly)
         # reports problem on Wikidata, useful for fixing Wikidata - not OSM
         # once many collect maybe reporting then in one big group may make sense as they can still hide
         # things from my hidden gem processor
         # or implement skipping this errors also there? Wikidata bug category? 
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a church architecture")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious sculpture (genre)")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a spheroidal weathering")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a surface mining")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a construction (as economic activity)")
 
         # tricky with office=goverment, postpone handling untill less tricky stuff is dealt with
         # (including on Wikidata side)
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a government program")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research project")
 
         # lets ignore it for now
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a geodetic control network")
@@ -696,11 +740,13 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for post_office:brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for post_office:brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for post_office:brand prefixed tags',
+
         'malformed wikipedia tag - for post_office:service_provider prefixed tags',
         'wikipedia wikidata mismatch - for post_office:service_provider prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for post_office:service_provider prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for post_office:service_provider prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for post_office:bservice_provider and prefixed tags',
+
         'malformed wikipedia tag - for branch prefixed tags',
         'wikipedia wikidata mismatch - for branch prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for branch prefixed tags',
