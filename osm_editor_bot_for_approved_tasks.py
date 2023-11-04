@@ -14,6 +14,7 @@ import config
 import database
 import time
 import osm_bot_abstraction_layer.human_verification_mode as human_verification_mode
+import wikibrain.wikimedia_link_issue_reporter
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -322,6 +323,45 @@ def announce_skipping_object_as_outside_area(osm_object_url):
     print()
     print()
 
+def handle_wikidata_redirect(cursor, reported_errors, area_code, automatic_status):
+    errors_for_removal = filter_reported_errors(reported_errors, ['wikipedia wikidata mismatch - follow wikidata redirect'])
+    if errors_for_removal == []:
+        return
+    comment = "handle unstable wikidata ids - apply redirects"
+    discussion_urls = {
+        'pl': 'https://community.openstreetmap.org/t/propozycja-automatycznej-edycji-tagi-wikidata-co-sa-przekierowaniami/7727',
+    }
+    osm_wiki_page_urls = {
+        'pl': "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_Poland"
+    }
+
+    api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code])
+    source = "wikidata"
+    builder = osm_bot_abstraction_layer.ChangesetBuilder("", comment, automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code], source)
+    started_changeset = False
+
+
+    detector = wikibrain.wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
+
+    for e in errors_for_removal:
+        data = get_and_verify_data(e)
+        if data == None:
+            continue
+        if is_edit_allowed_object_based_on_location(e['osm_object_url'], data, area_code, detailed_verification_function_is_within_given_country) == False:
+            announce_skipping_object_as_outside_area(e['osm_object_url'] + " (handle_wikidata_redirect function)")
+            continue
+        redirected = detector.get_wikidata_id_after_redirect(data['tag']['wikidata'], forced_refresh=True)
+        print()
+        if redirected != data['tag']['wikidata']:
+            data['tag']['wikidata'] = redirected
+        type = e['osm_object_url'].split("/")[3]
+        if started_changeset == False:
+            started_changeset = True
+            builder.create_changeset(api)
+        print("handle_wikidata_redirect EDITS",e['osm_object_url'])
+        osm_bot_abstraction_layer.update_element(api, type, data)
+        database.clear_error_and_request_update(cursor, e["rowid"])
+
 def add_wikidata_tag_from_wikipedia_tag(cursor, reported_errors, area_code, automatic_status):
     errors_for_removal = filter_reported_errors(reported_errors, ['wikidata from wikipedia tag'])
     if errors_for_removal == []:
@@ -454,7 +494,6 @@ def main():
     # for testing: api="https://api06.dev.openstreetmap.org", 
     # website at https://master.apis.dev.openstreetmap.org/
     print("proper usa bbox checker add")
-    print("https://community.openstreetmap.org/t/propozycja-automatycznej-edycji-tagi-wikidata-co-sa-przekierowaniami/7727")
 
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
@@ -470,6 +509,7 @@ def main():
             automatic_status = osm_bot_abstraction_layer.fully_automated_description()
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, add_wikipedia_tag_from_wikidata_tag, automatic_status)
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, add_wikidata_tag_from_wikipedia_tag, automatic_status)
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_wikidata_redirect, automatic_status)
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status)
             
             # what is the bot permission status here, actually?
