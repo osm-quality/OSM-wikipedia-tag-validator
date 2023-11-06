@@ -678,6 +678,8 @@ def get_challenge_text_based_on_error_id(error_id):
         return model_for_malformed_wikipedia_tags("architect:wikipedia", "en:Jan Sas Zubrzycki", "en", "Filippo Brunelleschi")
     if error_id == "malformed wikipedia tag":
         return model_for_malformed_wikipedia_tags("wikipedia", "en:Kraków", "en", "London")
+    if "malformed wikipedia tag - for" in error_id:
+        raise Exception("note that some custom data is expected for malformed secondary tags, see model_for_malformed_wikipedia_tags")
     if error_id == 'information board with wikipedia tag, not subject:wikipedia':
         key = "wikipedia"
         alt_key = "wikidata"
@@ -718,7 +720,7 @@ def get_challenge_text_based_on_error_id(error_id):
         return model_for_wikipedia_wikidata_mismatch("network:")
     else:
         print(error_id)
-        raise Unsupported # TODO find proper exception
+        raise Exception(error_id + " is not supported, no matching text model") # TODO find proper exception
 
 def model_for_linking_disambiguation_page():
     challenge_name = "Linking disambiguation page"
