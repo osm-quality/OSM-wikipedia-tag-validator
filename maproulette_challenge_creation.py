@@ -336,7 +336,7 @@ def main():
             dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(challenge_api, challenge_id, None)
             total_error_count += live_count
             total_fixed_count += fixed_count
-    print(total_fixed_count, total_error_count, str(int(total_fixed_count/total_error_count + 0.5)) + "%")
+    print(total_fixed_count, total_error_count, str(int(total_fixed_count * 100 / total_error_count + 0.5)) + "%")
 
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
