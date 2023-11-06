@@ -322,7 +322,6 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a heraldic animal")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a bicycle sharing system")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a history of a geographic region")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a branch of military service")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a type of world view")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an explosion")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a sports competition")
@@ -585,6 +584,12 @@ def ignored():
         'no longer existing object (according to Wikidata)', # many false positives, for example airport where runway remains may be mapped in OSM while not in Wikidata
         # TODO: redo this, but skip cases where OSM has disused: abandoned: etc
         # for example https://www.openstreetmap.org/node/1042007056 should be disused: prefixed or Wikidata is wrong
+
+        'malformed wikipedia tag - for official_name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - for official_name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for official_name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for official_name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for official_name:etymology prefixed tags',
     ]
     for from_tags in [
         "wikipedia and wikidata",
@@ -595,11 +600,15 @@ def ignored():
         # and wider: OSM bot edits
         # and wider: OSMF activities
         # and wider: see my TODO list....
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to art (field of work, not the resulting work)")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an intentional human activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
+
+        # see test_artillery_battery_as_valid_primary_link test - persistent missclassification
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a branch of military service")
 
         # many protestant churches appear here, figure it out as low priority
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a tradition")

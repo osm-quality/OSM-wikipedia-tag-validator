@@ -17,6 +17,7 @@
 # 30 września Fixed (5430/14461) - 38%
 # 4 listopada Fixed (5507/14461) - 38%
 # 4 listopada Fixed (5519/14814) - 37%
+# 6 lsitopada Fixed (5547/14833) - 37%
 
 # https://github.com/osmlab/maproulette-python-client
 import maproulette
@@ -71,10 +72,10 @@ def for_later_list():
         'species secondary tag links something that is not species according to wikidata (checking P105)',
         'malformed secondary wikidata tag - for species prefixed tags',
         'malformed secondary wikidata tag - for name:etymology prefixed tags',
-        'malformed secondary wikidata tag', # which one? why so unspecific?
         'malformed secondary wikidata tag - for operator prefixed tags',
         'malformed secondary wikidata tag - for parish prefixed tags',
         'malformed secondary wikidata tag - for network prefixed tags',
+        'malformed wikipedia tag - for network prefixed tags',
     ]
     """
 def model_for_XXXXXX():
@@ -86,10 +87,9 @@ def model_for_XXXXXX():
     """
 
     for_later += [
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a road type',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a sport',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a shooting',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a military operation',
+        'wikipedia tag links bot wikipedia',
+        'genus secondary tag links something that is not genus according to wikidata (checking P105)',
+        
 
         # requires description, may be featurable
         'invalid old-style wikipedia tag',
@@ -147,7 +147,6 @@ def model_for_XXXXXX():
 def already_uploaded_featured_pool_list():
     return [
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a disaster',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a meeting',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a travel',
         'should use a secondary wikipedia tag - linking from wikidata tag to a travel',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a travel',
@@ -167,6 +166,10 @@ def already_uploaded_featured_pool_list():
         'should use a secondary wikipedia tag - linking from wikidata tag to a protest',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a history of a geographic region',
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a road type',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a sport',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a shooting',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a military operation',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a military operation',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a mental process',
         'should use a secondary wikipedia tag - linking from wikidata tag to a military operation',
@@ -203,15 +206,45 @@ def already_uploaded_featured_pool_list():
         'should use a secondary wikipedia tag - linking from wikidata tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a human',
+
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a historical event',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an overview article',
+        'wikipedia wikidata mismatch - for brand prefixed tags',
+        "wikipedia/wikidata type tag that is incorrect according to not:* tag",
+
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - for name:etymology prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for species prefixed tags',
+        'wikipedia wikidata mismatch - for species prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
+        
+        'wikipedia wikidata mismatch - for operator prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for artist prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for architect prefixed tags',
+        'wikipedia wikidata mismatch - for network prefixed tags',
+        'wikipedia wikidata mismatch',
+
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical eality',
     ]
 
 def already_uploaded_not_to_be_featured_list():
     return [
+        # check description, should be featureable
+        'should use a secondary wikipedia tag - linking from wikipedia tag to an animal or plant (and not an individual one)',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an animal or plant (and not an individual one)',
+        'should use a secondary wikipedia tag - linking from wikidata tag to an animal or plant (and not an individual one)',
+
         # with better description move to featured list
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a food',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
         'should use a secondary wikipedia tag - linking from wikidata tag to a food',
 
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an electric vehicle charging network',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a postal service',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to an electric utility',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a website',
         'should use a secondary wikipedia tag - linking from wikidata tag to a website',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a website',
@@ -222,30 +255,10 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a weapon model or class',
         'should use a secondary wikipedia tag - linking from wikidata tag to a weapon model or class',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a weapon model or class',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to an animal or plant (and not an individual one)',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an animal or plant (and not an individual one)',
-        'should use a secondary wikipedia tag - linking from wikidata tag to an animal or plant (and not an individual one)',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a type of world view',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a historical event',
-        "wikipedia/wikidata type tag that is incorrect according to not:* tag",
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for name:etymology prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
-        
-        'wikipedia wikidata mismatch - for species prefixed tags',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical eality',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for taxon prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for species prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for artist prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for architect prefixed tags',
         'should use a secondary wikipedia tag - linking from wikidata tag to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an aspect in a geographic region',
-        'wikipedia wikidata mismatch - for network prefixed tags',
-        'wikipedia wikidata mismatch - for operator prefixed tags',
-        'wikipedia wikidata mismatch - for name:etymology prefixed tags',
-        'wikipedia wikidata mismatch - for brand prefixed tags',
         'malformed wikipedia tag - for architect prefixed tags',
         'malformed wikipedia tag - for operator prefixed tags',
         'malformed wikipedia tag - for brand prefixed tags',
@@ -254,7 +267,9 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a bicycle sharing system',
         'should use a secondary wikipedia tag - linking from wikidata tag to an electric utility',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an electric utility',
-        'wikipedia wikidata mismatch',
+
+        # TODO, see https://www.openstreetmap.org/way/613183124 - https://www.openstreetmap.org/note/3972766
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a meeting',
 
         # quite fragile with repeated reveals of bad Wikidata ontology - lets not feature it
         'should use a secondary wikipedia tag - linking from wikidata tag to a fictional entity',
@@ -283,7 +298,6 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a violation of law',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a violation of law',
 
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a branch of military service',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a recurring sports event',
     ]
 
