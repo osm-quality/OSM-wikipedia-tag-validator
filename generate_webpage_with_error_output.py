@@ -543,7 +543,7 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an a transport by country or region")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
     returned += [
