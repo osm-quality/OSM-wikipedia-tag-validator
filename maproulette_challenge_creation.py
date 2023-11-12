@@ -146,13 +146,13 @@ def model_for_XXXXXX():
 
 def already_uploaded_featured_pool_list():
     return [
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a death',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a disaster',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a travel',
         'should use a secondary wikipedia tag - linking from wikidata tag to a travel',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a travel',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a protest',
         'should use a secondary wikipedia tag - linking from wikipedia tag to an object that exists outside physical reality',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a conflict',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an object that exists outside physical reality',
         'should use a secondary wikipedia tag - linking from wikidata tag to a chain store',
@@ -257,6 +257,7 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a weapon model or class',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a type of world view',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking from wikidata tag to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an aspect in a geographic region',
         'malformed wikipedia tag - for architect prefixed tags',
