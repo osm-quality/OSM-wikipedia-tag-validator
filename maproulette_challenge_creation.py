@@ -339,10 +339,11 @@ def main():
     for error_id in already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list():
         challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
         if challenge_id != None:
-            dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, None)
+            dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, None, debug = False)
             total_error_count += live_count
             total_fixed_count += fixed_count
-    print(total_fixed_count, total_error_count, str(int(total_fixed_count * 100 / total_error_count + 0.5)) + "%")
+    percent = int(total_fixed_count * 100 / total_error_count + 0.5)
+    print(str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(percent) + "%")
 
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
@@ -555,7 +556,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         candidates.append(entry['osm_object_url'])
 
     some_require_manual_investigation = False
-    in_mr_already, some_require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, candidates)
+    in_mr_already, some_require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, candidates, debug=False)
 
     array_of_urls_in_mr_already = in_mr_already.keys()
     geojson_object = build_geojson_of_tasks_to_add_challenge(collected_data_for_use, array_of_urls_in_mr_already)
@@ -571,9 +572,9 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         print("https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name")
         raise Exception("look at these entries")
 
-def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, candidates):
+def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, candidates, debug):
     in_mr_already = {}
-    tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id)
+    tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id, debug)
     fixed_count = 0
     visible_tasks = 0
     some_require_manual_investigation = False
@@ -1195,7 +1196,7 @@ def set_featured_status_for_challenge_for_given_error_id(challenge_api, project_
         return set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, featured_status)
     return
 
-def get_challenge_tasks(challenge_api, challenge_id):
+def get_challenge_tasks(challenge_api, challenge_id, debug=True):
     returned = []
     while True:
         try:
@@ -1209,7 +1210,8 @@ def get_challenge_tasks(challenge_api, challenge_id):
                 data = response["data"]
                 for entry in data:
                     returned.append(entry)
-                print("fetching challenge tasks for", challenge_id, "processing page with", len(data), "entries")
+                if debug:
+                    print("fetching challenge tasks for", challenge_id, "processing page with", len(data), "entries")
                 if len(data) < limit:
                     return returned
         except maproulette.api.errors.HttpError as e:
