@@ -481,13 +481,11 @@ def for_review():
         'wikipedia wikidata mismatch - for royal_cypher prefixed tags',
         'wikipedia wikidata mismatch - for siren:model prefixed tags',
 
-        "species secondary tag links something that is not species according to wikidata (checking P105)",
         "bridge:wikipedia - move to bridge outline",
         "bridge:wikidata - move to bridge outline",
         "bridge:wikipedia and bridge:wikidata - move to bridge outline",
 
         'wikipedia tag links bot wikipedia',
-        "genus secondary tag links something that is not genus according to wikidata (checking P105)",
 
         'malformed secondary wikidata tag - for brand prefixed tags',
         'malformed secondary wikidata tag - for operator prefixed tags',
@@ -534,10 +532,12 @@ def for_tests():
         "wikipedia",
         "wikidata",
     ]:
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a type of sport")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a migration")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a letter")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a burial")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
@@ -547,7 +547,7 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
     returned += [
-
+        "wikipedia wikidata mismatch - for not:brand prefixed tags",
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
         # TODO: detect image=* that should be wikimedia_commons=*
@@ -640,6 +640,10 @@ def ignored():
 
         # argh: https://www.openstreetmap.org/way/19050883
         "malformed secondary wikidata tag - for destination prefixed tags",
+
+        # see https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/issues/3
+        "species secondary tag links something that is not species according to wikidata (checking P105)",
+        "genus secondary tag links something that is not genus according to wikidata (checking P105)",
     ]
     for from_tags in [
         "wikipedia and wikidata",
