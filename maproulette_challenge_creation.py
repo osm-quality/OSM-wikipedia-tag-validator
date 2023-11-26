@@ -171,6 +171,8 @@ def already_uploaded_featured_pool_list():
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a road type',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a sport',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a sport',
+        'should use a secondary wikipedia tag - linking from wikidata tag to a sport',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a shooting',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a military operation',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a military operation',
