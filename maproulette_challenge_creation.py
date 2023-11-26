@@ -17,7 +17,9 @@
 # 30 września Fixed (5430/14461) - 38%
 # 4 listopada Fixed (5507/14461) - 38%
 # 4 listopada Fixed (5519/14814) - 37%
-# 6 lsitopada Fixed (5547/14833) - 37%
+# 6 listopada Fixed (5547/14833) - 37%
+# 8 listopada Fixed (5565/14979) - 37%
+# 14 listopada Fixed (5583/14673) - 38%
 
 # https://github.com/osmlab/maproulette-python-client
 import maproulette
@@ -334,7 +336,7 @@ def main():
     for error_id in already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list():
         challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
         if challenge_id != None:
-            dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(challenge_api, challenge_id, None)
+            dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, None)
             total_error_count += live_count
             total_fixed_count += fixed_count
     print(total_fixed_count, total_error_count, str(int(total_fixed_count * 100 / total_error_count + 0.5)) + "%")
@@ -357,9 +359,8 @@ def main():
 
     for error_id in greenlit_groups_not_to_be_featured:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
-    return
 
-    pool = already_uploaded_featured_pool + already_uploaded
+    pool = already_uploaded_featured_pool_list() + already_uploaded_not_to_be_featured_list()
     random.shuffle(pool)
     for error_id in pool:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
@@ -392,6 +393,11 @@ def ensure_correct_number_of_featured_groups(challenge_api, project_id):
     looked_at_potentially_featured_tasks = 0
     marked_featured = 0
 
+    for error_id in already_uploaded_featured_pool_list() + already_uploaded_not_to_be_featured_list():
+        challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
+        if challenge_id != None:
+            set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, False)
+
     while marked_featured < featured_count_request:
         error_id = already_uploaded_featured_pool[looked_at_potentially_featured_tasks]
         challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
@@ -404,14 +410,7 @@ def ensure_correct_number_of_featured_groups(challenge_api, project_id):
             for task in tasks:
                 if is_active_task_status(task['status']):
                     active_tasks += 1
-                if task['status'] == STATUS_FALSE_POSITIVE:
-                    link = "https://maproulette.org/task/" + str(task['id'])
-                    print("False positive (challenge " + error_id + ")", link)
-                elif task['status'] == STATUS_TOO_HARD:
-                    link = "https://maproulette.org/task/" + str(task['id'])
-                    print("Too hard (challenge " + error_id + ")", link)
-
-            print('"' + error_id + '"', "has", active_tasks, "active tasks")
+            print(active_tasks, "active tasks in", '"' + error_id + '"')
             print()
             if active_tasks > 0:
                 set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, True)
@@ -422,12 +421,9 @@ def ensure_correct_number_of_featured_groups(challenge_api, project_id):
         if len(already_uploaded_featured_pool) == looked_at_potentially_featured_tasks:
             raise Exception("run out of task to feature")
             break
-
-    for error_id in already_uploaded_featured_pool[looked_at_potentially_featured_tasks:] + already_uploaded_not_to_be_featured_list():
-        challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
-        if challenge_id != None:
-            set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, False)
-
+    
+    if marked_featured < featured_count_request:
+        raise Exception("run out of task to feature")
 
 def regenerate_tasks(challenge_api, task_api, error_ids):
     count = 0
@@ -556,7 +552,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         candidates.append(entry['osm_object_url'])
 
     some_require_manual_investigation = False
-    in_mr_already, some_require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(challenge_api, challenge_id, candidates)
+    in_mr_already, some_require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, candidates)
 
     array_of_urls_in_mr_already = in_mr_already.keys()
     geojson_object = build_geojson_of_tasks_to_add_challenge(collected_data_for_use, array_of_urls_in_mr_already)
@@ -572,7 +568,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         print("https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name")
         raise Exception("look at these entries")
 
-def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(challenge_api, challenge_id, candidates):
+def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, candidates):
     in_mr_already = {}
     tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id)
     fixed_count = 0
