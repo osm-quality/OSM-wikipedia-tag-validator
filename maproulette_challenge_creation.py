@@ -169,6 +169,7 @@ def already_uploaded_featured_pool_list():
         'should use a secondary wikipedia tag - linking from wikidata tag to a protest',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a history of a geographic region',
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
+        "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not",
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a road type',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a sport',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a sport',
@@ -185,11 +186,6 @@ def already_uploaded_featured_pool_list():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a legal action',
         'should use a secondary wikipedia tag - linking from wikidata tag to a legal action',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a legal action',
-
-        # review "too hard" etc
-        # https://maproulette.org/admin/project/53065/challenge/40094?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=20&sortCriteria.direction=DESC&sortCriteria.sortBy=name
-        # TODO
-        "wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not",
 
         # exhausted, refilling will happen but lets give it time
         # less likely to be refilled at the bottom
@@ -354,7 +350,6 @@ def main():
     for_later = for_later_list()
     already_uploaded_featured_pool = already_uploaded_featured_pool_list()
 
-    print("look at https://maproulette.org/admin/project/53065/challenge/40094?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=20&sortCriteria.direction=DESC&sortCriteria.sortBy=name and then repromote 'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not'")
     show_candidate_reports(cursor, greenlit_groups_to_be_featured + greenlit_groups_not_to_be_featured + for_later, already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list())
 
     ensure_correct_number_of_featured_groups(challenge_api, project_id)
