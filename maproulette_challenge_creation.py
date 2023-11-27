@@ -339,7 +339,13 @@ def main():
             total_error_count += live_count
             total_fixed_count += fixed_count
     percent = int(total_fixed_count * 100 / total_error_count + 0.5)
-    print(str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(percent) + "%")
+    print()
+    print()
+    print()
+    print("(" + str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(percent) + "%")
+    print()
+    print()
+    print()
 
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
