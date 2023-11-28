@@ -523,6 +523,9 @@ def for_review():
         "wikidata",
     ]:
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a gene")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a type of sport")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a migration")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a letter")
     return returned
 
 def for_tests():
@@ -532,22 +535,16 @@ def for_tests():
         "wikipedia",
         "wikidata",
     ]:
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a type of sport")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a migration")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a letter")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a burial")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
     returned += [
-        "wikipedia wikidata mismatch - for not:brand prefixed tags",
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
         # TODO: detect image=* that should be wikimedia_commons=*
@@ -589,6 +586,9 @@ def for_tests():
 
 def ignored():
     returned = [
+        # TODO - that is not a problem, in theory this canbe valid
+        "wikipedia wikidata mismatch - for not:brand prefixed tags",
+
         # TODO - source:species should not be validated...
         'malformed secondary wikidata tag - for source:species prefixed tags',
         "malformed secondary wikidata tag - for image:license prefixed tags",
@@ -670,6 +670,9 @@ def ignored():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an intentional human activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
+        # this one in addition breaks my debugging tool, see testcases for Q28548 Q2279163 in wikibrain, fix that before enabling reports
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
 
         # see test_artillery_battery_as_valid_primary_link test - persistent missclassification
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a branch of military service")
