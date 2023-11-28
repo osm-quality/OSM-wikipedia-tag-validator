@@ -542,7 +542,6 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
     returned += [
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
@@ -557,13 +556,7 @@ def for_tests():
         "genus secondary tag links something that is not species according to wikidata",
         "species secondary tag links something that is not species according to wikidata",
 
-        "taxon secondary tag links something that is not taxon according to wikidata (checking regular ontology)",
 
-        "malformed secondary wikidata tag - for post_office:service_provider prefixed tags",
-        "malformed secondary wikidata tag - for delivery:partner prefixed tags",
-        "malformed secondary wikidata tag - for post_office:brand prefixed tags",
-
-        'malformed wikipedia tag - for artist_name prefixed tags',
         'wikipedia wikidata mismatch - for artist_name prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for artist_name prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for artist_name prefixed tags',
@@ -592,6 +585,8 @@ def ignored():
         # TODO - source:species should not be validated...
         'malformed secondary wikidata tag - for source:species prefixed tags',
         "malformed secondary wikidata tag - for image:license prefixed tags",
+
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
 
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
         # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
@@ -644,6 +639,15 @@ def ignored():
         # see https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports/issues/3
         "species secondary tag links something that is not species according to wikidata (checking P105)",
         "genus secondary tag links something that is not genus according to wikidata (checking P105)",
+
+        # how to handle cases where some wikidata entries are missing? https://www.openstreetmap.org/node/5025271318
+        # allow empty wikidata entries ?
+        "malformed secondary wikidata tag - for post_office:brand prefixed tags",
+        "malformed secondary wikidata tag - for delivery:partner prefixed tags",
+        'malformed wikipedia tag - for artist_name prefixed tags',
+
+        # finds wikidata entries without any "is instance"
+        "taxon secondary tag links something that is not taxon according to wikidata (checking regular ontology)",
     ]
     for from_tags in [
         "wikipedia and wikidata",
@@ -671,8 +675,10 @@ def ignored():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an intentional human activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
-        # this one in addition breaks my debugging tool, see testcases for Q28548 Q2279163 in wikibrain, fix that before enabling reports
+        # following one in addition breaks my debugging tool, see testcases for Q28548 Q2279163 in wikibrain, fix that before enabling reports
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
+        # this also is broken, why 
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
 
         # see test_artillery_battery_as_valid_primary_link test - persistent missclassification
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a branch of military service")
