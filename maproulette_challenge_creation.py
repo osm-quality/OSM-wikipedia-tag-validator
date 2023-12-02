@@ -21,6 +21,7 @@
 # 8 listopada Fixed (5565/14979) - 37%
 # 14 listopada Fixed (5583/14673) - 38%
 # 25 listopada Fixed (6143/14827) - 41%
+# 30 listopada Fixed (6483/14566) - 45%
 
 # https://github.com/osmlab/maproulette-python-client
 import maproulette
