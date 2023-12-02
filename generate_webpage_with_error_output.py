@@ -669,7 +669,6 @@ def ignored():
         # and wider: OSM bot edits
         # and wider: OSMF activities
         # and wider: see my TODO list....
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to art (field of work, not the resulting work)")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
@@ -680,6 +679,13 @@ def ignored():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
         # this also is broken, why 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
+
+        # this is in large part covered by
+        # https://www.wikidata.org/wiki/Property:P31#P31$e62deacd-4481-ff90-b25d-844ec7666263 constraint
+        # like at https://www.wikidata.org/w/index.php?title=Q114397796&oldid=1742726259
+        # version
+        # TODO: are violations of this constraint listed somewhere?
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to art (field of work, not the resulting work)")
 
         # see test_artillery_battery_as_valid_primary_link test - persistent missclassification
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a branch of military service")
