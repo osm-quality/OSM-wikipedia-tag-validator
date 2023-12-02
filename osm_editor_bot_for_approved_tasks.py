@@ -354,9 +354,20 @@ def handle_wikidata_redirect(cursor, reported_errors, area_code, automatic_statu
             announce_skipping_object_as_outside_area(e['osm_object_url'] + " (handle_wikidata_redirect function)")
             continue
         redirected = detector.get_wikidata_id_after_redirect(data['tag']['wikidata'], forced_refresh=True)
+
         print()
+        human_verification_mode.smart_print_tag_dictionary(data['tag'])
+
         if redirected != data['tag']['wikidata']:
             data['tag']['wikidata'] = redirected
+
+        print()
+        print()
+        human_verification_mode.smart_print_tag_dictionary(data['tag'])
+        if automatic_status == osm_bot_abstraction_layer.manually_reviewed_description():
+            if human_verification_mode.is_human_confirming(e['osm_object_url']) == False:
+                continue
+
         type = e['osm_object_url'].split("/")[3]
         if started_changeset == False:
             started_changeset = True
