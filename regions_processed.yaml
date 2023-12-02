@@ -92,10 +92,10 @@
 
 - {internal_region_name: 'San Marino', website_main_title_part: 'San Marino', identifier: {'ISO3166-1': 'SM'}, requested_by: 'none', priority_multiplier: 0.2}
 
-- {internal_region_name: Montenegro, website_main_title_part: 'Crna Gora - Црна Гора (Montenegro, Czarnogóra)', identifier: {'ISO3166-1': 'ME'}, language_code: sr, requested_by: 'Komadinovic Vanja, in PM https://www.openstreetmap.org/messages/928133 (pinged 2022-10-17)'}
+#- {internal_region_name: Montenegro, website_main_title_part: 'Crna Gora - Црна Гора (Montenegro, Czarnogóra)', identifier: {'ISO3166-1': 'ME'}, language_code: sr}
 
 # 'wikipedia tag unexpected language' "Wrt changing en: to sr:, nobody cares, BUT (big but!), your script cover Kosovo too and there, it is a big no-no to change sq: or en: to sr:" (Telegram - private discussion with Kokan), Kosovo should be fixed now
-- {internal_region_name: Serbia (bez Kosowa), website_main_title_part: 'Србија (Serbia)', identifier: {'ISO3166-1': 'RS', 'boundary': 'administrative'}, language_code: sr, requested_by: 'Komadinovic Vanja, in PM https://www.openstreetmap.org/messages/928133 (pinged 2022-10-17) and https://t.me/osm_sr/8262', ignored_problems: ['wikipedia tag unexpected language'], priority_multiplier: 3}
+#- {internal_region_name: Serbia (bez Kosowa), website_main_title_part: 'Србија (Serbia)', identifier: {'ISO3166-1': 'RS', 'boundary': 'administrative'}, language_code: sr, ignored_problems: ['wikipedia tag unexpected language'], priority_multiplier: 3}
 - {internal_region_name: Bulgaria, website_main_title_part: 'Бългaрия (Bulgaria, Bułgaria)', identifier: {'ISO3166-1': 'BG'}, language_code: bg, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819954835142475786 Dimitar155 [BG] (pinged 2022-10-17)', priority_multiplier: 4}
 
 # Skipping unexpected language cases: oppressing Kurds alone (including targeting language) makes it tricky and better to just hide this cases
