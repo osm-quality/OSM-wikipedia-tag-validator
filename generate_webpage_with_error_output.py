@@ -510,6 +510,7 @@ def for_review():
         "malformed secondary wikidata tag - for artist_name prefixed tags",
         "malformed secondary wikidata tag - for not:brand prefixed tags",
         "malformed secondary wikidata tag - for not:operator prefixed tags",
+        "malformed secondary wikidata tag - for post_office:service_provider prefixed tags",
 
         'malformed wikipedia tag - for not prefixed tags',
         'wikipedia wikidata mismatch - for not prefixed tags',
