@@ -15,6 +15,7 @@ import database
 import time
 import osm_bot_abstraction_layer.human_verification_mode as human_verification_mode
 import wikibrain.wikimedia_link_issue_reporter
+import datetime
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -330,9 +331,11 @@ def handle_wikidata_redirect(cursor, reported_errors, area_code, automatic_statu
     comment = "handle unstable wikidata ids - apply redirects"
     discussion_urls = {
         'pl': 'https://community.openstreetmap.org/t/propozycja-automatycznej-edycji-tagi-wikidata-co-sa-przekierowaniami/7727',
+        'usa': 'https://community.openstreetmap.org/t/bot-edit-proposal-update-wikidata-tag-redirects/106588 and https://osmus.slack.com/archives/C029HV951/p1698760768541059',
     }
     osm_wiki_page_urls = {
-        'pl': "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_Poland"
+        'pl': "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_Poland",
+        'usa': None,
     }
 
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code])
@@ -499,7 +502,15 @@ def main():
         internal_region_name = entry["internal_region_name"]
         if 'USA' in entry.get('merged_into', []):
             area_code = "usa"
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automatic_status = osm_bot_abstraction_layer.fully_automated_description())
+            automated = osm_bot_abstraction_layer.fully_automated_description()
+            manual = osm_bot_abstraction_layer.manually_reviewed_description()
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automated)
+            #run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_wikidata_redirect, manual)
+            if datetime.datetime.now() > datetime.datetime(2013, 12, 13):
+                print("https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_Poland apply to USA")
+                print("https://community.openstreetmap.org/t/bot-edit-proposal-update-wikidata-tag-redirects-where-updated-value-would-match-present-wikipedia-tag/106588")
+                print()
+                print("https://osmus.slack.com/archives/C029HV951/p1701369028374809 - wikipedia tag unexpected language")
 
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
