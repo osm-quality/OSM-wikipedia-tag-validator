@@ -335,8 +335,10 @@ def handle_wikidata_redirect(cursor, reported_errors, area_code, automatic_statu
     }
     osm_wiki_page_urls = {
         'pl': "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_Poland",
-        'usa': None,
+        'usa': 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_USA',
     }
+    if area_code == "usa":
+        raise "update https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_USA to note approval"
 
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code])
     source = "wikidata"
