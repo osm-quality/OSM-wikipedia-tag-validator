@@ -307,7 +307,9 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikidata redirect - for manufacturer prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for tank:model prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for network:2 prefixed tags',
-        'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
+        # TODO restore after wikidata redirect bot is approved in USA
+        # TODO then propose such bot edit there
+        #'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for operator prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for subject prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for network prefixed tags',
@@ -588,6 +590,7 @@ def ignored():
         'malformed secondary wikidata tag - for source:species prefixed tags',
         "malformed secondary wikidata tag - for image:license prefixed tags",
 
+        # TODO restore to obvious after wikidata redirect bot is approved in USA
         'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
 
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
