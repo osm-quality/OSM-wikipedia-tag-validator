@@ -685,7 +685,10 @@ def ignored():
         # https://www.wikidata.org/wiki/Property:P31#P31$e62deacd-4481-ff90-b25d-844ec7666263 constraint
         # like at https://www.wikidata.org/w/index.php?title=Q114397796&oldid=1742726259
         # version
-        # TODO: are violations of this constraint listed somewhere?
+        # see also https://www.wikidata.org/wiki/Wikidata:Database_reports/Constraint_violations/P31
+        # and 
+        # https://query.wikidata.org/#SELECT%20%3Fitem%20%3FitemLabel%20%0AWHERE%20%0A%7B%0A%20%20%7B%3Fitem%20wdt%3AP31%20wd%3AQ11634.%7D%0A%20%20UNION%0A%20%20%7B%3Fitem%20wdt%3AP31%20wd%3AQ17310537.%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2Cen%22.%20%7D%20%23%20Helps%20get%20the%20label%20in%20your%20language%2C%20if%20not%2C%20then%20en%20language%0A%7D
+        # for listing of this cases of issues
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to art (field of work, not the resulting work)")
 
         # see test_artillery_battery_as_valid_primary_link test - persistent missclassification
