@@ -352,7 +352,7 @@ def main():
     print()
     print()
     print()
-    print("(" + str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(percent) + "%")
+    print("Fixed (" + str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(percent) + "%")
     print()
     print()
     print()
