@@ -58,11 +58,10 @@ STATUS_ALREADY_FIXED = 5
 STATUS_TOO_HARD = 6
 STATUS_DISABLED = 9 # TODO missing in docs
 
-def greenlit_groups_to_be_featured_list():
-    return [
-    ]
 def greenlit_groups_not_to_be_featured_list():
     return [
+        # upload, add to featured
+
         # upload but not featured group
     ]
 def for_later_list():
@@ -152,6 +151,8 @@ def model_for_XXXXXX():
 
 def already_uploaded_featured_pool_list():
     return [
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a migration',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a letter',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a death',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a disaster',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a travel',
@@ -189,6 +190,8 @@ def already_uploaded_featured_pool_list():
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a legal action',
         'should use a secondary wikipedia tag - linking from wikidata tag to a legal action',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a legal action',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a type of sport',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a type of sport',
 
         # exhausted, refilling will happen but lets give it time
         # less likely to be refilled at the bottom
@@ -246,6 +249,7 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
         'should use a secondary wikipedia tag - linking from wikidata tag to a food',
 
+        'should use a secondary wikipedia tag - linking from wikidata tag to a postal service',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an electric vehicle charging network',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a postal service',
         'should use a secondary wikipedia tag - linking from wikipedia tag to an electric utility',
@@ -354,16 +358,14 @@ def main():
     cursor = connection.cursor()
 
     categories = {}
-    greenlit_groups_to_be_featured = greenlit_groups_to_be_featured_list()
     greenlit_groups_not_to_be_featured = greenlit_groups_not_to_be_featured_list()
     for_later = for_later_list()
     already_uploaded_featured_pool = already_uploaded_featured_pool_list()
 
-    show_candidate_reports(cursor, greenlit_groups_to_be_featured + greenlit_groups_not_to_be_featured + for_later, already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list())
+    show_candidate_reports(cursor, greenlit_groups_not_to_be_featured + for_later, already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list())
 
+    print("ensure_correct_number_of_featured_groups")
     ensure_correct_number_of_featured_groups(challenge_api, project_id)
-    for error_id in greenlit_groups_to_be_featured:
-        update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = True)
 
     for error_id in greenlit_groups_not_to_be_featured:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
