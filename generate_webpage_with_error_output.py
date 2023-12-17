@@ -548,6 +548,8 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
     returned += [
+        'wikipedia wikidata mismatch, wikipedia links to section - high risk of false positive',
+
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
         # TODO: detect image=* that should be wikimedia_commons=*
