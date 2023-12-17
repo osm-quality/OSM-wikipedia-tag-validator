@@ -337,6 +337,9 @@ def main():
     project_id = setup_project(project_api, user_id)
     # docs: https://github.com/osmlab/maproulette-python-client#getting-started
 
+    # manually trigger an update
+    #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, 'wikipedia wikidata mismatch - for operator prefixed tags', featured = False)
+
     total_error_count = 0
     total_fixed_count = 0
     for error_id in already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list():
