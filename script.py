@@ -14,6 +14,13 @@ import osm_editor_bot_for_approved_tasks
 import random
 
 def main():
+    folder = "/".join(config.database_filepath().split("/")[0:-1])
+    if os.path.isdir(folder) == False:
+        os.mkdir(folder)
+    if os.path.isdir(config.get_report_directory()) == False:
+        os.mkdir(config.get_report_directory())
+    # maybe check is it ext4?
+    # https://stackoverflow.com/questions/25283882/determining-the-filesystem-type-from-a-path-in-python
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
     database.create_table_if_needed(cursor)
