@@ -284,6 +284,7 @@ def get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=False
         )
 
 def commit_and_publish_changes_in_report_directory():
+    return # TODO remove after database is recreated (TODO: handle it automatically by requiring data for all enabled areas?)
     current_working_directory = os.getcwd()
     os.chdir(config.get_report_directory())
     os.system('git add index.html')
