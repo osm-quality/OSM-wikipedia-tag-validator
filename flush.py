@@ -9,7 +9,7 @@ forced_refresh = True
 link = "tr:Perinthos"
 wikimedia_connection.get_data_from_wikidata(link.split(":")[0], link.split(":")[1], forced_refresh)
 
-kill = "Q83809 Q11143416".split()
+kill = "".split()
 for id in kill:
     os.remove(wikimedia_connection.get_filename_with_wikidata_entity_by_id(id))
     os.remove(wikimedia_connection.get_filename_with_wikidata_by_id_response_code(id))
