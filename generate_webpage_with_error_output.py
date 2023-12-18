@@ -542,14 +542,11 @@ def for_tests():
 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a burial")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
     returned += [
-        'wikipedia wikidata mismatch, wikipedia links to section - high risk of false positive',
-
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
         # TODO: detect image=* that should be wikimedia_commons=*
@@ -585,7 +582,10 @@ def for_tests():
 
 def ignored():
     returned = [
-        # TODO - that is not a problem, in theory this canbe valid
+        # TODO - better report is possible here, no need to process what we have now
+        'wikipedia wikidata mismatch, wikipedia links to section - high risk of false positive', # see https://www.openstreetmap.org/way/26848407 - detect where wikipedia can be modified to link redirect
+
+        # TODO - that is not a problem, in theory this can be valid
         "wikipedia wikidata mismatch - for not:brand prefixed tags",
 
         # TODO - source:species should not be validated...
@@ -685,6 +685,7 @@ def ignored():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
         # this also is broken, why 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
 
         # this is in large part covered by
         # https://www.wikidata.org/wiki/Property:P31#P31$e62deacd-4481-ff90-b25d-844ec7666263 constraint
