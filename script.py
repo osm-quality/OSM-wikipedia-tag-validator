@@ -12,6 +12,7 @@ import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstractio
 import time
 import osm_editor_bot_for_approved_tasks
 import random
+import datetime
 
 def main():
     folder = "/".join(config.database_filepath().split("/")[0:-1])
@@ -100,7 +101,7 @@ def update_validator_database_and_reports():
                 continue
         generate_webpage_with_error_output.generate_website_file_for_given_area(cursor, entry)
     generate_webpage_with_error_output.write_index_and_merged_entries(cursor)
-    commit_and_publish_changes_in_report_directory()
+    commit_and_publish_changes_in_report_directory(cursor)
 
     wikimedia_connection.set_cache_location(config.get_wikimedia_connection_cache_location())
 
@@ -124,6 +125,13 @@ def update_validator_database_and_reports():
         #print(entry['internal_region_name'], entry.get("priority_multiplier", 1), k+"k")
 
     for selected_processing_entry in entries_with_age:
+        if is_night():
+            connection.close()
+            while is_night():
+                print("pausing for night, sleeping")
+                time.sleep(60)
+            connection = sqlite3.connect(config.database_filepath())
+            cursor = connection.cursor()
         print()
         print()
         print(processed_entries, "/", total_entry_count)
@@ -139,6 +147,9 @@ def update_validator_database_and_reports():
         generate_webpage_with_error_output.write_index_and_merged_entries(cursor) # update after each run
     connection.close()
     commit_and_publish_changes_in_report_directory() # note that it is called not only here! But also at start of the function
+
+def is_night():
+    return datetime.datetime.now().hour >= 20 or datetime.datetime.now().hour <= 4
 
 def check_for_malformed_definitions_of_entries():
     for entry in config.get_entries_to_process():
@@ -283,8 +294,14 @@ def get_wikimedia_link_issue_reporter_object(language_code, forced_refresh=False
         allow_false_positives=False
         )
 
-def commit_and_publish_changes_in_report_directory():
-    return # TODO remove after database is recreated (TODO: handle it automatically by requiring data for all enabled areas?)
+def commit_and_publish_changes_in_report_directory(cursor):
+    missing = 0
+    for entry in config.get_entries_to_process():
+        if database.get_data_download_timestamp(cursor, entry['internal_region_name']) == 0:
+            missing += 1
+    if missing > 0:
+        print(missing, "entries miss data altogether")
+        return
     current_working_directory = os.getcwd()
     os.chdir(config.get_report_directory())
     os.system('git add index.html')

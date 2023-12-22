@@ -39,6 +39,7 @@ import osm_bot_abstraction_layer.osm_bot_abstraction_layer as osm_bot_abstractio
 import random
 import requests
 import database
+import datetime
 
 print("try to list all comments made by users...")
 # TODO brand:wikidata / brand:wikipedia without brand tag
