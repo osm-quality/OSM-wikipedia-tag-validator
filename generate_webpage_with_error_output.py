@@ -329,6 +329,7 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for manufacturer prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for tank:model prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for network:2 prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
     ]
 
 def for_review():
@@ -420,7 +421,6 @@ def for_review():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not',
         'wikipedia/wikidata type tag that is incorrect according to not:* tag',
         "wikipedia tag needs to be removed based on wikidata code and teryt:simc identifier",
-        'malformed secondary wikidata tag',
 
         'secondary wikidata tag links to 404',
 
@@ -585,17 +585,18 @@ def ignored():
         # TODO - better report is possible here, no need to process what we have now
         'wikipedia wikidata mismatch, wikipedia links to section - high risk of false positive', # see https://www.openstreetmap.org/way/26848407 - detect where wikipedia can be modified to link redirect
 
-        # TODO - that is not a problem, in theory this can be valid
-        "wikipedia wikidata mismatch - for not:brand prefixed tags",
-
-        # TODO - source:species should not be validated...
-        'malformed secondary wikidata tag - for source:species prefixed tags',
-        "malformed secondary wikidata tag - for image:license prefixed tags",
-
-        # TODO restore to obvious after wikidata redirect bot is approved in USA
-        'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
+        # should be gone now
+        #'malformed secondary wikidata tag - for source:species prefixed tags',
+        #"malformed secondary wikidata tag - for image:license prefixed tags",
+        #'malformed secondary wikidata tag',
 
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
+        # related:wikipedia = de:Liste der Baudenkmäler in Geilenkirchen
+        # https://overpass-turbo.eu/s/1F5r
+        # on_list:wikipedia = ?
+
+        # more: https://overpass-turbo.eu/s/1F5t
+
         # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
         'malformed wikipedia tag - for related prefixed tags',
         'wikipedia wikidata mismatch - for related prefixed tags',
