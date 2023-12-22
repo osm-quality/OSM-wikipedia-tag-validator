@@ -1,30 +1,33 @@
 # https://maproulette.org/admin/project/53065
-# 2 sierpnia: Fixed (4479/11597) - 39%
-# 2 sierpnia: Fixed (4480/14141) - 32%
-# 3 sierpnia: Fixed (4518/14141) - 32%
-# 6 sierpnia Fixed (4643/14167) - 33%
-# 9 sierpnia Fixed (4873/14173) - 34%
-# 14 sierpnia Fixed (5103/14173) - 36%
-# 15 sierpnia Fixed (5150/14173) - 36%
-# 16 sierpnia Fixed (5227/14173) - 37%
-# 17 sierpnia Fixed (5231/14180) - 37%
-# 18 sierpnia Fixed (5255/14180) - 37%
-# 19 sierpnia Fixed (5256/14180) - 37%
-# 20 sierpnia Fixed (5265/14199) - 37%
-# 26 sierpnia Fixed (5318/14190) - 38%
-# 30 sierpnia Fixed (5359/14188) - 38%
-# 5 września Fixed (5381/14202) - 38%
-# 30 września Fixed (5430/14461) - 38%
-# 4 listopada Fixed (5507/14461) - 38%
-# 4 listopada Fixed (5519/14814) - 37%
-# 6 listopada Fixed (5547/14833) - 37%
-# 8 listopada Fixed (5565/14979) - 37%
-# 14 listopada Fixed (5583/14673) - 38%
-# 25 listopada Fixed (6143/14827) - 41%
-# 30 listopada Fixed (6483/14566) - 45%
-# 6 grudnia Fixed (6936/14111) - 49%
-# 10 grudnia Fixed (7074/13386) - 53%
-# 11 grudnia Fixed (7177/13373) - 54%
+# 2 sierpnia: Fixed (4479/11597) - 7118 remaining
+# 2 sierpnia: Fixed (4480/14141) - 9661 remaining
+# 3 sierpnia: Fixed (4518/14141) - 9623 remaining
+# 6 sierpnia Fixed (4643/14167) - 9524 remaining
+# 9 sierpnia Fixed (4873/14173) - 9300 remaining
+# 14 sierpnia Fixed (5103/14173) - 9070 remaining
+# 15 sierpnia Fixed (5150/14173) - 9023 remaining
+# 16 sierpnia Fixed (5227/14173) - 8946 remaining
+# 17 sierpnia Fixed (5231/14180) - 8949 remaining
+# 18 sierpnia Fixed (5255/14180) - 8925 remaining
+# 19 sierpnia Fixed (5256/14180) - 8924 remaining
+# 20 sierpnia Fixed (5265/14199) - 8934 remaining
+# 26 sierpnia Fixed (5318/14190) - 8872 remaining
+# 30 sierpnia Fixed (5359/14188) - 8829 remaining
+# 5 września Fixed (5381/14202) - 8821 remaining
+# 30 września Fixed (5430/14461) - 9031 remaining
+# 4 listopada Fixed (5507/14461) - 8954 remaining
+# 4 listopada Fixed (5519/14814) - 9295 remaining
+# 6 listopada Fixed (5547/14833) - 9286 remaining
+# 8 listopada Fixed (5565/14979) - 9414 remaining
+# 14 listopada Fixed (5583/14673) - 9090 remaining
+# 25 listopada Fixed (6143/14827) - 8684 remaining
+# 30 listopada Fixed (6483/14566) - 8083 remaining
+# 6 grudnia Fixed (6936/14111) - 7175 remaining
+# 10 grudnia Fixed (7074/13386) - 6312 remaining
+# 11 grudnia Fixed (7177/13373) - 6196 remaining
+# 22 grudnia Fixed (7749/13370) - 5621 remaining
+
+
 # https://github.com/osmlab/maproulette-python-client
 import maproulette
 import json
@@ -348,11 +351,10 @@ def main():
             dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, None, debug = False)
             total_error_count += live_count
             total_fixed_count += fixed_count
-    percent = int(total_fixed_count * 100 / total_error_count + 0.5)
     print()
     print()
     print()
-    print("Fixed (" + str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(percent) + "%")
+    print("Fixed (" + str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(total_error_count - total_fixed_count) + " remaining")
     print()
     print()
     print()
