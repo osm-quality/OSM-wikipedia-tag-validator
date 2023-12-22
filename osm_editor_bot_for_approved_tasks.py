@@ -337,8 +337,6 @@ def handle_wikidata_redirect(cursor, reported_errors, area_code, automatic_statu
         'pl': "https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_Poland",
         'usa': 'https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_USA',
     }
-    if area_code == "usa":
-        raise "update https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_USA to note approval"
 
     api = osm_bot_abstraction_layer.get_correct_api(automatic_status, discussion_urls[area_code], osm_wiki_page_urls[area_code])
     source = "wikidata"
@@ -518,18 +516,10 @@ def main():
             automated = osm_bot_abstraction_layer.fully_automated_description()
             manual = osm_bot_abstraction_layer.manually_reviewed_description()
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automated)
-            #run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_wikidata_redirect, manual)
-            if datetime.datetime.now() > datetime.datetime(2023, 12, 14):
-                if datetime.datetime.now().hour >= 19:
-                    print("https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account/fixing_wikidata_tags_pointing_at_redirects_in_USA - finish")
-                    print("using https://community.openstreetmap.org/t/bot-edit-proposal-update-wikidata-tag-redirects-where-updated-value-would-match-present-wikipedia-tag/106588")
-                    print("https://www.openstreetmap.org/way/198517296/history")
-                    print()
-                    print()
-                    print()
-                    print("review")
-                    print("https://osmus.slack.com/archives/C029HV951/p1701369028374809 - wikipedia tag unexpected language")
-                    raise Exception("discussions can be assumed to be concluded now")
+            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_wikidata_redirect, automated)
+            #if datetime.datetime.now() > datetime.datetime(2023, 12, 14):
+            #    if datetime.datetime.now().hour >= 19:
+            #        raise Exception("discussions can be assumed to be concluded now")
 
     for entry in config.get_entries_to_process():
         internal_region_name = entry["internal_region_name"]
