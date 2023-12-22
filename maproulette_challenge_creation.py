@@ -329,6 +329,35 @@ def get_login_data():
         """
         return api_key, user_id
 
+
+def show_state_on_maproulette(challenge_api, task_api, project_id):
+    if datetime.datetime.now().hour < 19:
+        print("before 19:00, wikidata.org should not be accessible for now")
+        return
+    total_error_count = 0
+    total_fixed_count = 0
+    for error_id in already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list():
+        challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
+        if challenge_id != None:
+            dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(error_id, task_api, challenge_api, challenge_id, None, debug = False)
+            total_error_count += live_count
+            total_fixed_count += fixed_count
+    print()
+    print()
+    print()
+    print("Fixed (" + str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(total_error_count - total_fixed_count) + " remaining")
+    print()
+    print()
+    print()
+
+def show_new_not_yet_supported_error_classes(cursor):
+    categories = {}
+    greenlit_groups_not_to_be_featured = greenlit_groups_not_to_be_featured_list()
+    for_later = for_later_list()
+    already_uploaded_featured_pool = already_uploaded_featured_pool_list()
+
+    show_candidate_reports(cursor, greenlit_groups_not_to_be_featured + for_later, already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list())
+
 def main():
     api_key, user_id = get_login_data()
     print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
@@ -343,34 +372,17 @@ def main():
     # manually trigger an update
     #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, 'wikipedia wikidata mismatch - for operator prefixed tags', featured = False)
 
-    total_error_count = 0
-    total_fixed_count = 0
-    for error_id in already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list():
-        challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
-        if challenge_id != None:
-            dict_of_tasks, _, fixed_count, live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, None, debug = False)
-            total_error_count += live_count
-            total_fixed_count += fixed_count
-    print()
-    print()
-    print()
-    print("Fixed (" + str(total_fixed_count) + "/" + str(total_error_count) + ") - " + str(total_error_count - total_fixed_count) + " remaining")
-    print()
-    print()
-    print()
+    show_state_on_maproulette(challenge_api, task_api, project_id)
 
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
 
-    categories = {}
-    greenlit_groups_not_to_be_featured = greenlit_groups_not_to_be_featured_list()
-    for_later = for_later_list()
-    already_uploaded_featured_pool = already_uploaded_featured_pool_list()
+    show_new_not_yet_supported_error_classes(cursor)
 
-    show_candidate_reports(cursor, greenlit_groups_not_to_be_featured + for_later, already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list())
 
     print("ensure_correct_number_of_featured_groups")
     ensure_correct_number_of_featured_groups(challenge_api, project_id)
+    return
 
     for error_id in greenlit_groups_not_to_be_featured:
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
@@ -567,7 +579,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         candidates.append(entry['osm_object_url'])
 
     some_require_manual_investigation = False
-    in_mr_already, some_require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, candidates, debug=False)
+    in_mr_already, some_require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(error_id, task_api, challenge_api, challenge_id, candidates, debug=False)
 
     array_of_urls_in_mr_already = in_mr_already.keys()
     geojson_object = build_geojson_of_tasks_to_add_challenge(collected_data_for_use, array_of_urls_in_mr_already)
@@ -583,7 +595,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         print("https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name")
         raise Exception("look at these entries")
 
-def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(task_api, challenge_api, challenge_id, candidates, debug):
+def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(error_id, task_api, challenge_api, challenge_id, candidates, debug):
     in_mr_already = {}
     tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id, debug)
     fixed_count = 0
@@ -614,14 +626,14 @@ def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these
                 visible_tasks += 1
             elif status == STATUS_FALSE_POSITIVE:
                 visible_tasks += 1
-                print("False positive", link)
+                print("False positive", link, osm_link, error_id)
                 some_require_manual_investigation = True
             elif status == STATUS_TOO_HARD:
                 visible_tasks += 1
-                print("Too hard", link)
+                print("Too hard", link, osm_link, error_id)
                 some_require_manual_investigation = True
             else:
-                print("unexpected status", status, "for", link)
+                print("unexpected status", status, "for", link, osm_link, error_id)
                 raise "unexpected"
                 some_require_manual_investigation = True
     return in_mr_already, some_require_manual_investigation, fixed_count, visible_tasks
