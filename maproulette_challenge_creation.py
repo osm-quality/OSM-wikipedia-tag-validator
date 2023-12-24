@@ -522,7 +522,7 @@ def get_challenge_id_based_on_error_id(challenge_api, project_id, error_id):
         if challenge["name"] == challenge_name:
             challenge_id = challenge['id']
     if challenge_id == None:
-        print("no match found for", error_id, "with expected name", challenge_name, "in project", project_id)
+        #print("no match found for", error_id, "with expected name", challenge_name, "in project", project_id)
         if 'old_challenge_name' in texts:
             challenge_name = texts['old_challenge_name']
             challenge_id = None
@@ -531,8 +531,8 @@ def get_challenge_id_based_on_error_id(challenge_api, project_id, error_id):
                     challenge_id = challenge['id']
             if challenge_id != None:
                 return challenge_id
-            else:
-                print("no match found for", error_id, "also with an old name", challenge_name, "in project", project_id)
+            #else:
+            #    print("no match found for", error_id, "also with an old name", challenge_name, "in project", project_id)
     return challenge_id
 
 def get_osm_link_from_task(task):
