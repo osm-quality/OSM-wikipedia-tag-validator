@@ -422,6 +422,7 @@ def ensure_correct_number_of_featured_groups(challenge_api, project_id):
     featured_count_request = 2
     looked_at_potentially_featured_tasks = 0
     marked_featured = 0
+    total_featured_tasks = 0
 
     for error_id in already_uploaded_featured_pool_list() + already_uploaded_not_to_be_featured_list():
         challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
@@ -430,6 +431,7 @@ def ensure_correct_number_of_featured_groups(challenge_api, project_id):
 
     while marked_featured < featured_count_request:
         error_id = already_uploaded_featured_pool[looked_at_potentially_featured_tasks]
+        looked_at_potentially_featured_tasks += 1
         challenge_id = get_challenge_id_based_on_error_id(challenge_api, project_id, error_id)
         if challenge_id == None:
             print("no challenge for", error_id)
@@ -442,18 +444,23 @@ def ensure_correct_number_of_featured_groups(challenge_api, project_id):
                     active_tasks += 1
             print(active_tasks, "active tasks in", '"' + error_id + '"')
             print()
+            if total_featured_tasks + active_tasks < 50 and marked_featured + 1 == featured_count_request:
+                print("trying to get entry with more active tasks, at least for last one")
+                continue
             if active_tasks > 0:
                 set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, True)
                 marked_featured += 1
+                total_featured_tasks += active_tasks
             else:
                 set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, False)
-        looked_at_potentially_featured_tasks += 1
         if len(already_uploaded_featured_pool) == looked_at_potentially_featured_tasks:
             raise Exception("run out of task to feature")
             break
     
     if marked_featured < featured_count_request:
         raise Exception("run out of task to feature")
+    
+    print("featured", marked_featured, "with", total_featured_tasks, "available tasks")
 
 def regenerate_tasks(challenge_api, task_api, error_ids):
     count = 0
