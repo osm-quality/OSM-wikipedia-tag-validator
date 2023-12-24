@@ -196,6 +196,8 @@ def already_uploaded_featured_pool_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a legal action',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a type of sport',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a type of sport',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a crime',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a crime',
 
         # exhausted, refilling will happen but lets give it time
         # less likely to be refilled at the bottom
