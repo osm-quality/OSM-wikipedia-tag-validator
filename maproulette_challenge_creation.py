@@ -155,6 +155,7 @@ def model_for_XXXXXX():
 
 def already_uploaded_featured_pool_list():
     return [
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a multinational corporation',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a migration',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a letter',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a death',
