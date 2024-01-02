@@ -5,7 +5,6 @@
 - {internal_region_name: 'Kambodża', website_main_title_part: 'ពររជណចករកមពជ (Cambodia, Kambodża)', identifier: {'ISO3166-1': 'KH'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Laos', website_main_title_part: 'ປະເທດລາວ (Laos)', identifier: {'ISO3166-1': 'LA'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Wietnam', website_main_title_part: 'Việt Nam (Vietnam, Wietnam)', identifier: {'ISO3166-1': 'VN'}, requested_by: '??????????????????', priority_multiplier: 1}
-- {internal_region_name: 'Dania', website_main_title_part: 'Danmark (Denmark, Dania)', identifier: {'ISO3166-1': 'DK'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Mjanma', website_main_title_part: 'မနမ (Myanmar, Mjanma)', identifier: {'ISO3166-1': 'MM'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Belgia', website_main_title_part: 'België | Belgique | Belgien (Belgium, Belgia)', identifier: {'ISO3166-1': 'BE'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Szwecja', website_main_title_part: 'Sverige (Sweden, Szwecja)', identifier: {'ISO3166-1': 'SE'}, requested_by: '??????????????????', priority_multiplier: 1}
