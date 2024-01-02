@@ -3,3 +3,4 @@ xml_stream
 osm_bot_abstraction_layer>=0.0.17
 wikibrain
 maproulette
+pyyaml
