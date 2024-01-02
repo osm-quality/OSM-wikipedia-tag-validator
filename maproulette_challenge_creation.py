@@ -1316,5 +1316,5 @@ def get_reports_with_specific_error_id_in_specific_area(cursor, error_id, intern
         returned.append(validator_complaint)
     return returned
 
-
-main()
+if __name__ == '__main__':
+    main()
