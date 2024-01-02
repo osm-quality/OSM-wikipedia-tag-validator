@@ -62,7 +62,8 @@ Code is GNU GPLv3 licensed.
 ## Dependencies
 * Python 3.5+
 * packages published on pypi, specified in `requirements.txt`
-** This includes https://github.com/matkoniecz/wikibrain#installation that sadly has unfortunate not standard way of installing it
+* * This includes https://github.com/matkoniecz/wikibrain#installation that sadly has unfortunate not standard way of installing it
+
 # Configuration
 
 ## Regions
