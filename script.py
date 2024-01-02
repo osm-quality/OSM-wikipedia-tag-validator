@@ -144,7 +144,7 @@ def update_validator_database_and_reports():
                 continue
         process_given_area(cursor, entry)
         connection.commit()
-        generate_webpage_with_error_output.write_index_and_merged_entries(cursor) # update after each run
+        #generate_webpage_with_error_output.write_index_and_merged_entries(cursor) # update after each run
     connection.close()
     commit_and_publish_changes_in_report_directory() # note that it is called not only here! But also at start of the function
 
