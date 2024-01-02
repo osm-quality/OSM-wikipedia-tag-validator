@@ -26,6 +26,7 @@
 # 10 grudnia Fixed (7074/13386) - 6312 remaining
 # 11 grudnia Fixed (7177/13373) - 6196 remaining
 # 22 grudnia Fixed (7749/13370) - 5621 remaining
+# 3 grudnia Fixed (8011/13353) - 5342 remaining
 
 
 # https://github.com/osmlab/maproulette-python-client
