@@ -529,6 +529,7 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a type of sport")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a migration")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a letter")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a ceremony")
     return returned
 
 def for_tests():
@@ -544,7 +545,6 @@ def for_tests():
 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a burial")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a ceremony")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
