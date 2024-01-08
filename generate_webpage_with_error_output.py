@@ -547,7 +547,6 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a burial")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
     returned += [
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
