@@ -329,7 +329,6 @@ def obvious_fixes():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for manufacturer prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for tank:model prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for network:2 prefixed tags',
-        'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
     ]
 
 def for_review():
@@ -424,7 +423,6 @@ def for_review():
 
         'secondary wikidata tag links to 404',
 
-        'malformed wikipedia tag - for brand prefixed tags',
         'malformed wikipedia tag - for operator prefixed tags',
         'malformed wikipedia tag - for subject prefixed tags',
         'malformed wikipedia tag - for network prefixed tags',
@@ -443,7 +441,6 @@ def for_review():
         'malformed wikipedia tag - for model prefixed tags',
         'malformed wikipedia tag - for manufacturer prefixed tags',
         'malformed wikipedia tag - for royal_cypher prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for network prefixed tags',
@@ -462,7 +459,6 @@ def for_review():
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for model prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for manufacturer prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for royal_cypher prefixed tags',
-        'wikipedia wikidata mismatch - for brand prefixed tags',
         'wikipedia wikidata mismatch - for operator prefixed tags',
         'wikipedia wikidata mismatch - for subject prefixed tags',
         'wikipedia wikidata mismatch - for network prefixed tags',
@@ -529,6 +525,7 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a type of sport")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a migration")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a letter")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a ceremony")
     return returned
 
 def for_tests():
@@ -546,7 +543,6 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a burial")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an award")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
     returned += [
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
@@ -658,6 +654,12 @@ def ignored():
 
         # finds wikidata entries without any "is instance"
         "taxon secondary tag links something that is not taxon according to wikidata (checking regular ontology)",
+
+        # brand:wikipedia is on life support, was promoted by NSI and is not, and noone else really used it
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for brand prefixed tags',
+        'malformed wikipedia tag - for brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
+        'wikipedia wikidata mismatch - for brand prefixed tags',
     ]
     for from_tags in [
         "wikipedia and wikidata",
