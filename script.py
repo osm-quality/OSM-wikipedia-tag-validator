@@ -147,9 +147,8 @@ def update_validator_database_and_reports():
         process_given_area(cursor, entry)
         connection.commit()
         #generate_webpage_with_error_output.write_index_and_merged_entries(cursor) # update after each run
+    commit_and_publish_changes_in_report_directory(cursor) # note that it is called not only here! But also at start of the function
     connection.close()
-    commit_and_publish_changes_in_report_directory() # note that it is called not only here! But also at start of the function
-
 def is_night():
     return datetime.datetime.now().hour >= 20 or datetime.datetime.now().hour <= 4
 
