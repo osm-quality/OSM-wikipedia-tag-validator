@@ -2,6 +2,9 @@ import wikimedia_connection.wikimedia_connection as wikimedia_connection
 import osm_handling_config.global_config as osm_handling_config
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
 wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
 
 forced_refresh = True

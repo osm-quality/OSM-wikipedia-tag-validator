@@ -15,3 +15,4 @@ generated_query_for_blacklisted_entries.generated_query
 cache_location.config
 password.secret
 secret.json
+.env
