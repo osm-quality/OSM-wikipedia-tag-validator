@@ -565,6 +565,11 @@ def for_tests():
 
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM, with tagging referring to defunct one",
 
+        # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
+        # also, I slowly create notes for Sprint cases
+        # reactivate only of wikidata issues will be processed or when I run out of notes to create (hahaha)
+        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
+
         "malformed secondary wikidata tag - for official_name prefixed tags", # TODO what it even means?
 
         # almost certainly should be moved to man_made=bridge area
@@ -621,13 +626,7 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for branch prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for branch prefixed tags',
 
-
-        # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
-        # also, I slowly create notes for Sprint cases
-        # reactivate only of wikidata issues will be processed or when I run out of notes to create (hahaha)
-        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
-
-        # see
+        # see notes, in 2025 (checked and in 2024 were not processed)
         # https://www.openstreetmap.org/note/3965037
         # https://www.openstreetmap.org/note/3965039
         # https://www.openstreetmap.org/note/3965033
