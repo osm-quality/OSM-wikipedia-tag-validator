@@ -11,7 +11,7 @@ import obtain_from_overpass
 import database
 
 def skip_test_cases_before_timestamp():
-    return 1702197828
+    return 1705821639
 
 def generate_website_file_for_given_area(cursor, entry):
     reports = reports_for_given_area(cursor, entry['internal_region_name'])
@@ -423,24 +423,24 @@ def for_review():
 
         'secondary wikidata tag links to 404',
 
-        'malformed wikipedia tag - for operator prefixed tags',
-        'malformed wikipedia tag - for subject prefixed tags',
-        'malformed wikipedia tag - for network prefixed tags',
-        'malformed wikipedia tag - for taxon prefixed tags',
-        'malformed wikipedia tag - for genus prefixed tags',
-        'malformed wikipedia tag - for species prefixed tags',
-        'malformed wikipedia tag - for parish prefixed tags',
-        'malformed wikipedia tag - for flag prefixed tags',
-        'malformed wikipedia tag - for buried prefixed tags',
-        'malformed wikipedia tag - for artist prefixed tags',
-        'malformed wikipedia tag - for name prefixed tags',
-        'malformed wikipedia tag - for name:etymology prefixed tags',
-        'malformed wikipedia tag - for old_name:etymology prefixed tags',
-        'malformed wikipedia tag - for architect prefixed tags',
-        'malformed wikipedia tag - for on_the_list prefixed tags',
-        'malformed wikipedia tag - for model prefixed tags',
-        'malformed wikipedia tag - for manufacturer prefixed tags',
-        'malformed wikipedia tag - for royal_cypher prefixed tags',
+        'malformed secondary wikipedia tag - for operator prefixed tags',
+        'malformed secondary wikipedia tag - for subject prefixed tags',
+        'malformed secondary wikipedia tag - for network prefixed tags',
+        'malformed secondary wikipedia tag - for taxon prefixed tags',
+        'malformed secondary wikipedia tag - for genus prefixed tags',
+        'malformed secondary wikipedia tag - for species prefixed tags',
+        'malformed secondary wikipedia tag - for parish prefixed tags',
+        'malformed secondary wikipedia tag - for flag prefixed tags',
+        'malformed secondary wikipedia tag - for buried prefixed tags',
+        'malformed secondary wikipedia tag - for artist prefixed tags',
+        'malformed secondary wikipedia tag - for name prefixed tags',
+        'malformed secondary wikipedia tag - for name:etymology prefixed tags',
+        'malformed secondary wikipedia tag - for old_name:etymology prefixed tags',
+        'malformed secondary wikipedia tag - for architect prefixed tags',
+        'malformed secondary wikipedia tag - for on_the_list prefixed tags',
+        'malformed secondary wikipedia tag - for model prefixed tags',
+        'malformed secondary wikipedia tag - for manufacturer prefixed tags',
+        'malformed secondary wikipedia tag - for royal_cypher prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for operator prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for network prefixed tags',
@@ -565,6 +565,11 @@ def for_tests():
 
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM, with tagging referring to defunct one",
 
+        # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
+        # also, I slowly create notes for Sprint cases
+        # reactivate only of wikidata issues will be processed or when I run out of notes to create (hahaha)
+        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
+
         "malformed secondary wikidata tag - for official_name prefixed tags", # TODO what it even means?
 
         # almost certainly should be moved to man_made=bridge area
@@ -580,6 +585,13 @@ def for_tests():
 
 def ignored():
     returned = [
+        # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
+        'malformed wikipedia tag - for related prefixed tags',
+        'wikipedia wikidata mismatch - for related prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for related prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for related prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for related prefixed tags',
+
         # TODO - better report is possible here, no need to process what we have now
         'wikipedia wikidata mismatch, wikipedia links to section - high risk of false positive', # see https://www.openstreetmap.org/way/26848407 - detect where wikipedia can be modified to link redirect
 
@@ -587,6 +599,27 @@ def ignored():
         #'malformed secondary wikidata tag - for source:species prefixed tags',
         #"malformed secondary wikidata tag - for image:license prefixed tags",
         #'malformed secondary wikidata tag',
+        # should be not generated anymore
+        "malformed secondary wikidata tag for name:etymology:wikidata:missing tag",
+        "malformed secondary wikidata tag for wikidata:note tag",
+        'malformed wikipedia tag - for operator prefixed tags',
+        'malformed wikipedia tag - for subject prefixed tags',
+        'malformed wikipedia tag - for network prefixed tags',
+        'malformed wikipedia tag - for taxon prefixed tags',
+        'malformed wikipedia tag - for genus prefixed tags',
+        'malformed wikipedia tag - for species prefixed tags',
+        'malformed wikipedia tag - for parish prefixed tags',
+        'malformed wikipedia tag - for flag prefixed tags',
+        'malformed wikipedia tag - for buried prefixed tags',
+        'malformed wikipedia tag - for artist prefixed tags',
+        'malformed wikipedia tag - for name prefixed tags',
+        'malformed wikipedia tag - for name:etymology prefixed tags',
+        'malformed wikipedia tag - for old_name:etymology prefixed tags',
+        'malformed wikipedia tag - for architect prefixed tags',
+        'malformed wikipedia tag - for on_the_list prefixed tags',
+        'malformed wikipedia tag - for model prefixed tags',
+        'malformed wikipedia tag - for manufacturer prefixed tags',
+        'malformed wikipedia tag - for royal_cypher prefixed tags',
 
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
         # related:wikipedia = de:Liste der Baudenkmäler in Geilenkirchen
@@ -594,13 +627,6 @@ def ignored():
         # on_list:wikipedia = ?
 
         # more: https://overpass-turbo.eu/s/1F5t
-
-        # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
-        'malformed wikipedia tag - for related prefixed tags',
-        'wikipedia wikidata mismatch - for related prefixed tags',
-        'wikipedia wikidata mismatch - follow wikipedia redirect - for related prefixed tags',
-        'wikipedia wikidata mismatch - follow wikidata redirect - for related prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for related prefixed tags',
 
         # what is this? Investigate after 15:00
         #TODO remove from databse and clear this entries
@@ -616,13 +642,7 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for branch prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for branch prefixed tags',
 
-
-        # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
-        # also, I slowly create notes for Sprint cases
-        # reactivate only of wikidata issues will be processed or when I run out of notes to create (hahaha)
-        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
-
-        # see
+        # see notes, in 2025 (checked and in 2024 were not processed)
         # https://www.openstreetmap.org/note/3965037
         # https://www.openstreetmap.org/note/3965039
         # https://www.openstreetmap.org/note/3965033
@@ -676,7 +696,7 @@ def ignored():
         # https://wiki.openstreetmap.org/wiki/Tag:military=nuclear_explosion_site
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an evaluation")
 
-        # mostly wikidata bugs were found - is it really priority? Enabling MR, bot edits for wikidata redirects
+        # mostly wikidata bugs were found - is it really priority? Mayvbe focus on enabling MR, bot edits for wikidata redirects
         # and wider: OSM bot edits
         # and wider: OSMF activities
         # and wider: see my TODO list....
@@ -691,6 +711,7 @@ def ignored():
         # this also is broken, why 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an education (transmission of knowledge and skills)") # see test_education_institution_as_valid_primary_link in wikidata structure tests
 
         # this is in large part covered by
         # https://www.wikidata.org/wiki/Property:P31#P31$e62deacd-4481-ff90-b25d-844ec7666263 constraint

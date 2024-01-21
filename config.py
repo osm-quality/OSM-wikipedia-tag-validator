@@ -17,19 +17,28 @@ def parse_yaml_file(filename: string):
 
 
 def downloaded_osm_data_location():
-    return parse_yaml_file("cache_config.yaml")["downloaded_osm_file_storage_location"]
+    return os.environ.get('DOWNLOAD_OSM_FILE_STORAGE_LOCATION',
+                          '/media/mateusz/OSM_cache/cache-for-wikipedia-validator')
+
 
 
 def database_filepath():
-    return parse_yaml_file("cache_config.yaml")["database_filepath"]
+    return os.environ.get('DATABASE_FILE_PATH', '/media/mateusz/OSM_cache/cache-for-wikipedia-validator/database.db')
+
 
 
 def get_wikimedia_connection_cache_location():
-    return parse_yaml_file("cache_config.yaml")['wikimedia_connection_library_cache']
+    return os.environ.get('WIKIMEDIA_CONNECTION_LIBRARY_CACHE', '/media/mateusz/OSM_cache')
+
 
 
 def user_agent():
-  "wikipedia/wikidata tag validator, operated by " + pwd.getpwuid(os.getuid()).pw_name + " username, written by Mateusz Konieczny (matkoniecz@gmail.com)"
+    ("wikipedia/wikidata tag validator, operated by " +
+     pwd.getpwuid(os.getuid()).pw_name + " username, written by Mateusz Konieczny (matkoniecz@gmail.com)")
+
 
 def get_report_directory():
-    return parse_yaml_file("cache_config.yaml")['validator_report_repository_location']
+    return os.environ.get(
+        'VALIDATOR_REPORT_REPOSITORY_LOCATION',
+        '/media/mateusz/OSM_cache/OSM-wikipedia-tag-validator-reports'
+    )

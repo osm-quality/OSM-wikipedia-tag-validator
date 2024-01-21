@@ -1,7 +1,7 @@
 import string
 import array
 from sqlite3 import Cursor
-
+from dotenv import load_dotenv
 from wikibrain import wikimedia_link_issue_reporter
 from wikibrain import wikipedia_knowledge
 import wikimedia_connection.wikimedia_connection as wikimedia_connection
@@ -20,6 +20,7 @@ import datetime
 
 
 def main():
+    load_dotenv()
     folder = "/".join(config.database_filepath().split("/")[0:-1])
     if not os.path.isdir(folder):
         os.mkdir(folder)

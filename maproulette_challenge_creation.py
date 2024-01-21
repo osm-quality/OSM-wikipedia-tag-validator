@@ -66,6 +66,7 @@ STATUS_DISABLED = 9 # TODO missing in docs
 def greenlit_groups_not_to_be_featured_list():
     return [
         # upload, add to featured
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a ceremony',
 
         # upload but not featured group
     ]
@@ -85,7 +86,7 @@ def for_later_list():
         'malformed secondary wikidata tag - for operator prefixed tags',
         'malformed secondary wikidata tag - for parish prefixed tags',
         'malformed secondary wikidata tag - for network prefixed tags',
-        'malformed wikipedia tag - for network prefixed tags',
+        'malformed secondary wikipedia tag - for network prefixed tags',
     ]
     """
 def model_for_XXXXXX():
@@ -151,6 +152,8 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a transport accident',
         'should use a secondary wikipedia tag - linking from wikidata tag to a transport accident',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a transport accident',
+
+        'wikipedia wikidata mismatch - for brand prefixed tags', # being removed
     ]
     return for_later
 
@@ -224,7 +227,6 @@ def already_uploaded_featured_pool_list():
 
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a historical event',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an overview article',
-        'wikipedia wikidata mismatch - for brand prefixed tags',
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
 
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
@@ -276,9 +278,9 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking from wikidata tag to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an aspect in a geographic region',
-        'malformed wikipedia tag - for architect prefixed tags',
-        'malformed wikipedia tag - for operator prefixed tags',
-        'malformed wikipedia tag - for brand prefixed tags',
+        'malformed secondary wikipedia tag - for architect prefixed tags',
+        'malformed secondary wikipedia tag - for operator prefixed tags',
+        'malformed secondary wikipedia tag - for brand prefixed tags',
         'should use a secondary wikipedia tag - linking from wikidata tag to a conflict',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a bicycle sharing system',
         'should use a secondary wikipedia tag - linking from wikipedia tag to a bicycle sharing system',
@@ -706,15 +708,15 @@ def get_challenge_text_based_on_error_id(error_id):
         return model_for_linking_disambiguation_page()
     if error_id == "wikipedia/wikidata type tag that is incorrect according to not:* tag":
         return model_for_violated_not_prefix_restrictions()
-    if error_id == 'malformed wikipedia tag - for brand prefixed tags':
+    if error_id == 'malformed secondary wikipedia tag - for brand prefixed tags':
         return model_for_malformed_wikipedia_tags("brand:wikipedia", "en:House (brand)", "en", "House (brand)")
-    if error_id == 'malformed wikipedia tag - for operator prefixed tags':
+    if error_id == 'malformed secondary wikipedia tag - for operator prefixed tags':
         return model_for_malformed_wikipedia_tags("operator:wikipedia", "en:Kraków", "en", "London")
-    if error_id == 'malformed wikipedia tag - for architect prefixed tags':
+    if error_id == 'malformed secondary wikipedia tag - for architect prefixed tags':
         return model_for_malformed_wikipedia_tags("architect:wikipedia", "en:Jan Sas Zubrzycki", "en", "Filippo Brunelleschi")
     if error_id == "malformed wikipedia tag":
         return model_for_malformed_wikipedia_tags("wikipedia", "en:Kraków", "en", "London")
-    if "malformed wikipedia tag - for" in error_id:
+    if "malformed secondary wikipedia tag - for" in error_id:
         raise Exception("note that some custom data is expected for malformed secondary tags, see model_for_malformed_wikipedia_tags")
     if error_id == 'information board with wikipedia tag, not subject:wikipedia':
         key = "wikipedia"

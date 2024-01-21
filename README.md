@@ -66,6 +66,9 @@ Code is GNU GPLv3 licensed.
 
 # Configuration
 
+## Environment variables
+Before running the scripts you should create a `.env` file (this can be copied from the `.env.example`)
+
 ## Regions
 
 `regions_processed.yaml`
