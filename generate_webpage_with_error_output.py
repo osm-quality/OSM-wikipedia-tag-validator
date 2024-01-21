@@ -587,6 +587,9 @@ def ignored():
         #'malformed secondary wikidata tag - for source:species prefixed tags',
         #"malformed secondary wikidata tag - for image:license prefixed tags",
         #'malformed secondary wikidata tag',
+        # should be not generated anymore
+        "malformed secondary wikidata tag for name:etymology:wikidata:missing tag",
+        "malformed secondary wikidata tag for wikidata:note tag",
 
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
         # related:wikipedia = de:Liste der Baudenkmäler in Geilenkirchen
