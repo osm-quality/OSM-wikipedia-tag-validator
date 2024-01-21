@@ -676,7 +676,7 @@ def ignored():
         # https://wiki.openstreetmap.org/wiki/Tag:military=nuclear_explosion_site
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an evaluation")
 
-        # mostly wikidata bugs were found - is it really priority? Enabling MR, bot edits for wikidata redirects
+        # mostly wikidata bugs were found - is it really priority? Mayvbe focus on enabling MR, bot edits for wikidata redirects
         # and wider: OSM bot edits
         # and wider: OSMF activities
         # and wider: see my TODO list....
