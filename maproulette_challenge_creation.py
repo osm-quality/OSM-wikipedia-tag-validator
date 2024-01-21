@@ -152,6 +152,8 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a transport accident',
         'should use a secondary wikipedia tag - linking from wikidata tag to a transport accident',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a transport accident',
+
+        'wikipedia wikidata mismatch - for brand prefixed tags', # being removed
     ]
     return for_later
 
@@ -225,7 +227,6 @@ def already_uploaded_featured_pool_list():
 
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a historical event',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an overview article',
-        'wikipedia wikidata mismatch - for brand prefixed tags',
         "wikipedia/wikidata type tag that is incorrect according to not:* tag",
 
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for subject prefixed tags',
