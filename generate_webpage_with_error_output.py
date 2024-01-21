@@ -575,11 +575,20 @@ def for_tests():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for bridge prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for bridge prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for bridge prefixed tags',
+
+        "malformed secondary wikipedia tag - for operator prefixed tags",
     ]
     return returned
 
 def ignored():
     returned = [
+        # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
+        'malformed wikipedia tag - for related prefixed tags',
+        'wikipedia wikidata mismatch - for related prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for related prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for related prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for related prefixed tags',
+
         # TODO - better report is possible here, no need to process what we have now
         'wikipedia wikidata mismatch, wikipedia links to section - high risk of false positive', # see https://www.openstreetmap.org/way/26848407 - detect where wikipedia can be modified to link redirect
 
@@ -597,13 +606,6 @@ def ignored():
         # on_list:wikipedia = ?
 
         # more: https://overpass-turbo.eu/s/1F5t
-
-        # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
-        'malformed wikipedia tag - for related prefixed tags',
-        'wikipedia wikidata mismatch - for related prefixed tags',
-        'wikipedia wikidata mismatch - follow wikipedia redirect - for related prefixed tags',
-        'wikipedia wikidata mismatch - follow wikidata redirect - for related prefixed tags',
-        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for related prefixed tags',
 
         # what is this? Investigate after 15:00
         #TODO remove from databse and clear this entries
