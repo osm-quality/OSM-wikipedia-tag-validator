@@ -696,6 +696,7 @@ def ignored():
         # this also is broken, why 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an education (transmission of knowledge and skills)") # see test_education_institution_as_valid_primary_link in wikidata structure tests
 
         # this is in large part covered by
         # https://www.wikidata.org/wiki/Property:P31#P31$e62deacd-4481-ff90-b25d-844ec7666263 constraint
