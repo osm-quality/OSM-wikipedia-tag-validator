@@ -565,11 +565,6 @@ def for_tests():
 
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM, with tagging referring to defunct one",
 
-        # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
-        # also, I slowly create notes for Sprint cases
-        # reactivate only of wikidata issues will be processed or when I run out of notes to create (hahaha)
-        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
-
         "malformed secondary wikidata tag - for official_name prefixed tags", # TODO what it even means?
 
         # almost certainly should be moved to man_made=bridge area
@@ -591,6 +586,17 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for related prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for related prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for related prefixed tags',
+
+        # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
+        # also, I slowly create notes for Sprint cases
+        # before enabling it - create notes for following brands
+        # https://www.openstreetmap.org/note/4086589
+        # https://www.openstreetmap.org/note/4086595
+        # https://www.openstreetmap.org/note/4086597
+        # https://www.openstreetmap.org/note/4086599
+        # https://www.openstreetmap.org/note/4086604
+        # reactivate only of wikidata issues will be processed or when I run out of notes to create (hahaha)
+        "no longer existing brand (according to Wikidata) - and marked as active shop in OSM",
 
         # TODO - better report is possible here, no need to process what we have now
         'wikipedia wikidata mismatch, wikipedia links to section - high risk of false positive', # see https://www.openstreetmap.org/way/26848407 - detect where wikipedia can be modified to link redirect
