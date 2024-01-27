@@ -1,5 +1,4 @@
 import string
-
 import yaml
 import pwd
 import os
@@ -22,12 +21,15 @@ def downloaded_osm_data_location():
                           '/media/mateusz/OSM_cache/cache-for-wikipedia-validator')
 
 
+
 def database_filepath():
     return os.environ.get('DATABASE_FILE_PATH', '/media/mateusz/OSM_cache/cache-for-wikipedia-validator/database.db')
 
 
+
 def get_wikimedia_connection_cache_location():
     return os.environ.get('WIKIMEDIA_CONNECTION_LIBRARY_CACHE', '/media/mateusz/OSM_cache')
+
 
 
 def user_agent():
