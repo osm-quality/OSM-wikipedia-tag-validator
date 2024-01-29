@@ -374,7 +374,7 @@ def main():
     ensure_correct_number_of_featured_groups(challenge_api, project_id)
     return
 
-    for error_id in greenlit_groups_not_to_be_featured:
+    for error_id in greenlit_groups_not_to_be_featured_list():
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
 
     pool = already_uploaded_featured_pool_list() + already_uploaded_not_to_be_featured_list()
