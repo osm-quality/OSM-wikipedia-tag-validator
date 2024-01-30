@@ -27,7 +27,8 @@
 # 11 grudnia Fixed (7177/13373) - 6196 remaining
 # 22 grudnia Fixed (7749/13370) - 5621 remaining
 # 3 grudnia Fixed (8011/13353) - 5342 remaining
-
+# 29 stycznia Fixed (7343/11522) - 4179 remaining
+# 29 stycznia Fixed (7263/14076) - 6813 remaining
 
 # https://github.com/osmlab/maproulette-python-client
 import maproulette
