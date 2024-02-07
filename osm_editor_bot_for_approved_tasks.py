@@ -287,18 +287,22 @@ def is_location_clearly_inside_territory(lat, lon, target_country):
         return True
     elif target_country == "usa":
         # http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273
-        tested = is_inside_bboxfinder_link("http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273", lon, lat)
-        if lon >= -122.921906:
-            if lon <= -95.405273:
-                if lat >= 32.990236:
-                    if lat <= 48.995537:
-                        if tested != True:
-                            print(tested, lat, lon, is_inside_bboxfinder_link("http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273", lon, lat))
-                            raise "wat"
-                        return True
-        if tested == True:
-            print(tested, lat, lon, is_inside_bboxfinder_link("http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273", lon, lat))
-            raise "wat"
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273", lon, lat):
+            return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#30.145127,-103.974609,41.244772,-74.443359", lon, lat):
+            return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#39.249271,-80.606689,42.220382,-68.862305", lon, lat):
+            return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#39.249271,-80.606689,42.220382,-68.862305", lon, lat):
+            return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#40.963308,-75.432129,44.637391,-67.170410", lon, lat):
+            return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#42.179688,-69.785156,46.815099,-67.917480", lon, lat):
+            return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#33.394759,-116.279297,46.346928,-84.287109", lon, lat):
+            return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#24.666986,-96.987305,41.376809,-79.606934", lon, lat):
+            return True
         print("is_location_clearly_inside_territory should be smarter for USA")
         return False
     else:
