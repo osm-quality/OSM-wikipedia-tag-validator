@@ -565,8 +565,6 @@ def for_tests():
 
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM, with tagging referring to defunct one",
 
-        "malformed secondary wikidata tag - for official_name prefixed tags", # TODO what it even means?
-
         # almost certainly should be moved to man_made=bridge area
         # https://taginfo.openstreetmap.org/keys/bridge%3Awikipedia#overview
         'malformed secondary wikipedia tag - for bridge prefixed tags',
@@ -580,6 +578,11 @@ def for_tests():
 
 def ignored():
     returned = [
+        # do we have test to skip these?
+        # see https://taginfo.openstreetmap.org/keys/fixme%3Awikipedia#overview
+        # or maybe list these as "something is wrong with wikipedia tag - fixme:wikipedia is present" ?
+        "malformed secondary wikipedia tag - for fixme prefixed tags",
+
         # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
         'malformed secondary wikipedia tag - for related prefixed tags',
         'wikipedia wikidata mismatch - for related prefixed tags',
@@ -652,6 +655,8 @@ def ignored():
         'malformed wikipedia tag - for razed prefixed tags',
         'malformed wikipedia tag - for removed prefixed tags',
         'malformed wikipedia tag - for supervisor_district prefixed tags',
+
+        "malformed secondary wikidata tag - for official_name prefixed tags", # TODO what it even means? See https://www.openstreetmap.org/changeset/141333219
 
         # related:wikipedia should not exist in the first place, maybe it should be reported as a problem on its own?
         # related:wikipedia = de:Liste der Baudenkmäler in Geilenkirchen
