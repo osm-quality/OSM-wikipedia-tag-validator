@@ -578,11 +578,6 @@ def for_tests():
 
 def ignored():
     returned = [
-        # do we have test to skip these?
-        # see https://taginfo.openstreetmap.org/keys/fixme%3Awikipedia#overview
-        # or maybe list these as "something is wrong with wikipedia tag - fixme:wikipedia is present" ?
-        "malformed secondary wikipedia tag - for fixme prefixed tags",
-
         # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
         'malformed secondary wikipedia tag - for related prefixed tags',
         'wikipedia wikidata mismatch - for related prefixed tags',
@@ -655,6 +650,8 @@ def ignored():
         'malformed wikipedia tag - for razed prefixed tags',
         'malformed wikipedia tag - for removed prefixed tags',
         'malformed wikipedia tag - for supervisor_district prefixed tags',
+        # also got better handling recently
+        "malformed secondary wikipedia tag - for fixme prefixed tags",
 
         "malformed secondary wikidata tag - for official_name prefixed tags", # TODO what it even means? See https://www.openstreetmap.org/changeset/141333219
 
@@ -731,6 +728,7 @@ def ignored():
         # https://www.openstreetmap.org/node/6108007765
         # https://www.openstreetmap.org/note/3976909
         # https://wiki.openstreetmap.org/wiki/Tag:military=nuclear_explosion_site
+        # see https://wiki.openstreetmap.org/w/index.php?title=Tag:military%3Dnuclear_explosion_site&diff=2662934&oldid=2617549
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an evaluation")
 
         # mostly wikidata bugs were found - is it really priority? Mayvbe focus on enabling MR, bot edits for wikidata redirects
