@@ -101,7 +101,7 @@
 # Skipping unexpected language cases: oppressing Kurds alone (including targeting language) makes it tricky and better to just hide this cases
 #- {internal_region_name: Turkey, website_main_title_part: 'Türkiye (Turkey, Turcja)', identifier: {'ISO3166-1': 'TR'}, language_code: tr, requested_by: 'was requested by now inactive people',  ignored_problems: ['wikipedia tag unexpected language', "wikipedia from wikidata tag, unexpected language"]}
 
-- {internal_region_name: Litwa, website_main_title_part: 'Lietuva (Lithuania - Litwa)', identifier: {'ISO3166-1': 'LT'}, requested_by: 'https://www.openstreetmap.org/user/Aurimas%20Fi%C5%A1eras in https://www.openstreetmap.org/messages/1060679', language_code: lt, priority_multiplier: 1.5}
+- {internal_region_name: Litwa, website_main_title_part: 'Lietuva (Lithuania - Litwa)', identifier: {'ISO3166-1': 'LT'}, requested_by: 'https://www.openstreetmap.org/user/Aurimas%20Fi%C5%A1eras in https://www.openstreetmap.org/messages/1060679', language_code: lt, priority_multiplier: 2}
 
 - {internal_region_name: Białoruś, website_main_title_part: 'Беларусь (Belarus - Białoruś)', identifier: {'ISO3166-1': 'BY'}, requested_by: 'https://t.me/byosm/63383', language_code: be, priority_multiplier: 1.5}
 # possible split if it turns out to be not really used (and number of issues reported there is massive!)
