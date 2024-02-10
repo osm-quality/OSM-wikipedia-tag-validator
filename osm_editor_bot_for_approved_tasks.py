@@ -507,6 +507,13 @@ def run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, inter
         connection.commit()
 
 def main():
+    with open('secret.json') as f:
+        data = json.load(f)
+        username = data['bot_account']['username']
+        if username != "Mateusz Konieczny - bot account":
+            print("this bot is not approved")
+            return
+
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
