@@ -527,7 +527,8 @@ def main():
             area_code = "usa"
             automated = osm_bot_abstraction_layer.fully_automated_description()
             manual = osm_bot_abstraction_layer.manually_reviewed_description()
-            run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automated)
+            #see https://community.openstreetmap.org/t/bot-edit-proposal-fixing-wikipedia-tags-pointing-at-redirects-in-usa-where-it-can-be-done-reliably/101417/4
+            #run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_follow_wikipedia_redirect_where_target_matches_wikidata, automated)
             run_bot_edit_if_not_run_and_record_that_it_was_run(cursor, connection, internal_region_name, area_code, handle_wikidata_redirect, automated)
             #if datetime.datetime.now() > datetime.datetime(2023, 12, 14):
             #    if datetime.datetime.now().hour >= 19:
