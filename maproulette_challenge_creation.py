@@ -175,7 +175,6 @@ def already_uploaded_featured_pool_list():
             "a profession",
             "a restaurant chain",
             "a chain store",
-            "an object that exists outside physical reality",
             "a type of sport",
             "a legal action",
             "a train category",
@@ -194,6 +193,7 @@ def already_uploaded_featured_pool_list():
             "a human",
             "a an overview article",
             "a historical event",
+            "an object that exists outside physical reality", # many false positives
         ]:
             returned.append('should use a secondary wikipedia tag - linking from ' + source + ' to ' + problem)
     returned += [
