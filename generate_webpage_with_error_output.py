@@ -515,6 +515,7 @@ def for_review():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for not prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for not prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for not prefixed tags',
+        "something is wrong with wikipedia tag - fixme:wikipedia is present",
     ]
     for from_tags in [
         "wikipedia and wikidata",
@@ -535,6 +536,8 @@ def for_tests():
         "wikipedia",
         "wikidata",
     ]:
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a service")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human language")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a television station")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a temporary exhibition")
@@ -652,6 +655,10 @@ def ignored():
         'malformed wikipedia tag - for supervisor_district prefixed tags',
         # also got better handling recently
         "malformed secondary wikipedia tag - for fixme prefixed tags",
+        "malformed secondary wikidata tag for destination:ref:wikidata:lanes:forward tag",
+        "malformed secondary wikidata tag for destination:ref:wikidata:lanes:backward tag",
+        "malformed secondary wikipedia tag - for note prefixed tags",
+        "malformed secondary wikipedia tag - for source prefixed tags",
 
         "malformed secondary wikidata tag - for official_name prefixed tags", # TODO what it even means? See https://www.openstreetmap.org/changeset/141333219
 
