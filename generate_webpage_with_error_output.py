@@ -626,8 +626,6 @@ def ignored():
         'wikipedia wikidata mismatch, wikipedia links to section - high risk of false positive', # see https://www.openstreetmap.org/way/26848407 - detect where wikipedia can be modified to link redirect
 
         # should be gone now
-        #'malformed secondary wikidata tag - for source:species prefixed tags',
-        #"malformed secondary wikidata tag - for image:license prefixed tags",
         #'malformed secondary wikidata tag',
         # should be not generated anymore
         "malformed secondary wikidata tag for name:etymology:wikidata:missing tag",
