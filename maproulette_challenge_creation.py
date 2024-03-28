@@ -181,7 +181,6 @@ def already_uploaded_featured_pool_list():
             "a train category",
             "a cuisine",
             "a robbery",
-            "a mental process",
             "a shooting",
             "a sport",
             "a road type",
@@ -194,6 +193,7 @@ def already_uploaded_featured_pool_list():
             "a human",
             "a an overview article",
             "a historical event",
+            "a mental process", # wikidata being silly again
             "an object that exists outside physical reality", # many false positives
         ]:
             returned.append('should use a secondary wikipedia tag - linking from ' + source + ' to ' + problem)
