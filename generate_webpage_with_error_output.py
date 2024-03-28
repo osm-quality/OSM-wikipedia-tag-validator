@@ -551,6 +551,20 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
+
+        # mostly wikidata bugs were found - low priority
+        # OSM bot edits should be higher priority
+        # and wider: OSMF activities
+        # and wider: see my TODO list....
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an intentional human activity")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an education (transmission of knowledge and skills)") # see test_education_institution_as_valid_primary_link in wikidata structure tests
+
     returned += [
         # TODO detect when directly linked entry has https://www.wikidata.org/wiki/Property:P1282 set ("OpenStreetMap tag or key")
         # TODO take down https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology before it lays eggs - initial attempts at https://www.openstreetmap.org/changeset/63434500 https://www.openstreetmap.org/changeset/131746422
@@ -591,6 +605,11 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for related prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for related prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for related prefixed tags',
+
+        # following one in addition breaks my debugging tool, see testcases for Q28548 Q2279163 in wikibrain, fix that before enabling reports
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
+        # this also is broken, why 
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
 
         # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
         # also, I slowly create notes for Sprint cases
@@ -742,22 +761,6 @@ def ignored():
         # see https://wiki.openstreetmap.org/w/index.php?title=Tag:military%3Dnuclear_explosion_site&diff=2662934&oldid=2617549
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an evaluation")
 
-        # mostly wikidata bugs were found - is it really priority? Mayvbe focus on enabling MR, bot edits for wikidata redirects
-        # and wider: OSM bot edits
-        # and wider: OSMF activities
-        # and wider: see my TODO list....
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an intentional human activity")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
-        # following one in addition breaks my debugging tool, see testcases for Q28548 Q2279163 in wikibrain, fix that before enabling reports
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
-        # this also is broken, why 
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an education (transmission of knowledge and skills)") # see test_education_institution_as_valid_primary_link in wikidata structure tests
 
         # this is in large part covered by
         # https://www.wikidata.org/wiki/Property:P31#P31$e62deacd-4481-ff90-b25d-844ec7666263 constraint
