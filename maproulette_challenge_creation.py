@@ -438,6 +438,7 @@ def ensure_correct_number_of_featured_groups(challenge_api, project_id):
                 continue
             if active_tasks > 0:
                 set_featured_status_for_challenge_for_given_error_id(challenge_api, project_id, error_id, True)
+                print("marking it as featured")
                 marked_featured += 1
                 total_featured_tasks += active_tasks
             else:
