@@ -606,11 +606,6 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for related prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for related prefixed tags',
 
-        # following one in addition breaks my debugging tool, see testcases for Q28548 Q2279163 in wikibrain, fix that before enabling reports
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
-        # this also is broken, why 
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
-
         # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
         # also, I slowly create notes for Sprint cases
         # before enabling it - create notes for following brands
@@ -748,6 +743,11 @@ def ignored():
         "wikipedia",
         "wikidata",
     ]:
+        # following one in addition breaks my debugging tool, see testcases for Q28548 Q2279163 in wikibrain, fix that before enabling reports
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an economic sector")
+        # this also is broken, why 
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a transport by country or region")
+
         # https://www.openstreetmap.org/node/4621547628
         # is linking FRIPON valid here?
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research")
