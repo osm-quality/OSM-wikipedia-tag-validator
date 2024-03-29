@@ -376,7 +376,6 @@ def main():
 
     print("ensure_correct_number_of_featured_groups")
     ensure_correct_number_of_featured_groups(challenge_api, project_id)
-    return
 
     for error_id in greenlit_groups_not_to_be_featured_list():
         update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
