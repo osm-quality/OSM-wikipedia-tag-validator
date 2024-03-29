@@ -194,6 +194,7 @@ def already_uploaded_featured_pool_list():
             "a human",
             "a an overview article",
             "a historical event",
+            "a ceremony",
             "a mental process", # wikidata being silly again
             "an object that exists outside physical reality", # many false positives
         ]:
