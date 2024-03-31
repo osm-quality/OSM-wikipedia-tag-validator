@@ -353,7 +353,6 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a website")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a given name")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a coat of arms")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an object that exists outside physical reality")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an animal or plant (and not an individual one)")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a vehicle model or class")
@@ -556,6 +555,7 @@ def for_tests():
         # OSM bot edits should be higher priority
         # and wider: OSMF activities
         # and wider: see my TODO list....
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an object that exists outside physical reality")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an event")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a behavior")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human behavior")
