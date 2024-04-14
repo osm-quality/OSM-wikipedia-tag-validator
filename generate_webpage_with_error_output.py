@@ -526,6 +526,9 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a migration")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a letter")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a ceremony")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a certification mark")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a medical specialty")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human language")
     return returned
 
 def for_tests():
@@ -538,9 +541,6 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a service")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an emergency service")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a volunteer")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a medical specialty")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a certification mark")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human language")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a television station")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a general industry")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a temporary exhibition")
