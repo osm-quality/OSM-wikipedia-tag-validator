@@ -198,6 +198,7 @@ def already_uploaded_featured_pool_list():
             "a an overview article",
             "a historical event",
             "a ceremony",
+            "a medical specialty",
             "a mental process", # wikidata being silly again
             "an object that exists outside physical reality", # many false positives
         ]:
@@ -251,6 +252,8 @@ def already_uploaded_not_to_be_featured_list():
             "a postal service",
             "a vehicle model or class",
             "a weapon model or class",
+            "a certification mark",
+            "a human language", # some tricky cases are present
 
             # quite fragile with repeated reveals of bad Wikidata ontology - lets not feature it
             "a fictional entity",
