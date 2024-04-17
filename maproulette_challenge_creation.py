@@ -253,6 +253,7 @@ def already_uploaded_not_to_be_featured_list():
             "an aspect in a geographic region",
             "a certification mark",
             "a type of world view",
+            "an overview article",
             "a human language", # some tricky cases are present
 
             "a mental process", # wikidata being silly again
