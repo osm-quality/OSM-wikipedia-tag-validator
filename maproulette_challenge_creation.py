@@ -240,6 +240,8 @@ def already_uploaded_not_to_be_featured_list():
     returned = []
     for source in ["wikipedia and wikidata tag", "wikipedia tag", "wikidata tag"]:
         for problem in [
+            "a food", # TODO with better description move to featured list
+            "an animal or plant (and not an individual one)", # TODO check description, should be featureable
             "a bicycle sharing system",
             "an electric vehicle charging network",
             "a postal service",
@@ -262,36 +264,18 @@ def already_uploaded_not_to_be_featured_list():
             "a fictional entity",
             # also multiple reveal of bogus Wikidata ontology
             "a social issue",
+            "a multinational corporation", # some argue that linking from offices/factories is fine
+            "a film", # some filming locations are bordeline
+            "a television series", # see above
         ]:
             returned.append('should use a secondary wikipedia tag - linking from ' + source + ' to ' + problem)
     returned += [
-        # check description, should be featureable
-        'should use a secondary wikipedia tag - linking from wikipedia tag to an animal or plant (and not an individual one)',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an animal or plant (and not an individual one)',
-        'should use a secondary wikipedia tag - linking from wikidata tag to an animal or plant (and not an individual one)',
-
-        # with better description move to featured list
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a food',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a food',
-
         'malformed secondary wikipedia tag - for architect prefixed tags',
         'malformed secondary wikipedia tag - for operator prefixed tags',
         'malformed secondary wikipedia tag - for brand prefixed tags',
 
         # TODO, see https://www.openstreetmap.org/way/613183124 - https://www.openstreetmap.org/note/3972766
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a meeting',
-
-        # some argue that linking from offices/factories is fine
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a multinational corporation',
-
-        # some filming locations are bordeline
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a film',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a film',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a film',    
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a television series',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a television series',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a television series',
 
         #tricky
         'should use a secondary wikipedia tag - linking from wikidata tag to a violation of law',
