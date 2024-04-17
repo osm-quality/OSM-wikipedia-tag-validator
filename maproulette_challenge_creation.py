@@ -250,6 +250,7 @@ def already_uploaded_not_to_be_featured_list():
             "a postal service",
             "a vehicle model or class",
             "a weapon model or class",
+            "an aspect in a geographic region",
             "a certification mark",
             "a type of world view",
             "a human language", # some tricky cases are present
@@ -273,7 +274,6 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
         'should use a secondary wikipedia tag - linking from wikidata tag to a food',
 
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an aspect in a geographic region',
         'malformed secondary wikipedia tag - for architect prefixed tags',
         'malformed secondary wikipedia tag - for operator prefixed tags',
         'malformed secondary wikipedia tag - for brand prefixed tags',
