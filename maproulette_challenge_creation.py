@@ -199,8 +199,6 @@ def already_uploaded_featured_pool_list():
             "a historical event",
             "a ceremony",
             "a medical specialty",
-            "a mental process", # wikidata being silly again
-            "an object that exists outside physical reality", # many false positives
         ]:
             returned.append('should use a secondary wikipedia tag - linking from ' + source + ' to ' + problem)
     returned += [
@@ -255,6 +253,8 @@ def already_uploaded_not_to_be_featured_list():
             "a certification mark",
             "a human language", # some tricky cases are present
 
+            "a mental process", # wikidata being silly again
+            "an object that exists outside physical reality", # many false positives
             # quite fragile with repeated reveals of bad Wikidata ontology - lets not feature it
             "a fictional entity",
             # also multiple reveal of bogus Wikidata ontology
