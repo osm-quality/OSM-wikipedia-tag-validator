@@ -241,6 +241,8 @@ def already_uploaded_not_to_be_featured_list():
     returned = []
     for source in ["wikipedia and wikidata tag", "wikipedia tag", "wikidata tag"]:
         for problem in [
+            "a bicycle sharing system",
+            "an electric vehicle charging network",
             "a postal service",
             "a website",
             "a conflict",
@@ -267,10 +269,6 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
         'should use a secondary wikipedia tag - linking from wikidata tag to a food',
 
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an electric vehicle charging network',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a bicycle sharing system',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a bicycle sharing system',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a bicycle sharing system',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a type of world view',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an aspect in a geographic region',
         'malformed secondary wikipedia tag - for architect prefixed tags',
