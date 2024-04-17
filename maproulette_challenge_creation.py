@@ -589,8 +589,9 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
     print(challenge_name, "processed", len(geojson_object["features"]), "features added")
     if some_require_manual_investigation:
-        print("https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name")
-        raise Exception("look at these entries")
+        link = "https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name"
+        print(link)
+        raise Exception("look at these entries: " + link)
 
 def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(error_id, task_api, challenge_api, challenge_id, candidates, debug):
     in_mr_already = {}
