@@ -44,6 +44,9 @@ import random
 import requests
 import database
 import datetime
+from wikimedia_connection import wikimedia_connection
+import osm_handling_config.global_config as osm_handling_config
+import wikibrain
 
 print("try to list all comments made by users...")
 # TODO brand:wikidata / brand:wikipedia without brand tag
@@ -1044,8 +1047,31 @@ def get_data_of_a_specific_error_id(report_id):
             rowid_in_osm_data = entry['rowid'] # modified, usually not present there
             # also update data table if we checked correctness...
             database.clear_error_and_request_update(cursor, rowid_in_osm_data)
-            print(entry['osm_object_url'], "is no longer applicable, marking error as gone")
+            print(entry['osm_object_url'], "is no longer applicable (according to recorded prerequisites), marking error as gone")
             continue
+        wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
+        detector = wikibrain.wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
+        tags = live_osm_data['tag']
+        print(tags)
+        location = None
+        object_type = entry['osm_object_url'].split("/")[3]
+        if object_type == "node":
+            location = (live_osm_data['lat'], live_osm_data['lon'])
+        elif object_type not in ["way", "relation"]:
+            raise Exception("unexpected")
+
+        object_description = "call from maproulette synch"
+        report = detector.get_the_most_important_problem_generic(tags, location, object_type, object_description)
+        if report == None:
+            rowid_in_osm_data = entry['rowid'] # modified, usually not present there
+            database.clear_error_and_request_update(cursor, rowid_in_osm_data)
+            print(entry['osm_object_url'], "is no longer having any error, marking error as gone")
+            continue
+        print(report, dir(report), entry, entry['error_id'], report_id)
+        if entry['error_id'] != report_id:
+            raise Exception("UNEXFHFHIASDH")
+        print("=============")
+
         # update timestamp so time will not be wasted elsewhere
         rowid_in_osm_data = entry['rowid'] # modified, usually not present there
         cursor.execute("""
