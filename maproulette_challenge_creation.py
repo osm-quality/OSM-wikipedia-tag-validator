@@ -238,7 +238,25 @@ def already_uploaded_featured_pool_list():
     return returned
 
 def already_uploaded_not_to_be_featured_list():
-    return [
+    returned = []
+    for source in ["wikipedia and wikidata tag", "wikipedia tag", "wikidata tag"]:
+        for problem in [
+            "a postal service",
+            "a website",
+            "a conflict",
+            "a geographic region",
+            "an electric utility",
+            "a postal service",
+            "a vehicle model or class",
+            "a weapon model or class",
+
+            # quite fragile with repeated reveals of bad Wikidata ontology - lets not feature it
+            "a fictional entity",
+            # also multiple reveal of bogus Wikidata ontology
+            "a social issue",
+        ]:
+            returned.append('should use a secondary wikipedia tag - linking from ' + source + ' to ' + problem)
+    returned += [
         # check description, should be featureable
         'should use a secondary wikipedia tag - linking from wikipedia tag to an animal or plant (and not an individual one)',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an animal or plant (and not an individual one)',
@@ -249,47 +267,18 @@ def already_uploaded_not_to_be_featured_list():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a food',
         'should use a secondary wikipedia tag - linking from wikidata tag to a food',
 
-        'should use a secondary wikipedia tag - linking from wikidata tag to a postal service',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an electric vehicle charging network',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a postal service',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to an electric utility',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a website',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a website',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a website',
         'should use a secondary wikipedia tag - linking from wikidata tag to a bicycle sharing system',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a vehicle model or class',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a vehicle model or class',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a vehicle model or class',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a weapon model or class',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a weapon model or class',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a weapon model or class',
+        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a bicycle sharing system',
+        'should use a secondary wikipedia tag - linking from wikipedia tag to a bicycle sharing system',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a type of world view',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a conflict',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to an aspect in a geographic region',
-        'should use a secondary wikipedia tag - linking from wikidata tag to an aspect in a geographic region',
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an aspect in a geographic region',
         'malformed secondary wikipedia tag - for architect prefixed tags',
         'malformed secondary wikipedia tag - for operator prefixed tags',
         'malformed secondary wikipedia tag - for brand prefixed tags',
-        'should use a secondary wikipedia tag - linking from wikidata tag to a conflict',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a bicycle sharing system',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a bicycle sharing system',
-        'should use a secondary wikipedia tag - linking from wikidata tag to an electric utility',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to an electric utility',
 
         # TODO, see https://www.openstreetmap.org/way/613183124 - https://www.openstreetmap.org/note/3972766
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a meeting',
-
-        # quite fragile with repeated reveals of bad Wikidata ontology - lets not feature it
-        'should use a secondary wikipedia tag - linking from wikidata tag to a fictional entity',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a fictional entity',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a fictional entity',
-
-        # also multiple reveal of bogus Wikidata ontology
-        'should use a secondary wikipedia tag - linking from wikidata tag to a social issue',
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a social issue',
-        'should use a secondary wikipedia tag - linking from wikipedia tag to a social issue',
-
 
         # some argue that linking from offices/factories is fine
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a multinational corporation',
@@ -309,6 +298,7 @@ def already_uploaded_not_to_be_featured_list():
 
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a recurring sports event',
     ]
+    return returned
 
 def get_login_data():
     with open('secret.json') as f:
