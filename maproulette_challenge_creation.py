@@ -95,7 +95,7 @@ def for_later_list():
         # after fixing - jest delete it, already listed
         'link to a disambiguation page',
 
-        # requires text descriptions
+        # requires text descriptions - TODO, add them
         'species secondary tag links something that is not species according to wikidata (checking P105)',
         'malformed secondary wikidata tag - for species prefixed tags',
         'malformed secondary wikidata tag - for name:etymology prefixed tags',
