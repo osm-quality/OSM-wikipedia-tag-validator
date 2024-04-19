@@ -47,6 +47,16 @@ import datetime
 from wikimedia_connection import wikimedia_connection
 import osm_handling_config.global_config as osm_handling_config
 import wikibrain
+import rich
+from rich.console import Console
+from rich.theme import Theme
+
+def pretty(data):
+  # https://github.com/Textualize/rich
+  # python3.10 -m rich.default_styles
+  console = Console(theme=Theme({"repr.str": "none"}))
+  #console = Console(theme=Theme({"repr.str": "bold dim"}))
+  console.print(data)
 
 print("try to list all comments made by users...")
 # TODO brand:wikidata / brand:wikipedia without brand tag
@@ -1044,7 +1054,10 @@ def get_data_of_a_specific_error_id(report_id):
             database.clear_error_and_request_update(cursor, rowid_in_osm_data)
             print(entry['osm_object_url'], "is no longer having any error, marking error as gone")
             continue
-        print(report, dir(report), entry, entry['error_id'], report_id)
+        pretty(report.data())
+        pretty(entry)
+        pretty(entry['error_id'])
+        pretty(report_id)
         if entry['error_id'] != report_id:
             raise Exception("UNEXFHFHIASDH")
         print("=============")
