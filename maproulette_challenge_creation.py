@@ -343,6 +343,17 @@ def show_new_not_yet_supported_error_classes(cursor):
     show_candidate_reports(cursor, greenlit_groups_not_to_be_featured + for_later, already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list())
 
 def main():
+    should_not_report_errors = [
+            {"link": "https://www.openstreetmap.org/way/448087161"},
+        ]
+    for entry in should_not_report_errors:
+        osm_object_url = entry['link']
+        live_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link(osm_object_url)
+        returned = is_object_reporting_this_error_code(live_osm_data, osm_object_url, 'report_id')
+        print(returned)
+        if returned == True:
+            raise Exception("still reporting this error")
+
     api_key, user_id = get_login_data()
     print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
 
