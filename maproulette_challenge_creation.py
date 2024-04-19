@@ -1037,7 +1037,7 @@ def is_object_reporting_this_error_code(live_osm_data, osm_object_url, expected_
     pretty(report.data())
     pretty(report.data()['error_id'])
     if expected_report_id != report.data()['error_id']:
-        raise Exception("UNEXFHFHIASDH")
+        raise Exception(expected_report_id + " vs " + report.data()['error_id'])
     return True
 
 def get_data_of_a_specific_error_id(report_id):
