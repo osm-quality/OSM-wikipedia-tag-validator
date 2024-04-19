@@ -1023,6 +1023,7 @@ def is_object_reporting_this_error_code(live_osm_data, osm_object_url, expected_
     if report == None:
         return False
     pretty(expected_report_id)
+    pretty(report.data())
     pretty(report.data()['error_id'])
     if expected_report_id != report.data()['error_id']:
         raise Exception("UNEXFHFHIASDH")
@@ -1057,7 +1058,6 @@ def get_data_of_a_specific_error_id(report_id):
             database.clear_error_and_request_update(cursor, rowid_in_osm_data)
             print(entry['osm_object_url'], "is no longer having such error, marking error as gone")
             continue
-        pretty(report.data())
         pretty(entry)
         pretty(entry['error_id'])
         print("=============")
