@@ -883,7 +883,7 @@ def instructions_for_mislinked_object_type(what, from_tags):
             primary_special_mardowned_tag_form_if_any = "`model:wikipedia` and `model:wikidata` or "
         else:
             primary_special_mardowned_tag_form_if_any = "`model:" + from_tags + "` or "
-    if what in ["a restaurant chain"]:
+    if what in ["a restaurant chain", "a chain store"]:
         if from_tags == "wikipedia and wikidata":
             primary_special_mardowned_tag_form_if_any = "`brand:wikipedia` and `brand:wikidata` or "
         else:
