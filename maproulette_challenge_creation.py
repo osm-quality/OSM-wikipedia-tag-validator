@@ -1013,13 +1013,6 @@ def get_data_of_a_specific_error_id(report_id):
     reports = get_reports_with_specific_error_id(cursor, report_id)
     print("calling get_reports_with_specific_error_id:", report_id, len(reports), "entries")
     for entry in reports:
-
-        #print(json.dumps(entry, indent=4, sort_keys=True))
-        #print(entry['osm_object_url'])
-        #print(entry['error_id'])
-        #print(entry['error_message'])
-        #print(entry['location'])
-        #print(entry['prerequisite'])
         live_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link(entry['osm_object_url'])
         if live_osm_data == None: # deleted
             rowid_in_osm_data = entry['rowid'] # modified, usually not present there
