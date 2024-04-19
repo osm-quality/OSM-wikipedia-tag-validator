@@ -103,6 +103,7 @@ def for_later_list():
         'malformed secondary wikidata tag - for parish prefixed tags',
         'malformed secondary wikidata tag - for network prefixed tags',
         'malformed secondary wikipedia tag - for network prefixed tags',
+        'malformed secondary wikipedia tag - for name:etymology prefixed tags',
     ]
     """
 def model_for_XXXXXX():
