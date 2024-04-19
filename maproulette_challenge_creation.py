@@ -1006,6 +1006,28 @@ def setup_project(project_api, user_id):
     project_id = projects[0]["id"]
     return project_id
 
+def is_object_reporting_this_error_code(live_osm_data, osm_object_url, expected_report_id):
+    wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
+    detector = wikibrain.wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
+    tags = live_osm_data['tag']
+    print(tags)
+    location = None
+    object_type = osm_object_url.split("/")[3]
+    if object_type == "node":
+        location = (live_osm_data['lat'], live_osm_data['lon'])
+    elif object_type not in ["way", "relation"]:
+        raise Exception("unexpected")
+
+    object_description = "call from maproulette synch"
+    report = detector.get_the_most_important_problem_generic(tags, location, object_type, object_description)
+    if report == None:
+        return False
+    pretty(expected_report_id)
+    pretty(report.data()['error_id'])
+    if expected_report_id != report.data()['error_id']:
+        raise Exception("UNEXFHFHIASDH")
+    return True
+
 def get_data_of_a_specific_error_id(report_id):
     connection = sqlite3.connect(config.database_filepath())
     cursor = connection.cursor()
@@ -1030,30 +1052,14 @@ def get_data_of_a_specific_error_id(report_id):
             database.clear_error_and_request_update(cursor, rowid_in_osm_data)
             print(entry['osm_object_url'], "is no longer applicable (according to recorded prerequisites), marking error as gone")
             continue
-        wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
-        detector = wikibrain.wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
-        tags = live_osm_data['tag']
-        print(tags)
-        location = None
-        object_type = entry['osm_object_url'].split("/")[3]
-        if object_type == "node":
-            location = (live_osm_data['lat'], live_osm_data['lon'])
-        elif object_type not in ["way", "relation"]:
-            raise Exception("unexpected")
-
-        object_description = "call from maproulette synch"
-        report = detector.get_the_most_important_problem_generic(tags, location, object_type, object_description)
-        if report == None:
+        if is_object_reporting_this_error_code(live_osm_data, entry['osm_object_url'], entry['error_id']) == False:
             rowid_in_osm_data = entry['rowid'] # modified, usually not present there
             database.clear_error_and_request_update(cursor, rowid_in_osm_data)
-            print(entry['osm_object_url'], "is no longer having any error, marking error as gone")
+            print(entry['osm_object_url'], "is no longer having such error, marking error as gone")
             continue
         pretty(report.data())
         pretty(entry)
         pretty(entry['error_id'])
-        pretty(report_id)
-        if entry['error_id'] != report_id:
-            raise Exception("UNEXFHFHIASDH")
         print("=============")
 
         # update timestamp so time will not be wasted elsewhere
