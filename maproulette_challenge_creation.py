@@ -190,7 +190,6 @@ def already_uploaded_featured_pool_list():
             "a coat of arms",
             "a profession",
             "a restaurant chain",
-            "a chain store",
             "a type of sport",
             "a legal action",
             "a train category",
@@ -251,6 +250,7 @@ def already_uploaded_not_to_be_featured_list():
     returned = []
     for source in ["wikipedia and wikidata tag", "wikipedia tag", "wikidata tag"]:
         for problem in [
+            "a chain store", # TODO wait for regenration of issues - task instructions shoudl mention brand: first
             "a food", # TODO with better description move to featured list
             "an animal or plant (and not an individual one)", # TODO check description, should be featureable
             "a bicycle sharing system",
