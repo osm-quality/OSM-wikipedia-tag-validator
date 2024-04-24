@@ -547,6 +547,8 @@ def for_tests():
 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a physical process")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a burial")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a structural failure")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a postal and courier activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
@@ -710,6 +712,18 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for branch prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for branch prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for branch prefixed tags',
+
+        'malformed secondary wikipedia tag - for cultural_district prefixed tags',
+        'wikipedia wikidata mismatch - for cultural_district prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for cultural_district prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for cultural_district prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for cultural_district prefixed tags',
+
+        'malformed secondary wikipedia tag - for proposed:brand prefixed tags',
+        'wikipedia wikidata mismatch - for proposed:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for proposed:brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for proposed:brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for proposed:brand prefixed tags',
 
         # see notes, in 2025 (checked and in 2024 were not processed)
         # https://www.openstreetmap.org/note/3965037
