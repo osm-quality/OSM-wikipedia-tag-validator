@@ -141,6 +141,9 @@ def model_for_XXXXXX():
         'should use a secondary wikipedia tag - linking from wikipedia tag to a type of structure',
         'should use a secondary wikipedia tag - linking from wikidata tag to a type of structure',
 
+        # will require extra support, better to expand geographic coverage if I will run out of
+        # tasks for people to do
+        'something is wrong with wikipedia tag - fixme:wikipedia is present',
 
         # may be confusing or raise protests
         'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a religious denomination',
