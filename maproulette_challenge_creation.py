@@ -83,7 +83,6 @@ STATUS_DISABLED = 9 # TODO missing in docs
 def greenlit_groups_not_to_be_featured_list():
     return [
         # upload, add to featured
-        'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a ceremony',
 
         # upload but not featured group
     ]
