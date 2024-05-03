@@ -51,6 +51,7 @@ import wikibrain
 import rich
 from rich.console import Console
 from rich.theme import Theme
+import os
 
 def pretty(data):
   # https://github.com/Textualize/rich
@@ -347,15 +348,48 @@ def show_new_not_yet_supported_error_classes(cursor):
 
 def main():
     should_not_report_errors = [
-            {"link": "https://www.openstreetmap.org/way/448087161"},
+            {"link": "https://www.openstreetmap.org/node/10979652541"},
+            {"link": "https://www.openstreetmap.org/node/5247030633"},
+            {"link": "https://www.openstreetmap.org/node/5018584352"},
+            {"link": "https://www.openstreetmap.org/node/4196023513"},
+            {"link": "https://www.openstreetmap.org/node/3668315979"},
+            {"link": "https://www.openstreetmap.org/node/3608573974"},
+            {"link": "https://www.openstreetmap.org/node/3608573973"},
+            {"link": "https://www.openstreetmap.org/node/3029098936"},
+            {"link": "https://www.openstreetmap.org/node/2477560532"},
+            {"link": "https://www.openstreetmap.org/node/11196187002"},
+
+            {"link": "https://www.openstreetmap.org/node/25278375"},
+            {"link": "https://www.openstreetmap.org/node/25277573"},
+            {"link": "https://www.openstreetmap.org/node/151401038"},
+            {"link": "https://www.openstreetmap.org/node/25278381"},
+            # TODO tricky, not sure how to deal with it
+            #{"link": "https://www.openstreetmap.org/node/9551885992"},
+            #{"link": "https://www.openstreetmap.org/node/3015818542"},
+            #{"link": "https://www.openstreetmap.org/node/343259328"},
+            #{"link": "https://www.openstreetmap.org/node/3041509739"},
         ]
     for entry in should_not_report_errors:
-        osm_object_url = entry['link']
-        live_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link(osm_object_url)
-        returned = is_object_reporting_this_error_code(live_osm_data, osm_object_url, 'report_id')
+        live_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link(entry['link'])
+        if get_error_code_reported_by_object(live_osm_data, entry['link']) == None:
+            continue
+        pretty(live_osm_data['tag'])
+
+        # flush cache (flush.py synch?) TODO - avoid duplication, encapsulate implementation detail
+        wikidata = live_osm_data['tag'].get('wikidata')
+        wikipedia = live_osm_data['tag'].get('wikipedia')
+        if wikipedia != None:
+            forced_refresh = True
+            wikimedia_connection.get_data_from_wikidata(wikipedia.split(":")[0], wikipedia.split(":")[1], forced_refresh)
+        if wikidata != None:
+            os.remove(wikimedia_connection.get_filename_with_wikidata_entity_by_id(wikidata))
+            os.remove(wikimedia_connection.get_filename_with_wikidata_by_id_response_code(wikidata))
+
+        returned = get_error_code_reported_by_object(live_osm_data, entry['link'])
         print(returned)
-        if returned == True:
-            raise Exception("still reporting this error")
+        if returned != None:
+            print(entry['link'])
+            raise Exception("still reporting error")
 
     api_key, user_id = get_login_data()
     print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
@@ -585,8 +619,7 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
     for entry in collected_data_for_use:
         candidates.append(entry['osm_object_url'])
 
-    some_require_manual_investigation = False
-    in_mr_already, some_require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(error_id, task_api, challenge_api, challenge_id, candidates, debug=False)
+    in_mr_already, require_manual_investigation, _fixed_count, _live_count = get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these(error_id, task_api, challenge_api, challenge_id, candidates, debug=False)
 
     array_of_urls_in_mr_already = in_mr_already.keys()
     geojson_object = build_geojson_of_tasks_to_add_challenge(collected_data_for_use, array_of_urls_in_mr_already)
@@ -598,7 +631,9 @@ def update_or_create_challenge_based_on_error_id(challenge_api, task_api, projec
         time.sleep(10)
         print(json.dumps(challenge_api.add_tasks_to_challenge(geojson_object, challenge_id), indent=4, sort_keys=True))
     print(challenge_name, "processed", len(geojson_object["features"]), "features added")
-    if some_require_manual_investigation:
+    if len(require_manual_investigation) > 0:
+        for osm_link, task in require_manual_investigation.items():
+            print(osm_link, task)
         link = "https://maproulette.org/admin/project/53065/challenge/" + str(challenge_id) + "?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.direction=DESC&sortCriteria.sortBy=name"
         print(link)
         raise Exception("look at these entries: " + link)
@@ -608,7 +643,7 @@ def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these
     tasks_in_challenge = get_challenge_tasks(challenge_api, challenge_id, debug)
     fixed_count = 0
     visible_tasks = 0
-    some_require_manual_investigation = False
+    require_manual_investigation = {}
     for task in tasks_in_challenge:
         #print(json.dumps(task, indent=4, sort_keys=True))
         status = task['status']
@@ -635,16 +670,16 @@ def get_dict_of_tasks_in_challenge_and_info_is_any_in_weird_state_and_show_these
             elif status == STATUS_FALSE_POSITIVE:
                 visible_tasks += 1
                 print("False positive", link, osm_link, error_id)
-                some_require_manual_investigation = True
+                require_manual_investigation[osm_link] = task
             elif status == STATUS_TOO_HARD:
                 visible_tasks += 1
                 print("Too hard", link, osm_link, error_id)
-                some_require_manual_investigation = True
+                require_manual_investigation[osm_link] = task
             else:
                 print("unexpected status", status, "for", link, osm_link, error_id)
                 raise "unexpected"
-                some_require_manual_investigation = True
-    return in_mr_already, some_require_manual_investigation, fixed_count, visible_tasks
+                require_manual_investigation[osm_link] = task
+    return in_mr_already, require_manual_investigation, fixed_count, visible_tasks
 
 
 def build_geojson_of_tasks_to_add_challenge(collected_data_for_use, array_of_urls_in_mr_already):
@@ -1020,7 +1055,7 @@ def setup_project(project_api, user_id):
     project_id = projects[0]["id"]
     return project_id
 
-def is_object_reporting_this_error_code(live_osm_data, osm_object_url, expected_report_id):
+def get_error_code_reported_by_object(live_osm_data, osm_object_url):
     wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
     detector = wikibrain.wikimedia_link_issue_reporter.WikimediaLinkIssueDetector()
     tags = live_osm_data['tag']
@@ -1031,17 +1066,13 @@ def is_object_reporting_this_error_code(live_osm_data, osm_object_url, expected_
         location = (live_osm_data['lat'], live_osm_data['lon'])
     elif object_type not in ["way", "relation"]:
         raise Exception("unexpected")
-
     object_description = "call from maproulette synch"
     report = detector.get_the_most_important_problem_generic(tags, location, object_type, object_description)
     if report == None:
-        return False
-    pretty(expected_report_id)
+        return None
     pretty(report.data())
     pretty(report.data()['error_id'])
-    if expected_report_id != report.data()['error_id']:
-        raise Exception(expected_report_id + " vs " + report.data()['error_id'])
-    return True
+    return report.data()['error_id']
 
 def get_data_of_a_specific_error_id(report_id):
     connection = sqlite3.connect(config.database_filepath())
@@ -1067,7 +1098,8 @@ def get_data_of_a_specific_error_id(report_id):
             database.clear_error_and_request_update(cursor, rowid_in_osm_data)
             print(entry['osm_object_url'], "is no longer applicable (according to recorded prerequisites), marking error as gone")
             continue
-        if is_object_reporting_this_error_code(live_osm_data, entry['osm_object_url'], entry['error_id']) == False:
+        if get_error_code_reported_by_object(live_osm_data, entry['osm_object_url']) != entry['error_id']:
+            pretty(entry['error_id'])
             rowid_in_osm_data = entry['rowid'] # modified, usually not present there
             database.clear_error_and_request_update(cursor, rowid_in_osm_data)
             print(entry['osm_object_url'], "is no longer having such error, marking error as gone")
