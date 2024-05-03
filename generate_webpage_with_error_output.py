@@ -11,7 +11,7 @@ import obtain_from_overpass
 import database
 
 def skip_test_cases_before_timestamp():
-    return 1713131264
+    return 1713985661
 
 def generate_website_file_for_given_area(cursor, entry):
     reports = reports_for_given_area(cursor, entry['internal_region_name'])
