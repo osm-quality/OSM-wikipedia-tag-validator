@@ -11,7 +11,7 @@ import obtain_from_overpass
 import database
 
 def skip_test_cases_before_timestamp():
-    return 1713985661
+    return 1714791475
 
 def generate_website_file_for_given_area(cursor, entry):
     reports = reports_for_given_area(cursor, entry['internal_region_name'])
@@ -641,6 +641,9 @@ def ignored():
         #'malformed secondary wikidata tag',
         # should be not generated anymore
         "malformed secondary wikidata tag for name:etymology:wikidata:missing tag",
+        "malformed secondary wikidata tag for name:etymology:wikidata:note tag",
+        "malformed secondary wikidata tag for destination:ref:to:wikidata:lanes:backward tag",
+        "malformed secondary wikidata tag for destination:ref:to:wikidata:lanes tag",
         "malformed secondary wikidata tag for wikidata:note tag",
         'malformed wikipedia tag - for operator prefixed tags',
         'malformed wikipedia tag - for subject prefixed tags',
