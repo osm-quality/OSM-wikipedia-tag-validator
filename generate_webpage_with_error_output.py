@@ -538,6 +538,9 @@ def for_tests():
         "wikipedia",
         "wikidata",
     ]:
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a word or phrase")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a science")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a family name")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a service")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an emergency service")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a volunteer")
@@ -700,12 +703,36 @@ def ignored():
         # more: https://overpass-turbo.eu/s/1F5t
 
         # what is this? Investigate after 15:00
-        #TODO remove from databse and clear this entries
+        #TODO remove from database and clear this entries - but first process cases and issues where removal tool exist
         'malformed secondary wikipedia tag - for object prefixed tags',
         'wikipedia wikidata mismatch - for object prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for object prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for object prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for object prefixed tags',
+
+        'malformed secondary wikipedia tag - for organ prefixed tags',
+        'wikipedia wikidata mismatch - for organ prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for organ prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for organ prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for organ prefixed tags',
+
+        'malformed secondary wikipedia tag - for healthcare:speciality prefixed tags',
+        'wikipedia wikidata mismatch - for healthcare:speciality prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for healthcare:speciality prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for healthcare:speciality prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for healthcare:speciality prefixed tags',
+
+        'malformed secondary wikipedia tag - for ref prefixed tags',
+        'wikipedia wikidata mismatch - for ref prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for ref prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for ref prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for ref prefixed tags',
+
+        'malformed secondary wikipedia tag - for disused:branch prefixed tags',
+        'wikipedia wikidata mismatch - for disused:branch prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for disused:branch prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for disused:branch prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for disused:branch prefixed tags',
 
         'malformed secondary wikipedia tag - for branch prefixed tags',
         'wikipedia wikidata mismatch - for branch prefixed tags',
@@ -718,6 +745,12 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for cultural_district prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for cultural_district prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for cultural_district prefixed tags',
+
+        'malformed secondary wikipedia tag - for old_brand prefixed tags',
+        'wikipedia wikidata mismatch - for old_brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for old_brand prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for old_brand prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for old_brand prefixed tags',
 
         'malformed secondary wikipedia tag - for proposed:brand prefixed tags',
         'wikipedia wikidata mismatch - for proposed:brand prefixed tags',
