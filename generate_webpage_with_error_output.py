@@ -553,6 +553,9 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a structural failure")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a postal and courier activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a spirit")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a deity")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a mining (activity - likely mine/quarry etc should be set instead)")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
 
@@ -597,6 +600,11 @@ def for_tests():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for artist_name prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for artist_name prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for artist_name prefixed tags',
+
+        'wikipedia wikidata mismatch - for owner prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for owner prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for owner prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for owner prefixed tags',
 
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM, with tagging referring to defunct one",
 
