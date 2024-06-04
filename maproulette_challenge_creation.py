@@ -32,6 +32,7 @@
 # 10 marca Fixed (7340/14075) - 6735 remaining
 # 29 marca Fixed (7422/14073) - 6651 remaining
 # 24 kwietnia Fixed (7594/14249) - 6655 remaining
+# 23 maja Fixed (8000/14306) - 6306 remaining
 
 # https://github.com/osmlab/maproulette-python-client
 import maproulette
