@@ -214,6 +214,7 @@ def already_uploaded_featured_pool_list():
             "a historical event",
             "a ceremony",
             "a medical specialty",
+            "a word or phrase",
         ]:
             returned.append('should use a secondary wikipedia tag - linking from ' + source + ' to ' + problem)
     returned += [
