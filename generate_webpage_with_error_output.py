@@ -405,6 +405,9 @@ def for_review():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a death")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a word or phrase")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a family name")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a deity")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a spirit")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a horse")
     returned += [
         "link to a disambiguation page",
         'wikipedia wikidata mismatch',
@@ -554,8 +557,6 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a structural failure")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a postal and courier activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a spirit")
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a deity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a mining (activity - likely mine/quarry etc should be set instead)")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
