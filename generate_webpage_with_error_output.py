@@ -147,6 +147,7 @@ def feedback_request(timestamps_of_data):
 
 def html_file_header():
     returned = ""
+    returned += "<!DOCTYPE html>\n"
     returned += "<html>\n"
     returned += "\t<head>\n"
     returned += '\t\t<link rel="stylesheet" href="https://mapsaregreat.com/style.css" /> <!-- GPLv3 licensed -->\n'
