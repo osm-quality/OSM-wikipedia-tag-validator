@@ -140,9 +140,9 @@ def date_from_timestamp(timestamp):
 def feedback_request(timestamps_of_data):
     returned = ""
     returned += feedback_header()
-    returned += "<br />\n"
+    returned += "<br>\n"
     returned += timestamp_listing(timestamps_of_data) + " Please, " + send_me_a_message_html() + " if you want it updated!"
-    returned += "<br />\n"
+    returned += "<br>\n"
     return returned
 
 def html_file_header():
@@ -160,7 +160,7 @@ def html_file_suffix():
     returned = ""
     returned += "<h1>Other useful resources</h1>"
     returned += '<p>JOSM <a href="https://josm.openstreetmap.de/wiki/Help/Plugin/Wikipedia">Wikipedia plugin</a></p>'
-    returned += "<br />\n"
+    returned += "<br>\n"
     website = 'https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports'
     stored = 'https://github.com/matkoniecz/OSM-wikipedia-tag-validator-reports'
     returned += '<p class="small">Note to self: online version hosted at <a href="' + website + '">' + website + '</a>, files are stored at <a href="' + stored + '">' + stored + '</a>.'
@@ -174,8 +174,8 @@ def object_list_header(timestamps_of_data):
     returned = ""
     returned += html_file_header()
     returned += feedback_request(timestamps_of_data)
-    returned += "<br />\n"
-    returned += "<br />\n"
+    returned += "<br>\n"
+    returned += "<br>\n"
     return returned
 
 def link_to_osm_object(url, tags):
@@ -201,7 +201,7 @@ def language_code_from_wikipedia_string(string):
 
 def row(text, prefix_of_lines):
     returned = ""
-    returned += prefix_of_lines + "</br>\n"
+    returned += prefix_of_lines + "<br>\n"
     returned += prefix_of_lines + text + "\n"
     return returned
 
@@ -1044,7 +1044,7 @@ def ignored():
 def htmlify(string):
     escaped = html.escape(string)
     escaped_ascii = escape_from_internal_python_string_to_html_ascii(escaped)
-    return escaped_ascii.replace("\n", "<br />")
+    return escaped_ascii.replace("\n", "<br>")
 
 def escape_from_internal_python_string_to_html_ascii(string):
     return str(string).encode('ascii', 'xmlcharrefreplace').decode()
@@ -1116,8 +1116,8 @@ def index_page_description():
     website_html += '<p>This page lists OpenStreetMap objects that have <a href="https://wiki.openstreetmap.org/wiki/Key:wikipedia">wikipedia</a> / <a href="https://wiki.openstreetmap.org/wiki/Key:wikipedia">wikidata</a> tags with some problems.</p>'
     website_html += '<p>For example, it allows to detect cases where <a href="https://www.openstreetmap.org/way/693854629/history">an incorrect object was linked</a>, a link leads to a deleted page or there is some other issue.</p>\n'
     website_html += '<p>This tool is an <a href="https://github.com/matkoniecz/OSM-wikipedia-tag-validator#story-behing-this-tool">unexpected result</a> of creating a detector of interesting places based on OSM Data and Wikipedia. It turned out to require a filter to avoid invalid links. As detected links can be often fixed and it is better to remove invalid rather than keep them, I am sharing this tool.</p>\n'
-    website_html += "</hr>\n"
-    website_html += "</br>\n"
+    website_html += "<hr>\n"
+    website_html += "<br>\n"
     return website_html
 
 def all_timestamps_for_index_page(cursor):
@@ -1133,9 +1133,9 @@ def html_header_for_index_page(all_timestamps):
     index_header = ""
     index_header += html_file_header() + "\n" + index_page_description()
     index_header += feedback_request(all_timestamps) + "\n"
-    index_header += "</br>\n"
-    index_header += "</hr>\n"
-    index_header += "</br>\n"
+    index_header += "<br>\n"
+    index_header += "<hr>\n"
+    index_header += "<br>\n"
     return index_header
 
 def list_of_processed_entries_for_each_merged_group():
@@ -1240,8 +1240,8 @@ def human_review_problem_count_for_given_internal_region_name(cursor, internal_r
 
 def problem_count_string(report_count):
     if report_count == 1:
-        return '(found ' + str(report_count) + ' problem)</br>'
-    return '(found ' + str(report_count) + ' problems)</br>'
+        return '(found ' + str(report_count) + ' problem)<br>'
+    return '(found ' + str(report_count) + ' problems)<br>'
 
 if __name__ == "__main__":
     raise "unsupported, expected to be used as a library"
