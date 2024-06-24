@@ -38,6 +38,7 @@
 import maproulette
 import json
 import generate_webpage_with_error_output
+import flush
 import sqlite3
 import config
 import time
@@ -376,17 +377,7 @@ def main():
         if get_error_code_reported_by_object(live_osm_data, entry['link']) == None:
             continue
         pretty(live_osm_data['tag'])
-
-        # flush cache (flush.py synch?) TODO - avoid duplication, encapsulate implementation detail
-        wikidata = live_osm_data['tag'].get('wikidata')
-        wikipedia = live_osm_data['tag'].get('wikipedia')
-        if wikipedia != None:
-            forced_refresh = True
-            wikimedia_connection.get_data_from_wikidata(wikipedia.split(":")[0], wikipedia.split(":")[1], forced_refresh)
-        if wikidata != None:
-            os.remove(wikimedia_connection.get_filename_with_wikidata_entity_by_id(wikidata))
-            os.remove(wikimedia_connection.get_filename_with_wikidata_by_id_response_code(wikidata))
-
+        flush.flush_mediawiki_data_for_tags(live_osm_data['tag'])
         returned = get_error_code_reported_by_object(live_osm_data, entry['link'])
         print(returned)
         if returned != None:

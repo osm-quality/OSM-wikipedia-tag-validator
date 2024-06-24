@@ -4,20 +4,36 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv()
-wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
+def flush_data_for_wikipedia_article(link):
+    forced_refresh = True
+    wikimedia_connection.get_data_from_wikidata(link.split(":")[0], link.split(":")[1], forced_refresh)
 
-forced_refresh = True
-#forced_refresh = False
-link = "tr:Perinthos"
-wikimedia_connection.get_data_from_wikidata(link.split(":")[0], link.split(":")[1], forced_refresh)
-
-kill = "".split()
-for id in kill:
+def flush_data_for_wikidata_entry(id):
     os.remove(wikimedia_connection.get_filename_with_wikidata_entity_by_id(id))
     os.remove(wikimedia_connection.get_filename_with_wikidata_by_id_response_code(id))
-"""
-flush.py Q49833
 
-flushes cache of Q49833
-"""
+def flush_mediawiki_data_for_tags(tags):
+    wikidata = live_osm_data['tag'].get('wikidata')
+    wikipedia = live_osm_data['tag'].get('wikipedia')
+    if wikipedia != None:
+        flush_data_for_wikipedia_article(wikipedia)
+    if wikidata != None:
+        flush_data_for_wikidata_entry(wikidata)
+
+def main():
+    load_dotenv()
+    wikimedia_connection.set_cache_location(osm_handling_config.get_wikimedia_connection_cache_location())
+
+    flush_data_for_wikipedia_article("tr:Perinthos")
+
+    kill = "".split()
+    for id in kill:
+        flush_data_for_wikidata_entry(id)
+    """
+    flush.py Q49833
+
+    flushes cache of Q49833
+    """
+
+if __name__ == "__main__":
+    main()
