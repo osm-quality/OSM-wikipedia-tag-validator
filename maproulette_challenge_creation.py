@@ -184,6 +184,9 @@ def already_uploaded_featured_pool_list():
     returned = []
     for source in ["wikipedia and wikidata tag", "wikipedia tag", "wikidata tag"]:
         for problem in [
+            "a deity",
+            "a horse",
+            "a spirit",
             "a multinational corporation",
             "a migration",
             "a letter",
