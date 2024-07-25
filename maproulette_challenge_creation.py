@@ -218,7 +218,6 @@ def already_uploaded_featured_pool_list():
             "a historical event",
             "a ceremony",
             "a medical specialty",
-            "a word or phrase",
         ]:
             returned.append('should use a secondary wikipedia tag - linking from ' + source + ' to ' + problem)
     returned += [
@@ -278,6 +277,7 @@ def already_uploaded_not_to_be_featured_list():
             "a type of world view",
             "an overview article",
             "a human language", # some tricky cases are present
+            "a word or phrase", # many tricky or broken cases
 
             "a mental process", # wikidata being silly again
             "an object that exists outside physical reality", # many false positives
