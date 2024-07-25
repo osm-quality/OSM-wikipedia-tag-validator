@@ -367,6 +367,10 @@ def main():
     # manually trigger an update
     #update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, 'wikipedia wikidata mismatch - for operator prefixed tags', featured = False)
 
+    # https://maproulette.org/admin/project/53065/challenge/40023?filters.metaReviewStatus=0%2C1%2C2%2C3%2C5%2C6%2C7%2C-2&filters.priorities=0%2C1%2C2&filters.reviewStatus=0%2C1%2C2%2C3%2C4%2C5%2C6%2C7%2C-1&filters.status=2%2C5%2C6&includeTags=false&page=0&pageSize=40&sortCriteria.sortBy=name&sortCriteria.direction=DESC&boundingBox=-205.31250000000003%2C-32.546813173515154%2C205.31250000000003%2C72.18180355624855
+    error_id = 'should use a secondary wikipedia tag - linking from wikipedia and wikidata tag to a human'
+    update_or_create_challenge_based_on_error_id(challenge_api, task_api, project_id, error_id, featured = False)
+
     show_state_on_maproulette(challenge_api, task_api, project_id)
 
     connection = sqlite3.connect(config.database_filepath())
