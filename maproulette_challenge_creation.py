@@ -369,6 +369,7 @@ def main():
             {"link": "https://www.openstreetmap.org/node/25277573"},
             {"link": "https://www.openstreetmap.org/node/151401038"},
             {"link": "https://www.openstreetmap.org/node/25278381"},
+            {"link": "https://www.openstreetmap.org/node/11842434300"},
             # TODO tricky, not sure how to deal with it
             #{"link": "https://www.openstreetmap.org/node/9551885992"},
             #{"link": "https://www.openstreetmap.org/node/3015818542"},
