@@ -390,25 +390,7 @@ def main():
 
     connection.close()
 
-    #print("trying reports per area")
-    #for name in generate_webpage_with_error_output.for_review():
-    #    for entry in config.get_entries_to_process():
-    #        internal_region_name = entry['internal_region_name']
-    #        print("calling get_reports_with_specific_error_id_in_specific_area:", name, len(get_reports_with_specific_error_id_in_specific_area(cursor, name, internal_region_name)), "entries")
-
-    # where it has ended?
-    # https://www.maproulette.org/
-
-    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L269
-
-    # https://github.com/osmlab/maproulette-python-client/blob/1740b54a112021889e42f727de8f43fbc7860fd9/maproulette/api/challenge.py#L136C9-L136C28
-    # get challenge tasks
-
     # TODO hmm, mention my site in MR so it is linked from it
-
-    # https://github.com/osmlab/maproulette-python-client/blob/dev/examples/challenge_examples.py
-    # https://github.com/osmlab/maproulette-python-client/blob/38920add1b95b9ec472e1653915faf9eebe2a6b9/maproulette/api/challenge.py#L269 - add_tasks_to_challenge
-    # https://github.com/osmlab/maproulette-python-client/blob/0a3e4b68af7892700463c2afc66a1ae4dcbf0825/maproulette/models/challenge.py
 
 def selftest():
     should_not_report_errors = [
