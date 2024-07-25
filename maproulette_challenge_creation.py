@@ -353,41 +353,7 @@ def show_new_not_yet_supported_error_classes(cursor):
     show_candidate_reports(cursor, greenlit_groups_not_to_be_featured + for_later, already_uploaded_not_to_be_featured_list() + already_uploaded_featured_pool_list())
 
 def main():
-    should_not_report_errors = [
-            {"link": "https://www.openstreetmap.org/node/10979652541"},
-            {"link": "https://www.openstreetmap.org/node/5247030633"},
-            {"link": "https://www.openstreetmap.org/node/5018584352"},
-            {"link": "https://www.openstreetmap.org/node/4196023513"},
-            {"link": "https://www.openstreetmap.org/node/3668315979"},
-            {"link": "https://www.openstreetmap.org/node/3608573974"},
-            {"link": "https://www.openstreetmap.org/node/3608573973"},
-            {"link": "https://www.openstreetmap.org/node/3029098936"},
-            {"link": "https://www.openstreetmap.org/node/2477560532"},
-            {"link": "https://www.openstreetmap.org/node/11196187002"},
-
-            {"link": "https://www.openstreetmap.org/node/25278375"},
-            {"link": "https://www.openstreetmap.org/node/25277573"},
-            {"link": "https://www.openstreetmap.org/node/151401038"},
-            {"link": "https://www.openstreetmap.org/node/25278381"},
-            {"link": "https://www.openstreetmap.org/node/11842434300"},
-            # TODO tricky, not sure how to deal with it
-            #{"link": "https://www.openstreetmap.org/node/9551885992"},
-            #{"link": "https://www.openstreetmap.org/node/3015818542"},
-            #{"link": "https://www.openstreetmap.org/node/343259328"},
-            #{"link": "https://www.openstreetmap.org/node/3041509739"},
-        ]
-    for entry in should_not_report_errors:
-        live_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link(entry['link'])
-        if get_error_code_reported_by_object(live_osm_data, entry['link']) == None:
-            continue
-        pretty(live_osm_data['tag'])
-        flush.flush_mediawiki_data_for_tags(live_osm_data['tag'])
-        returned = get_error_code_reported_by_object(live_osm_data, entry['link'])
-        print(returned)
-        if returned != None:
-            print(entry['link'])
-            raise Exception("still reporting error")
-
+    selftest()
     api_key, user_id = get_login_data()
     print("find random edits, get their authors and thank them/verify - see https://www.openstreetmap.org/changeset/138121870")
 
@@ -443,6 +409,42 @@ def main():
     # https://github.com/osmlab/maproulette-python-client/blob/dev/examples/challenge_examples.py
     # https://github.com/osmlab/maproulette-python-client/blob/38920add1b95b9ec472e1653915faf9eebe2a6b9/maproulette/api/challenge.py#L269 - add_tasks_to_challenge
     # https://github.com/osmlab/maproulette-python-client/blob/0a3e4b68af7892700463c2afc66a1ae4dcbf0825/maproulette/models/challenge.py
+
+def selftest():
+    should_not_report_errors = [
+            {"link": "https://www.openstreetmap.org/node/10979652541"},
+            {"link": "https://www.openstreetmap.org/node/5247030633"},
+            {"link": "https://www.openstreetmap.org/node/5018584352"},
+            {"link": "https://www.openstreetmap.org/node/4196023513"},
+            {"link": "https://www.openstreetmap.org/node/3668315979"},
+            {"link": "https://www.openstreetmap.org/node/3608573974"},
+            {"link": "https://www.openstreetmap.org/node/3608573973"},
+            {"link": "https://www.openstreetmap.org/node/3029098936"},
+            {"link": "https://www.openstreetmap.org/node/2477560532"},
+            {"link": "https://www.openstreetmap.org/node/11196187002"},
+
+            {"link": "https://www.openstreetmap.org/node/25278375"},
+            {"link": "https://www.openstreetmap.org/node/25277573"},
+            {"link": "https://www.openstreetmap.org/node/151401038"},
+            {"link": "https://www.openstreetmap.org/node/25278381"},
+            {"link": "https://www.openstreetmap.org/node/11842434300"},
+            # TODO tricky, not sure how to deal with it
+            #{"link": "https://www.openstreetmap.org/node/9551885992"},
+            #{"link": "https://www.openstreetmap.org/node/3015818542"},
+            #{"link": "https://www.openstreetmap.org/node/343259328"},
+            #{"link": "https://www.openstreetmap.org/node/3041509739"},
+        ]
+    for entry in should_not_report_errors:
+        live_osm_data = osm_bot_abstraction_layer.get_data_based_on_object_link(entry['link'])
+        if get_error_code_reported_by_object(live_osm_data, entry['link']) == None:
+            continue
+        pretty(live_osm_data['tag'])
+        flush.flush_mediawiki_data_for_tags(live_osm_data['tag'])
+        returned = get_error_code_reported_by_object(live_osm_data, entry['link'])
+        print(returned)
+        if returned != None:
+            print(entry['link'])
+            raise Exception("still reporting error")
 
 def ensure_correct_number_of_featured_groups(challenge_api, project_id):
     already_uploaded_featured_pool = already_uploaded_featured_pool_list()
