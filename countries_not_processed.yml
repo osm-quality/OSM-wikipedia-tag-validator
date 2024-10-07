@@ -16,7 +16,6 @@
 - {internal_region_name: 'Estonia', website_main_title_part: 'Eesti (Estonia)', identifier: {'ISO3166-1': 'EE'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Republika Południowej Afryki', website_main_title_part: 'South Africa (Republika Południowej Afryki)', identifier: {'ISO3166-1': 'ZA'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Eswatini', website_main_title_part: 'eSwatini (Eswatini)', identifier: {'ISO3166-1': 'SZ'}, requested_by: '??????????????????', priority_multiplier: 1}
-- {internal_region_name: 'Rumunia', website_main_title_part: 'România (Romania, Rumunia)', identifier: {'ISO3166-1': 'RO'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Ekwador', website_main_title_part: 'Ecuador (Ekwador)', identifier: {'ISO3166-1': 'EC'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Meksyk', website_main_title_part: 'México (Mexico, Meksyk)', identifier: {'ISO3166-1': 'MX'}, requested_by: '??????????????????', priority_multiplier: 1}
 - {internal_region_name: 'Mongolia', website_main_title_part: 'Монгол улс ᠮᠤᠩᠭᠤᠯ ᠤᠯᠤᠰ (Mongolia)', identifier: {'ISO3166-1': 'MN'}, requested_by: '??????????????????', priority_multiplier: 1}

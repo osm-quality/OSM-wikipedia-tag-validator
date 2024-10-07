@@ -2,6 +2,7 @@
 # https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/Noord-Brabant%20-%20Nederland%20(Brabanca%20P%C3%B3%C5%82nocna%20-%20Holandia).html is regenerated again (let me know if you are not interested anymore)
 # https://matkoniecz.github.io/OSM-wikipedia-tag-validator-reports/ has list in general, feel free to request more or report broken reports
 
+- {internal_region_name: 'Rumunia', website_main_title_part: 'România (Romania, Rumunia)', identifier: {'ISO3166-1': 'RO'}, requested_by: 'https://www.openstreetmap.org/messages/1202291', priority_multiplier: 1}
 #- {internal_region_name: Nederland, website_main_title_part: 'Nederland (Holandia)', identifier: {'ISO3166-1': 'NL'}, language_code: nl, requested_by: 'Casper het spook, in Discord https://discord.com/channels/@me/812445542973571124/815545212498739220'}
 # entire coutry was failing on download, splitting into provinces
 # https://en.wikipedia.org/wiki/Provinces_of_the_Netherlands
