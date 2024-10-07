@@ -625,6 +625,7 @@ def ignored():
     returned = [
         # TODO: this should be specially handled and be fixed from emitting error in the first place...
         "wikipedia wikidata mismatch - for not:brand prefixed tags",
+        "malformed secondary wikipedia tag - for no prefixed tags", # https://taginfo.openstreetmap.org/keys/no%3Awikipedia#values
 
         # https://taginfo.openstreetmap.org/keys/related%3Awikipedia#chronology
         'malformed secondary wikipedia tag - for related prefixed tags',
