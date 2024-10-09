@@ -610,6 +610,13 @@ def for_tests():
 
         "no longer existing brand (according to Wikidata) - and marked as active shop in OSM, with tagging referring to defunct one",
 
+        'malformed secondary wikipedia tag - for sculptor prefixed tags',
+        "malformed secondary wikidata tag - for sculptor prefixed tags",
+        'wikipedia wikidata mismatch - for sculptor prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for sculptor prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for sculptor prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for sculptor prefixed tags',
+
         # almost certainly should be moved to man_made=bridge area
         # https://taginfo.openstreetmap.org/keys/bridge%3Awikipedia#overview
         'malformed secondary wikipedia tag - for bridge prefixed tags',
