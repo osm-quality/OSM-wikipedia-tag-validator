@@ -16,6 +16,7 @@ import time
 import osm_bot_abstraction_layer.human_verification_mode as human_verification_mode
 import wikibrain.wikimedia_link_issue_reporter
 import datetime
+import osmapi
 
 def parsed_args():
     parser = argparse.ArgumentParser(description='Production of webpage about validation of wikipedia tag in osm data.')
@@ -378,7 +379,7 @@ def handle_wikidata_redirect(cursor, reported_errors, area_code, automatic_statu
             started_changeset = True
             builder.create_changeset(api)
         print("handle_wikidata_redirect EDITS",e['osm_object_url'])
-        osm_bot_abstraction_layer.update_element(api, type, data)
+        update_element_with_retry_on_network_failure(api, type, data, e)
         database.clear_error_and_request_update(cursor, e["rowid"])
 
 def add_wikidata_tag_from_wikipedia_tag(cursor, reported_errors, area_code, automatic_status):
@@ -423,7 +424,7 @@ def add_wikidata_tag_from_wikipedia_tag(cursor, reported_errors, area_code, auto
             started_changeset = True
             builder.create_changeset(api)
         print("add_wikidata_tag_from_wikipedia_tag EDITS",e['osm_object_url'])
-        osm_bot_abstraction_layer.update_element(api, type, data)
+        update_element_with_retry_on_network_failure(api, type, data, e)
         database.clear_error_and_request_update(cursor, e["rowid"])
 
     if started_changeset:
@@ -469,13 +470,44 @@ def add_wikipedia_tag_from_wikidata_tag(cursor, reported_errors, area_code, auto
         if started_changeset == False:
             started_changeset = True
             builder.create_changeset(api)
-        osm_bot_abstraction_layer.update_element(api, type, data)
+        update_element_with_retry_on_network_failure(api, type, data, e)
         database.clear_error_and_request_update(cursor, e["rowid"])
 
     if started_changeset:
         api.ChangesetClose()
         if automatic_status == osm_bot_abstraction_layer.fully_automated_description():
             osm_bot_abstraction_layer.sleep(60)
+
+
+def update_element_with_retry_on_network_failure(api, type, data, found_error):
+    while True:
+        try:
+            print(api)
+            print(type)
+            print(data)
+            osm_bot_abstraction_layer.update_element(api, type, data)
+            return
+        except osmapi.errors.TimeoutApiError:
+            new_data = get_and_verify_data(found_error)
+            if new_data == None:
+                return
+            continue
+        except osmapi.errors.ApiError as e:
+            if "'Connection aborted.', RemoteDisconnected('Remote end closed connection without response')" in str(e):
+                # proper exception type requested in https://github.com/metaodi/osmapi/issues/176
+                new_data = get_and_verify_data(found_error)
+                if new_data == None:
+                    return
+                continue
+            if "Request failed: 409 - Conflict" in str(e) and "was closed at " in str(e):
+                # proper exception type requested in https://github.com/metaodi/osmapi/issues/177
+                print("changeset was closed already!")
+                return
+            print()
+            print()
+            print()
+            print(str(e))
+            raise
 
 def link_to_point(lat, lon):
     return "https://www.openstreetmap.org/?mlat=" + str(lat) + "&mlon=" + str(lon) + "#map=10/" + str(lat) + "/" + str(lon)
