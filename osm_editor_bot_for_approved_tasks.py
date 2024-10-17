@@ -492,6 +492,10 @@ def update_element_with_retry_on_network_failure(api, type, data, found_error):
             if new_data == None:
                 return
             continue
+        except osmapi.errors.ChangesetClosedApiError as e:
+            # TODO: maybe handle it somehow?
+            print("changeset was closed already!")
+            return
         except osmapi.errors.ApiError as e:
             if "'Connection aborted.', RemoteDisconnected('Remote end closed connection without response')" in str(e):
                 # proper exception type requested in https://github.com/metaodi/osmapi/issues/176
@@ -499,10 +503,6 @@ def update_element_with_retry_on_network_failure(api, type, data, found_error):
                 if new_data == None:
                     return
                 continue
-            if "Request failed: 409 - Conflict" in str(e) and "was closed at " in str(e):
-                # proper exception type requested in https://github.com/metaodi/osmapi/issues/177
-                print("changeset was closed already!")
-                return
             print()
             print()
             print()
