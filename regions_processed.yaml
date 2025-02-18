@@ -1183,7 +1183,7 @@
 #- {internal_region_name: 'Ghana', website_main_title_part: 'Ghana', identifier: {'ISO3166-1': 'GH'}, requested_by: 'https://t.me/osmghana/7250', priority_multiplier: 1}
 #- {internal_region_name: 'Etiopia', website_main_title_part: 'ኢትዮጵያ (Ethiopia, Etiopia)', identifier: {'ISO3166-1': 'ET'}, requested_by: 'https://t.me/osmethiopia/1299', priority_multiplier: 1}
 
-- {internal_region_name: 'Kolumbia', website_main_title_part: 'Colombia (Kolumbia)', identifier: {'ISO3166-1': 'CO'}, requested_by: 'https://t.me/OSMLatam/39759 + AngocA https://www.openstreetmap.org/messages/1161463', priority_multiplier: 3}
+- {internal_region_name: 'Kolumbia', website_main_title_part: 'Colombia (Kolumbia)', identifier: {'ISO3166-1': 'CO'}, requested_by: 'https://t.me/OSMLatam/39759 + AngocA https://www.openstreetmap.org/messages/1161463', priority_multiplier: 4, language_code: 'es'}
 
 # needed to be split
 #- {internal_region_name: 'Brazylia', website_main_title_part: 'Brasil (Brazil, Brazylia)', identifier: {'ISO3166-1': 'BR'}}
