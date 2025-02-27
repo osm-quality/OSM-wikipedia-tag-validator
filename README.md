@@ -8,7 +8,7 @@ OSM-wikipedia-tag-validator
 * launch bot edits:
 * * `bash osm_editor_run_bot_in_regions.sh`
 * install dependencies:
-* * `pip3 install --user -r requirements.txt`
+* * `pip3 install -r requirements.txt`
 * Run tests:
 * * `python3 -m unittest`
 
