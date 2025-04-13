@@ -163,7 +163,7 @@ def update_validator_database_and_reports():
 
 
 def is_night():
-    return datetime.datetime.now().hour >= 20 or datetime.datetime.now().hour <= 4
+    return datetime.datetime.now().hour >= 19 or datetime.datetime.now().hour < 4
 
 
 def check_for_malformed_definitions_of_entries():
