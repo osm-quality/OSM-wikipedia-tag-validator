@@ -544,6 +544,9 @@ def for_tests():
         "wikipedia",
         "wikidata",
     ]:
+
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
+
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a science")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a service")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an emergency service")
@@ -849,8 +852,6 @@ def ignored():
 
         # how we should link it then?
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a religious denomination")
-
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
 
         # many find problem on Wikidata, though some are actual tagging issues in OSM
         # review again after some time, when I run out of more interesting ones
