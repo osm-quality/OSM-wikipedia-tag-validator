@@ -557,9 +557,11 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a structural failure")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a postal and courier activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a feeding")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a motion")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a mining (activity - likely mine/quarry etc should be set instead)")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an academic discipline")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a police operation")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a wikimedia page")
 
         # mostly wikidata bugs were found - low priority
         # OSM bot edits should be higher priority
