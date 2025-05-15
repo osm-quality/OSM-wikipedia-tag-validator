@@ -578,6 +578,7 @@ def for_tests():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a human activity")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an insurance")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a belief")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a form of art")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an education (transmission of knowledge and skills)") # see test_education_institution_as_valid_primary_link in wikidata structure tests
         # this is in large part covered by
         # https://www.wikidata.org/wiki/Property:P31#P31$e62deacd-4481-ff90-b25d-844ec7666263 constraint
@@ -630,6 +631,20 @@ def for_tests():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for bridge prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for bridge prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for bridge prefixed tags',
+
+        'malformed secondary wikipedia tag - for denomination prefixed tags',
+        "malformed secondary wikidata tag - for denomination prefixed tags",
+        'wikipedia wikidata mismatch - for denomination prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for denomination prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for denomination prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for denomination prefixed tags',
+
+        'malformed secondary wikipedia tag - for tank:model prefixed tags',
+        "malformed secondary wikidata tag - for tank:model prefixed tags",
+        'wikipedia wikidata mismatch - for tank:model prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for tank:model prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for tank:model prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for tank:model prefixed tags',
     ]
     return returned
 
