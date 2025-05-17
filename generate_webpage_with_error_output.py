@@ -663,9 +663,9 @@ def ignored():
 
         # see https://www.wikidata.org/wiki/User:Mateusz_Konieczny/failing_testcases
         # also, I slowly create notes for Sprint cases
-        # before enabling it - create notes for following brands
-        # https://www.openstreetmap.org/note/4086589
-        # https://www.openstreetmap.org/note/4086595
+        # before enabling it - create notes for following brands (using note creation tool)
+        # https://www.openstreetmap.org/note/4086589 https://overpass-turbo.eu/s/24i7 + wikidata
+        # https://www.openstreetmap.org/note/4086595 it:Simply Market Q3484790
         # https://www.openstreetmap.org/note/4086597
         # https://www.openstreetmap.org/note/4086599
         # https://www.openstreetmap.org/note/4086604
@@ -763,6 +763,8 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for healthcare:speciality prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for healthcare:speciality prefixed tags',
 
+        # https://taginfo.openstreetmap.org/keys/ref%3Awikipedia
+        # https://overpass-turbo.eu/s/24i9
         'malformed secondary wikipedia tag - for ref prefixed tags',
         'wikipedia wikidata mismatch - for ref prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for ref prefixed tags',
@@ -793,6 +795,9 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for old_brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for old_brand prefixed tags',
 
+        # https://www.openstreetmap.org/note/4763183
+        # create notes after I run out of tasks in note creation script
+        # https://overpass-turbo.eu/s/24ia
         'malformed secondary wikipedia tag - for proposed:brand prefixed tags',
         'wikipedia wikidata mismatch - for proposed:brand prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for proposed:brand prefixed tags',
@@ -853,7 +858,6 @@ def ignored():
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a research")
 
         # decide first are nuclear are explosions mappable
-        # https://www.openstreetmap.org/node/6108007765
         # https://www.openstreetmap.org/note/3976909
         # https://wiki.openstreetmap.org/wiki/Tag:military=nuclear_explosion_site
         # see https://wiki.openstreetmap.org/w/index.php?title=Tag:military%3Dnuclear_explosion_site&diff=2662934&oldid=2617549
