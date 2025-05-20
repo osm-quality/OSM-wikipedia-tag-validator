@@ -545,8 +545,11 @@ def for_tests():
         "wikidata",
     ]:
 
-        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
 
+
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a superstitution")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a branch of psychology")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a science")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a service")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an emergency service")
