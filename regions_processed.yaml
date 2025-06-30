@@ -97,7 +97,7 @@
 
 # 'wikipedia tag unexpected language' "Wrt changing en: to sr:, nobody cares, BUT (big but!), your script cover Kosovo too and there, it is a big no-no to change sq: or en: to sr:" (Telegram - private discussion with Kokan), Kosovo should be fixed now
 #- {internal_region_name: Serbia (bez Kosowa), website_main_title_part: 'Србија (Serbia)', identifier: {'ISO3166-1': 'RS', 'boundary': 'administrative'}, language_code: sr, ignored_problems: ['wikipedia tag unexpected language'], priority_multiplier: 3}
-- {internal_region_name: Bulgaria, website_main_title_part: 'Бългaрия (Bulgaria, Bułgaria)', identifier: {'ISO3166-1': 'BG'}, language_code: bg, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819954835142475786 Dimitar155 [BG] (pinged 2022-10-17)', priority_multiplier: 4}
+- {internal_region_name: Bulgaria, website_main_title_part: 'Бългaрия (Bulgaria, Bułgaria)', identifier: {'ISO3166-1': 'BG'}, language_code: bg, requested_by: 'https://discord.com/channels/413070382636072960/413070502580453387/819954835142475786 Dimitar155 [BG] (pinged 2022-10-17), https://www.openstreetmap.org/messages/1268035', priority_multiplier: 40}
 
 # Skipping unexpected language cases: oppressing Kurds alone (including targeting language) makes it tricky and better to just hide this cases
 #- {internal_region_name: Turkey, website_main_title_part: 'Türkiye (Turkey, Turcja)', identifier: {'ISO3166-1': 'TR'}, language_code: tr, requested_by: 'was requested by now inactive people',  ignored_problems: ['wikipedia tag unexpected language', "wikipedia from wikidata tag, unexpected language"]}
