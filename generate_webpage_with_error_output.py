@@ -626,6 +626,13 @@ def for_tests():
         'wikipedia wikidata mismatch - follow wikidata redirect - for sculptor prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for sculptor prefixed tags',
 
+        'malformed secondary wikipedia tag - for artwork_subject prefixed tags',
+        "malformed secondary wikidata tag - for artwork_subject prefixed tags",
+        'wikipedia wikidata mismatch - for artwork_subject prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for artwork_subject prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for artwork_subject prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for artwork_subject prefixed tags',
+
         # almost certainly should be moved to man_made=bridge area
         # https://taginfo.openstreetmap.org/keys/bridge%3Awikipedia#overview
         'malformed secondary wikipedia tag - for bridge prefixed tags',
@@ -706,6 +713,18 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for organ prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for organ prefixed tags',
 
+        'malformed secondary wikipedia tag - for old_operator prefixed tags',
+        'wikipedia wikidata mismatch - for old_operator prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for old_operator prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for old_operator prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for old_operator prefixed tags',
+
+        'malformed secondary wikipedia tag - for disused:operator prefixed tags',
+        'wikipedia wikidata mismatch - for disused:operator prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for disused:operator prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for disused:operator prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for disused:operator prefixed tags',
+
         'malformed secondary wikipedia tag - for healthcare:speciality prefixed tags',
         'wikipedia wikidata mismatch - for healthcare:speciality prefixed tags',
         'wikipedia wikidata mismatch - follow wikipedia redirect - for healthcare:speciality prefixed tags',
@@ -770,6 +789,12 @@ def ignored():
         'wikipedia wikidata mismatch - follow wikidata redirect - for official_name:etymology prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for official_name:etymology prefixed tags',
 
+        'malformed secondary wikipedia tag - for mascot:etymology prefixed tags',
+        'wikipedia wikidata mismatch - for mascot:etymology prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for mascot:etymology prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for mascot:etymology prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for mascot:etymology prefixed tags',
+
         # argh: https://www.openstreetmap.org/way/19050883
         "malformed secondary wikidata tag - for destination prefixed tags",
 
@@ -791,6 +816,8 @@ def ignored():
         'malformed secondary wikipedia tag - for brand prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for brand prefixed tags',
         'wikipedia wikidata mismatch - for brand prefixed tags',
+
+        "malformed secondary wikipedia tag for wikipedia_list:de tag", # obscure variant of old-style language keys
     ]
     for from_tags in [
         "wikipedia and wikidata",
