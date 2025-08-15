@@ -1324,7 +1324,6 @@ def get_challenge_data_from_project(challenge_api, project_id):
 
 def get_matching_maproulette_projects(api, search_term, user_id):
     returned = []
-    # https://github.com/maproulette/maproulette-backend/issues/1153 - this is broken by MR bug
     found = api.find_project(search_term)
     if(found["status"] != 200):
         raise Exception("Unexpected status")
