@@ -549,6 +549,7 @@ def for_tests():
 
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to an aircraft crash")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a signage")
+        returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a lost work")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a superstitution")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a branch of psychology")
         returned.append("should use a secondary wikipedia tag - linking from " + from_tags + " tag to a science")
@@ -656,6 +657,13 @@ def for_tests():
         'wikipedia wikidata mismatch - follow wikipedia redirect - for tank:model prefixed tags',
         'wikipedia wikidata mismatch - follow wikidata redirect - for tank:model prefixed tags',
         'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for tank:model prefixed tags',
+
+        'malformed secondary wikipedia tag - for network:2 prefixed tags',
+        "malformed secondary wikidata tag - for network:2 prefixed tags",
+        'wikipedia wikidata mismatch - for network:2 prefixed tags',
+        'wikipedia wikidata mismatch - follow wikipedia redirect - for network:2 prefixed tags',
+        'wikipedia wikidata mismatch - follow wikidata redirect - for network:2 prefixed tags',
+        'wikipedia wikidata mismatch - wikipedia points to disambiguation page and wikidata does not - for network:2 prefixed tags',
     ]
     return returned
 
