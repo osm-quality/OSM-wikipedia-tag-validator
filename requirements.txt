@@ -5,3 +5,4 @@ wikibrain
 maproulette
 pyyaml
 python-dotenv
+nominatim_cached_on_disk
