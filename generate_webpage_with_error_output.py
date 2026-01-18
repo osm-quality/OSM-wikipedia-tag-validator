@@ -276,7 +276,7 @@ def note_unused_errors(reported_errors, area):
 
 def obvious_fixes():
     return [
-        'wikipedia tag unexpected language',
+        'wikipedia tag in unexpected language, good one in expected language found',
         'wikipedia tag from wikipedia tag in an outdated form',
         'wikipedia wikidata mismatch - follow wikipedia redirect',
         'wikipedia from wikidata tag',
@@ -488,7 +488,9 @@ def for_review():
         "bridge:wikidata - move to bridge outline",
         "bridge:wikipedia and bridge:wikidata - move to bridge outline",
 
+        'wikipedia tag links bot wikipedia, good one in expected language found',
         'wikipedia tag links bot wikipedia',
+        'wikipedia tag unexpected language',
 
         'malformed secondary wikidata tag - for brand prefixed tags',
         'malformed secondary wikidata tag - for operator prefixed tags',

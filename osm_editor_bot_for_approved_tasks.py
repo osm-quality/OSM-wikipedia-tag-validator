@@ -135,7 +135,7 @@ def change_to_local_language_single(cursor, e, area_code, automatic_status):
         raise NotImplementedError
     else:
         raise NotImplementedError
-    if e['error_id'] != 'wikipedia tag unexpected language':
+    if e['error_id'] not in ['wikipedia tag in unexpected language, good one in expected language found', 'wikipedia tag links bot wikipedia, good one in expected language found']:
         return
     data = get_and_verify_data(e)
     if data == None:
