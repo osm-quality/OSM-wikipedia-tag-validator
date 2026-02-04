@@ -130,11 +130,6 @@ def handle_follow_wikipedia_redirect_where_target_matches_wikidata_single(cursor
     database.clear_error_and_request_update(cursor, e["rowid"])
 
 def change_to_local_language_single(cursor, e, area_code, automatic_status):
-    if automatic_status == None:
-        automatic_status = osm_bot_abstraction_layer.manually_reviewed_description()
-        raise NotImplementedError
-    else:
-        raise NotImplementedError
     if e['error_id'] not in ['wikipedia tag in unexpected language, good one in expected language found', 'wikipedia tag links bot wikipedia, good one in expected language found']:
         return
     data = get_and_verify_data(e)
@@ -177,6 +172,9 @@ def change_to_local_language_single(cursor, e, area_code, automatic_status):
     #osm_wiki_documentation_page = 
     type = e['osm_object_url'].split("/")[3]
     source = "wikidata, OSM"
+    if automatic_status == osm_bot_abstraction_layer.manually_reviewed_description():
+        if human_verification_mode.is_human_confirming(e['osm_object_url']) == False:
+            return
     osm_bot_abstraction_layer.make_edit(e['osm_object_url'], comment, automatic_status, discussion_url, osm_wiki_documentation_page, type, data, source)
     database.clear_error_and_request_update(cursor, e["rowid"])
 
