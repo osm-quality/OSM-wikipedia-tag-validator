@@ -254,15 +254,11 @@ def is_inside_bboxfinder_link(link, lon, lat):
 
 def is_location_clearly_inside_territory(lat, lon, target_country):
     if target_country == "pl":
-        if lat >= 48.166:
-            return False
-        if lat <= 55.678:
-            return False
-        if lon >= 12.480:
-            return False
-        if lon <= 25.137:
-            return False
-        return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#50.882243,375.446777,54.278055,382.972412", lon, lat):
+            return True
+        if is_inside_bboxfinder_link("http://bboxfinder.com/#49.468124,379.599609,52.862497,382.587891", lon, lat):
+            return True
+        return False
     elif target_country == "usa":
         # http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273
         if is_inside_bboxfinder_link("http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273", lon, lat):
