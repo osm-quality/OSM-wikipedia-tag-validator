@@ -239,17 +239,18 @@ def is_location_clearly_outside_territory(lat, lon, target_country):
     raise
 
 def is_inside_bboxfinder_link(link, lon, lat):
-        # http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273
-        coords = link.split("#")[1].split(",")
-        min_lat = float(coords[0])
-        min_lon = float(coords[1])
-        max_lat = float(coords[2])
-        max_lon = float(coords[3])
-        if lon >= min_lon:
-            if lon <= max_lon:
-                if lat >= min_lat:
-                    if lat <= max_lat:
-                        return True
+    # http://bboxfinder.com/#32.990236,-122.921906,48.995537,-95.405273
+    coords = link.split("#")[1].split(",")
+    min_lat = float(coords[0])
+    min_lon = float(coords[1])
+    max_lat = float(coords[2])
+    max_lon = float(coords[3])
+    if lon >= min_lon:
+        if lon <= max_lon:
+            if lat >= min_lat:
+                if lat <= max_lat:
+                    return True
+    return False
 
 def is_location_clearly_inside_territory(lat, lon, target_country):
     if target_country == "pl":
